@@ -108,9 +108,35 @@ Ensure that:
 * the `<your-ink-api-endpoint>` in `local-development.json` ends with a trailing slash
 * if INK is running as a service on a port, it is on port `3000`
 
-Create a database and enter credentials for an admin user account:
+Create environment files for each profile of the application under editoria-app/config
+You will need two files:
+development.env
+production.env
+
+The contents of these files should export the appropriate values for each environment:
+export PUBSWEET_SECRET='dev_secret'
+export POSTGRES_USER='dev'
+export POSTGRES_PASSWORD='secretpassword'
+export POSTGRES_HOST='localhost'
+export POSTGRES_DB='editoria_dev'
+export POSTGRES_PORT='5460'
+export SERVER_PORT='3000'
+export INK_ENDPOINT='http://138.68.41.18:3000/'
+export INK_USERNAME='admin@admin.com'
+export INK_PASSWORD='abc12345'
+export MAILER_USER='xpub@sandbox9af3d5dc64334deca9759efe7056d6b3.mailgun.org'
+export MAILER_PASSWORD='xpubpass'
+export MAILER_SENDER='dev@example.com'
+export MAILER_HOSTNAME='smtp.mailgun.org'
+export PASSWORD_RESET_URL='http://localhost:3000/password-reset'
+export PASSWORD_RESET_SENDER='dev@example.com'
+export NODE_ENV='development'
+
+
+
+Create a database and enter credentials for an admin user account (a postgres db should already be up and running):
 ```sh
-yarn resetdb
+source config/development.env && yarn resetdb
 ```
 
 Follow the prompts to enter user credentials and complete the database setup.
@@ -119,12 +145,19 @@ _**Note**: If you want to use a non-default database, see [Pubsweet development 
 
 Get the database docker container up and running:  
 ```sh
-yarn start:services
+source config/development.env && yarn start:services
 ```
 
 You're good to go. Open a separate terminal in the same folder and run the app with:  
 ```sh
-yarn server
+source config/development.env && yarn server
+```
+
+Clean your docker cache and containers before the first time you run the application (under editoria-app) or if changes occur in either env variables, docker-compose.yml, local-development, local-production, etc.:
+```sh
+docker-compose down
+docker-compose rm -fv
+rm -rf data
 ```
 
 ## Developer info
