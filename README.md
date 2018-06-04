@@ -114,6 +114,7 @@ development.env
 production.env
 
 The contents of these files should export the appropriate values for each environment:
+```json
 export PUBSWEET_SECRET='dev_secret'
 export POSTGRES_USER='dev'
 export POSTGRES_PASSWORD='secretpassword'
@@ -131,6 +132,7 @@ export MAILER_HOSTNAME='smtp.mailgun.org'
 export PASSWORD_RESET_URL='http://localhost:3000/password-reset'
 export PASSWORD_RESET_SENDER='dev@example.com'
 export NODE_ENV='development'
+```
 
 
 
