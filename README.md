@@ -108,7 +108,41 @@ Ensure that:
 * the `<your-ink-api-endpoint>` in `local-development.json` ends with a trailing slash
 * if INK is running as a service on a port, it is on port `3000`
 
-Create a database and enter credentials for an admin user account:
+Create environment files for each profile of the application under `editoria-app/config`.  
+eg. `editoria-app/config/development.env`
+
+Within your environment files, export the variables you want:
+```sh
+export PUBSWEET_SECRET=''
+export POSTGRES_USER=''
+export POSTGRES_PASSWORD=''
+export POSTGRES_HOST=''
+export POSTGRES_DB=''
+export POSTGRES_PORT=''
+export SERVER_PORT=''
+export INK_ENDPOINT=''
+export INK_USERNAME=''
+export INK_PASSWORD=''
+export MAILER_USER=''
+export MAILER_PASSWORD=''
+export MAILER_SENDER=''
+export MAILER_HOSTNAME=''
+export PASSWORD_RESET_URL=''
+export PASSWORD_RESET_SENDER=''
+export NODE_ENV=''
+```
+
+Import the environment variables into the current shell session:
+```sh
+source <your-env-file>
+```
+
+Get the database docker container up and running:  
+```sh
+yarn start:services
+```
+
+Create a database and enter credentials for an admin user account (a postgres db should already be up and running):
 ```sh
 yarn resetdb
 ```
@@ -117,14 +151,17 @@ Follow the prompts to enter user credentials and complete the database setup.
 
 _**Note**: If you want to use a non-default database, see [Pubsweet development setup](https://gitlab.coko.foundation/pubsweet/pubsweet/wikis/Development:%20setup#setup-2)._
 
-Get the database docker container up and running:  
-```sh
-yarn start:services
-```
 
 You're good to go. Open a separate terminal in the same folder and run the app with:  
 ```sh
 yarn server
+```
+
+Clean your docker cache and containers before the first time you run the application (under editoria-app) or if changes occur in either env variables, docker-compose.yml, local-development, local-production, etc.:
+```sh
+docker-compose down
+docker-compose rm -fv
+rm -rf data
 ```
 
 ## Developer info
