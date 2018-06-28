@@ -82,6 +82,13 @@ For further information on how to use nvm see https://www.sitepoint.com/quick-ti
 npm install -g yarn
 ```
 
+### Install Docker and docker-compose
+Instalation instructions can be found:
+* https://docs.docker.com/install/
+* https://docs.docker.com/compose/install/
+
+Prefer latest stable version of docker (18.x.x) and docker-compose (1.2x.x)
+
 ### Install Dependencies
 Install all dependencies and navigate to the editoria app folder.  
 ```sh
@@ -116,25 +123,32 @@ eg. `editoria-app/config/development.env`
 
 Within your environment files, export the variables you want:
 ```sh
-export PUBSWEET_SECRET=''
-export POSTGRES_USER=''
-export POSTGRES_PASSWORD=''
-export POSTGRES_HOST=''
-export POSTGRES_DB=''
-export POSTGRES_PORT=''
-export SERVER_PORT=''
-export INK_ENDPOINT=''
-export INK_USERNAME=''
-export INK_PASSWORD=''
-export INK_EDITORIA_TYPESCRIPT=''
-export MAILER_USER=''
-export MAILER_PASSWORD=''
-export MAILER_SENDER=''
-export MAILER_HOSTNAME=''
-export PASSWORD_RESET_URL=''
-export PASSWORD_RESET_SENDER=''
-export NODE_ENV=''
+export PUBSWEET_SECRET='' (*) (**)
+export POSTGRES_USER='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export POSTGRES_PASSWORD='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export POSTGRES_HOST='' (-)
+export POSTGRES_DB='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export POSTGRES_PORT='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export SERVER_PORT='' (**)
+export INK_ENDPOINT='' (*) (**)
+export INK_USERNAME='' (*) (**)
+export INK_PASSWORD='' (*) (**)
+export INK_EDITORIA_TYPESCRIPT='' (*) (**)
+export MAILER_USER='' (*) (**)
+export MAILER_PASSWORD='' (*) (**)
+export MAILER_SENDER='' (*) (**)
+export MAILER_HOSTNAME='' (*) (**)
+export PASSWORD_RESET_URL='' (*) (**)
+export PASSWORD_RESET_SENDER='' (*) (**)
+export NODE_ENV='' (**)
 ```
+(*)Required for the application to be functional
+
+(-) Optional
+
+(**) This key-value pairs could be either decalred as env variables or either in the corresponding config file e.g. local-development.json, development.json, etc
+
+(***) These fields should by any means exist in the env source file for the correct initialization of the docker container which holds the database of the application
 
 Import the environment variables into the current shell session:
 ```sh
@@ -195,3 +209,34 @@ Something (probably postgres) is already running on the port that the Docker dat
 2. `kill -9 {PID}`: kills (gracelessly) the process. Get the PID from the output of the above step.
 
 This should free up the port so the Docker database services can run on it.
+
+### I've made changes on my `<profile>.env` file, how can these changes be applied?
+
+In order changes of the `<profile>.env` file to be the following steps should be followed:
+* Kill any running instances of Editoria app
+* On editoria-app root folder perform:
+
+  ` docker-compose down`
+
+  `docker-compose rm -fv`
+
+  `rm -rf data`
+* Now you could run `source <your-env-file>` and start again the services and server
+
+### Which are the absolute required key-value pairs for an env file?
+
+* POSTGRES_USER
+* POSTGRES_PASSWORD
+* POSTGRES_DB
+* POSTGRES_PORT
+
+These values are needed in order the docker container which hosts the PostrgesDB of the application to be initialised correctly.
+
+### I am facing issues when trying to boot-up the application which are related to INK API
+
+INK platform is a very important part of the Editoria thus the appropriate configuration should be in place in order for Editoria to start properly. INK's configuration could either be placed in:
+* `local.development.json`
+* `development.json`
+* `<profile>.env`
+
+Please contact the team on https://mattermost.coko.foundation/coko/channels/editoria in order to get the required credentials
