@@ -70,7 +70,7 @@ cd editoria
 Make sure you use you use `node >= 8.3`.
 
 ### nvm
-To determine which version of Node you are running type `node -v`. 
+To determine which version of Node you are running type `node -v`.
 If the version is not 8.3 or greater you will need to use nvm to prescribe a specific node version. Installation of nvm is covered here https://github.com/creationix/nvm#installation
 
 Once nvm is installed use the command `nvm install 8.3`
@@ -171,3 +171,27 @@ rm -rf data
 ## Developer info
 
 see also the [Pubsweet wiki](https://gitlab.coko.foundation/pubsweet/pubsweet/wikis/home) for developer notes.
+
+## FAQ
+### I'm getting user errors running `yarn start:services` or `yarn server`
+
+It's crucial to use the same user when installing Editoria and running the Editoria database services. These commands are:
+* Running `yarn` from Editoria's root directory. This installs Editoria and its dependencies
+* Running `yarn start:server` for the first time sets up a database to use with Editoria. This configures a database that expects that the same user that is running this command has also run `yarn` from Editoria's root directory.
+
+If you see user errors running `yarn start:services` or `yarn server`, your best bet is to clear the existing data and start the install anew, as the same user.
+
+Start by deleting all the Docker data:
+```
+docker stop $(docker ps -aq)
+docker system prune
+docker rmi $(docker images -a)
+```
+
+### When running `yarn start:services`, I get a `Bind for 0.0.0.0:5432 failed: port is already allocated` error
+
+Something (probably postgres) is already running on the port that the Docker database services try to use (5432). Solution for Ubuntu:
+1. `lsof -i tcp:5432`: lists the processes running on port 5432
+2. `kill -9 {PID}`: kills (gracelessly) the process. Get the PID from the output of the above step.
+
+This should free up the port so the Docker database services can run on it.
