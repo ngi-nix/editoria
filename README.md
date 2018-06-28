@@ -114,9 +114,12 @@ In this file, add the following:
     }
 }
 ```
-Ensure that:
+
+We recommend using a demo instance of INK hosted by Coko in your initial Editoria setup. Please contact the team on https://mattermost.coko.foundation/coko/channels/editoria in order to get the required credentials and information.
+
+If you do want to run your own instance of INK, ensure that:
 * the `<your-ink-api-endpoint>` in `local-development.json` ends with a trailing slash
-* if INK is running as a service on a port, it is on port `3000`
+* if INK is running as a service on a port, ensure it is on port `3000`
 
 Create environment files for each profile of the application under `editoria-app/config`.  
 eg. `editoria-app/config/development.env`
@@ -195,12 +198,14 @@ It's crucial to use the same user when installing Editoria and running the Edito
 
 If you see user errors running `yarn start:services` or `yarn server`, your best bet is to clear the existing data and start the install anew, as the same user.
 
-Start by deleting all the Docker data:
+First, delete all the Docker data:
 ```
-docker stop $(docker ps -aq)
-docker system prune
-docker rmi $(docker images -a)
+docker-compose down
+docker-compose rm -fv
+rm -rf data
 ```
+
+Then, follow the steps for a clean install.
 
 ### When running `yarn start:services`, I get a `Bind for 0.0.0.0:5432 failed: port is already allocated` error
 
