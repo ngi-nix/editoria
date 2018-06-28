@@ -2,6 +2,7 @@ import { keys, map } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import config from 'config'
 import AlignmentTool from './AlignmentTool'
 import StateList from './StateList'
 import UploadButton from './UploadButton'
@@ -49,13 +50,21 @@ class ChapterSecondRow extends React.Component {
       toggleUpload,
       update,
     } = this.props
+    // this should not be in render !!!!
+    const progressTitles = []
 
-    const stateValues = {
-      clean: ['To Clean', 'Cleaning', 'Cleaned'],
-      edit: ['To Edit', 'Editing', 'Edited'],
-      review: ['To Review', 'Reviewing', 'Reviewed'],
-      style: ['To Style', 'Styling', 'Styled'],
+    if (config && config.bookBuilder && config.bookBuilder.stages) {
+      for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
+        progressTitles.push(config.bookBuilder.stages[i])
+      }
     }
+
+    // const stateValues = {
+    //   clean: ['To Clean', 'Cleaning', 'Cleaned'],
+    //   edit: ['To Edit', 'Editing', 'Edited'],
+    //   review: ['To Review', 'Reviewing', 'Reviewed'],
+    //   style: ['To Style', 'Styling', 'Styled'],
+    // }
 
     const alignmentOptions = []
     map(keys(chapter.alignment), key => {
@@ -86,7 +95,7 @@ class ChapterSecondRow extends React.Component {
           bookId={chapter.book}
           currentValues={chapter.progress}
           update={this.updateStateList}
-          values={stateValues}
+          values={progressTitles}
         />
         <Authorize object={chapter} operation="can view alignmentTool">
           <AlignmentTool

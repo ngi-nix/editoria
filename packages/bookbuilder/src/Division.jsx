@@ -9,7 +9,7 @@ import {
   isEmpty,
   map,
 } from 'lodash'
-
+import config from 'config'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DragDropContext } from 'react-dnd'
@@ -55,17 +55,17 @@ class Division extends React.Component {
       kind: 'chapter',
       lock: null,
       number: undefined,
-      progress: {
-        clean: 0,
-        edit: 0,
-        review: 0,
-        style: 0,
-      },
+      progress: {},
       source: '',
       status: 'unpublished',
       subCategory: type === 'body' ? group : 'component',
       title: 'Untitled',
       trackChanges: false,
+    }
+    if (config && config.bookBuilder && config.bookBuilder.stages) {
+      for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
+        newChapter.progress[config.bookBuilder.stages.type] = -1
+      }
     }
 
     const groupFragmentsByDivision = groupBy(chapters, 'division')
@@ -178,21 +178,21 @@ class Division extends React.Component {
     const chapterInstances = map(chapters, (c, i) => (
       <Chapter
         book={book}
+        canDrag={reorderingAllowed}
         chapter={c}
         id={c.id}
         ink={ink}
         key={c.id}
         no={i}
         onEndDrag={onEndDrag}
-        canDrag={reorderingAllowed}
         onMove={onMove}
         outerContainer={outerContainer}
         remove={onRemove}
-        user={user}
         title={c.title}
         type={c.subCategory}
         update={update}
         uploading={uploadStatus[c.id]}
+        user={user}
       />
     ))
 

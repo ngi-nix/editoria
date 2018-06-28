@@ -32,38 +32,42 @@ const stateList = ({ bookId, currentValues, update, values }) => {
       values={valueList}
     />
   )
-  const items = map(values, (valueList, name) => {
+  const items = map(values, (stageItem) => {
     let delimiter
-    const currentValueIndex = currentValues[name]
+    console.log('values', stageItem)
+    // console.log('valuesList', valueList)
+    // console.log('name', name)
+    const type = stageItem.type
+    const title = stageItem.title
+    const currentValueIndex = currentValues[stageItem.type]
 
-    if (name !== lastItem) {
-      delimiter = (
-        <i className={classnames('fa fa-angle-right', classes.delimiter)} />
-      )
-    }
+    // if (stageItem.type !== lastItem) {
+    //   delimiter = (
+    //     <i className={classnames('fa fa-angle-right', classes.delimiter)} />
+    //   )
+    // }
 
     return (
       <div className={classes.itemContainer} key={uniqueId()}>
         <Authorize
-          object={{ bookId, name, currentValueIndex }}
+          object={{ bookId, type, currentValueIndex }}
           operation="can change progressList"
           unauthorized={renderStateItem(
             true,
             currentValueIndex,
-            name,
+            title,
             handleUpdate,
-            valueList,
+            [],
           )}
         >
           {renderStateItem(
             false,
             currentValueIndex,
-            name,
+            title,
             handleUpdate,
-            valueList,
+            [],
           )}
         </Authorize>
-        {delimiter}
       </div>
     )
   })

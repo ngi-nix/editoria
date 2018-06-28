@@ -6,8 +6,16 @@ $light-grey: #b3b3b3;
   font-family: 'Fira Sans Condensed';
   font-size: 16px;
   font-style: italic;
-  padding: 0;
-
+  align-self: flex-start;
+  // padding-bottom: 2px;
+  // margin-right: 5px;
+  // text-align: center;
+  // width: 75px;
+  // border-bottom: solid 1px blue;
+  width: 13%;
+  svg {
+    width: 100%;
+  }
   &:focus {
     outline: none;
   }
