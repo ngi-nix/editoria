@@ -1,9 +1,6 @@
 import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
-// Import Bootstrap + Font Awesome styles
-import 'pubsweet-component-manage/Manage.scss'
-
 // Users and Teams
 import UsersManager from 'pubsweet-component-users-manager/UsersManagerContainer'
 // import TeamsManager from 'pubsweet-component-teams-manager/TeamsManagerContainer'
