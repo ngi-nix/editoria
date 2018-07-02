@@ -279,7 +279,11 @@ class EditoriaMode {
 
     if (collection) {
       if (await this.isAssignedProductionEditor(collection)) {
-        if (current.lock !== null && diff.lock !== undefined) {
+        if (
+          current.lock !== null &&
+          diff.lock !== undefined &&
+          current.lock.editor.userId !== this.user.id
+        ) {
           return false
         }
         return true
@@ -288,7 +292,8 @@ class EditoriaMode {
           if (
             (diff.lock !== undefined || update.lock !== undefined) &&
             wasEditingSate &&
-            current.lock === null
+            (current.lock === null ||
+              current.lock.editor.userId === this.user.id)
           ) {
             return true
           }
@@ -321,7 +326,8 @@ class EditoriaMode {
           if (
             (diff.lock !== undefined || update.lock !== undefined) &&
             wasReviewingSate &&
-            current.lock === null
+            (current.lock === null ||
+              current.lock.editor.userId === this.user.id)
           ) {
             return true
           }
@@ -463,7 +469,8 @@ module.exports = {
           if (
             object.current.lock !== null &&
             diff.lock !== undefined &&
-            diff.lock !== null
+            diff.lock !== null &&
+            object.current.lock.editor.userId !== user.id
           ) {
             return false
           }
