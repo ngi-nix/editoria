@@ -200,11 +200,9 @@ class Division extends React.Component {
     if (type === 'body') {
       addButtons = (
         <Authorize object={book} operation="can view addComponent">
-          <span>
-            <AddButton add={onAddClick} group="chapter" />
-            <AddButton add={onAddClick} group="part" />
-            <AddButton add={onAddClick} group="un-numbered" />
-          </span>
+          <AddButton add={onAddClick} group="chapter" />
+          <AddButton add={onAddClick} group="part" />
+          <AddButton add={onAddClick} group="unnumbered" />
         </Authorize>
       )
     } else {
@@ -230,15 +228,9 @@ class Division extends React.Component {
     return (
       <div>
         <div className={styles.sectionHeader}>
-          <div className={styles.sectionTitle}>
-            <h1> {title} </h1>
-          </div>
-
+          <h1> {title} </h1>
           {addButtons}
-
-          <div className={styles.separator} />
         </div>
-
         <div id="displayed"> {displayed} </div>
       </div>
     )

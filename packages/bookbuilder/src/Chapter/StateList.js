@@ -48,7 +48,7 @@ const stateList = ({ bookId, currentValues, update, values }) => {
     // }
 
     return (
-      <div className={classes.itemContainer} key={uniqueId()}>
+      <span className={classes.itemContainer} key={uniqueId()}>
         <Authorize
           object={{ bookId, type, currentValueIndex }}
           operation="can change progressList"
@@ -68,7 +68,7 @@ const stateList = ({ bookId, currentValues, update, values }) => {
             [],
           )}
         </Authorize>
-      </div>
+      </span>
     )
   })
 

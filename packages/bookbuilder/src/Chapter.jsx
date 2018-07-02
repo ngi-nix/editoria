@@ -117,6 +117,17 @@ class Chapter extends React.Component {
             hasContent === true ? styles.hasContent : ''
           }`}
         >
+          <svg viewBox="0 0 24 48">
+            <circle
+              cx="110%"
+              cy="50%"
+              fill="transparent"
+              r="20"
+              stroke="grey"
+              strokeWidth="2"
+            />
+            <circle cx="110%" cy="50%" fill="grey" r="17" strokeWidth="0" />
+          </svg>
           <div className={styles.tooltip}>grab to sort</div>
         </div>
       )
@@ -127,15 +138,15 @@ class Chapter extends React.Component {
     return connectDragSource(
       connectDropTarget(
         <li
-          className={`${styles.chapterContainer} col-lg-12 bb-chapter ${
+          className={`${styles.chapterContainer}  ${
             chapter.subCategory === 'chapter' ||
             chapter.subCategory === 'un-numbered'
               ? styles.isChapter
-              : styles.isPart
+              : ''
           }`}
           style={listItemStyle}
         >
-          <div className={`col-lg-1 ${styles.grabContainer}`}>
+          <div className={` ${styles.grabContainer}`}>
             <Authorize
               object={book}
               operation="can reorder bookComponents"
@@ -145,7 +156,7 @@ class Chapter extends React.Component {
             </Authorize>
           </div>
 
-          <div className={`col-lg-11 ${styles.chapterMainContent}`}>
+          <div className={` ${styles.chapterMainContent}`}>
             <FirstRow
               book={book}
               chapter={chapter}
@@ -169,14 +180,6 @@ class Chapter extends React.Component {
               viewOrEdit={this._viewOrEdit}
             />
           </div>
-
-          <div
-            className={
-              chapter.division === 'body'
-                ? styles.leftBorderBody
-                : styles.leftBorderComponent
-            }
-          />
         </li>,
       ),
     )

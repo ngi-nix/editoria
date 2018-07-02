@@ -145,8 +145,7 @@ class ChapterButtons extends React.Component {
     }
 
     return (
-      <div style={buttonsStyle}>
-        <div className={styles.actionContainer}>
+      <div className={`${styles.chapterActions}`}>
           <Authorize
             object={chapter}
             operation="can view fragmentEdit"
@@ -154,11 +153,11 @@ class ChapterButtons extends React.Component {
           >
             {withLink('Edit', url)}
           </Authorize>
-        </div>
+      <span>|</span>
         <Authorize object={chapter} operation="can view deleteComponent">
-          <div className={styles.actionContainer}>{deleteButton}</div>
+          {deleteButton}
         </Authorize>
-        {/* renameButton */}
+        
       </div>
     )
   }
@@ -167,7 +166,7 @@ class ChapterButtons extends React.Component {
     const rightArea = this.renderRightArea()
 
     return (
-      <div className={`${styles.chapterActions} pull-right`}>{rightArea}</div>
+      rightArea
     )
   }
 }

@@ -27,7 +27,7 @@ const stateItem = ({ disabled, name, update, values, index }) => {
     //   {name}
     // </span>
 
-    <div className={classes.root}>
+    
       <svg viewbox="0 0 100 10" xmlns="http://www.w3.org/2000/svg">
         <line id="line" stroke="#C4C4C4" x1="10%" x2="90%" y1="49%" y2="49%" />
         <g id="start">
@@ -67,7 +67,7 @@ const stateItem = ({ disabled, name, update, values, index }) => {
           />
         </g>
       </svg>
-    </div>
+    
   )
 }
 

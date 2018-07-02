@@ -198,44 +198,41 @@ $upload-multiple: #b1b1b1;
   }
 
   .sectionHeader {
-    padding-top: 1%;
-
-    .sectionTitle {
-      float: left;
-      padding: 10px 50px 10px 10px;
-
-      h1 {
-        color: $blue;
-        font-family: 'Vollkorn' !important;
-        font-size: 30px;
-        font-style: normal;
-        font-weight: normal;
-        line-height: 36px;
-        letter-spacing: 5px;
-        margin: 0 !important;
-        text-transform: uppercase;
-      }
+    display: flex;
+    align-items: baseline;
+    margin: 0;
+    padding: 0;
+    
+    h1 {
+      color: $blue;
+      font-family: 'Vollkorn' !important;
+      padding: 0;
+      font-size: 30px;
+      font-style: normal;
+      font-weight: normal;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin: 0 40px 0 0;
     }
 
     .sectionBtn {
+      background: none;
+      display: flex;
+      color: inherit;
+      align-items: center;
+      border: none;
+      font: inherit;
       cursor: pointer;
-      float: left;
+      outline: inherit;
       font-size: 16px;
       font-style: normal;
       font-weight: normal;
-      margin-top: 20px;
-      padding-right: 20px;
+      font-family: 'Fira Sans Condensed';
+      color: $main-grey;
+      text-transform: uppercase;
+      padding: 0;
+      margin-right: 20px;
 
-      a {
-        font-family: 'Fira Sans Condensed';
-        color: $main-grey;
-        text-decoration: none;
-        text-transform: uppercase;
-        &:hover {
-          text-decoration: none;
-          cursor: pointer;
-        }
-      }
       .addBtnIcon {
         -webkit-mask: url('./images/icon_add.svg') no-repeat 100% 100%;
         mask: url('./images/icon_add.svg') no-repeat 100% 100%;
@@ -244,39 +241,50 @@ $upload-multiple: #b1b1b1;
         background-color: $main-grey;
         width: 24px;
         height: 24px;
-        float: left;
+        padding: 0;
         margin-right: 10px;
       }
     }
   }
 
   .sectionChapters {
+    width: 100%;
     .chapterContainer {
       display: flex;
-      width: 100%;
+      // width: 100%;
       font-style: italic;
-      height: 100%;
+      // height: 100%;
       padding: 0;
     }
 
     .grabContainer {
-      flex: 1;
+      display: flex;
+      align-items: center;
+      align-content: center;
       padding: 0;
+      margin-right: 10px;
     }
 
     .grabIcon {
-      background-color: $light-grey;
-      border-bottom: 0;
-      border-top-left-radius: 110px;
-      border-top-right-radius: 110px;
-      bottom: 42%;
-      cursor: move;
-      float: right;
-      height: 20px;
-      position: absolute;
-      right: 0;
-      transform: rotate(270deg);
-      width: 42px;
+      align-self: center;
+      display: flex;
+      svg{
+        padding: 0;
+        width: 36px;
+        align-self: center;
+      }
+      // background-color: $light-grey;
+      // border-bottom: 0;
+      // border-top-left-radius: 110px;
+      // border-top-right-radius: 110px;
+      // bottom: 42%;
+      // cursor: move;
+      // float: right;
+      // height: 20px;
+      // position: absolute;
+      // right: 0;
+      // transform: rotate(270deg);
+      // width: 42px;
     }
     .notAllowed {
       cursor: default;
@@ -287,18 +295,18 @@ $upload-multiple: #b1b1b1;
     }
 
     .hasContent::before {
-      border: 2px solid $blue;
-      border-bottom: 0;
-      border-top-left-radius: 110px;
-      border-top-right-radius: 110px;
-      content: '';
-      display: block;
-      height: 25px;
-      left: -6px;
-      margin: 0 auto;
-      position: relative;
-      top: -28%;
-      width: 54px;
+      // border: 2px solid $blue;
+      // border-bottom: 0;
+      // border-top-left-radius: 110px;
+      // border-top-right-radius: 110px;
+      // content: '';
+      // display: block;
+      // height: 25px;
+      // left: -6px;
+      // margin: 0 auto;
+      // position: relative;
+      // top: -28%;
+      // width: 54px;
     }
 
     .tooltip {
@@ -368,6 +376,9 @@ $upload-multiple: #b1b1b1;
     .chapterMainContent {
       margin: 0;
       padding: 0;
+      flex:1;
+      display: flex;
+      flex-direction: column;
     }
 
     .isChapter {
@@ -443,34 +454,45 @@ $upload-multiple: #b1b1b1;
 
     .chapterActions {
       background-color: $white;
-      bottom: 54px;
+      // bottom: 54px;
       padding-left: 5px;
-      position: absolute;
-      right: 0;
-      
-      .actionContainer {
-        border-right: 1px solid $black;
-        float: left;
-        margin-right: 10px;
-        padding-right: 10px;
-        &:last-of-type {
-          border: 0;
-        }
-        &:only-of-type {
-          border: 0;
-        }
+      // position: absolute;
+      // right: 0;
+      // border-right: 1px solid $black;
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-self: flex-end;
+      // .actionContainer {
+      //   border-right: 1px solid $black;
+      //   display: flex;
+      //   align-self: flex-end;
+      //   // float: left;
+      //   // margin-right: 10px;
+      //   // padding-right: 10px;
+      //   // &:last-of-type {
+      //   //   border: 0;
+      //   // }
+      //   // &:only-of-type {
+      //   //   border: 0;
+      //   // }
+      // }
+      span {
+        font-style: normal;
       }
-
       a {
         color: $blue;
+        width: 50%;
         font-family: 'Fira Sans Condensed';
+        text-align: center;
         font-style: italic;
         font-weight: normal;
         text-decoration: none;
+         border-bottom: 2px solid transparent;
         &:hover {
           cursor: pointer;
           border-bottom: 2px solid #0d78f2;
-          // transition: .25s ease-in-out 0s;
+          // text-decoration:underline;
         }
       }
 
@@ -502,6 +524,7 @@ $upload-multiple: #b1b1b1;
       padding-top: 1.8%;
       flex-direction: row;
       align-items: center;
+      margin-bottom: 10px;
 
       .btnFile {
         // position: relative;
