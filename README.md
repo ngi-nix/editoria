@@ -127,11 +127,11 @@ eg. `editoria-app/config/development.env`
 Within your environment files, export the variables you want:
 ```sh
 export PUBSWEET_SECRET='' (*) (**)
-export POSTGRES_USER='' (*) (***) (used from both docker-compose.yml and pubsweet server)
-export POSTGRES_PASSWORD='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export POSTGRES_USER='' (*) (***) (used by both docker-compose.yml and pubsweet server)
+export POSTGRES_PASSWORD='' (*) (***) (by from both docker-compose.yml and pubsweet server)
 export POSTGRES_HOST='' (-)
-export POSTGRES_DB='' (*) (***) (used from both docker-compose.yml and pubsweet server)
-export POSTGRES_PORT='' (*) (***) (used from both docker-compose.yml and pubsweet server)
+export POSTGRES_DB='' (*) (***) (used by both docker-compose.yml and pubsweet server)
+export POSTGRES_PORT='' (*) (***) (used by both docker-compose.yml and pubsweet server)
 export SERVER_PORT='' (**)
 export INK_ENDPOINT='' (*) (**)
 export INK_USERNAME='' (*) (**)
