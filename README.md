@@ -18,7 +18,9 @@ The current features on our list are the following:
 |System             |Use docker containers for deployments          |               |&#x2714;         |#89|
 |System             |Logger          |               |&#x2714;        |#106|
 |System             |Env variables          |               |&#x2714;         |#104|
+|System             |Fix polling problem                       |&#x2714;               |         |#132|
 |Book builder       |Redesign component state tool                  |&#x2714;              |         |#55|
+|Book builder       |Drag and Drop perfomance issue                  |&#x2714;               | |#131|
 |Book builder       |Export EPUB                  |               |&#x2714;         |#79|
 |Book builder       |Filenames for single uploads                  |               |         |#112|
 |Editor| Copy Paste within the editor fix |&#x2714;|||
