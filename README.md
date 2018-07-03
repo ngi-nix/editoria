@@ -21,6 +21,7 @@ The current features on our list are the following:
 |Book builder       |Redesign component state tool                  |&#x2714;              |         |#55|
 |Book builder       |Export EPUB                  |               |&#x2714;         |#79|
 |Book builder       |Filenames for single uploads                  |               |         |#112|
+|Editor| Copy Paste within the editor fix |&#x2714;|||
 |Editor| Code Block ||&#x2714;| wax/wax#174|
 |Editor| Add ornament style ||&#x2714;| wax/wax#178|
 |Export|Fix links ||&#x2714;| #100|
