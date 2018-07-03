@@ -15,16 +15,16 @@ The current features on our list are the following:
 |:----              |---                                            |:---:          |:---:    |:---:|
 |**Current**|
 |System| Edit Lock ||&#x2714;| #117|
-|System             |Use docker containers for deployments          |               |         |#89|
-|System             |Logger          |    &#x2714;           |         |#106|
-|System             |Env variables          |    &#x2714;           |         |#104|
-|Book builder       |Redesign component state tool                  |               |         |#55|
-|Book builder       |Export EPUB                  |               |         |#79|
+|System             |Use docker containers for deployments          |               |&#x2714;         |#89|
+|System             |Logger          |               |&#x2714;        |#106|
+|System             |Env variables          |               |&#x2714;         |#104|
+|Book builder       |Redesign component state tool                  |&#x2714;              |         |#55|
+|Book builder       |Export EPUB                  |               |&#x2714;         |#79|
 |Book builder       |Filenames for single uploads                  |               |         |#112|
 |Editor| Code Block ||&#x2714;| wax/wax#174|
-|Editor| Add ornament style |&#x2714;|| wax/wax#178|
-|Export|Fix links ||| #100|
-|Export|Fix image captions ||| #113|
+|Editor| Add ornament style ||&#x2714;| wax/wax#178|
+|Export|Fix links ||&#x2714;| #100|
+|Export|Fix image captions ||&#x2714;| #113|
 |Export|Notes at the end of the book ||| #78|
 |**Previous**|
 |System             |Switch to Postgres                             |               |&#x2714; |#80|
