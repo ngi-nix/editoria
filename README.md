@@ -117,9 +117,12 @@ In this file, add the following:
 
 We recommend using a demo instance of INK hosted by Coko in your initial Editoria setup. Please contact the team on https://mattermost.coko.foundation/coko/channels/editoria in order to get the required credentials and information.
 
-If you do want to run your own instance of INK, ensure that:
+If you do want to run your own instance of [INK](https://gitlab.coko.foundation/INK/ink-api), be sure that:
 * the `<your-ink-api-endpoint>` in `local-development.json` ends with a trailing slash
 * if INK is running as a service on a port, ensure it is on port `3000`
+* If INK and Editoria are on the same server, Editoria should be set to run on another port than `3000`, AND the `postgres` docker component for INK should run on a different port (`4321` instead of `5432`for instance). 
+
+Again, if you need to test editoria, asking for the credentials will be the fastest way to be set up.
 
 Create environment files for each profile of the application under `editoria-app/config`.  
 eg. `editoria-app/config/development.env`
@@ -149,7 +152,7 @@ export NODE_ENV='' (**)
 
 (-) Optional
 
-(**) This key-value pairs could be either decalred as env variables or either in the corresponding config file e.g. local-development.json, development.json, etc
+(**) This key-value pairs could be either declared as env variables or either in the corresponding config file e.g. `local-development.json`, `development.json`, etc
 
 (***) These fields should by any means exist in the env source file for the correct initialization of the docker container which holds the database of the application
 
@@ -217,15 +220,24 @@ This should free up the port so the Docker database services can run on it.
 
 ### I've made changes on my `<profile>.env` file, how can these changes be applied?
 
-In order changes of the `<profile>.env` file to be the following steps should be followed:
+To be sure that your changes in `<profile>.env` are registered, you need to reset your docker containers and source `<your-env-file>`. To do so, you can follow these steps: 
+
 * Kill any running instances of Editoria app
+
 * On editoria-app root folder perform:
 
-  ` docker-compose down`
+```
+docker-compose down
+docker-compose rm -fv
+```
 
-  `docker-compose rm -fv`
 
-  `rm -rf data`
+  `docker-compose down` will unmount the docker container
+
+  `docker-compose rm -fv` will remove the container and it's anonymous volumes.   
+
+  `rm -rf data` will delete the content from your database 
+
 * Now you could run `source <your-env-file>` and start again the services and server
 
 ### Which are the absolute required key-value pairs for an env file?
@@ -239,7 +251,10 @@ These values are needed in order the docker container which hosts the PostrgesDB
 
 ### I am facing issues when trying to boot-up the application which are related to INK API
 
-INK platform is a very important part of the Editoria thus the appropriate configuration should be in place in order for Editoria to start properly. INK's configuration could either be placed in:
+Ink is the process manager developped by Coko. Editoria uses Ink mainly to convert Microsoft Word .docx into proper HTML to be used in Editoria (among other things).
+Since it has been one of the requirements from the begginning, running Editoria means that you need to have access to an instance of INK before runnning it, thus the appropriate configuration should be in place in order for Editoria to start properly. 
+
+INK's configuration could either be placed in:
 * `local.development.json`
 * `development.json`
 * `<profile>.env`
