@@ -28,14 +28,41 @@ export class UploadButton extends React.Component {
     event.preventDefault()
 
     const file = event.target.files[0]
+    const filename = file.name
+    const title = filename.split('.')[0]
     const { chapter, convertFile, toggleUpload, update } = this.props
 
     toggleUpload()
+    const patch = {
+      id: chapter.id,
+      progress: {
+        upload: 0,
+        file_prep: -1,
+        edit: -1,
+        review: -1,
+        clean_up: -1,
+        page_check: -1,
+        final: -1,
+      },
+    }
+
+    update(patch)
+    // update(patch).then(res => {
     convertFile(file)
       .then(response => {
         const patch = {
           id: chapter.id,
           source: response.converted,
+          title,
+          progress: {
+            upload: 1,
+            file_prep: 0,
+            edit: -1,
+            review: -1,
+            clean_up: -1,
+            page_check: -1,
+            final: -1,
+          },
         }
 
         update(patch)
@@ -43,8 +70,22 @@ export class UploadButton extends React.Component {
       })
       .catch(error => {
         console.error('INK error', error)
+        const patch = {
+          id: chapter.id,
+          progress: {
+            upload: -1,
+            file_prep: -1,
+            edit: -1,
+            review: -1,
+            clean_up: -1,
+            page_check: -1,
+            final: -1,
+          },
+        }
+        update(patch)
         toggleUpload()
       })
+    // })
   }
 
   toggleModal() {
@@ -81,8 +122,8 @@ export class UploadButton extends React.Component {
     const { accept, title, type, chapter } = this.props
 
     return (
-      <span className={styles.btnContainer}>
-        <label
+      <div className={styles.btnContainer}>
+        <i
           className={`${styles.uploadIcon} ${uploadClass} ${disabled}`}
           disabled={noAction}
           htmlFor={`single-file-uploader${chapter.id}`}
@@ -103,7 +144,7 @@ export class UploadButton extends React.Component {
           title={title}
           type={type}
         />
-      </span>
+      </div>
     )
   }
 

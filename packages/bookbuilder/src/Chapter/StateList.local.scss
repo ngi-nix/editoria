@@ -1,22 +1,14 @@
 .stateListContainer {
   display: flex;
-  // flex-direction: row;
-  flex: 0 1 73%;
-  // justify-content: flex-start;
-  // align-items: flex-start;
-  // width: 300px;
+  flex: 0 1 71%;
+  &:hover {
+    div > div {
+      visibility: visible;
+    }
+  }
 }
 
 .itemContainer {
-  svg {
-    width: 100px;
-    height: 10px;
-  }
-  // display: flex;
-  // flex-direction: row;
-  // align-items: center;
-}
-
-.delimiter {
-  // padding: 5px;
+  flex: 0 1 14.2857%;
+  align-self: flex-end;
 }

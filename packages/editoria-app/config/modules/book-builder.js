@@ -23,8 +23,8 @@ module.exports = {
       type: 'review',
     },
     {
-      title: 'Clean',
-      type: 'clean',
+      title: 'Clean Up',
+      type: 'clean_up',
     },
     {
       title: 'Page Check',

@@ -48,6 +48,21 @@ class Chapter extends React.Component {
     return hasContent
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { chapter } = nextProps
+    const source = chapter.source || ''
+    const hasContent = source.trim().length > 0
+
+    if (this.props.chapter.source !== chapter.source && hasContent) {
+      const patch = {
+        id: chapter.id,
+        progress: chapter.progress,
+      }
+      patch.progress.upload = 1
+      this.update(patch)
+    }
+  }
+
   // getLocalStorageKey () {
   //   const { chapter } = this.props
   //   return 'chapter:upload:' + chapter.id
@@ -102,20 +117,35 @@ class Chapter extends React.Component {
       opacity: isDragging ? 0 : 1,
     }
     const indicatorGrabAllowed = allowed => {
-      if (!allowed) {
+      if (isUploadInProgress || !allowed) {
         return (
-          <div
-            className={`${styles.grabIcon} ${styles.notAllowed} ${
-              hasContent === true ? styles.hasContent : ''
-            }`}
-          />
+          <div className={`${styles.grabContainer} ${styles.notAllowed}`}>
+            <svg viewBox="0 0 24 48">
+              <circle
+                cx="110%"
+                cy="50%"
+                fill="transparent"
+                r="20"
+                stroke={hasContent === true ? '#0d78f2' : '#666'}
+                strokeWidth="2"
+              />
+              <circle
+                cx="110%"
+                cy="50%"
+                fill={hasContent === true ? '#0d78f2' : '#666'}
+                r="17"
+                strokeWidth="0"
+              />
+            </svg>
+          </div>
         )
       }
       return (
         <div
-          className={`${styles.grabIcon} ${
-            hasContent === true ? styles.hasContent : ''
-          }`}
+          className={styles.grabContainer}
+          // className={`${styles.grabIcon} ${
+          //   hasContent === true ? styles.hasContent : ''
+          // }`}
         >
           <svg viewBox="0 0 24 48">
             <circle
@@ -123,10 +153,16 @@ class Chapter extends React.Component {
               cy="50%"
               fill="transparent"
               r="20"
-              stroke="grey"
+              stroke={hasContent === true ? '#0d78f2' : '#666'}
               strokeWidth="2"
             />
-            <circle cx="110%" cy="50%" fill="grey" r="17" strokeWidth="0" />
+            <circle
+              cx="110%"
+              cy="50%"
+              fill={hasContent === true ? '#0d78f2' : '#666'}
+              r="17"
+              strokeWidth="0"
+            />
           </svg>
           <div className={styles.tooltip}>grab to sort</div>
         </div>
@@ -146,15 +182,13 @@ class Chapter extends React.Component {
           }`}
           style={listItemStyle}
         >
-          <div className={` ${styles.grabContainer}`}>
-            <Authorize
-              object={book}
-              operation="can reorder bookComponents"
-              unauthorized={indicatorGrabAllowed(false)}
-            >
-              {indicatorGrabAllowed(true)}
-            </Authorize>
-          </div>
+          <Authorize
+            object={book}
+            operation="can reorder bookComponents"
+            unauthorized={indicatorGrabAllowed(false)}
+          >
+            {indicatorGrabAllowed(true)}
+          </Authorize>
 
           <div className={` ${styles.chapterMainContent}`}>
             <FirstRow

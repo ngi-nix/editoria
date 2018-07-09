@@ -64,7 +64,7 @@ class Division extends React.Component {
     }
     if (config && config.bookBuilder && config.bookBuilder.stages) {
       for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
-        newChapter.progress[config.bookBuilder.stages.type] = -1
+        newChapter.progress[config.bookBuilder.stages[i].type] = -1
       }
     }
 
@@ -226,7 +226,7 @@ class Division extends React.Component {
     const displayed = chapters.length > 0 ? list : emptyList
 
     return (
-      <div>
+      <div className={styles.divisionsConetainer}>
         <div className={styles.sectionHeader}>
           <h1> {title} </h1>
           {addButtons}

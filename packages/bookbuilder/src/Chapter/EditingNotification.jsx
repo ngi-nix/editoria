@@ -87,23 +87,19 @@ class EditingNotification extends React.Component {
     }
 
     return (
-      <a
-        className={styles.lEditing}
-        id="bb-unlock"
-        onClick={toggle}
-        style={inlineStyle}
-        title={hoverTitle}
-      >
-        <i
-          alt="unlock"
-          aria-hidden="true"
-          className={`${styles.lockIcon} fa fa-lock`}
-        />
+      <div className={styles.lEditing}>
+        <a
+          id="bb-unlock"
+          onClick={toggle}
+          style={inlineStyle}
+          title={hoverTitle}
+        >
+          <i alt="unlock" aria-hidden="true" className={styles.lockIcon} />
 
-        <span className={styles.lockMessage}>{message}</span>
-
+          <span>{message}</span>
+        </a>
         {unlockModal}
-      </a>
+      </div>
     )
   }
 }

@@ -109,10 +109,13 @@ class FileUploader extends React.Component {
               kind: 'chapter',
               lock: null,
               progress: {
-                clean: 0,
-                edit: 0,
-                review: 0,
-                style: 0,
+                upload: 0,
+                file_prep: -1,
+                edit: -1,
+                review: -1,
+                clean_up: -1,
+                page_check: -1,
+                final: -1,
               },
               source: '',
               status: 'unpublished',
@@ -198,6 +201,15 @@ class FileUploader extends React.Component {
               const patch = {
                 id: fragment.id,
                 source: response.converted,
+                progress: {
+                  upload: 1,
+                  file_prep: 0,
+                  edit: -1,
+                  review: -1,
+                  clean_up: -1,
+                  page_check: -1,
+                  final: -1,
+                },
               }
 
               update(book, patch)
@@ -207,6 +219,20 @@ class FileUploader extends React.Component {
             })
             .catch(error => {
               console.error(error)
+              const patch = {
+                id: fragment.id,
+                progress: {
+                  upload: -1,
+                  file_prep: -1,
+                  edit: -1,
+                  review: -1,
+                  clean_up: -1,
+                  page_check: -1,
+                  final: -1,
+                },
+              }
+
+              update(book, patch)
               self.handleUploadStatusChange(fragment.id, false)
               updateUploadStatus(self.state.uploading)
             })

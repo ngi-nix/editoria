@@ -26,6 +26,7 @@ import PrivateRoute from './components/PrivateRoute'
 const Editor = WithConfig(Wax, {
   layout: 'editoria',
   lockWhenEditing: true,
+  pollingTimer: 1000,
 })
 
 // export default (
