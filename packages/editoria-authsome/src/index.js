@@ -299,9 +299,20 @@ class EditoriaMode {
           }
           if (
             diff.progress &&
-            diff.progress.edit &&
             (diff.progress.edit === 1 || diff.progress.edit === -1) &&
             wasEditingSate
+          ) {
+            return true
+          }
+          if (
+            diff.progress &&
+            (diff.progress.review === 1 || diff.progress.review === 0 || diff.progress.review === -1)
+          ) {
+            return true
+          }
+          if (
+            diff.progress &&
+            diff.progress.clean_up === 1
           ) {
             return true
           }
@@ -333,7 +344,6 @@ class EditoriaMode {
           }
           if (
             diff.progress &&
-            diff.progress.review &&
             (diff.progress.review === 1 || diff.progress.review === -1)&&
             wasReviewingSate
           ) {

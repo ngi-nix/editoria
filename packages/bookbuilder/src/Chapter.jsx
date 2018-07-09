@@ -48,20 +48,24 @@ class Chapter extends React.Component {
     return hasContent
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { chapter } = nextProps
-    const source = chapter.source || ''
-    const hasContent = source.trim().length > 0
-
-    if (this.props.chapter.source !== chapter.source && hasContent) {
-      const patch = {
-        id: chapter.id,
-        progress: chapter.progress,
-      }
-      patch.progress.upload = 1
-      this.update(patch)
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { chapter } = nextProps
+  //   const source = chapter.source || ''
+  //   const sourceBefore = this.props.chapter.source || ''
+  //   const hasContentBefore = sourceBefore.trim().length > 0
+  //   const hasContent = source.trim().length > 0
+  //   // console.log('fragment old', this.props.chapter.source)
+  //   // console.log('fragment new', chapter.source)
+  //   if (!hasContentBefore && hasContent) {
+  //     const patch = {
+  //       id: chapter.id,
+  //       progress: chapter.progress,
+  //     }
+  //     patch.progress.upload = 1
+  //     patch.progress.file_prep = 0
+  //     this.update(patch)
+  //   }
+  // }
 
   // getLocalStorageKey () {
   //   const { chapter } = this.props
