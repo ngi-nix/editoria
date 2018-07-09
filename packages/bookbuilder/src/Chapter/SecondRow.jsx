@@ -1,7 +1,8 @@
-import { keys, map } from 'lodash'
+import { keys, map, indexOf } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import config from 'config'
 import AlignmentTool from './AlignmentTool'
 import StateList from './StateList'
 import UploadButton from './UploadButton'
@@ -14,6 +15,12 @@ class ChapterSecondRow extends React.Component {
 
     this.onClickAlignmentBox = this.onClickAlignmentBox.bind(this)
     this.updateStateList = this.updateStateList.bind(this)
+    this.progressValues = [-1, 0, 1]
+    this.progressOrder = []
+
+    for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
+      this.progressOrder.push(config.bookBuilder.stages[i].type)
+    }
   }
 
   updateStateList(name, index) {
@@ -23,8 +30,29 @@ class ChapterSecondRow extends React.Component {
       id: chapter.id,
       progress: chapter.progress,
     }
+    if (index === 1) {
+      patch.progress[name] = index
+      const next = indexOf(this.progressOrder, name) + 1
+      const type = this.progressOrder[next]
+      patch.progress[type] = 0
+    }
 
-    patch.progress[name] = index
+    if (index === -1) {
+      patch.progress[name] = index
+      const next = indexOf(this.progressOrder, name) + 1
+      const type = this.progressOrder[next]
+      patch.progress[type] = -1
+    }
+
+    if (index === 0) {
+      patch.progress[name] = index
+      const next = indexOf(this.progressOrder, name) + 1
+      for (let i = next; i < this.progressOrder.length; i += 1) {
+        const type = this.progressOrder[i]
+        patch.progress[type] = -1
+      }
+    }
+
     update(patch)
   }
 
@@ -50,13 +78,6 @@ class ChapterSecondRow extends React.Component {
       update,
     } = this.props
 
-    const stateValues = {
-      clean: ['To Clean', 'Cleaning', 'Cleaned'],
-      edit: ['To Edit', 'Editing', 'Edited'],
-      review: ['To Review', 'Reviewing', 'Reviewed'],
-      style: ['To Style', 'Styling', 'Styled'],
-    }
-
     const alignmentOptions = []
     map(keys(chapter.alignment), key => {
       const option = {
@@ -66,7 +87,6 @@ class ChapterSecondRow extends React.Component {
       }
       alignmentOptions.push(option)
     })
-
     return (
       <div className={styles.secondLineContainer}>
         <Authorize object={chapter} operation="can view uploadButton">
@@ -86,7 +106,7 @@ class ChapterSecondRow extends React.Component {
           bookId={chapter.book}
           currentValues={chapter.progress}
           update={this.updateStateList}
-          values={stateValues}
+          values={this.progressValues}
         />
         <Authorize object={chapter} operation="can view alignmentTool">
           <AlignmentTool
@@ -94,7 +114,6 @@ class ChapterSecondRow extends React.Component {
             onClickAlignmentBox={this.onClickAlignmentBox}
           />
         </Authorize>
-        <div className={styles.separator} />
       </div>
     )
   }

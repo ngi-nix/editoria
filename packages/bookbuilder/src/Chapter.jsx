@@ -48,6 +48,25 @@ class Chapter extends React.Component {
     return hasContent
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   const { chapter } = nextProps
+  //   const source = chapter.source || ''
+  //   const sourceBefore = this.props.chapter.source || ''
+  //   const hasContentBefore = sourceBefore.trim().length > 0
+  //   const hasContent = source.trim().length > 0
+  //   // console.log('fragment old', this.props.chapter.source)
+  //   // console.log('fragment new', chapter.source)
+  //   if (!hasContentBefore && hasContent) {
+  //     const patch = {
+  //       id: chapter.id,
+  //       progress: chapter.progress,
+  //     }
+  //     patch.progress.upload = 1
+  //     patch.progress.file_prep = 0
+  //     this.update(patch)
+  //   }
+  // }
+
   // getLocalStorageKey () {
   //   const { chapter } = this.props
   //   return 'chapter:upload:' + chapter.id
@@ -102,21 +121,53 @@ class Chapter extends React.Component {
       opacity: isDragging ? 0 : 1,
     }
     const indicatorGrabAllowed = allowed => {
-      if (!allowed) {
+      if (isUploadInProgress || !allowed) {
         return (
-          <div
-            className={`${styles.grabIcon} ${styles.notAllowed} ${
-              hasContent === true ? styles.hasContent : ''
-            }`}
-          />
+          <div className={`${styles.grabContainer} ${styles.notAllowed}`}>
+            <svg viewBox="0 0 24 48">
+              <circle
+                cx="110%"
+                cy="50%"
+                fill="transparent"
+                r="20"
+                stroke={hasContent === true ? '#0d78f2' : '#666'}
+                strokeWidth="2"
+              />
+              <circle
+                cx="110%"
+                cy="50%"
+                fill={hasContent === true ? '#0d78f2' : '#666'}
+                r="17"
+                strokeWidth="0"
+              />
+            </svg>
+          </div>
         )
       }
       return (
         <div
-          className={`${styles.grabIcon} ${
-            hasContent === true ? styles.hasContent : ''
-          }`}
+          className={styles.grabContainer}
+          // className={`${styles.grabIcon} ${
+          //   hasContent === true ? styles.hasContent : ''
+          // }`}
         >
+          <svg viewBox="0 0 24 48">
+            <circle
+              cx="110%"
+              cy="50%"
+              fill="transparent"
+              r="20"
+              stroke={hasContent === true ? '#0d78f2' : '#666'}
+              strokeWidth="2"
+            />
+            <circle
+              cx="110%"
+              cy="50%"
+              fill={hasContent === true ? '#0d78f2' : '#666'}
+              r="17"
+              strokeWidth="0"
+            />
+          </svg>
           <div className={styles.tooltip}>grab to sort</div>
         </div>
       )
@@ -127,25 +178,23 @@ class Chapter extends React.Component {
     return connectDragSource(
       connectDropTarget(
         <li
-          className={`${styles.chapterContainer} col-lg-12 bb-chapter ${
+          className={`${styles.chapterContainer}  ${
             chapter.subCategory === 'chapter' ||
             chapter.subCategory === 'un-numbered'
               ? styles.isChapter
-              : styles.isPart
+              : ''
           }`}
           style={listItemStyle}
         >
-          <div className={`col-lg-1 ${styles.grabContainer}`}>
-            <Authorize
-              object={book}
-              operation="can reorder bookComponents"
-              unauthorized={indicatorGrabAllowed(false)}
-            >
-              {indicatorGrabAllowed(true)}
-            </Authorize>
-          </div>
+          <Authorize
+            object={book}
+            operation="can reorder bookComponents"
+            unauthorized={indicatorGrabAllowed(false)}
+          >
+            {indicatorGrabAllowed(true)}
+          </Authorize>
 
-          <div className={`col-lg-11 ${styles.chapterMainContent}`}>
+          <div className={` ${styles.chapterMainContent}`}>
             <FirstRow
               book={book}
               chapter={chapter}
@@ -169,14 +218,6 @@ class Chapter extends React.Component {
               viewOrEdit={this._viewOrEdit}
             />
           </div>
-
-          <div
-            className={
-              chapter.division === 'body'
-                ? styles.leftBorderBody
-                : styles.leftBorderComponent
-            }
-          />
         </li>,
       ),
     )

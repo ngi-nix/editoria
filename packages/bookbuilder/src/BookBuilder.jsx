@@ -280,26 +280,21 @@ export class BookBuilder extends React.Component {
     return (
       <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
         <div className={styles.bookBuilder}>
-          <div
-            className="col-lg-offset-2 col-lg-8 col-md-8 col-sm-12 col-xs-12"
-            ref="outerContainer"
-          >
-            <div className={`${styles.productionEditorContainer} row`}>
+          <div className={styles.universe} ref="outerContainer">
+            <div className={`${styles.productionEditorContainer}`}>
               <span>{this.renderProductionEditors()}</span>
               <Authorize object={book} operation="can view teamManager">
-                <span onClick={this.toggleTeamManager}>
-                  <div className={styles.teamManagerIcon} />
-                  <div className={styles.teamManagerBtn}>
-                    <a>team manager</a>
-                  </div>
-                </span>
+                <button
+                  className={styles.teamManagerBtn}
+                  onClick={this.toggleTeamManager}
+                >
+                  <i className={styles.teamManagerIcon} />
+                  team manager
+                </button>
               </Authorize>
-              <div className={styles.separator} />
             </div>
-            <h1 className={`${styles.bookTitle} row`}>
-              {this.props.book.title}
-            </h1>
-            <div className={`${styles.btnContainer} row`}>
+            <h1 className={`${styles.bookTitle}`}>{this.props.book.title}</h1>
+            <div className={`${styles.btnContainer}`}>
               <div className={`${styles.lineUploading} `} />
               <div className={styles.btnContainerButtons}>
                 <Authorize

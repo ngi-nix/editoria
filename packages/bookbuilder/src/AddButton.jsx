@@ -16,17 +16,12 @@ export default class AddButton extends React.Component {
 
   render() {
     const { group } = this.props
-    const margin = group === 'un-numbered' ? 20 : 0
 
     return (
-      <div
-        className={styles.sectionBtn}
-        onClick={this._addGroup}
-        style={{ marginRight: margin }}
-      >
-        <div className={styles.addBtnIcon} />
-        <a>{`add ${group}`}</a>
-      </div>
+      <button className={styles.sectionBtn} onClick={this._addGroup}>
+        <i className={styles.addBtnIcon} />
+        {`add ${group}`}
+      </button>
     )
   }
 }

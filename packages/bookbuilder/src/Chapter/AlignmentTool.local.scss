@@ -2,7 +2,9 @@ $main-grey: #666;
 
 .root {
   display: flex;
-  margin-left: auto;
+  margin-left: 5.8%;
+  flex: 0 1 15%;
+  justify-content: center;
 
   .middleLine {
     background-color: $main-grey;
