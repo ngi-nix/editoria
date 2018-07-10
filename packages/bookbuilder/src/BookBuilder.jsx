@@ -229,6 +229,8 @@ export class BookBuilder extends React.Component {
         update={updateFragment}
         uploadStatus={uploading}
         user={user}
+        showModal={this.state.showModal}
+        showModalToggle={this.toggleModal}
       />
     )
   }
@@ -255,7 +257,6 @@ export class BookBuilder extends React.Component {
     } = this.props.actions
     const { outerContainer } = this.state
     // const roles = this.getRoles()
-
     const frontChapters = []
     const bodyChapters = []
     const backChapters = []

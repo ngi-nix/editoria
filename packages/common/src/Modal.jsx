@@ -58,10 +58,28 @@ export class BookBuilderModal extends React.Component {
       //      />
       //     </div>
       //   )
-    } else if (action === 'workflow-warning') {
+    } else if (action === 'workflow-warning-edit') {
       modalBodyText = (
         <div>
-          You won’t be able to edit this chapter after updating this workflow
+          Copy Editors won’t be able to edit this chapter after updating this workflow
+          status.
+          <br />
+          Are you sure you wish to continue?
+        </div>
+      )
+    } else if (action === 'workflow-warning-review') {
+      modalBodyText = (
+        <div>
+          Authors won’t be able to edit this chapter after updating this workflow
+          status.
+          <br />
+          Are you sure you wish to continue?
+        </div>
+      )
+    } else if (action === 'workflow-warning-both') {
+      modalBodyText = (
+        <div>
+          Copy Editors and Authors won’t be able to edit this chapter after updating this workflow
           status.
           <br />
           Are you sure you wish to continue?

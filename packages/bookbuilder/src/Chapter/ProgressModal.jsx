@@ -7,12 +7,12 @@ import Modal from 'editoria-common/src/Modal'
 
 class ProgressModal extends React.Component {
   render() {
-    const { changeProgressState, chapter, container, show, toggle } = this.props
+    const { changeProgressState, chapter, container, show, toggle, modalType } = this.props
     const type = chapter.type
 
     return (
       <Modal
-        action="workflow-warning"
+        action={`workflow-warning-${modalType}`}
         chapter={chapter}
         container={container}
         show={show}
