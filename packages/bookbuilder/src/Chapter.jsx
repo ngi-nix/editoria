@@ -104,6 +104,8 @@ class Chapter extends React.Component {
       chapter,
       connectDragSource,
       connectDropTarget,
+      showModal,
+      showModalToggle,
       ink,
       isDragging,
       outerContainer,
@@ -213,6 +215,8 @@ class Chapter extends React.Component {
               isUploadInProgress={isUploadInProgress || uploading}
               outerContainer={outerContainer}
               toggleUpload={this.toggleUpload}
+              showModal={showModal}
+              showModalToggle={showModalToggle}
               update={this.update}
               user={user}
               viewOrEdit={this._viewOrEdit}
