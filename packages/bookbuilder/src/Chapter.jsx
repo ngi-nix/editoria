@@ -16,7 +16,7 @@ import {
 
 import styles from './styles/bookBuilder.local.scss'
 
-class Chapter extends React.Component {
+class Chapter extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -104,8 +104,6 @@ class Chapter extends React.Component {
       chapter,
       connectDragSource,
       connectDropTarget,
-      showModal,
-      showModalToggle,
       ink,
       isDragging,
       outerContainer,
@@ -215,8 +213,6 @@ class Chapter extends React.Component {
               isUploadInProgress={isUploadInProgress || uploading}
               outerContainer={outerContainer}
               toggleUpload={this.toggleUpload}
-              showModal={showModal}
-              showModalToggle={showModalToggle}
               update={this.update}
               user={user}
               viewOrEdit={this._viewOrEdit}
@@ -290,6 +286,10 @@ Chapter.defaultProps = {
 }
 
 export { Chapter as UnwrappedChapter }
+
+// const comparison = (nextProps, props) => {
+//   return nextProps.chapter.id === props.chapter.id && nextProps.chapter.index === props.chapter.index 
+// }
 
 // combine them, as each chapter can be both a source and a target
 export default flow(

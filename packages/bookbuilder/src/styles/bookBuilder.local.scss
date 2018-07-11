@@ -486,7 +486,7 @@ $upload-multiple: #b1b1b1;
 
     .FirstRow {
       display: flex;
-      margin-bottom: 2%;
+      margin-bottom: 1.5%;
     }
 
     .chapterTitle {
@@ -700,7 +700,7 @@ $upload-multiple: #b1b1b1;
     .secondLineContainer {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-end;
 
       .btnFile {
         // position: relative;
@@ -716,6 +716,8 @@ $upload-multiple: #b1b1b1;
         // flex-direction: row;
         // display: flex;
         // flex-wrap: nowrap;
+        justify-content: center;
+        line-height: 1em;
         align-items: center;
       }
 
