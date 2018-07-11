@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-bookbuilder",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "config": "^1.27.0",
-    "editoria-common": "^0.0.3",
+    "editoria-common": "^0.1.0",
     "font-awesome": "4.7.0",
     "lodash": "4.17.4",
     "pubsweet-client": "^2.5.5",
@@ -43,8 +43,8 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^20.0.4",
     "node-sass": "^4.5.3",
-    "react-addons-test-utils": "^15.6.0",
     "prop-types": "^15.5.10",
+    "react-addons-test-utils": "^15.6.0",
     "react-styleguidist": "^6.0.24",
     "react-test-renderer": "^15.6.1",
     "sass-loader": "^6.0.6",
