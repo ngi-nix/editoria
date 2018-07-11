@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 
 import { configureStore, Root } from 'pubsweet-client'
 
-import theme from '@pubsweet/default-theme'
+import theme from './theme'
 
 import { AppContainer } from 'react-hot-loader'
 import createHistory from 'history/createBrowserHistory'
