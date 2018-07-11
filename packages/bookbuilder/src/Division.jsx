@@ -159,8 +159,6 @@ class Division extends React.Component {
     const {
       book,
       // chapters,
-      showModal,
-      showModalToggle,
       ink,
       outerContainer,
       user,
@@ -189,8 +187,6 @@ class Division extends React.Component {
         onEndDrag={onEndDrag}
         onMove={onMove}
         outerContainer={outerContainer}
-        showModal={showModal}
-        showModalToggle={showModalToggle}
         remove={onRemove}
         title={c.title}
         type={c.subCategory}

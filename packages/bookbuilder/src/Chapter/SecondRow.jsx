@@ -17,6 +17,7 @@ class ChapterSecondRow extends React.Component {
     this.onClickAlignmentBox = this.onClickAlignmentBox.bind(this)
     this.changeProgressState = this.changeProgressState.bind(this)
     this.updateStateList = this.updateStateList.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
     this.progressValues = [-1, 0, 1]
     this.progressOrder = []
     this.state = {
@@ -25,6 +26,7 @@ class ChapterSecondRow extends React.Component {
         value: null,
       },
       modalType:null,
+      showModal:false,
     }
 
     for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
@@ -33,7 +35,7 @@ class ChapterSecondRow extends React.Component {
   }
 
   updateStateList(name, index) {
-    const { chapter, update, showModalToggle } = this.props
+    const { chapter, update } = this.props
 
     if(name === 'review' && (index === -1 || index === 1)) {
       this.setState({
@@ -41,27 +43,36 @@ class ChapterSecondRow extends React.Component {
           type:name,
           value: index,
         },
-        modalType:'review'
+        modalType:'review',
+        showModal:true
       })  
-      showModalToggle()
     } else if (name === 'edit' && (index === -1 || index === 1)) {
+        this.setState({
+          nextProgressValues: {
+            type:name,
+            value: index,
+          },
+          modalType:'edit',
+          showModal:true
+        })
+    } else if (name === 'edit' && index === 0 && chapter.progress.review === 0) {
       this.setState({
         nextProgressValues: {
           type:name,
           value: index,
         },
-        modalType:'edit'
+        modalType:'review',
+        showModal:true
       })
-      showModalToggle()
-    } else if (name === 'file_prep' && index === 0) {
+    } else if (name === 'file_prep' && (index === 0 && (chapter.progress.edit === 0 || chapter.progress.review === 0))) {
       this.setState({
         nextProgressValues: {
           type:name,
           value: index,
         },
-        modalType:'both'
+        modalType:'both',
+        showModal:true
       })
-      showModalToggle()
     } else {
       const patch = {
         id: chapter.id,
@@ -132,9 +143,9 @@ class ChapterSecondRow extends React.Component {
         type:null,
         value: null,
       },
-      modalType:null
+      modalType:null,
+      showModal:false
     })
-    showModalToggle()
   }
 
   onClickAlignmentBox(id) {
@@ -149,9 +160,15 @@ class ChapterSecondRow extends React.Component {
     update(patch)
   }
 
+  toggleModal() {
+    this.setState({
+      showModal: !this.state.showModal,
+    })
+  }
+
   renderModal() {
-    const { chapter, outerContainer, showModal, showModalToggle } = this.props
-    const {modalType} = this.state
+    const { chapter, outerContainer, } = this.props
+    const {modalType, showModal} = this.state
 
     // const typesWithModal = ['edit', 'review']
     // if (!includes(typesWithModal, type)) return null
@@ -163,7 +180,7 @@ class ChapterSecondRow extends React.Component {
         container={outerContainer}
         show={showModal}
         modalType={modalType}
-        toggle={showModalToggle}
+        toggle={this.toggleModal}
       />
     )
   }

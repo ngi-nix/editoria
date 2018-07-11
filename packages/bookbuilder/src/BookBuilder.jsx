@@ -229,8 +229,6 @@ export class BookBuilder extends React.Component {
         update={updateFragment}
         uploadStatus={uploading}
         user={user}
-        showModal={this.state.showModal}
-        showModalToggle={this.toggleModal}
       />
     )
   }
