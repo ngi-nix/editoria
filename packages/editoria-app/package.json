@@ -52,6 +52,7 @@
     "pubsweet-editoria-authsome": "^1.0.0",
     "pubsweet-server": "^7.1.0",
     "pubsweet-theme-plugin": "^0.0.3",
+    "typeface-fira-sans": "^0.0.43",
     "react": "^16.2.0",
     "react-bootstrap": "0.32.1",
     "react-dnd": "2.5.4",
