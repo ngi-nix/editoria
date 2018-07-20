@@ -15,7 +15,7 @@ module.exports = {
     email: 'INK_USERNAME',
     password: 'INK_PASSWORD',
     recipes: {
-      'editoria-typescript': '1',
+      'editoria-typescript': 'INK_EDITORIA_TYPESCRIPT',
     },
   },
   'password-reset': {
