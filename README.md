@@ -283,6 +283,9 @@ At this moment no, but it is on the Editoria roadmap. Options will include same 
 ### What’s the cost to use Editoria?
 Using the code to create an instance of Editoria truly is free. Our hope is that organizations that find it useful, will contribute the customizations and additional development code back so that others can use it. We also hope that adopters will help organize and attend community gatherings and participate in discussion and problem solving with the community.
 
+### Does Editoria generate and export EPUB3?
+Yes, currently however it is not available via the user interface. This is on our development roadmap.
+
 ### Can Editoria export BITS XML (or other) for chapter files and books?
 It can. The first conversion is from .docx to HTML, and from there, it’s up to presses to decide what to do with the highly structured, source HTML.
 
