@@ -264,3 +264,27 @@ Please contact the team on https://mattermost.coko.foundation/coko/channels/edit
 ### How can I access the epub file?
 
 EPUB files are created and stored in the `uploads` directory (`editoria/packages/editoria-app/uploads`) every time the book is exported with the "EXPORT BOOK" button on the top right of the book. Be sure to sort by created date to ensure you're getting the most recent file.
+
+### Does the HTML out of Editoria support accessibility including the use of Alt tags?
+We are working with Benetech to fully understand and plan for accessibility. This development is on our development roadmap.
+
+### Does Editoria support multiple languages?
+Yes. Editoria supports any language supported by the user’s browser. Editoria also supports special characters. This said, language support is an area that needs thorough testing for the many edge cases and rare cases that exist. This is an ideal opportunity for a community member to show leadership and help organize and optimize.
+
+### Does Editoria include an asset manager for images and multimedia files that may need to be inserted into text?
+This is on our development roadmap.
+
+### Can Editoria integrate with other tools and services?
+Yes. Editoria’s architecture is all API-orientated and can be easily extended for third party service integration. For more information, visit https://editoria.pub
+  
+### Can notes be moved to backmatter (rather than footnotes)?
+At this moment no, but it is on the Editoria roadmap. Options will include same page, back of book, or margin notes.
+
+### What’s the cost to use Editoria?
+Using the code to create an instance of Editoria truly is free. Our hope is that organizations that find it useful, will contribute the customizations and additional development code back so that others can use it. We also hope that adopters will help organize and attend community gatherings and participate in discussion and problem solving with the community.
+
+### Can Editoria export BITS XML (or other) for chapter files and books?
+It can. The first conversion is from .docx to HTML, and from there, it’s up to presses to decide what to do with the highly structured, source HTML.
+
+### Can I use Editoria for journals workflow?
+It’s possible, but would not be ideal. Coko has developed an open-source tool that is optimized for journals workflow, called xPub. xPub, like Editoria, is modular, so that organizations can develop their own non-hardcoded workflows, mixing and matching modules that other organizations have developed and shared, or create and integrate their own. More at https://coko.foundation/use-cases/
