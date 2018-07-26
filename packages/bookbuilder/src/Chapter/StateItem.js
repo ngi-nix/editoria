@@ -3,6 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 import classes from './StateItem.local.scss'
 import StateIndicator from './StateIndicator'
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
 // import StateIndicatorWithLabel from './StateIndicatorWithLabel'
 
 const stateItem = ({
@@ -13,6 +14,9 @@ const stateItem = ({
   item,
   update,
   values,
+  bookId,
+  type,
+  currentValues,
 }) => {
   const handleInteractionLeft = () => {
     if (disabled) return
@@ -37,6 +41,35 @@ const stateItem = ({
         break
     }
     return newValue
+  }
+
+  const renderIndicator = (disabled, side) => {
+    if (side === 'left') {
+      return (
+        <button
+          className={classes[side]}
+          disabled={
+            !disabled ||
+            !interactive ||
+            (values[index] === 0 || values[index] === -1)
+          }
+          onClick={interactive ? handleInteractionLeft : null}
+          onKeyPress={interactive ? handleInteractionLeft : null}
+        />
+      )
+    }
+    return (
+      <button
+        className={classes[side]}
+        disabled={
+          !disabled ||
+          !interactive ||
+          (values[index] === 1 || values[index] === -1)
+        }
+        onClick={interactive ? handleInteractionRight : null}
+        onKeyPress={interactive ? handleInteractionRight : null}
+      />
+    )
   }
 
   return (
@@ -65,19 +98,21 @@ const stateItem = ({
       // tabIndex="0"
     >
       <div className={classes.content}>
-        <button
-          className={classes.left}
-          disabled={disabled || !interactive || values[index] === -1}
-          onClick={interactive ? handleInteractionLeft : null}
-          onKeyPress={interactive ? handleInteractionLeft : null}
-        />
+        <Authorize
+          object={{ bookId, type, currentValues }}
+          operation="can change progressList left"
+          unauthorized={renderIndicator(false, 'left')}
+        >
+          {renderIndicator(true, 'left')}
+        </Authorize>
         <span>{item.title}</span>
-        <button
-          className={classes.right}
-          disabled={disabled || !interactive || values[index] === 1}
-          onClick={interactive ? handleInteractionRight : null}
-          onKeyPress={interactive ? handleInteractionRight : null}
-        />
+        <Authorize
+          object={{ bookId, type, currentValues }}
+          operation="can change progressList right"
+          unauthorized={renderIndicator(false, 'right')}
+        >
+          {renderIndicator(true, 'right')}
+        </Authorize>
       </div>
       <StateIndicator state={values[index]} withEnd={isLast} />
     </div>

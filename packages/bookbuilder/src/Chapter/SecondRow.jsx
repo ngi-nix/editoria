@@ -1,4 +1,4 @@
-import { keys, map, indexOf, includes } from 'lodash'
+import { keys, map, indexOf } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
@@ -22,11 +22,11 @@ class ChapterSecondRow extends React.Component {
     this.progressOrder = []
     this.state = {
       nextProgressValues: {
-        type:null,
+        type: null,
         value: null,
       },
-      modalType:null,
-      showModal:false,
+      modalType: null,
+      showModal: false,
     }
 
     for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
@@ -37,42 +37,162 @@ class ChapterSecondRow extends React.Component {
   updateStateList(name, index) {
     const { chapter, update } = this.props
 
-    if(name === 'review' && (index === -1 || index === 1)) {
-      this.setState({
-        nextProgressValues: {
-          type:name,
-          value: index,
-        },
-        modalType:'review',
-        showModal:true
-      })  
-    } else if (name === 'edit' && (index === -1 || index === 1)) {
+    if (name === 'file_prep' && (index === -1 || index === 0)) {
+      if (chapter.progress.edit === 0 || chapter.progress.clean_up === 0) {
         this.setState({
           nextProgressValues: {
-            type:name,
+            type: name,
             value: index,
           },
-          modalType:'edit',
-          showModal:true
+          modalType: 'cp-no',
+          showModal: true,
         })
-    } else if (name === 'edit' && index === 0 && chapter.progress.review === 0) {
+      } else if (chapter.progress.review === 0) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'author-no',
+          showModal: true,
+        })
+      } else {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no-author-no',
+          showModal: true,
+        })
+      }
+    } else if (name === 'file_prep' && index === 1) {
       this.setState({
         nextProgressValues: {
-          type:name,
+          type: name,
           value: index,
         },
-        modalType:'review',
-        showModal:true
+        modalType: 'cp-yes',
+        showModal: true,
       })
-    } else if (name === 'file_prep' && (index === 0 && (chapter.progress.edit === 0 || chapter.progress.review === 0))) {
-      this.setState({
-        nextProgressValues: {
-          type:name,
-          value: index,
-        },
-        modalType:'both',
-        showModal:true
-      })
+    } else if (name === 'edit') {
+      if (index === 1) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no-author-yes',
+          showModal: true,
+        })
+      } else if (index === 0) {
+        if (chapter.progress.review === 0) {
+          this.setState({
+            nextProgressValues: {
+              type: name,
+              value: index,
+            },
+            modalType: 'cp-yes-author-no',
+            showModal: true,
+          })
+        } else {
+          this.setState({
+            nextProgressValues: {
+              type: name,
+              value: index,
+            },
+            modalType: 'cp-yes',
+            showModal: true,
+          })
+        }
+      } else if (chapter.progress.review === 0) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no-author-no',
+          showModal: true,
+        })
+      } else {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no',
+          showModal: true,
+        })
+      }
+    } else if (name === 'review') {
+      if (index === 0) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no-author-yes',
+          showModal: true,
+        })
+      } else if (index === 1) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-yes-author-no',
+          showModal: true,
+        })
+      } else {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-yes-author-no',
+          showModal: true,
+        })
+      }
+    } else if (name === 'clean_up') {
+      if (index === 0) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-yes',
+          showModal: true,
+        })
+      } else if (index === 1) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no',
+          showModal: true,
+        })
+      } else {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-no-author-yes',
+          showModal: true,
+        })
+      }
+    } else if (name === 'page_check') {
+      if (index === -1) {
+        this.setState({
+          nextProgressValues: {
+            type: name,
+            value: index,
+          },
+          modalType: 'cp-yes',
+          showModal: true,
+        })
+      }
     } else {
       const patch = {
         id: chapter.id,
@@ -88,8 +208,13 @@ class ChapterSecondRow extends React.Component {
       if (index === -1) {
         patch.progress[name] = index
         const next = indexOf(this.progressOrder, name) + 1
-        const type = this.progressOrder[next]
-        patch.progress[type] = -1
+        const typeNext = this.progressOrder[next]
+        if (name !== 'file_prep') {
+          const previous = indexOf(this.progressOrder, name) - 1
+          const typePrevious = this.progressOrder[previous]
+          patch.progress[typePrevious] = 0
+        }
+        patch.progress[typeNext] = -1
       }
 
       if (index === 0) {
@@ -106,7 +231,7 @@ class ChapterSecondRow extends React.Component {
   }
 
   changeProgressState() {
-    const { chapter, update, showModalToggle } = this.props
+    const { chapter, update } = this.props
     const name = this.state.nextProgressValues.type
     const index = this.state.nextProgressValues.value
 
@@ -124,8 +249,13 @@ class ChapterSecondRow extends React.Component {
     if (index === -1) {
       patch.progress[name] = index
       const next = indexOf(this.progressOrder, name) + 1
-      const type = this.progressOrder[next]
-      patch.progress[type] = -1
+      const typeNext = this.progressOrder[next]
+      if (name !== 'file_prep') {
+        const previous = indexOf(this.progressOrder, name) - 1
+        const typePrevious = this.progressOrder[previous]
+        patch.progress[typePrevious] = 0
+      }
+      patch.progress[typeNext] = -1
     }
 
     if (index === 0) {
@@ -140,11 +270,11 @@ class ChapterSecondRow extends React.Component {
     update(patch)
     this.setState({
       nextProgressValues: {
-        type:null,
+        type: null,
         value: null,
       },
-      modalType:null,
-      showModal:false
+      modalType: null,
+      showModal: false,
     })
   }
 
@@ -167,8 +297,8 @@ class ChapterSecondRow extends React.Component {
   }
 
   renderModal() {
-    const { chapter, outerContainer, } = this.props
-    const {modalType, showModal} = this.state
+    const { chapter, outerContainer } = this.props
+    const { modalType, showModal } = this.state
 
     // const typesWithModal = ['edit', 'review']
     // if (!includes(typesWithModal, type)) return null
@@ -178,8 +308,8 @@ class ChapterSecondRow extends React.Component {
         changeProgressState={this.changeProgressState}
         chapter={chapter}
         container={outerContainer}
-        show={showModal}
         modalType={modalType}
+        show={showModal}
         toggle={this.toggleModal}
       />
     )
