@@ -182,17 +182,17 @@ class ChapterSecondRow extends React.Component {
           showModal: true,
         })
       }
-    } else if (name === 'page_check') {
-      if (index === -1) {
-        this.setState({
-          nextProgressValues: {
-            type: name,
-            value: index,
-          },
-          modalType: 'cp-yes',
-          showModal: true,
-        })
-      }
+    } else if (name === 'page_check' && index === -1) {
+      // if (index === -1) {
+      this.setState({
+        nextProgressValues: {
+          type: name,
+          value: index,
+        },
+        modalType: 'cp-yes',
+        showModal: true,
+      })
+      // }
     } else {
       const patch = {
         id: chapter.id,
@@ -225,7 +225,6 @@ class ChapterSecondRow extends React.Component {
           patch.progress[type] = -1
         }
       }
-
       update(patch)
     }
   }
