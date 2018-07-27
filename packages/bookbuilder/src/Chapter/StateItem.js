@@ -1,9 +1,9 @@
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import PropTypes from 'prop-types'
 import React from 'react'
 import classNames from 'classnames'
 import classes from './StateItem.local.scss'
 import StateIndicator from './StateIndicator'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 // import StateIndicatorWithLabel from './StateIndicatorWithLabel'
 
 const stateItem = ({

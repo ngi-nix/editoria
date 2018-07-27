@@ -274,6 +274,7 @@ class EditoriaMode {
     const { current, update } = this.object
     const wasEditingSate = current.progress.edit === 0
     const wasReviewingSate = current.progress.review === 0
+    const wasCleaningUpSate = current.progress.clean_up === 0
     const diff = EditoriaMode.difference(update, current)
     const collection = await this.findCollectionByObject(current)
 
@@ -291,7 +292,7 @@ class EditoriaMode {
         if (Object.keys(diff).length === 1) {
           if (
             (diff.lock !== undefined || update.lock !== undefined) &&
-            wasEditingSate &&
+            (wasEditingSate || wasCleaningUpSate) &&
             (current.lock === null ||
               current.lock.editor.userId === this.user.id)
           ) {
@@ -313,15 +314,22 @@ class EditoriaMode {
             return true
           }
           if (
-            (diff.progress && diff.progress.clean_up === 1) ||
-            diff.progress.clean_up === 0 ||
-            diff.progress.clean_up === -1
+            diff.progress &&
+            (diff.progress.clean_up === 1 ||
+              diff.progress.clean_up === 0 ||
+              diff.progress.clean_up === -1)
           ) {
             return true
           }
           if (
-            (diff.progress && diff.progress.page_check === 0) ||
-            diff.progress.page_check === -1
+            diff.progress &&
+            (diff.progress.page_check === 0 || diff.progress.page_check === -1)
+          ) {
+            return true
+          }
+          if (
+            (diff.trackChanges === true || diff.trackChanges === false) &&
+            (wasEditingSate || wasReviewingSate || wasCleaningUpSate)
           ) {
             return true
           }
@@ -337,6 +345,12 @@ class EditoriaMode {
             return true
           }
           if (diff.source && diff.title !== undefined) {
+            return true
+          }
+          if (
+            (diff.trackChanges === true || diff.trackChanges === false) &&
+            (wasEditingSate || wasReviewingSate || wasCleaningUpSate)
+          ) {
             return true
           }
         }
@@ -588,6 +602,7 @@ class EditoriaMode {
     const fragment = this.object
     const isReviewingSate = fragment.progress.review === 0
     const isEditingSate = fragment.progress.edit === 0
+    const isCleanUpSate = fragment.progress.clean_up === 0
     const collection = await this.findCollectionByObject(this.object)
 
     if (collection) {
@@ -595,7 +610,7 @@ class EditoriaMode {
         return 'full'
       } else if (
         (await this.isAssignedCopyEditor(collection)) &&
-        isEditingSate
+        (isEditingSate || isCleanUpSate)
       ) {
         return 'full'
       } else if ((await this.isAuthor(collection)) && isReviewingSate) {

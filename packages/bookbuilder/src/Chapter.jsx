@@ -29,7 +29,12 @@ class Chapter extends React.PureComponent {
   }
 
   update(patch) {
-    const { book, update } = this.props
+    const { book, update, chapter } = this.props
+    // SHOULD BE REMOVED. This automaticaly sets track changes on for the case
+    // or review in progress
+    if (patch.progress.review === 0 && chapter.trackChanges === false) {
+      patch.trackChanges = true
+    }
     update(book, patch)
   }
 
