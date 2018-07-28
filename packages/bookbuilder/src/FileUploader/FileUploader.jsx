@@ -252,7 +252,7 @@ class FileUploader extends React.Component {
     if (currentlyUploading > 0) {
       labelText = `converting ${currentlyUploading} files`
     } else {
-      labelText = 'upload multiple word files'
+      labelText = 'upload word files'
     }
 
     return (
