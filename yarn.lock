@@ -106,9 +106,11 @@
     react-redux "^5.0.6"
     redux "^3.7.2"
 
-"@pubsweet/component-polling-server@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@pubsweet/component-polling-server/-/component-polling-server-0.0.6.tgz#a04696eed90c2797ab1d3c4631ad68989aeb5186"
+"@pubsweet/component-polling-server@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@pubsweet/component-polling-server/-/component-polling-server-0.0.7.tgz#f0fee03407ab7a51aa3854279f95e1024d60d1e1"
+  dependencies:
+    config "^1.26.2"
 
 "@pubsweet/db-manager@^1.0.7", "@pubsweet/db-manager@^1.2.1":
   version "1.2.1"
@@ -6084,9 +6086,9 @@ html-entities@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-1.2.1.tgz#0df29351f0721163515dfb9e5543e5f6eed5162f"
 
-html-epub@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/html-epub/-/html-epub-0.5.2.tgz#07200d73248c6efddfc33ea8a9e3072eae77151e"
+html-epub@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/html-epub/-/html-epub-0.7.0.tgz#962594124055ed6108f8053781d3116e50fc390a"
   dependencies:
     archiver "^2.1.0"
     bluebird "^3.5.1"
@@ -10784,14 +10786,14 @@ pubsweet-component-epub-frontend@^0.1.3:
   dependencies:
     isomorphic-fetch "^2.1.1"
 
-pubsweet-component-epub@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/pubsweet-component-epub/-/pubsweet-component-epub-0.3.0.tgz#f9d801ee925a7936b11a30e172685b959e9bdf2a"
+pubsweet-component-epub@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/pubsweet-component-epub/-/pubsweet-component-epub-0.3.1.tgz#db5f02498595ba1d49959e6d994753475d26b9c5"
   dependencies:
     "@pubsweet/logger" "^0.2.4"
     cheerio "^1.0.0-rc.2"
     highlightjs "^9.10.0"
-    html-epub "^0.5.2"
+    html-epub "^0.7.0"
     mkdirp "^0.5.1"
     unzipper "^0.8.9"
 
@@ -10951,7 +10953,7 @@ pubsweet-theme-plugin@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/pubsweet-theme-plugin/-/pubsweet-theme-plugin-0.0.3.tgz#1773543a95ed9f56eb8b14f13f24496e034d140b"
 
-pubsweet@^2.2.4:
+pubsweet@^2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/pubsweet/-/pubsweet-2.2.8.tgz#c0bd09d837a78fec673c011a42cc3578d31fc474"
   dependencies:
