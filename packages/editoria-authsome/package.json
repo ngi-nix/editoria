@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-editoria-authsome",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Authsome mode for Editoria",
   "main": "src/index.js",
   "scripts": {
