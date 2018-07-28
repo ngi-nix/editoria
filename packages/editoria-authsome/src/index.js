@@ -274,6 +274,7 @@ class EditoriaMode {
     const { current, update } = this.object
     const wasEditingSate = current.progress.edit === 0
     const wasReviewingSate = current.progress.review === 0
+    const wasCleaningUpSate = current.progress.clean_up === 0
     const diff = EditoriaMode.difference(update, current)
     const collection = await this.findCollectionByObject(current)
 
@@ -291,7 +292,7 @@ class EditoriaMode {
         if (Object.keys(diff).length === 1) {
           if (
             (diff.lock !== undefined || update.lock !== undefined) &&
-            wasEditingSate &&
+            (wasEditingSate || wasCleaningUpSate) &&
             (current.lock === null ||
               current.lock.editor.userId === this.user.id)
           ) {
@@ -306,13 +307,29 @@ class EditoriaMode {
           }
           if (
             diff.progress &&
-            (diff.progress.review === 1 || diff.progress.review === 0 || diff.progress.review === -1)
+            (diff.progress.review === 1 ||
+              diff.progress.review === 0 ||
+              diff.progress.review === -1)
           ) {
             return true
           }
           if (
             diff.progress &&
-            diff.progress.clean_up === 1
+            (diff.progress.clean_up === 1 ||
+              diff.progress.clean_up === 0 ||
+              diff.progress.clean_up === -1)
+          ) {
+            return true
+          }
+          if (
+            diff.progress &&
+            (diff.progress.page_check === 0 || diff.progress.page_check === -1)
+          ) {
+            return true
+          }
+          if (
+            (diff.trackChanges === true || diff.trackChanges === false) &&
+            (wasEditingSate || wasReviewingSate || wasCleaningUpSate)
           ) {
             return true
           }
@@ -330,6 +347,12 @@ class EditoriaMode {
           if (diff.source && diff.title !== undefined) {
             return true
           }
+          if (
+            (diff.trackChanges === true || diff.trackChanges === false) &&
+            (wasEditingSate || wasReviewingSate || wasCleaningUpSate)
+          ) {
+            return true
+          }
         }
         return false
       } else if (await this.isAuthor(collection)) {
@@ -344,7 +367,7 @@ class EditoriaMode {
           }
           if (
             diff.progress &&
-            (diff.progress.review === 1 || diff.progress.review === -1)&&
+            (diff.progress.review === 1 || diff.progress.review === -1) &&
             wasReviewingSate
           ) {
             return true
@@ -378,6 +401,7 @@ class EditoriaMode {
     const fragment = this.object
     const isEditingSate = fragment.progress.edit === 0
     const isReviewingSate = fragment.progress.review === 0
+    const isCleaningUpSate = fragment.progress.clean_up === 0
     const collection = await this.findCollectionByObject(this.object)
 
     if (collection) {
@@ -385,7 +409,7 @@ class EditoriaMode {
         return true
       } else if (
         (await this.isAssignedCopyEditor(collection)) &&
-        isEditingSate
+        (isEditingSate || isCleaningUpSate)
       ) {
         return true
       } else if ((await this.isAuthor(collection)) && isReviewingSate) {
@@ -398,45 +422,47 @@ class EditoriaMode {
   async canChangeProgress() {
     this.user = await this.context.models.User.find(this.userId)
     const progressType = this.object.type
-    const currentValues = this.object.currentValues
 
     const collection = await this.findCollectionByObject(this.object)
     if (collection) {
       if (await this.isAssignedProductionEditor(collection)) {
+        return true
+      } else if (await this.isAssignedCopyEditor(collection)) {
         let condition = false
         switch (progressType) {
           case 'file_prep': {
-            if (currentValues.upload === 1 && currentValues.file_prep === 0) {
-              condition = true
-            }
-            break
-          }
-          case 'edit': {
-            if (
-              currentValues.file_prep === 1 &&
-              (currentValues.edit === -1 || currentValues.edit === 1)
-            ) {
-              condition = true
-            }
-            break
-          }
-          case 'review': {
-            if (currentValues.file_prep === 1 && currentValues.edit === 1) {
-              condition = true
-            }
-            break
-          }
-          case 'clean_up': {
-            if (currentValues.clean_up === -1 || currentValues.clean_up === 1) {
-              condition = true
-            }
-            break
-          }
-          case 'page_check': {
             condition = true
             break
           }
+          case 'edit': {
+            condition = true
+            break
+          }
+          case 'review': {
+            condition = true
+            break
+          }
+          case 'clean_up': {
+            condition = true
+            break
+          }
+          case 'page_check': {
+            condition = false
+            break
+          }
           case 'final': {
+            condition = false
+            break
+          }
+          default: {
+            return condition
+          }
+        }
+        return condition
+      } else if (await this.isAuthor(collection)) {
+        let condition = false
+        switch (progressType) {
+          case 'review': {
             condition = true
             break
           }
@@ -445,38 +471,97 @@ class EditoriaMode {
           }
         }
         return condition
+      }
+    }
+    return false
+  }
+
+  async canChangeProgressLeft() {
+    this.user = await this.context.models.User.find(this.userId)
+    const progressType = this.object.type
+    const { currentValues } = this.object
+
+    const collection = await this.findCollectionByObject(this.object)
+    if (collection) {
+      if (await this.isAssignedProductionEditor(collection)) {
+        return true
       } else if (await this.isAssignedCopyEditor(collection)) {
         let condition = false
         switch (progressType) {
           case 'file_prep': {
-            if (currentValues.upload === 1 && currentValues.file_prep === 1) {
-              condition = true
+            if (currentValues.file_prep === 1) {
+              return true
             }
             break
           }
           case 'edit': {
-            if (currentValues.file_prep === 1 && currentValues.edit === 0) {
+            if (currentValues.edit === 1) {
               condition = true
             }
             break
           }
           case 'review': {
-            if (
-              currentValues.file_prep === 1 &&
-              currentValues.edit === 1 &&
-              (currentValues.review === 0 || currentValues.review === 1)
-            ) {
+            if (currentValues.review === 1) {
               condition = true
             }
             break
           }
           case 'clean_up': {
-            if (
-              currentValues.file_prep === 1 &&
-              currentValues.edit === 1 &&
-              currentValues.review === 1 &&
-              currentValues.clean_up === 0
-            ) {
+            if (currentValues.clean_up === 1) {
+              condition = true
+            }
+            break
+          }
+          case 'page_check': {
+            condition = false
+            break
+          }
+          case 'final': {
+            condition = false
+            break
+          }
+          default: {
+            return condition
+          }
+        }
+        return condition
+      } else if (await this.isAuthor(collection)) {
+        const condition = false
+        return condition
+      }
+    }
+    return false
+  }
+  async canChangeProgressRight() {
+    this.user = await this.context.models.User.find(this.userId)
+    const progressType = this.object.type
+    const { currentValues } = this.object
+
+    const collection = await this.findCollectionByObject(this.object)
+    if (collection) {
+      if (await this.isAssignedProductionEditor(collection)) {
+        return true
+      } else if (await this.isAssignedCopyEditor(collection)) {
+        let condition = false
+        switch (progressType) {
+          case 'file_prep': {
+            condition = false
+            break
+          }
+          case 'edit': {
+            if (currentValues.edit === 0) {
+              condition = true
+            }
+            break
+          }
+          case 'review': {
+            if (currentValues.review === -1 || currentValues.review === 0) {
+              condition = true
+            }
+            break
+          }
+          case 'clean_up': {
+            if (currentValues.clean_up === -1 || currentValues.clean_up === 0) {
               condition = true
             }
             break
@@ -497,34 +582,10 @@ class EditoriaMode {
       } else if (await this.isAuthor(collection)) {
         let condition = false
         switch (progressType) {
-          case 'file_prep': {
-            condition = false
-            break
-          }
-          case 'edit': {
-            condition = false
-            break
-          }
           case 'review': {
-            if (
-              currentValues.file_prep === 1 &&
-              currentValues.edit === 1 &&
-              currentValues.review === 0
-            ) {
+            if (currentValues.review === 0) {
               condition = true
             }
-            break
-          }
-          case 'clean_up': {
-            condition = false
-            break
-          }
-          case 'page_check': {
-            condition = false
-            break
-          }
-          case 'final': {
-            condition = false
             break
           }
           default: {
@@ -536,12 +597,12 @@ class EditoriaMode {
     }
     return false
   }
-
   async canInteractWithEditor() {
     this.user = await this.context.models.User.find(this.userId)
     const fragment = this.object
     const isReviewingSate = fragment.progress.review === 0
     const isEditingSate = fragment.progress.edit === 0
+    const isCleanUpSate = fragment.progress.clean_up === 0
     const collection = await this.findCollectionByObject(this.object)
 
     if (collection) {
@@ -549,7 +610,7 @@ class EditoriaMode {
         return 'full'
       } else if (
         (await this.isAssignedCopyEditor(collection)) &&
-        isEditingSate
+        (isEditingSate || isCleanUpSate)
       ) {
         return 'full'
       } else if ((await this.isAuthor(collection)) && isReviewingSate) {
@@ -758,6 +819,14 @@ module.exports = {
   'can change progressList': (userId, operation, object, context) => {
     const mode = new EditoriaMode(userId, operation, object, context)
     return mode.canChangeProgress()
+  },
+  'can change progressList left': (userId, operation, object, context) => {
+    const mode = new EditoriaMode(userId, operation, object, context)
+    return mode.canChangeProgressLeft()
+  },
+  'can change progressList right': (userId, operation, object, context) => {
+    const mode = new EditoriaMode(userId, operation, object, context)
+    return mode.canChangeProgressRight()
   },
   'can use for editing': (userId, operation, object, context) => {
     const mode = new EditoriaMode(userId, operation, object, context)

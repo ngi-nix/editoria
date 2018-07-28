@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import config from 'config'
-import classnames from 'classnames'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
-import { map, uniqueId, keys, last, indexOf } from 'lodash'
+import { map, uniqueId, last, indexOf } from 'lodash'
 
 import classes from './StateList.local.scss'
 import StateItem from './StateItem'
@@ -38,13 +37,19 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
     currentValueIndex,
     stageItem,
     handleUpdate,
+    bookId,
+    type,
+    currentValues,
   ) => (
     <StateItem
+      bookId={bookId}
+      currentValues={currentValues}
       disabled={disabled}
       index={currentValueIndex}
       interactive={stageItem.type !== 'upload'}
       isLast={stageItem.type === lastItem}
       item={stageItem}
+      type={type}
       update={handleUpdate}
       values={values}
     />
@@ -71,6 +76,9 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
             currentValueIndex,
             stageItem,
             handleUpdate,
+            bookId,
+            type,
+            currentValues,
           )}
         >
           {renderStateItem(
@@ -78,16 +86,15 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
             currentValueIndex,
             stageItem,
             handleUpdate,
+            bookId,
+            type,
+            currentValues,
           )}
         </Authorize>
       </div>
     )
   })
-  return (
-    <div className={classnames(classes.stateListContainer, classes[className])}>
-      {items}
-    </div>
-  )
+  return <div className={classes.stateListContainer}>{items}</div>
 }
 
 stateList.propTypes = {
