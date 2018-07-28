@@ -14,21 +14,21 @@ The current features on our list are the following:
 |Module             |Description                                    |In progress    |Done     |Issue|
 |:----              |---                                            |:---:          |:---:    |:---:|
 |**Current**|
-|System| Edit Lock ||&#x2714;| #117|
-|System             |Use docker containers for deployments          |               |&#x2714;         |#89|
-|System             |Logger          |               |&#x2714;        |#106|
-|System             |Env variables          |               |&#x2714;         |#104|
-|System             |Fix polling problem                       |&#x2714;               |         |#132|
-|Book builder       |Redesign component state tool                  |&#x2714;              |         |#55|
-|Book builder       |Drag and Drop perfomance issue                  |&#x2714;               | |#131|
-|Book builder       |Export EPUB                  |               |&#x2714;         |#79|
-|Book builder       |Filenames for single uploads                  |               |         |#112|
-|Editor| Copy Paste within the editor fix |&#x2714;|||
-|Editor| Code Block ||&#x2714;| wax/wax#174|
-|Editor| Add ornament style ||&#x2714;| wax/wax#178|
-|Export|Fix links ||&#x2714;| #100|
-|Export|Fix image captions ||&#x2714;| #113|
-|Export|Notes at the end of the book ||| #78|
+|System             | Edit Lock                                     |               |&#x2714; | #117|
+|System             |Use docker containers for deployments          |               |&#x2714; |#89|
+|System             |Logger                                         |               |&#x2714; |#106|
+|System             |Env variables                                  |               |&#x2714; |#104|
+|System             |Fix polling problem                            |               |&#x2714; |#132|
+|Book builder       |Redesign component state tool                  |               |&#x2714; |#55|
+|Book builder       |Drag and Drop perfomance issue                 |               |&#x2714; |#131|
+|Book builder       |Export EPUB                                    |               |&#x2714; |#79|
+|Book builder       |Filenames for single uploads                   |               |         |#112|
+|Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
+|Editor             |Code Block                                     |               |&#x2714; | wax/wax#174|
+|Editor             |Add ornament style                             |               |&#x2714; | wax/wax#178|
+|Export             |Fix links                                      |               |&#x2714; | #100|
+|Export             |Fix image captions                             |               |&#x2714; | #113|
+|Export             |Notes at the end of the book                   |               |         | #78|
 |**Previous**|
 |System             |Switch to Postgres                             |               |&#x2714; |#80|
 |System             |Implement roles & authorization                |               |&#x2714; |#57|
@@ -81,6 +81,8 @@ For further information on how to use nvm see https://www.sitepoint.com/quick-ti
 ```sh
 npm install -g yarn
 ```
+
+You should also have `yarn 1.3.2` or higher installed (out-of-date versions may cause installation errors).
 
 ### Install Docker and docker-compose
 Instalation instructions can be found:
