@@ -50,6 +50,7 @@ module.exports = {
     'bookBuilder',
     'pubsweet',
     'pubsweet-client',
+    'pubsweet-server',
     'validations',
   ],
   pubsweet: {

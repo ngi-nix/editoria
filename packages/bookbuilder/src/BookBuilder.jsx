@@ -10,6 +10,7 @@ import Actions from 'pubsweet-client/src/actions'
 
 import Division from './Division'
 import FileUploader from './FileUploader/FileUploader'
+import DownloadEpub from './DownloadEpub/DownloadEpub'
 import VivliostyleExporter from './ExportToVivliostyle/VivliostyleExporter'
 import TeamManagerModal from './TeamManager/TeamManagerModal'
 
@@ -318,6 +319,12 @@ export class BookBuilder extends React.Component {
                   showModal={this.state.showModal}
                   showModalToggle={this.toggleModal}
                 />
+                <DownloadEpub
+                  book={book}
+                  outerContainer={outerContainer}
+                  showModal={this.state.showModal}
+                  showModalToggle={this.toggleModal}
+                />
               </div>
             </div>
             <Authorize
@@ -485,4 +492,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookBuilder)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BookBuilder)
