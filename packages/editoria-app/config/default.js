@@ -69,5 +69,8 @@ module.exports = {
     port: 3000,
     uploads: 'uploads',
   },
+  '@pubsweet/component-polling-server': {
+    timer: 2000,
+  },
   validations: path.join(__dirname, 'modules', 'validations'),
 }
