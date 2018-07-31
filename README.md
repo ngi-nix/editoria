@@ -14,6 +14,11 @@ The current features on our list are the following:
 |Module             |Description                                    |In progress    |Done     |Issue|
 |:----              |---                                            |:---:          |:---:    |:---:|
 |**Current**|
+|Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
+|System             |E2E Tests                                      |&#x2714;       |         |#95, #96|
+|BookBuilder        |Create RFC for the chapters' reordering        |               |         |       |
+|Export             |Notes at the end of the book                   |               |         | #78|
+|**Previous**|
 |System             | Edit Lock                                     |               |&#x2714; | #117|
 |System             |Use docker containers for deployments          |               |&#x2714; |#89|
 |System             |Logger                                         |               |&#x2714; |#106|
@@ -22,41 +27,11 @@ The current features on our list are the following:
 |Book builder       |Redesign component state tool                  |               |&#x2714; |#55|
 |Book builder       |Drag and Drop perfomance issue                 |               |&#x2714; |#131|
 |Book builder       |Export EPUB                                    |               |&#x2714; |#79|
-|Book builder       |Filenames for single uploads                   |               |         |#112|
-|Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
+|Book builder       |Filenames for single uploads                   |               |&#x2714;         |#112|
 |Editor             |Code Block                                     |               |&#x2714; | wax/wax#174|
 |Editor             |Add ornament style                             |               |&#x2714; | wax/wax#178|
 |Export             |Fix links                                      |               |&#x2714; | #100|
 |Export             |Fix image captions                             |               |&#x2714; | #113|
-|Export             |Notes at the end of the book                   |               |         | #78|
-|**Previous**|
-|System             |Switch to Postgres                             |               |&#x2714; |#80|
-|System             |Implement roles & authorization                |               |&#x2714; |#57|
-|System             |Integrate with Manifold                        |               |         |#2|
-|Book builder       |Introduce unnumbered chapters                  |               |&#x2714; |#50|
-|Editor             |Improve editor performance                     |               |&#x2714; |wax/wax#120|
-|Editor             |Image captions                                 |               |&#x2714; |wax/wax#127|
-|Editor             |Keyboard shortcuts to add diacritics           |               |&#x2714; |wax/wax#129|
-|Editor             |Turn spell-check on and off                    |               |&#x2714; |wax/wax#124|
-|Editor             |Small caps style                               |               |&#x2714; |wax/wax#125|
-|Editor             |Note callout deletion with track changes       |               |&#x2714; |wax/wax#36|
-|Editor             |Cutting and pasting with track changes         |               |&#x2714; |wax/wax#15|
-|Editor             |Track spaces                                   |               |&#x2714; |wax/wax#119|
-|Editor             |Full Screen Mode                               |               |&#x2714; |wax/wax#150|
-|Editor             |Track inline formatting (eg. italics)          |               |&#x2714;|wax/wax#160|
-|Editor             |Track block formatting (eg. headings)          |               |         |wax/wax#40|
-|Editor             |Expand set of special characters               |               |         |wax/wax#128|
-|Editor             |Text highlighter                               |               |&#x2714; |wax/wax#18|
-|Editor             |Arrow navigation between notes                 |               |&#x2714; |wax/wax#133|
-|Editor             |Update note icon in toolbar                    |               |&#x2714; |wax/wax#126|
-|Editor             |Increase font size for text                    |               |         |
-|Document ingestion |Normalize en and em dashes, convert hyphens between numerals to en dashes|               |&#x2714; |XSweet/editoria_typescript#21
-|Document ingestion |Clean up white space (around punctuation, multiple spaces)|               |&#x2714; |XSweet/editoria_typescript#21|
-|Document ingestion |Convert series of periods to ellipses          |               |&#x2714; |XSweet/editoria_typescript#21
-|Document ingestion |Normalize directional quotes and apostrophes   |               |&#x2714; |XSweet/editoria_typescript#21
-|Document ingestion |Convert underlining and bolding to italics     |               |&#x2714; |XSweet/editoria_typescript#29, XSweet/editoria_typescript#21
-|Document ingestion |Force punctuation to match formatting of preceding word|       |&#x2714; |XSweet/HTMLevator#3|
-|Document ingestion |Improve header promotion                       |&#x2714;       |         |XSweet/XSweet#123|
 
 
 ## Get up and running  
