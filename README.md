@@ -16,8 +16,9 @@ The current features on our list are the following:
 |**Current**|
 |Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
 |System             |E2E Tests                                      |&#x2714;       |         |#95, #96|
-|BookBuilder        |Create RFC for the chapters' reordering        |               |         |       |
+|BookBuilder        |Create RFC for the chapters' reordering        |               |         |  #145     |
 |Export             |Notes at the end of the book                   |               |         | #78|
+|System             |Authsome mode for Book Sprints                   |               |         | |
 |**Previous**|
 |System             | Edit Lock                                     |               |&#x2714; | #117|
 |System             |Use docker containers for deployments          |               |&#x2714; |#89|
