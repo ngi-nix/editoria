@@ -15,7 +15,7 @@ The current features on our list are the following:
 |:----              |---                                            |:---:          |:---:    |:---:|
 |**Current**|
 |Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
-|Editor             |Upgrade to latest Substance               |&#x2714;       |         |     #188|
+|Editor             |Upgrade to latest Substance               |&#x2714;       |         |     wax/wax#188|
 |System             |E2E Tests                                      |     |         |#95, #96|
 |BookBuilder        |Create RFC for the chapters' reordering        |               |         |  #145     |
 |Export             |Notes at the end of the book                   |               |         | #78|
