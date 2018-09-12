@@ -32,8 +32,10 @@ class Chapter extends React.PureComponent {
     const { book, update, chapter } = this.props
     // SHOULD BE REMOVED. This automaticaly sets track changes on for the case
     // or review in progress
-    if (patch.progress.review === 0 && chapter.trackChanges === false) {
-      patch.trackChanges = true
+    if (patch.progress) {
+      if (patch.progress.review === 0 && chapter.trackChanges === false) {
+        patch.trackChanges = true
+      }
     }
     update(book, patch)
   }
@@ -293,7 +295,7 @@ Chapter.defaultProps = {
 export { Chapter as UnwrappedChapter }
 
 // const comparison = (nextProps, props) => {
-//   return nextProps.chapter.id === props.chapter.id && nextProps.chapter.index === props.chapter.index 
+//   return nextProps.chapter.id === props.chapter.id && nextProps.chapter.index === props.chapter.index
 // }
 
 // combine them, as each chapter can be both a source and a target
