@@ -71,7 +71,7 @@ module.exports = {
     uploads: 'uploads',
   },
   '@pubsweet/component-polling-server': {
-    timer: 2000,
+    timer: 10000,
   },
   validations: path.join(__dirname, 'modules', 'validations'),
 }
