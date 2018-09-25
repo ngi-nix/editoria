@@ -14,13 +14,14 @@ The current features on our list are the following:
 |Module             |Description                                    |In progress    |Done     |Issue|
 |:----              |---                                            |:---:          |:---:    |:---:|
 |**Current**|
-|Editor             |Copy Paste within the editor fix               |&#x2714;       |         |     |
-|Editor             |Upgrade to latest Substance               |&#x2714;       |         |     wax/wax#188|
+|Export|Paged.js exporter               |  &#x2714;     |         |     |
+|Export|Paged.js CSS file editing               |       |         |     |
+|Editor             |Copy Paste within the editor fix               |       |         |     |
+|Editor             |Upgrade to latest Substance               |       |         |     wax/wax#188|
 |System             |E2E Tests                                      |     |         |#95, #96|
-|BookBuilder        |Create RFC for the chapters' reordering        |               |         |  #145     |
-|Export             |Notes at the end of the book                   |               |         | #78|
-|System             |Authsome mode for Book Sprints                   |   &#x2714;             |         | #146|
+|BookBuilder        |Per instance configurability                   |               |         |     |
 |**Previous**|
+|System             |Authsome mode for Book Sprints                 |               |&#x2714;         | #146|
 |System             | Edit Lock                                     |               |&#x2714; | #117|
 |System             |Use docker containers for deployments          |               |&#x2714; |#89|
 |System             |Logger                                         |               |&#x2714; |#106|
@@ -30,8 +31,10 @@ The current features on our list are the following:
 |Book builder       |Drag and Drop perfomance issue                 |               |&#x2714; |#131|
 |Book builder       |Export EPUB                                    |               |&#x2714; |#79|
 |Book builder       |Filenames for single uploads                   |               |&#x2714;         |#112|
+|BookBuilder        |Create RFC for the chapters' reordering        |               |&#x2714;         |  #145     |
 |Editor             |Code Block                                     |               |&#x2714; | wax/wax#174|
 |Editor             |Add ornament style                             |               |&#x2714; | wax/wax#178|
+|Export             |Notes at the end of the book                   |               |&#x2714;         | #78|
 |Export             |Fix links                                      |               |&#x2714; | #100|
 |Export             |Fix image captions                             |               |&#x2714; | #113|
 
