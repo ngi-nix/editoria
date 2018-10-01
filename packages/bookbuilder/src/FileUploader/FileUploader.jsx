@@ -56,7 +56,7 @@ class FileUploader extends React.Component {
     let division
     if (nameSpecifier === 'a') {
       division = 'front'
-    } else if (nameSpecifier === 'c') {
+    } else if (nameSpecifier === 'w') {
       division = 'back'
     } else {
       division = 'body'
@@ -65,7 +65,9 @@ class FileUploader extends React.Component {
     let subCategory
     if (division !== 'body') {
       subCategory = 'component'
-    } else if (fileName.slice(5, 9) === 'Part') {
+    } else if (fileName.includes('00')) {
+      subCategory = 'un-numbered'
+    } else if (fileName.includes('pt0')) {
       subCategory = 'part'
     } else {
       subCategory = 'chapter'
