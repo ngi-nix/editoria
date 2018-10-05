@@ -273,3 +273,14 @@ It can. The first conversion is from .docx to HTML, and from there, it’s up to
 
 ### Can I use Editoria for journals workflow?
 It’s possible, but would not be ideal. Coko has developed an open-source tool that is optimized for journals workflow, called xPub. xPub, like Editoria, is modular, so that organizations can develop their own non-hardcoded workflows, mixing and matching modules that other organizations have developed and shared, or create and integrate their own. More at https://coko.foundation/use-cases/
+
+### How do my .docx filenames affect how they upload?
+Using the "Upload Word Files" button, you can upload multiple .docx files with one click. A few file naming conventions provide useful controls for how the Word files are uploaded:
+* .docx files that begin with "a" go into Frontmatter
+* .docx files that beegin with "w" go into Backmatter
+* files that start with any other letters go into the Body
+
+Additionally:
+* By default, files in the Body are regular, numbered chapters. Frontmatter and backmatter components are always unnumbered.
+* a "00" anywhere in filename will make it an unnumbered chapter (only in Body)
+* "pt0" anywhere in filename will upload the .docx as a Part (only in Body)
