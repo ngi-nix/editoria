@@ -17,7 +17,6 @@ class VivliostyleExporter extends Component {
   handleHTMLToEpub = e => {
     e.preventDefault()
     const { book, htmlToEpub, showModalToggle, history } = this.props
-    console.log('propsss', this.props)
     const { selectedOption } = this.state
 
     let converter
