@@ -51,14 +51,9 @@ class PagedStyler extends Component {
     const { hashed } = params
     const { changed } = this.state
     axios
-      .post(
-        `${
-          config['pubsweet-server'].baseUrl
-        }/api/pagedStyler/stylesheet/${hashed}/`,
-        {
-          source: changed,
-        },
-      )
+      .post(`/api/pagedStyler/stylesheet/${hashed}/`, {
+        source: changed,
+      })
       .then(res => {
         this.setState({
           shouldRefresh: true,
@@ -72,16 +67,10 @@ class PagedStyler extends Component {
     const { match } = this.props
     const { params } = match
     const { hashed } = params
-    axios
-      .get(
-        `${
-          config['pubsweet-server'].baseUrl
-        }/api/pagedStyler/exportHTML/${hashed}/`,
-      )
-      .then(res => {
-        window.location.replace(res.request.responseURL)
-        // console.log('res', res)
-      })
+    axios.get(`/api/pagedStyler/exportHTML/${hashed}/`).then(res => {
+      window.location.replace(res.request.responseURL)
+      // console.log('res', res)
+    })
   }
 
   render() {
@@ -125,9 +114,7 @@ class PagedStyler extends Component {
           frameBorder="0"
           id="printBook"
           key={this.state.random}
-          src={`${
-            config['pubsweet-server'].baseUrl
-          }/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
+          src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
           title="desktop-payment-page"
         />
       </div>
