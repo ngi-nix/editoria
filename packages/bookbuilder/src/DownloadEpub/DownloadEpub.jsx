@@ -6,12 +6,19 @@ import ErrorModal from './ErrorModal'
 
 const DownloadEpub = ({ book, showModal, showModalToggle, outerContainer }) => {
   let modal
+  let converter
+  if (config['pubsweet-client'] && config['pubsweet-client'].converter) {
+    converter = config['pubsweet-client'].converter
+  }
+
   const handleDownload = () => {
     axios
       .get(
         `${config['pubsweet-server'].baseUrl}/api/collections/${
           book.id
-        }/epub?destination=attachment&converter=wax&style=epub.css`,
+        }/epub?destination=attachment&converter=${
+          !converter ? 'default' : converter
+        }&style=epub.css`,
       )
       .then(res => {
         window.location.replace(res.request.responseURL)
@@ -34,10 +41,8 @@ const DownloadEpub = ({ book, showModal, showModalToggle, outerContainer }) => {
 
   return (
     <div className={`${classes.exportBookContainer}`} onClick={handleDownload}>
-      <span>
-        <label className={classes.exportToBookIcon} />
-        <span className={classes.donwloadEpubText}>Download Epub</span>
-      </span>
+      <i className={classes.exportToBookIcon} />
+      <label className={classes.donwloadEpubText}>Download Epub</label>
       {modal}
     </div>
   )

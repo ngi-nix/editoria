@@ -15,6 +15,7 @@ class Navigation extends React.Component {
     super(props)
     this.collectionId = ''
     this.inEditor = null
+    this.inPaged = null
   }
 
   componentDidMount() {
@@ -32,9 +33,11 @@ class Navigation extends React.Component {
 
     this.collectionId = ''
     this.inEditor = null
+    this.inPaged = null
 
     this.inEditor = pathname.match(/fragments/g)
-    if (this.inEditor) {
+    this.inPaged = pathname.match(/pagedPreviewer\/paged/g)
+    if (this.inEditor || this.inPaged) {
       const pathnameSplited = pathname.split('/')
       this.collectionId = pathnameSplited[2]
     }
@@ -56,7 +59,7 @@ class Navigation extends React.Component {
     }
 
     let BackToBooks
-    if (this.inEditor) {
+    if (this.inEditor || this.inPaged) {
       BackToBooks = (
         <LinkContainer to={`/books/${this.collectionId}/book-builder`}>
           <NavItem>Back to book</NavItem>

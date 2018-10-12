@@ -257,8 +257,8 @@ class FileUploader extends React.Component {
 
     return (
       <div className={`${styles.multipleUploadContainer}`}>
-        <span>
-          <label className={styles.uploadIcon} htmlFor="file-uploader" />
+        
+          <i className={styles.uploadIcon} htmlFor="file-uploader" />
 
           <label className={styles.uploadMultipleText} htmlFor="file-uploader">
             {labelText}
@@ -275,7 +275,7 @@ class FileUploader extends React.Component {
             }}
             type="file"
           />
-        </span>
+        
       </div>
     )
   }

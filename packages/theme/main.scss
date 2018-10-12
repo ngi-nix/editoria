@@ -33,6 +33,18 @@ body {
   padding-bottom: 50px; // white space when component ends
 }
 
+#root {
+  height: 100%; 
+
+  > div {
+    height: 100%;
+    
+    > div {
+      height: 100%;
+    }
+  }
+}
+
 
 //
 // helpers

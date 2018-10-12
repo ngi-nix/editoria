@@ -102,38 +102,48 @@ $upload-multiple: #b1b1b1;
       // }
     }
   }
-
-  .bookTitle {
+  
+  .headerContainer {
+    display: flex;
+    flex-basis: 100%;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+  .bookTitleContainer {
     font-family: 'Vollkorn';
     font-size: 36px;
     font-style: italic;
     word-wrap: break-word;
+    flex-basis: 40%;
+    border-bottom: 2px solid $line-grey;
+    
+    h1 {
+      margin: 0;
+    }
   }
-
   .btnContainer {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-  }
-
-  .btnContainerButtons {
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    min-width: 487px;
+    align-items: center;
+    flex-basis: 60%;
   }
 
-  .lineUploading {
-    border-top: 2px solid $line-grey;
-    margin-right: 10px;
-    width: 100%;
-  }
+  // .btnContainerButtons {
+  //   display: flex;
+  //   flex-direction: row;
+  //   justify-content: space-between;
+  //   min-width: 487px;
+  // }
+
 
   .multipleUploadContainer {
-    bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    // bottom: 15px;
     // display: inline-block;
     // left: 10px;
-    position: relative;
+    // position: relative;
     //  width: 20%;
 
     .uploadIcon {
@@ -148,18 +158,18 @@ $upload-multiple: #b1b1b1;
       text-align: center;
       width: 24px;
       height: 24px;
+      margin-right: 10px;
     }
 
-    .uploadMultipleText {
-      bottom: 10px;
+    label.uploadMultipleText {
       color: $upload-multiple;
       cursor: pointer;
       font-family: 'Fira Sans Condensed';
       font-size: 16px;
       font-style: normal;
-      left: 10px;
-      position: relative;
       text-transform: uppercase;
+      margin: 0;
+      padding: 0;
     }
 
     input[type='file'] {
