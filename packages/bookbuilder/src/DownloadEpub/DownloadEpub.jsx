@@ -14,9 +14,7 @@ const DownloadEpub = ({ book, showModal, showModalToggle, outerContainer }) => {
   const handleDownload = () => {
     axios
       .get(
-        `${config['pubsweet-server'].baseUrl}/api/collections/${
-          book.id
-        }/epub?destination=attachment&converter=${
+        `/api/collections/${book.id}/epub?destination=attachment&converter=${
           !converter ? 'default' : converter
         }&style=epub.css`,
       )

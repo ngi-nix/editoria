@@ -28,15 +28,9 @@ class PagedStyler extends Component {
   componentDidMount() {
     const { match } = this.props
     const { params } = match
-    axios
-      .get(
-        `${config['pubsweet-server'].baseUrl}/uploads/paged/${
-          params.hashed
-        }/default.css`,
-      )
-      .then(res => {
-        this.setState({ css: res.data, isLoading: false })
-      })
+    axios.get(`/uploads/paged/${params.hashed}/default.css`).then(res => {
+      this.setState({ css: res.data, isLoading: false })
+    })
   }
 
   handleChange(doc, change) {
