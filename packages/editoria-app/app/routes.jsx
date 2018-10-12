@@ -17,10 +17,10 @@ import WithConfig from 'pubsweet-component-wax/src/WithConfig'
 // Editoria
 import BookBuilder from 'pubsweet-component-bookbuilder/src/BookBuilder'
 import Dashboard from 'pubsweet-component-editoria-dashboard/src/Dashboard'
+import PagedStyler from 'pubsweet-component-bookbuilder/src/PagedStyler/PagedStyler'
 import Manage from 'pubsweet-component-manage/Manage'
 import Navigation from './components/Navigation/Navigation'
 import PrivateRoute from './components/PrivateRoute'
-import PagedStyler from 'pubsweet-component-bookbuilder/src/PagedStyler'
 // import AuthenticatedManage from './components/AuthenticatedManage/AuthenticatedManage'
 
 // Pass configuration to editor
