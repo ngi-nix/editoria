@@ -247,7 +247,7 @@ export class BookBuilder extends React.Component {
   // }
 
   render() {
-    const { book, chapters } = this.props
+    const { book, chapters, history } = this.props
     const {
       createFragment,
       htmlToEpub,
@@ -293,10 +293,11 @@ export class BookBuilder extends React.Component {
                 </button>
               </Authorize>
             </div>
-            <h1 className={`${styles.bookTitle}`}>{this.props.book.title}</h1>
-            <div className={`${styles.btnContainer}`}>
-              <div className={`${styles.lineUploading} `} />
-              <div className={styles.btnContainerButtons}>
+            <div className={`${styles.headerContainer}`}>
+              <div className={`${styles.bookTitleContainer}`}>
+                <h1>{this.props.book.title}</h1>
+              </div>
+              <div className={`${styles.btnContainer}`}>
                 <Authorize
                   object={book}
                   operation="can view multipleFilesUpload"
@@ -314,6 +315,7 @@ export class BookBuilder extends React.Component {
                 </Authorize>
                 <VivliostyleExporter
                   book={book}
+                  history={history}
                   htmlToEpub={htmlToEpub}
                   outerContainer={outerContainer}
                   showModal={this.state.showModal}

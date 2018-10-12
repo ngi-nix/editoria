@@ -17,6 +17,7 @@ import WithConfig from 'pubsweet-component-wax/src/WithConfig'
 // Editoria
 import BookBuilder from 'pubsweet-component-bookbuilder/src/BookBuilder'
 import Dashboard from 'pubsweet-component-editoria-dashboard/src/Dashboard'
+import PagedStyler from 'pubsweet-component-bookbuilder/src/PagedStyler/PagedStyler'
 import Manage from 'pubsweet-component-manage/Manage'
 import Navigation from './components/Navigation/Navigation'
 import PrivateRoute from './components/PrivateRoute'
@@ -27,6 +28,22 @@ const Editor = WithConfig(Wax, {
   layout: 'editoria',
   lockWhenEditing: true,
   pollingTimer: 1000,
+  autoSave: false,
+  tools: [
+    'document',
+    'annotations',
+    'note',
+    'inline-note',
+    'ornament',
+    'diacritics-tool',
+    'find-and-replace-tool',
+    'track-change',
+    'spell-check',
+    'highlighter',
+    'full-screen-control',
+    'shortcuts-modal',
+    'track-change-controls',
+  ],
 })
 
 // export default (
@@ -80,6 +97,10 @@ export default (
 
     <Manage nav={<Navigation />}>
       <PrivateRoute component={Dashboard} exact path="/books" />
+      <PrivateRoute
+        component={PagedStyler}
+        path="/books/:id/pagedPreviewer/paged/:hashed"
+      />
       <PrivateRoute component={BookBuilder} path="/books/:id/book-builder" />
 
       <PrivateRoute

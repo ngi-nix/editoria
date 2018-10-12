@@ -4,34 +4,51 @@ $upload-multiple: #b1b1b1;
 $black: #000;
 
 .exportBookContainer {
-  bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 0.2;
   // left: -50px;
   // display: inline-block;
-  position: relative;
-}
+  // position: relative;
+  .exportLabel {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 0;
 
-.exportToBookIcon {
-  background-color: $light-grey;
-  color: $black;
-  cursor: pointer;
-  font-weight: 500;
-  height: 24px;
-  -webkit-mask: url('../styles/images/book.svg') no-repeat 100% 100%;
-  mask: url('../styles/images/book.svg') no-repeat 100% 100%;
-  -webkit-mask-size: cover;
-  mask-size: cover;
-  text-align: center;
-  width: 24px;
-}
+    .vivliostyleExportText {
+      color: $upload-multiple;
+      font-family: 'Fira Sans Condensed';
+      font-size: 16px;
+      font-style: normal;
+      text-transform: uppercase;
+    }
 
-.vivliostyleExportText {
-  bottom: 10px;
-  color: $upload-multiple;
-  cursor: pointer;
-  font-family: 'Fira Sans Condensed';
-  font-size: 16px;
-  font-style: normal;
-  left: 10px;
-  position: relative;
-  text-transform: uppercase;
+    .exportToBookIcon {
+      background-color: $light-grey;
+      color: $black;
+      margin-right: 10px;
+      font-weight: 500;
+      height: 24px;
+      -webkit-mask: url('../styles/images/book.svg') no-repeat 100% 100%;
+      mask: url('../styles/images/book.svg') no-repeat 100% 100%;
+      -webkit-mask-size: cover;
+      mask-size: cover;
+      text-align: center;
+      width: 24px;
+    }
+  }
+  button.submitBtn {
+    color: $upload-multiple;
+    font-family: 'Fira Sans Condensed';
+    font-size: 16px;
+    font-style: normal;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: inherit;
+  }
 }

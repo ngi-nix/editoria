@@ -62,6 +62,7 @@ module.exports = {
     navigation: 'app/components/Navigation/Navigation.jsx',
     routes: 'app/routes.jsx',
     theme: 'ThemeEditoria',
+    converter: 'ucp',
   },
   'pubsweet-server': {
     db: {},
