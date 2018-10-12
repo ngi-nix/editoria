@@ -48,6 +48,7 @@
     "pubsweet-component-theme-editoria": "^0.0.5",
     "pubsweet-component-users-manager": "1.0.0",
     "pubsweet-component-vivliostyle-viewer": "^1.0.0",
+    "pubsweet-component-pagedjs-viewer": "^0.1.1",
     "pubsweet-component-wax": "^0.6.12",
     "pubsweet-editoria-authsome": "^1.0.1",
     "pubsweet-server": "^7.2.0",

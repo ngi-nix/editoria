@@ -20,7 +20,7 @@ import Dashboard from 'pubsweet-component-editoria-dashboard/src/Dashboard'
 import Manage from 'pubsweet-component-manage/Manage'
 import Navigation from './components/Navigation/Navigation'
 import PrivateRoute from './components/PrivateRoute'
-import PagedStyler from '../../bookbuilder/src/PagedStyler/PagedStyler'
+import PagedStyler from 'pubsweet-component-bookbuilder/src/PagedStyler'
 // import AuthenticatedManage from './components/AuthenticatedManage/AuthenticatedManage'
 
 // Pass configuration to editor
