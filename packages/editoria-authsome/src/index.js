@@ -812,6 +812,10 @@ module.exports = {
     const mode = new EditoriaMode(userId, operation, object, context)
     return mode.canFragmentEdit()
   },
+  'can view stateList': (userId, operation, object, context) => {
+    const mode = new EditoriaMode(userId, operation, object, context)
+    return mode.canInteractWithFragments()
+  },
   'can reorder bookComponents': (userId, operation, object, context) => {
     const mode = new EditoriaMode(userId, operation, object, context)
     return mode.canInteractWithFragments()

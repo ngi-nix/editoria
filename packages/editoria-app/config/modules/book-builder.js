@@ -1,4 +1,5 @@
 module.exports = {
+  instace: 'UCP',
   chapter: {
     dropdownValues: {
       back: ['Appendix A', 'Appendix B', 'Appendix C'],
