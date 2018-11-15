@@ -8,35 +8,30 @@ This application is being developed by the [Coko Foundation](https://coko.founda
 For more information, visit the project's [website](https://editoria.pub/) or our [chat channel](https://mattermost.coko.foundation/coko/channels/editoria).  
 For the editor that Editoria uses, see its related project [Wax](https://gitlab.coko.foundation/wax/wax).  
 
-## Roadmap
+## Community Roadmap # 1
 The current features on our list are the following:
 
-|Module             |Description                                    |In progress    |Done     |Issue|
-|:----              |---                                            |:---:          |:---:    |:---:|
-|**Current**|
-|Export|Paged.js exporter               |  &#x2714;     |         |     |
-|Export|Paged.js CSS file editing               |       |         |     |
-|Editor             |Copy Paste within the editor fix               |       |         |     |
-|Editor             |Upgrade to latest Substance               |       |         |     wax/wax#188|
-|System             |E2E Tests                                      |     |         |#95, #96|
-|BookBuilder        |Per instance configurability                   |               |         |     |
-|**Previous**|
-|System             |Authsome mode for Book Sprints                 |               |&#x2714;         | #146|
-|System             | Edit Lock                                     |               |&#x2714; | #117|
-|System             |Use docker containers for deployments          |               |&#x2714; |#89|
-|System             |Logger                                         |               |&#x2714; |#106|
-|System             |Env variables                                  |               |&#x2714; |#104|
-|System             |Fix polling problem                            |               |&#x2714; |#132|
-|Book builder       |Redesign component state tool                  |               |&#x2714; |#55|
-|Book builder       |Drag and Drop perfomance issue                 |               |&#x2714; |#131|
-|Book builder       |Export EPUB                                    |               |&#x2714; |#79|
-|Book builder       |Filenames for single uploads                   |               |&#x2714;         |#112|
-|BookBuilder        |Create RFC for the chapters' reordering        |               |&#x2714;         |  #145     |
-|Editor             |Code Block                                     |               |&#x2714; | wax/wax#174|
-|Editor             |Add ornament style                             |               |&#x2714; | wax/wax#178|
-|Export             |Notes at the end of the book                   |               |&#x2714;         | #78|
-|Export             |Fix links                                      |               |&#x2714; | #100|
-|Export             |Fix image captions                             |               |&#x2714; | #113|
+| PROJECT       | DESCRIPTION                                                               | ISSUE # | IN PROGRESS | DONE |
+|---------------|---------------------------------------------------------------------------|---------|-------------|------|
+| EDITORIA      | Editoria Upgrade                                                          |         | ✔           |      |
+| WAX           | Wax Upgrade                                                               |         | ✔           |      |
+| WAX           | Color code tracked changes by user                                        | #164    |             |      |
+| EDITORIA      | Configure book builder to omit blue buttons                               | #172    |             |      |
+| EDITORIA      | Indenting chapters in book builder                                        | #171    |             |      |
+| EDITORIA      | Error message when uploading incorrect file format                        | #189    |             |      |
+| WAX           | Author Style                                                              | #191    |             |      |
+| WAX           | Provide a larger text box for inputting figure captions                   | #216    |             |      |
+| EDITORIA      | enable "read only" chapter mode                                           | #170    |             |      |
+| EDITORIA      | Autocomplete for adding book team roles                                   | #186    |             |      |
+| EDITORIA      | Always show chapter name                                                  | #193    |             |      |
+| EDITORIA      | Book-level (and perhaps chapter-level) metadata                           | #210    |             |      |
+| EDITORIA      | Configurable archive options for completed / abandoned books              | #226    |             |      |
+| WAX           | Toolbar button to change case                                             | #203    |             |      |
+| PUBSWEET CORE | Usernames allowed with special characters                                 | #195    |             |      |
+| PUBSWEET CORE | Ask for first name and surname on sign up                                 | #197    |             |      |
+| XSWEET        | Kill automatic numbering in numbered list style                           | #198    |             |      |
+| EDITORIA      | Allow components to move from body to front- or backmatter and vice versa | #214    |             |      |
+| EDITORIA      | Add more information to the “Books” dashboard and make it sortable        | #215    |             |      |
 
 
 ## Get up and running  
