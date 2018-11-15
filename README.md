@@ -13,8 +13,8 @@ The current features on our list are the following:
 
 | PROJECT       | DESCRIPTION                                                               | ISSUE # | IN PROGRESS | DONE |
 |---------------|---------------------------------------------------------------------------|---------|-------------|------|
-| EDITORIA      | Editoria Upgrade                                                          |         | ✔           |      |
-| WAX           | Wax Upgrade                                                               |         | ✔           |      |
+| EDITORIA      | Editoria Upgrade                                                          | #233      | ✔           |      |
+| WAX           | Wax Upgrade                                                               | #234        | ✔           |      |
 | WAX           | Color code tracked changes by user                                        | #164    |             |      |
 | EDITORIA      | Configure book builder to omit blue buttons                               | #172    |             |      |
 | EDITORIA      | Indenting chapters in book builder                                        | #171    |             |      |
