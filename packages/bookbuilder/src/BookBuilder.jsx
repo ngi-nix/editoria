@@ -474,7 +474,12 @@ function mapStateToProps(state, { match }) {
     'index',
   )
   if (book) {
-    teams = _.filter(state.teams, t => t.object.id === book.id)
+    teams = _.filter(state.teams, t => {
+      if (!t.global) {
+        return t.object.id === book.id
+      }
+      return false
+    })
   }
   const { error, currentUser: user, users } = state
 
