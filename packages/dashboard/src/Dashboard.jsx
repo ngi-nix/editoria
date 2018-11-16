@@ -23,7 +23,8 @@ export class Dashboard extends React.Component {
     this.removeBook = this.removeBook.bind(this)
     this.removeTeamsForBook = this.removeTeamsForBook.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
-    this.isProductionEditor = this.isProductionEditor.bind(this)
+    this.isGlobalProductionEditor = this.isGlobalProductionEditor.bind(this)
+    this.isGlobalAuthor = this.isGlobalAuthor.bind(this)
 
     this.state = {
       showModal: false,
@@ -158,16 +159,32 @@ export class Dashboard extends React.Component {
   //   })
   // }
 
-  isProductionEditor(userId) {
+  isGlobalProductionEditor(userId) {
     const { teams, user } = this.props
     if (!user.admin) {
       const productionEditorTeams = filter(teams, {
         teamType: 'productionEditor',
+        global: true,
       })
 
       const membership = productionEditorTeams.map(team =>
         team.members.includes(userId),
       )
+
+      return membership.includes(true)
+    }
+    return false
+  }
+
+  isGlobalAuthor(userId) {
+    const { teams, user } = this.props
+    if (!user.admin) {
+      const authorTeams = filter(teams, {
+        teamType: 'author',
+        global: true,
+      })
+
+      const membership = authorTeams.map(team => team.members.includes(userId))
 
       return membership.includes(true)
     }
@@ -188,11 +205,13 @@ export class Dashboard extends React.Component {
     for (let i = 0; i < teamTypes.length; i += 1) {
       const teamType = teamTypes[i]
       const members = []
+      const isGlobalPE = this.isGlobalProductionEditor(user.id)
+      const isGlobalAuthor = this.isGlobalAuthor(user.id)
       if (!user.admin) {
-        if (
-          this.isProductionEditor(user.id) &&
-          teamType === 'productionEditor'
-        ) {
+        if (isGlobalPE && teamType === 'productionEditor') {
+          members.push(user.id)
+        }
+        if (isGlobalAuthor && teamType === 'author') {
           members.push(user.id)
         }
       }
@@ -346,4 +365,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Dashboard)
