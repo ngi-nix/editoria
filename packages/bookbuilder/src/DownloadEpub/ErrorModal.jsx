@@ -4,18 +4,20 @@ import PropTypes from 'prop-types'
 import AbstractModal from 'editoria-common/src/AbstractModal'
 
 class ErrorModal extends React.Component {
+  /* eslint-disable */
   renderBody() {
     return (
       <div>
-        An error occured during the conversion to epub. Please try again later.
+        An error occurred during the conversion to epub. Please try again later.
       </div>
     )
   }
+  /* eslint-enabled */
 
   render() {
     const { container, show, toggle } = this.props
     const body = this.renderBody()
-    const title = 'An error occured'
+    const title = 'An error occurred'
 
     return (
       <AbstractModal

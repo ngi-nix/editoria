@@ -85,6 +85,7 @@ export class ProgressItem extends React.Component {
     return false
   }
 
+  /* eslint-disable  consistent-return */
   onClick() {
     const { roles } = this.props
 
@@ -103,6 +104,7 @@ export class ProgressItem extends React.Component {
 
     this.toggleModal()
   }
+  /* eslint-enable */
 
   renderModal() {
     const { chapter, modalContainer, type } = this.props
@@ -135,7 +137,7 @@ export class ProgressItem extends React.Component {
 
     return (
       <Alert bsStyle="warning" className={styles.noWritesError}>
-        You don't have access to perfom this action. Please contact your
+        You don&apos;t have access to perform this action. Please contact your
         Production Editor.
       </Alert>
     )
@@ -157,7 +159,7 @@ export class ProgressItem extends React.Component {
     return (
       <span>
         {errorMessage}
-
+        {/* eslint-disable-next-line */}
         <li className={`progress${currentStateValue}`} onClick={this.onClick}>
           {currentStateText} &nbsp;
           {icon}

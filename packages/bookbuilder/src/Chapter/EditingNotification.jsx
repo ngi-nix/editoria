@@ -1,4 +1,3 @@
-import { includes } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -28,6 +27,7 @@ class EditingNotification extends React.Component {
     const { user } = this.props
     return user.admin
   }
+  /* eslint-disable */
 
   formatDate(timestamp) {
     const date = new Date(timestamp)
@@ -52,11 +52,14 @@ class EditingNotification extends React.Component {
 
     return formatted
   }
+  /* eslint-enable */
 
   render() {
     const { chapter, modalContainer, update } = this.props
     const { showModal } = this.state
-    const username = chapter.lock.editor.username
+    const { lock } = chapter
+    const { editor } = lock
+    const username = editor
     const isAdmin = this.isAdmin()
 
     const message = `${username} is editing`

@@ -32,6 +32,7 @@ class AddBookModal extends React.Component {
     this.onCreate()
   }
 
+  /* eslint-disable */
   onCreate() {
     const { create, toggle } = this.props
 
@@ -47,6 +48,7 @@ class AddBookModal extends React.Component {
     create(newTitle)
     toggle()
   }
+  /* eslint-enable */
 
   onInputChange() {
     const { error } = this.state
@@ -68,13 +70,13 @@ class AddBookModal extends React.Component {
         {error}
 
         <input
-          autoFocus
+          autoFocus // eslint-disable-line
           className={styles['add-book-input']}
           name="title"
           onChange={this.onInputChange}
           onKeyPress={this.handleKeyOnInput}
           placeholder="eg. My new title"
-          ref={(input) => {
+          ref={input => {
             this.textInput = input
           }}
           type="text"

@@ -7,26 +7,22 @@ import Chapter from '../Chapter'
 
 const { data } = global.mock
 const type = 'front'
-const chapters = data.chapters.filter((chapter) => {
-  return chapter.division === type
-})
+const chapters = data.chapters.filter(chapter => chapter.division === type)
 
-let props = {
+const props = {
   add: sinon.spy(),
   book: data.book,
-  chapters: chapters,
+  chapters,
   ink: sinon.spy(),
   outerContainer: {},
   remove: sinon.spy(),
   roles: [],
   title: 'Some Division',
-  type: type,
-  update: sinon.spy()
+  type,
+  update: sinon.spy(),
 }
 
-const getWrapper = () => {
-  return shallow(<Division {...props} />)
-}
+const getWrapper = () => shallow(<Division {...props} />)
 
 test('should render correctly', () => {
   const wrapper = getWrapper()
@@ -61,7 +57,7 @@ test('should render the title', () => {
 test('should render a list of chapters', () => {
   const division = shallow(<Division {...props} />)
   const chapters = division.find(Chapter).nodes
-  expect(chapters.length).toEqual(2)
+  expect(chapters.length).toHaveLength(2)
 })
 
 //   test('it should render a message if no chapters are found', () => {

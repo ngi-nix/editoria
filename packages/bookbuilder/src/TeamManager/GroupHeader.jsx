@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
@@ -14,7 +15,7 @@ export class GroupHeader extends React.Component {
           <h1> {title} </h1>
         </div>
         {allowed ? (
-          <Authorize object={title} operation="can view add team memeber">
+          <Authorize object={title} operation="can view add team member">
             <div className={styles.groupBtn} onClick={showInput}>
               <div className={styles.addIcon} />
               <a>{`add ${title}`}</a>

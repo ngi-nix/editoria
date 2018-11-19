@@ -21,7 +21,10 @@ const DownloadEpub = ({ book, showModal, showModalToggle, outerContainer }) => {
       .then(res => {
         window.location.replace(res.request.responseURL)
       })
-      .catch(error => showModalToggle())
+      .catch(error => {
+        showModalToggle()
+        console.error(error)
+      })
   }
 
   const toggleModal = () => {
@@ -40,7 +43,7 @@ const DownloadEpub = ({ book, showModal, showModalToggle, outerContainer }) => {
   return (
     <div className={`${classes.exportBookContainer}`} onClick={handleDownload}>
       <i className={classes.exportToBookIcon} />
-      <label className={classes.donwloadEpubText}>Download Epub</label>
+      <label className={classes.downloadEpubText}>Download Epub</label>
       {modal}
     </div>
   )

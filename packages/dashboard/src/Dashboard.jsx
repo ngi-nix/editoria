@@ -1,5 +1,5 @@
 import config from 'config'
-import { each, filter, forEach, isEmpty, union, isEqual } from 'lodash'
+import { each, filter, isEqual } from 'lodash'
 // TODO -- clean up this import
 import Actions from 'pubsweet-client/src/actions'
 import React from 'react'

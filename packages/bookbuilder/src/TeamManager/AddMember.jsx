@@ -29,6 +29,7 @@ export class AddMember extends React.Component {
     this.addUser.state.value = ''
   }
 
+  /* eslint-disable */
   _search(username) {
     const { team, users } = this.props
 
@@ -42,6 +43,7 @@ export class AddMember extends React.Component {
 
     this._updateMessage('error', username)
   }
+  /* eslint-enable */
 
   _save(team) {
     const { update, updateCollection, book, users } = this.props
@@ -59,6 +61,7 @@ export class AddMember extends React.Component {
     })
   }
 
+  /* eslint-disable */
   _updateMessage(error, username) {
     let msg
 
@@ -82,6 +85,7 @@ export class AddMember extends React.Component {
       },
     })
   }
+  /* eslint-enable */
 
   _hide() {
     this.setState({ message: {} })

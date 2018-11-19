@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   // mount,
-  shallow
+  shallow,
 } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import sinon from 'sinon'
@@ -15,6 +15,7 @@ import sinon from 'sinon'
 
 // // grab the undecorated by dnd react component
 import Chapter from '../Chapter'
+
 const OriginalChapter = Chapter.DecoratedComponent
 
 // import ProgressIndicator from '../ProgressIndicator'
@@ -24,12 +25,10 @@ const OriginalChapter = Chapter.DecoratedComponent
 const identity = el => el
 const { data } = global.mock
 const type = 'front'
-const chapters = data.chapters.filter((chapter) => {
-  return chapter.division === type
-})
+const chapters = data.chapters.filter(chapter => chapter.division === type)
 const firstChapter = chapters[0]
 
-let props = {
+const props = {
   book: data.book,
   chapter: firstChapter,
   id: firstChapter.id,
@@ -45,7 +44,7 @@ let props = {
   update: sinon.spy(),
   connectDragSource: identity,
   connectDropTarget: identity,
-  isDragging: false
+  isDragging: false,
 }
 
 // function wrapInTestContext (Chapter) {
@@ -58,9 +57,7 @@ let props = {
 //   )
 // }
 
-const getWrapper = () => {
-  return shallow(<OriginalChapter {...props} />)
-}
+const getWrapper = () => shallow(<OriginalChapter {...props} />)
 
 test('should render correctly', () => {
   const wrapper = getWrapper()

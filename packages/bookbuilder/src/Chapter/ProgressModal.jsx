@@ -1,5 +1,5 @@
 /* DEPRECATED */
-
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -7,7 +7,14 @@ import Modal from 'editoria-common/src/Modal'
 
 class ProgressModal extends React.Component {
   render() {
-    const { changeProgressState, chapter, container, show, toggle, modalType } = this.props
+    const {
+      changeProgressState,
+      chapter,
+      container,
+      show,
+      toggle,
+      modalType,
+    } = this.props
     const type = chapter.type
 
     return (

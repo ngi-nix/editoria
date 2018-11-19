@@ -351,6 +351,12 @@ class ChapterSecondRow extends React.Component {
     })
   }
 
+  toggleModal() {
+    this.setState({
+      showModal: !this.state.showModal,
+    })
+  }
+
   onClickAlignmentBox(id) {
     const { chapter, update } = this.props
 
@@ -361,12 +367,6 @@ class ChapterSecondRow extends React.Component {
 
     patch.alignment[id] = !chapter.alignment[id]
     update(patch)
-  }
-
-  toggleModal() {
-    this.setState({
-      showModal: !this.state.showModal,
-    })
   }
 
   renderModal() {

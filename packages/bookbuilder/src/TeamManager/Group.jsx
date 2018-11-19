@@ -29,7 +29,7 @@ export class Group extends React.Component {
   render() {
     const { team, users, options, update, updateCollection, book } = this.props
     const members = users.filter(user => _.includes(team.members, user.id))
-    let allowed = true
+    const allowed = true
     // if (team.teamType === 'productionEditor' && team.members.length >= 1) {
     //   allowed = false
     // }
@@ -53,13 +53,13 @@ export class Group extends React.Component {
         />
 
         <MemberList
+          book={book}
           color={options.color}
-          users={users}
           members={members}
           team={team}
           update={update}
-          book={book}
           updateCollection={updateCollection}
+          users={users}
         />
       </div>
     )

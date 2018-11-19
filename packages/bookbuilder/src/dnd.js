@@ -38,7 +38,7 @@ const chapterTarget = {
     const hoverIndex = props.no
 
     if (dragIndex === hoverIndex) return
-
+    // eslint-disable-next-line react/no-find-dom-node
     const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
     const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
     const clientOffset = monitor.getClientOffset()
@@ -49,20 +49,20 @@ const chapterTarget = {
 
     props.onMove(dragIndex, hoverIndex)
     monitor.getItem().no = hoverIndex
-  }
+  },
 }
-
+/* eslint-disable */
 const collectDrag = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
   }
 }
 
 const collectDrop = (connect, monitor) => {
   return {
-    connectDropTarget: connect.dropTarget()
+    connectDropTarget: connect.dropTarget(),
   }
 }
-
+/* eslint-enable */
 export { chapterSource, chapterTarget, collectDrag, collectDrop, itemTypes }

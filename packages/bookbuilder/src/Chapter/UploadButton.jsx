@@ -17,13 +17,6 @@ export class UploadButton extends React.Component {
     }
   }
 
-  renderUploadIndicator() {
-    const { isUploadInProgress } = this.props
-    if (isUploadInProgress) return true
-
-    return false
-  }
-
   handleFileUpload(event) {
     event.preventDefault()
 
@@ -94,16 +87,23 @@ export class UploadButton extends React.Component {
     })
   }
 
-  onClick() {
-    if (!this.isLocked()) return
-    this.toggleModal()
-  }
-
   isLocked() {
     const { chapter } = this.props
 
     if (chapter.lock === null) return false
     return true
+  }
+
+  onClick() {
+    if (!this.isLocked()) return
+    this.toggleModal()
+  }
+
+  renderUploadIndicator() {
+    const { isUploadInProgress } = this.props
+    if (isUploadInProgress) return true
+
+    return false
   }
 
   renderInput() {
