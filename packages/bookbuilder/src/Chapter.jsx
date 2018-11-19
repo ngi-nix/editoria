@@ -2,6 +2,7 @@ import { flow } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DragSource, DropTarget } from 'react-dnd'
+import config from 'config'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import FirstRow from './Chapter/FirstRow'
 import SecondRow from './Chapter/SecondRow'
@@ -32,9 +33,15 @@ class Chapter extends React.PureComponent {
     const { book, update, chapter } = this.props
     // SHOULD BE REMOVED. This automaticaly sets track changes on for the case
     // or review in progress
-    if (patch.progress) {
-      if (patch.progress.review === 0 && chapter.trackChanges === false) {
-        patch.trackChanges = true
+    if (
+      config.bookBuilder &&
+      config.bookBuilder.instance &&
+      config.bookBuilder.instance === 'UCP'
+    ) {
+      if (patch.progress) {
+        if (patch.progress.review === 0 && chapter.trackChanges === false) {
+          patch.trackChanges = true
+        }
       }
     }
     update(book, patch)

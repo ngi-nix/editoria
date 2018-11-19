@@ -1,1 +1,0 @@
-nohup bash -c "yarn server" > /dev/null 2>&1 &
