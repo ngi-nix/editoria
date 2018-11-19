@@ -1,5 +1,5 @@
 {
-  "author": "Yannis Barlas",
+  "author": "Yannis Barlas, Alexandros Georgantas",
   "description": "Monorepo grouping all the different parts of the Editoria project",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
@@ -19,7 +19,8 @@
     "prettier": "^1.8.2",
     "stylelint": "^8.2.0",
     "stylelint-config-prettier": "^2.0.0",
-    "stylelint-config-pubsweet": "^0.0.3"
+    "stylelint-config-pubsweet": "^0.0.3",
+    "standard-version": "^4.4.0"
   },
   "license": "MIT",
   "name": "editoria-monorepo",
@@ -33,9 +34,10 @@
     "clean": "lerna clean",
     "publish": "lerna publish",
     "updated": "lerna updated",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "release": "standard-version"
   },
-  "version": "0.0.0",
+  "version": "1.0.0",
   "dependencies": {
     "babel-preset-stage-0": "^6.24.1"
   },
