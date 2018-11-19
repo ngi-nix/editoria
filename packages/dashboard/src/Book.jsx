@@ -42,10 +42,6 @@ class Book extends React.Component {
     this.renameBook()
   }
 
-  onClickSave() {
-    this.renameBook()
-  }
-
   renameBook() {
     const { book, edit } = this.props
 
@@ -58,12 +54,6 @@ class Book extends React.Component {
 
     this.setState({
       isRenaming: false,
-    })
-  }
-
-  onClickRename() {
-    this.setState({
-      isRenaming: true,
     })
   }
 
@@ -86,6 +76,14 @@ class Book extends React.Component {
     remove(book)
   }
 
+  onClickRename() {
+    this.setState({
+      isRenaming: true,
+    })
+  }
+  onClickSave() {
+    this.renameBook()
+  }
   renderTitle() {
     const { book } = this.props
     const { isRenaming } = this.state
@@ -131,7 +129,7 @@ class Book extends React.Component {
 
     if (isRenaming) {
       return (
-        <Authorize operation="can rename books" object={book}>
+        <Authorize object={book} operation="can rename books">
           <div className={styles.actionContainer}>
             <a className={styles.editBook} href="#" onClick={this.onClickSave}>
               Save
@@ -142,7 +140,7 @@ class Book extends React.Component {
     }
 
     return (
-      <Authorize operation="can rename books" object={book}>
+      <Authorize object={book} operation="can rename books">
         <div className={styles.actionContainer}>
           <a className={styles.editBook} href="#" onClick={this.onClickRename}>
             Rename
@@ -155,7 +153,7 @@ class Book extends React.Component {
   renderRemove() {
     const { book } = this.props
     return (
-      <Authorize operation="can delete books" object={book}>
+      <Authorize object={book} operation="can delete books">
         <div className={styles.actionContainer}>
           <a className={styles.editBook} href="#" onClick={this.toggleModal}>
             Delete

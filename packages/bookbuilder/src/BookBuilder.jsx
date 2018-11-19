@@ -64,7 +64,8 @@ export class BookBuilder extends React.Component {
     // I'm using the ref inside the render function it was created in
     // So it won't be available until didMount
     // Pass it to the state and use it safely (no undefined scenarios)
-    this.setState({ outerContainer: this.refs.outerContainer })
+
+    this.setState({ outerContainer: this.refs.outerContainer }) // eslint-disable-line
   }
 
   // setProductionEditor() {
@@ -280,6 +281,7 @@ export class BookBuilder extends React.Component {
     return (
       <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
         <div className={styles.bookBuilder}>
+          {/* eslint-disable-next-line react/no-string-refs */}
           <div className={styles.universe} ref="outerContainer">
             <div className={`${styles.productionEditorContainer}`}>
               <span>{this.renderProductionEditors()}</span>

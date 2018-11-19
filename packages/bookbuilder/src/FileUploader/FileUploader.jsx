@@ -154,7 +154,7 @@ class FileUploader extends React.Component {
                 return frags
               })
               .catch(error => {
-                console.log(error)
+                console.error(error)
               })
           })
           .catch(console.error),
@@ -241,7 +241,7 @@ class FileUploader extends React.Component {
         })
       })
       .catch(error => {
-        console.log(error)
+        console.error(error)
       })
   }
 
@@ -259,25 +259,23 @@ class FileUploader extends React.Component {
 
     return (
       <div className={`${styles.multipleUploadContainer}`}>
-        
-          <i className={styles.uploadIcon} htmlFor="file-uploader" />
+        <i className={styles.uploadIcon} htmlFor="file-uploader" />
 
-          <label className={styles.uploadMultipleText} htmlFor="file-uploader">
-            {labelText}
-          </label>
+        <label className={styles.uploadMultipleText} htmlFor="file-uploader">
+          {labelText}
+        </label>
 
-          <input
-            accept=".doc,.docx"
-            id="file-uploader"
-            multiple
-            name="file-uploader"
-            onChange={this.onChange}
-            ref={c => {
-              this.input = c
-            }}
-            type="file"
-          />
-        
+        <input
+          accept=".doc,.docx"
+          id="file-uploader"
+          multiple
+          name="file-uploader"
+          onChange={this.onChange}
+          ref={c => {
+            this.input = c
+          }}
+          type="file"
+        />
       </div>
     )
   }

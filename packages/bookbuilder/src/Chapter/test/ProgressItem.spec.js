@@ -7,21 +7,17 @@ import ProgressItem from '../ProgressItem'
 
 const { data } = global.mock
 const type = 'front'
-const chapters = data.chapters.filter((chapter) => {
-  return chapter.division === type
-})
+const chapters = data.chapters.filter(chapter => chapter.division === type)
 
-let props = {
+const props = {
   chapter: chapters[0],
   type: 'edit',
   modalContainer: {},
   update: sinon.spy(),
-  roles: []
+  roles: [],
 }
 
-const getWrapper = () => {
-  return shallow(<ProgressItem {...props} />)
-}
+const getWrapper = () => shallow(<ProgressItem {...props} />)
 
 test('should render correctly', () => {
   const wrapper = getWrapper()

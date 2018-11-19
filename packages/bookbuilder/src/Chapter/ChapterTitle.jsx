@@ -45,14 +45,14 @@ class ChapterTitle extends React.Component {
 
     return (
       <Title
-        isRenaming={isRenaming}
-        isLocked={chapter.lock !== null}
         goToEditor={this.goToEditor}
+        isLocked={chapter.lock !== null}
+        isRenaming={isRenaming}
+        number={chapter.number || null}
         onSaveRename={onSaveRename}
         // ref={node => (this.title = node)}
-        title={title}
         showNumber={showNumber}
-        number={chapter.number || null}
+        title={title}
       />
     )
 

@@ -25,6 +25,7 @@ class ChapterFirstRow extends React.Component {
     })
   }
 
+  /* eslint-disable  consistent-return */
   onSaveRename(title) {
     const { chapter, update } = this.props
     title = title.trim()
@@ -45,6 +46,7 @@ class ChapterFirstRow extends React.Component {
 
     this.setState({ isRenamingTitle: false })
   }
+  /* eslint-enable */
 
   // follow a chain of refs to call the save function of the input
   // this is done to facilitate sibling-sibling component communication
@@ -90,9 +92,9 @@ class ChapterFirstRow extends React.Component {
           onClickRename={this.onClickRename}
           // onClickSave={this.onClickSave}
           remove={remove}
-          user={user}
           type={type}
           update={update}
+          user={user}
         />
       </div>
     )

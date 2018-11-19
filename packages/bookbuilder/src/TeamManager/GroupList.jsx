@@ -29,32 +29,31 @@ export class GroupList extends React.Component {
 
   render() {
     const { teams, users, update, updateCollection, book } = this.props
-    const options  = this.options
+    const { options } = this
 
     // TODO -- refactor
     // do it like this to guarantee order of groups
     const groups = keys(options).map((key, i) => {
-
       // get team of this name
       const team = find(teams, team => team.teamType === key)
 
       if (!team) return null
-
+      /* eslint-disable */
       return (
         <div key={i}>
           <Group
+            book={book}
             options={options[team.teamType]}
             team={team}
-            book={book}
             update={update}
             updateCollection={updateCollection}
             users={users}
           />
-          <div className={styles.groupSeperator} />
+          <div className={styles.groupSeparator} />
         </div>
       )
     })
-
+    /* eslint-enable */
     return <div>{groups}</div>
   }
 }

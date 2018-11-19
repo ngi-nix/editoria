@@ -5,24 +5,16 @@ import React from 'react'
 import classes from './AlignmentBox.local.scss'
 
 const AlignmentBox = ({ active, id, noBorder, onClick }) => {
-  const styles = classNames(
-    classes.root,
-    {
-      [classes.active]: active,
-      [classes.borderTop]: noBorder.top,
-      [classes.borderRight]: noBorder.right,
-      [classes.borderBottom]: noBorder.bottom,
-      [classes.borderLeft]: noBorder.left
-    }
-  )
+  const styles = classNames(classes.root, {
+    [classes.active]: active,
+    [classes.borderTop]: noBorder.top,
+    [classes.borderRight]: noBorder.right,
+    [classes.borderBottom]: noBorder.bottom,
+    [classes.borderLeft]: noBorder.left,
+  })
 
   return (
-    <div
-      className={styles}
-      id={id}
-      onClick={onClick}
-      role='presentation'
-    />
+    <div className={styles} id={id} onClick={onClick} role="presentation" />
   )
 }
 

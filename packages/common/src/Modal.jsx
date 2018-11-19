@@ -1,5 +1,5 @@
 // TODO -- deprecate this in favor of abstract modal
-
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
@@ -61,8 +61,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-cp-no') {
       modalBodyText = (
         <div>
-          Copy Editors won’t be able to edit this chapter after updating this workflow
-          status.
+          Copy Editors won’t be able to edit this chapter after updating this
+          workflow status.
           <br />
           Are you sure you wish to continue?
         </div>
@@ -70,8 +70,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-cp-yes') {
       modalBodyText = (
         <div>
-          Copy Editors will be able to edit this chapter after updating this workflow
-          status.
+          Copy Editors will be able to edit this chapter after updating this
+          workflow status.
           <br />
           Are you sure you wish to continue?
         </div>
@@ -79,8 +79,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-author-no') {
       modalBodyText = (
         <div>
-          Authors won’t be able to edit this chapter after updating this workflow
-          status.
+          Authors won’t be able to edit this chapter after updating this
+          workflow status.
           <br />
           Are you sure you wish to continue?
         </div>
@@ -97,8 +97,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-cp-no-author-no') {
       modalBodyText = (
         <div>
-          Copy Editors and Authors won’t be able to edit this chapter after updating this workflow
-          status.
+          Copy Editors and Authors won’t be able to edit this chapter after
+          updating this workflow status.
           <br />
           Are you sure you wish to continue?
         </div>
@@ -106,8 +106,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-cp-no-author-yes') {
       modalBodyText = (
         <div>
-          Copy Editors won’t be able to edit but Authors will be able to edit this chapter after updating this workflow
-          status.
+          Copy Editors won’t be able to edit but Authors will be able to edit
+          this chapter after updating this workflow status.
           <br />
           Are you sure you wish to continue?
         </div>
@@ -115,8 +115,8 @@ export class BookBuilderModal extends React.Component {
     } else if (action === 'workflow-warning-cp-yes-author-no') {
       modalBodyText = (
         <div>
-          Copy Editors will be able to edit but Authors won’t be able to edit this chapter after updating this workflow
-          status.
+          Copy Editors will be able to edit but Authors won’t be able to edit
+          this chapter after updating this workflow status.
           <br />
           Are you sure you wish to continue?
         </div>

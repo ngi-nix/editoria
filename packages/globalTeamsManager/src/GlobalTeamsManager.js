@@ -27,8 +27,8 @@ const Ribbon = styled.div`
   color: #fff;
   font-size: 14px;
   line-height: 16px;
-  padding: calc(8px / 2) 0;
   margin-top: 8px;
+  padding: calc(8px / 2) 0;
   text-align: center;
   visibility: ${props => (props.hide ? 'hidden' : 'visible')};
   width: 60%;
@@ -43,8 +43,8 @@ const StyledSelect = styled(Select)`
   outline: none;
 
   > div:first-of-type {
-    border-radius: 0;
     border: 1px solid black;
+    border-radius: 0;
     box-shadow: none;
 
     &:hover {
@@ -61,8 +61,8 @@ const StyledSelect = styled(Select)`
 `
 
 const PageHeading = styled.h2`
-  margin: 0;
   font-size: 36px;
+  margin: 0;
   padding: 0 calc(8px * 2);
 `
 
@@ -174,7 +174,7 @@ class GlobalTeamsManager extends Component {
         return item.value
       }),
     }))
-    console.log('data', data)
+
     const promises = data.map(team => updateTeam(team))
 
     Promise.all(promises).then(res => {
