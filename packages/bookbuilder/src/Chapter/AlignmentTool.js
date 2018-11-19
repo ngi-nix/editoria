@@ -6,7 +6,8 @@ import classes from './AlignmentTool.local.scss'
 
 const AlignmentTool = ({ data, onClickAlignmentBox }) => {
   const onClick = event => {
-    const id = event.currentTarget.id
+    const { currentTarget } = event
+    const { id } = currentTarget
     onClickAlignmentBox(id)
   }
 

@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import Modal from 'editoria-common/src/Modal'
 
 class UnlockModal extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onUnlock = this.onUnlock.bind(this)
   }
 
-  onUnlock () {
+  onUnlock() {
     const { chapter, toggle, update } = this.props
 
     chapter.lock = null
@@ -17,21 +17,21 @@ class UnlockModal extends React.Component {
     toggle()
   }
 
-  render () {
+  render() {
     const { chapter, container, show, toggle } = this.props
-    const type = chapter.type
+    const { type } = chapter
 
     return (
       <Modal
-        title={'Unlock ' + type}
+        action="unlock"
         chapter={chapter}
-        action='unlock'
-        successText='Unlock'
-        type={type}
-        successAction={this.onUnlock}
-        show={show}
-        toggle={toggle}
         container={container}
+        show={show}
+        successAction={this.onUnlock}
+        successText="Unlock"
+        title={`Unlock ${type}`}
+        toggle={toggle}
+        type={type}
       />
     )
   }

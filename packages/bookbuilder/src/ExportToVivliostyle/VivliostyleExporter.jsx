@@ -47,7 +47,7 @@ class VivliostyleExporter extends Component {
         }
       })
       .catch(error => {
-        console.log('er', error)
+        console.error('er', error)
         showModalToggle()
       })
   }

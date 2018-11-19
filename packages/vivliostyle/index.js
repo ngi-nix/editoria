@@ -1,3 +1,3 @@
 module.exports = {
-  backend: () => app => require('./Vivliostyle')(app)
+  backend: () => app => require('./Vivliostyle')(app),
 }

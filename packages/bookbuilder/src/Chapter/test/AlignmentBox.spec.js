@@ -7,19 +7,15 @@ import AlignmentBox from '../AlignmentBox'
 
 const { data } = global.mock
 const type = 'front'
-const chapters = data.chapters.filter((chapter) => {
-  return chapter.division === type
-})
+const chapters = data.chapters.filter(chapter => chapter.division === type)
 
-let props = {
+const props = {
   chapter: chapters[0],
   position: 'left',
-  update: sinon.spy()
+  update: sinon.spy(),
 }
 
-const getWrapper = () => {
-  return shallow(<AlignmentBox {...props} />)
-}
+const getWrapper = () => shallow(<AlignmentBox {...props} />)
 
 test('should render correctly', () => {
   const wrapper = getWrapper()

@@ -34,9 +34,17 @@ class DropdownTitle extends React.Component {
     this.width = 180
   }
 
+  componentDidMount() {
+    window.addEventListener('click', this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleClickOutside)
+  }
+
   breakIntoColumns(items) {
     const max = this.maxItemsInColumn
-    const width = this.width
+    const { width } = this
 
     const columns = []
     let loopIt = 1
@@ -67,14 +75,14 @@ class DropdownTitle extends React.Component {
 
   getDropdownOptions() {
     const { chapter } = this.props
-    const division = chapter.division
+    const { division } = chapter
 
     return config.bookBuilder.chapter.dropdownValues[division]
   }
 
   getMenuItems() {
     const dropdownOptions = this.getDropdownOptions()
-    const onClickOption = this.onClickOption
+    const { onClickOption } = this
 
     const menuItems = map(dropdownOptions, (item, i) => (
       <MenuItem className={styles.menuItem} key={i} onClick={onClickOption}>
@@ -83,12 +91,6 @@ class DropdownTitle extends React.Component {
     ))
 
     return menuItems
-  }
-
-  onClickOption(event) {
-    const value = event.target.innerHTML.trim()
-    this.update(value)
-    this.close()
   }
 
   setCustomTitle(e) {
@@ -116,8 +118,8 @@ class DropdownTitle extends React.Component {
   }
 
   handleClickOutside(event) {
-    const domNode = findDOMNode(this)
-    const input = findDOMNode(this.dropDownInput)
+    const domNode = findDOMNode(this) // eslint-disable-line react/no-find-dom-node
+    const input = findDOMNode(this.dropDownInput) // eslint-disable-line react/no-find-dom-node
 
     if (input) input.focus()
 
@@ -128,17 +130,15 @@ class DropdownTitle extends React.Component {
     }
   }
 
-  componentDidMount() {
-    window.addEventListener('click', this.handleClickOutside)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('click', this.handleClickOutside)
+  onClickOption(event) {
+    const value = event.target.innerHTML.trim()
+    this.update(value)
+    this.close()
   }
 
   renderInput() {
     return (
-      <div className={styles.dropDownInputContairer}>
+      <div className={styles.dropDownInputContainer}>
         <TextInput
           className={`drop-input ${styles.dropDownInput}`}
           onSave={this.setCustomTitle}
@@ -157,7 +157,7 @@ class DropdownTitle extends React.Component {
     const columnCount = this.getColumnCount()
     const menuItems = this.getMenuItems()
     const input = this.renderInput()
-    const width = this.width
+    const { width } = this
 
     let columns = menuItems
     if (columnCount > 1) columns = this.breakIntoColumns(menuItems)

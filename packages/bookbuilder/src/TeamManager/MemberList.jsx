@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -6,7 +7,15 @@ import styles from '../styles/teamManager.local.scss'
 
 export class MemberList extends React.Component {
   render() {
-    const { members, color, team, update, book, updateCollection, users } = this.props
+    const {
+      members,
+      color,
+      team,
+      update,
+      book,
+      updateCollection,
+      users,
+    } = this.props
     // const remove = team.teamType.name !== 'Production Editor'
 
     const list = members.map((member, i) => (

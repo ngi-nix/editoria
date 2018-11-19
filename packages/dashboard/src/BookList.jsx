@@ -7,7 +7,7 @@ import styles from './dashboard.local.scss'
 
 class BookList extends React.Component {
   renderBookList() {
-    const { books, container, edit, remove, roles } = this.props
+    const { books, container, edit, remove } = this.props
 
     if (!books) return 'Fetching...'
 

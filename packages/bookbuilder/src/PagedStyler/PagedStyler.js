@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import axios from 'axios'
-import config from 'config'
 import CodeMirror from 'react-codemirror'
 import 'codemirror/mode/css/css'
-// import './codemirror.local.css'
 import 'codemirror/lib/codemirror.css'
 import classes from './PagedStyler.local.scss'
 
@@ -37,12 +34,14 @@ class PagedStyler extends Component {
     this.setState({ changed: doc })
   }
 
+  /* eslint-disable */
   handlePrint(e) {
     e.preventDefault()
     const pri = document.getElementById('printBook').contentWindow
     pri.focus()
     pri.print()
   }
+  /* eslint-enable */
 
   handleClick(e) {
     e.preventDefault()

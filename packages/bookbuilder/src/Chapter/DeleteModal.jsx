@@ -18,7 +18,7 @@ class DeleteModal extends React.Component {
 
   render() {
     const { chapter, container, show, toggle } = this.props
-    const type = chapter.type
+    const { type } = chapter
 
     return (
       <Modal

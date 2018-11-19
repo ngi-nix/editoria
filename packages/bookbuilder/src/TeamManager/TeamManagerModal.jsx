@@ -10,11 +10,11 @@ class TeamManagerModal extends React.Component {
 
     return (
       <TeamManager
+        book={book}
         teams={teams}
         updateCollection={updateCollection}
         updateTeam={updateTeam}
         users={users}
-        book={book}
       />
     )
   }

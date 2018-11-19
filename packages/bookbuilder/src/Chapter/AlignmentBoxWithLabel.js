@@ -11,17 +11,15 @@ const AlignmentBoxWithLabel = ({
   labelPositionRight,
   labelText,
   noBorder,
-  onClick
+  onClick,
 }) => {
   const styles = classNames(classes.root, {
-    [classes.reverseOrder]: labelPositionRight
+    [classes.reverseOrder]: labelPositionRight,
   })
 
   return (
     <div className={styles}>
-      <span className={classes.label}>
-        {labelText}
-      </span>
+      <span className={classes.label}>{labelText}</span>
       <AlignmentBox
         active={active}
         id={id}
