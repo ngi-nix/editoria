@@ -1,3 +1,17 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="1.3.1"></a>
+## 1.3.1 (2018-11-20)
+
+
+### Bug Fixes
+
+* **app:** remove importing styles from Manage component ([067f261](https://gitlab.coko.foundation/editoria/editoria/commit/067f261))
+
+
+
 # Editoria  
 
 ## 1.3.0
@@ -88,4 +102,3 @@
     * React integration  
     * Core    
 * Diacritics work within notes  
-
