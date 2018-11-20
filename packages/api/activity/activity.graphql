@@ -1,0 +1,33 @@
+type Activity {
+  id: ID!
+  created: String!
+  blame: String!
+  type: String!
+  operation: String!
+  oldValue: String!
+  change: String!
+}
+
+input NewActivityInput {
+  blame: String!
+  type: String!
+  operation: String!
+  oldValue: String!
+  change: String!
+}
+
+input ActivityInput {
+  blame: String
+  type: String
+  operation: String
+  id: ID
+}
+
+type Query {
+  Activity(input: ActivityInput!): Activity!
+  Activities: [Activity]!
+}
+
+type Mutation {
+  newActivity(input: NewActivityInput!): Activity!
+}

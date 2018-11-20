@@ -1,0 +1,28 @@
+type Book {
+  id: ID!
+  title: String!
+  deleted:Boolean
+  archived: Boolean
+  created: String!
+  updated: String
+  publicationDate: String
+  edition: Int
+  divisions: [String]!
+}
+
+input NewBookInput {
+  title: String!
+}
+
+input BookInput {
+  id: ID
+}
+
+type Query {
+  Book(input: BookInput!): Book!
+  Books: [Book]!
+}
+
+type Mutation {
+  newBook(input: NewBookInput!): Book!
+}
