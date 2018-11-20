@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-bookbuilder",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "classnames": "^2.2.5",
     "codemirror": "^5.40.2",
     "config": "^1.27.0",
-    "editoria-common": "^0.1.1",
+    "editoria-common": "^0.1.2",
     "font-awesome": "4.7.0",
     "lodash": "4.17.4",
     "pubsweet-client": "^2.5.5",
