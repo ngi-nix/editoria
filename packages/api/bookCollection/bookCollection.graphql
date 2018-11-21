@@ -1,0 +1,22 @@
+type BookCollection {
+  id: ID!
+  title: String!
+  books:[Book]!
+}
+
+input CollectionInput {
+  id: ID!
+}
+
+input NewBookCollectionInput {
+  title: String!
+}
+
+type Query {
+  getBookCollection(input: BookCollectionInput!): BookCollection!
+  getBookCollections: [BookCollection]!
+}
+
+type Mutation {
+  createBookCollection(input: NewBookCollectionInput!): BookCollection!
+}

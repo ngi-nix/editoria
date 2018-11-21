@@ -1,28 +1,28 @@
 type Book {
   id: ID!
+  collectionId: ID!
   title: String!
-  deleted:Boolean
-  archived: Boolean
-  created: String!
-  updated: String
-  publicationDate: String
-  edition: Int
-  divisions: [String]!
 }
 
 input NewBookInput {
   title: String!
+  collectionId: ID!
 }
 
 input BookInput {
-  id: ID
+  id: ID!
 }
 
+input DeleteBookInput {
+  id: ID!
+}
 type Query {
-  Book(input: BookInput!): Book!
-  Books: [Book]!
+  getBook(input: BookInput!): Book!
+  getBooks: [Book]!
 }
 
 type Mutation {
-  newBook(input: NewBookInput!): Book!
+  addBook(input: NewBookInput!): Book!
+  renameBook(input: NewBookInput!): Book!
+  deleteBook(input: DeleteBookInput!): Book!
 }

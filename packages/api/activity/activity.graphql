@@ -1,5 +1,6 @@
 type Activity {
   id: ID!
+  foreignId: ID!
   created: String!
   blame: String!
   type: String!
@@ -11,6 +12,7 @@ type Activity {
 input NewActivityInput {
   blame: String!
   type: String!
+  foreignId: ID!
   operation: String!
   oldValue: String!
   change: String!
@@ -20,6 +22,7 @@ input ActivityInput {
   blame: String
   type: String
   operation: String
+  foreignId: ID
   id: ID
 }
 

@@ -4,7 +4,7 @@ const bookComponent = require('./bookComponent')
 const bookComponentState = require('./bookComponentState')
 const bookComponentTranslation = require('./bookComponentTranslation')
 const bookTranslation = require('./bookTranslation')
-const collection = require('./collection')
+const bookCollection = require('./bookCollection')
 const collectionTranslation = require('./collectionTranslation')
 const contributor = require('./contributor')
 const division = require('./division')
@@ -23,7 +23,7 @@ module.exports = {
     bookComponentState.typeDefs,
     bookComponentTranslation.typeDefs,
     bookTranslation.typeDefs,
-    collection.typeDefs,
+    bookCollection.typeDefs,
     collectionTranslation.typeDefs,
     contributor.typeDefs,
     division.typeDefs,
@@ -41,7 +41,7 @@ module.exports = {
     bookComponentState.resolvers,
     bookComponentTranslation.resolvers,
     bookTranslation.resolvers,
-    collection.resolvers,
+    bookCollection.resolvers,
     collectionTranslation.resolvers,
     contributor.resolvers,
     division.resolvers,
@@ -56,7 +56,7 @@ module.exports = {
     // models: {
     // book: book.model,
     // bookComponent: bookComponent.model,
-    // collection: collection.model,
+    // bookCollection: bookCollection.model,
     // file: file.model,
     // lock: lock.model,
     // },
