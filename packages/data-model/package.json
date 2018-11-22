@@ -15,6 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "@pubsweet/base-model": "^1.0.9",
-    "uuid": "^3.3.2"
+    "@pubsweet/db-manager": "^2.0.9",
+    "@pubsweet/logger": "^0.2.7",
+    "jest": "^23.6.0",
+    "knex": "^0.15.2",
+    "pubsweet": "^3.0.9",
+    "pubsweet-server": "^10.1.0",
+    "uuid": "^3.3.2",
+    "waait": "^1.0.2"
   }
 }

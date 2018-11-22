@@ -18,14 +18,14 @@
 // When creating a new book, we need a corresponding translation and one division.
 // Add archived to data model diagram
 
-const Base = require('./editoriaBase')
+const Base = require('../editoriaBase')
 const {
   booleanDefaultFalse,
   date,
   id,
   string,
   year,
-} = require('./helpers').schema
+} = require('../helpers').schema
 
 class Book extends Base {
   constructor(properties) {
@@ -39,23 +39,26 @@ class Book extends Base {
 
   static get schema() {
     return {
-      archived: booleanDefaultFalse,
-      divisions: {
-        type: 'array',
-        items: id,
-        minItems: 1,
+      type: 'object',
+      properties: {
+        archived: booleanDefaultFalse,
+        divisions: {
+          type: 'array',
+          items: id,
+          minItems: 1,
+        },
+        referenceId: id,
+        publicationDate: date,
+        edition: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 100,
+        },
+        'copyright-statement': string,
+        'copyright-year': year,
+        'copyright-holder': string,
+        license: string,
       },
-      referenceId: id,
-      publicationDate: date,
-      edition: {
-        type: 'integer',
-        minimum: 1,
-        maximum: 100,
-      },
-      'copyright-statement': string,
-      'copyright-year': year,
-      'copyright-holder': string,
-      license: string,
     }
   }
 }

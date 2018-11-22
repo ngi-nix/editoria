@@ -11,6 +11,18 @@ class EditoriaBase extends BaseModel {
     this.deleted = false
   }
 
+  static get schema() {
+    return {
+      type: 'object',
+      properties: {
+        deleted: {
+          type: 'boolean',
+          default: false,
+        },
+      },
+    }
+  }
+
   findById(id) {
     this.find(id)
   }

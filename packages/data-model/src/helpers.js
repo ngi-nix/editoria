@@ -81,7 +81,7 @@ const schema = {
   },
   year: {
     type: 'string',
-    pattern: /(19|20\d{2})/,
+    pattern: '(19|20d{2})',
   },
 }
 
