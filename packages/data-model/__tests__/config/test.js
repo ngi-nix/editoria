@@ -3,8 +3,6 @@ const path = require('path')
 module.exports = {
   'pubsweet-server': {
     db: {
-      // temporary database name set by jest-environment-db
-      // database: global.__testDbName || 'test',
       database: 'test',
       port: 5499,
       user: 'testuser',
@@ -18,7 +16,7 @@ module.exports = {
     uploads: 'uploads',
   },
   authsome: {
-    mode: path.resolve(__dirname, '..', 'auth'),
+    mode: path.resolve(__dirname, 'auth'),
     teams: {
       teamTest: {
         name: 'Contributors',

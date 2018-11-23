@@ -23,8 +23,16 @@ const schema = {
     type: 'boolean',
     default: false,
   },
+  /*
+    This will accept a js Date object, as well as a Date.toISOString() string.
+    If the object is not valid, it will fail at the DATE type in the migration.
+
+    TO DO
+    Figure out if there is a way to make the wrong object fail
+    on validation time.
+  */
   date: {
-    type: 'string',
+    type: ['string', 'object'],
     format: 'date-time',
   },
   email: {
@@ -80,8 +88,11 @@ const schema = {
     format: 'uri',
   },
   year: {
-    type: 'string',
-    pattern: '(19|20d{2})',
+    // type: 'string',
+    // pattern: '(19|20d{2})',
+    type: 'integer',
+    minimum: 1900,
+    maximum: 2099,
   },
 }
 

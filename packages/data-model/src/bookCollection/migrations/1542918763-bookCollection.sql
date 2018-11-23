@@ -1,0 +1,10 @@
+CREATE TABLE Book_Collection (
+  -- BASE
+  id UUID PRIMARY KEY,
+  type TEXT NOT NULL,
+  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
+  updated TIMESTAMP WITH TIME ZONE,
+
+  -- EDITORIA BASE
+  deleted BOOLEAN DEFAULT FALSE
+);

@@ -1,10 +1,4 @@
 /**
- * ALREADY THERE
- * id
- * created
- * updated
- * deleted
- *
  * FOREIGN KEYS
  * collectionId
  * contributors
@@ -18,7 +12,12 @@
 // When creating a new book, we need a corresponding translation and one division.
 // Add archived to data model diagram
 
+const { Model } = require('objection')
+const uuid = require('uuid/v4')
+
 const Base = require('../editoriaBase')
+const { model: BookCollection } = require('../bookCollection')
+
 const {
   booleanDefaultFalse,
   date,
@@ -37,9 +36,23 @@ class Book extends Base {
     return 'Book'
   }
 
+  // static get relationMappings() {
+  //   return {
+  //     bookCollection: {
+  //       relation: Model.BelongsToOneRelation,
+  //       modelClass: BookCollection,
+  //       join: {
+  //         from: 'Book.collectionId',
+  //         to: 'BookCollection.id',
+  //       },
+  //     },
+  //   }
+  // }
+
   static get schema() {
     return {
       type: 'object',
+      // required: ['divisions'],
       properties: {
         archived: booleanDefaultFalse,
         divisions: {
@@ -54,13 +67,24 @@ class Book extends Base {
           minimum: 1,
           maximum: 100,
         },
-        'copyright-statement': string,
-        'copyright-year': year,
-        'copyright-holder': string,
+        copyrightStatement: string,
+        copyrightYear: year,
+        copyrightHolder: string,
         license: string,
       },
     }
   }
+
+  // If no reference id is given, assume that this is a new book and create one
+  $beforeInsert() {
+    super.$beforeInsert()
+    this.referenceId = this.referenceId || uuid()
+  }
+
+  // TO DO
+  // createNewEdition() {
+  //   // create new book with same ref id
+  // }
 }
 
 module.exports = Book
