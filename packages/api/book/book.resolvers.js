@@ -8,8 +8,6 @@ const getBook = async (_, args, ctx, info) => {
   return book
 }
 
-const getBooks = (_, __, ctx) => ctx.models.book.find({}).exec()
-
 const addBook = async (_, args, ctx) => {
   const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
   const languageId = language.id
@@ -38,10 +36,9 @@ const renameBook = async (_, args, ctx) => {
     title: args.input.title,
   })
 
-  const book = await ctx.models.book.findById(args.input.id).exec()
   return {
-    id: book.id,
-    collectionId: book.collectionId,
+    id: args.input.id,
+    collectionId: args.input.collectionId,
     title: updatedTranslation.title,
   }
 }
@@ -52,7 +49,6 @@ const deleteBook = async (_, args, ctx) =>
 module.exports = {
   Query: {
     getBook,
-    getBooks,
   },
   Mutation: {
     addBook,

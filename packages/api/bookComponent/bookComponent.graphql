@@ -1,0 +1,76 @@
+scalar Date
+type Pagination {
+  left: Boolean!
+  right: Boolean!
+}
+type Lock {
+  created: Date!
+  username: String!
+  userId: ID!
+}
+
+type WorkFlowItem {
+  label: String!
+  type: String!
+  value: Int!
+}
+
+type BookComponent {
+  id: ID!
+  title: String!
+  division: String!
+  order: Int!
+  number: Int!
+  lock: Lock
+  pagination: Pagination!
+  archived: Boolean!
+  workflowStages: [WorkFlowItem]
+  content: String
+  componentType: String!
+  trackChanges: Boolean!
+  uploading: Boolean!
+
+}
+
+input NewBookComponentInput {
+  title: String!
+  bookId: ID!
+  componentType: String!
+  division: String!
+}
+
+input WordFileInput {
+  title: String
+  content: String
+  componentType: String
+}
+
+input UpdateBookComponentInput {
+  id: ID!
+  title: String
+  deleted: Boolean
+  lock: Lock
+  pagination: Pagination
+  workflowStages: WorkFlowItem
+  trackChanges: Boolean
+}
+
+type Query {
+  getBookComponent(id: ID!): BookComponent!
+  getBookComponents(bookId: ID!): [BookComponent]!
+}
+
+type Mutation {
+  ingestWordFile(input: [WordFileInput]!): [BookComponent]!
+  addBookComponent(input: NewBookComponentInput): BookComponent!
+  renameBookComponent(input: UpdateBookComponentInput): BookComponent!
+  deleteBookComponent(input: UpdateBookComponentInput): BookComponent!
+  archiveBookComponent(input: UpdateBookComponentInput): BookComponent!
+  updateWorkflowState(input: UpdateBookComponentInput): BookComponent!
+  updatePagination(input: UpdateBookComponentInput): BookComponent!
+  updateBookComponentOrder(division: String): BookComponent!
+  unlockBookComponent(input: UpdateBookComponentInput): BookComponent!
+  lockBookComponent(input: UpdateBookComponentInput): BookComponent!
+  updateTrackChanges(input: UpdateBookComponentInput): BookComponent!
+  updateContent(input: UpdateBookComponentInput): BookComponent!
+}

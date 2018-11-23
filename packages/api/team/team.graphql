@@ -1,0 +1,19 @@
+type Team {
+  id: ID!
+  name: String!
+  members: [ID]!
+}
+
+type Query {
+  getBookTeams(bookId: ID!): [Team]!
+  getGlobalTeams: [Team]!
+}
+
+input UpdateTeamInput {
+  id: ID!
+  members: [ID]!
+}
+
+type Mutation {
+  updateTeamMembers(input: UpdateTeamInput): [Team]!
+}

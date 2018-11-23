@@ -18,7 +18,8 @@ input DeleteBookInput {
 }
 type Query {
   getBook(input: BookInput!): Book!
-  getBooks: [Book]!
+  exportBook(bookId: ID!): String!
+  downloadBookEPUB(bookId: ID!): String!
 }
 
 type Mutation {

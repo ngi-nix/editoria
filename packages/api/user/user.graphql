@@ -1,0 +1,10 @@
+type User {
+  id: ID!
+  username: String!
+  fullName: String!
+  email: String!
+}
+
+type Query {
+  findUser(search: String!): [User]!
+}
