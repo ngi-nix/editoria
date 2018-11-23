@@ -1,12 +1,12 @@
 /*
-  INHERITED
-  ---
-  id
+  TO DO
 
-  langISO
+  relation mappings
+
+  force all iso input to either lowercase or uppercase
 */
 
-const Base = require('./editoriaBase')
+const Base = require('../editoriaBase')
 
 // define list of valid language iso's
 const languageList = [
@@ -200,7 +200,7 @@ const languageList = [
 // put them all into a string separated by |
 const languageString = languageList.join('|')
 // and make a regular expression out of it
-const langISOregex = ['/^(', languageString, ')$/i'].join('')
+const langIsoRegex = ['^(', languageString, ')$'].join('')
 
 class Language extends Base {
   constructor(properties) {
@@ -214,9 +214,15 @@ class Language extends Base {
 
   static get schema() {
     return {
-      langISO: {
-        type: 'string',
-        pattern: langISOregex,
+      type: 'object',
+      required: ['langIso'],
+      properties: {
+        langIso: {
+          regexp: {
+            pattern: langIsoRegex,
+            flags: 'i',
+          },
+        },
       },
     }
   }

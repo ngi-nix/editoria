@@ -1,15 +1,5 @@
--- exports.up = (knex, Promise) =>
---   Promise.all([
---     knex.schema.createTable('Book'),
---     table => {
---       table.boolean('archived')
---       table.boolean('deleted')
---     },
---   ])
 
--- exports.down = (knex, Promise) => Promise.all([knex.schema.dropTable('Book')])
-
-CREATE TABLE Book (
+CREATE TABLE book (
   -- BASE
   id UUID PRIMARY KEY,
   type TEXT NOT NULL,
@@ -20,8 +10,13 @@ CREATE TABLE Book (
   deleted BOOLEAN DEFAULT FALSE,
 
   -- FOREIGN
-  collection_id UUID references Book_Collection,
-
+  collection_id UUID NOT NULL references book_collection,
+  /*
+    TO DO
+    We cannot enforce the integrity of division id's, as an array of foreign
+    keys is not yet supported in postgres. There seems to be some work on this,
+    so we should update when the feature is in postgres.
+  */
   divisions JSONB NOT NULL,
 
   -- OWN

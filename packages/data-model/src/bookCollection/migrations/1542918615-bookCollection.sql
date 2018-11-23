@@ -1,4 +1,4 @@
-CREATE TABLE Book_Collection (
+CREATE TABLE book_collection (
   -- BASE
   id UUID PRIMARY KEY,
   type TEXT NOT NULL,

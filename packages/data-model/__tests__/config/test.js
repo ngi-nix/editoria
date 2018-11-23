@@ -3,10 +3,11 @@ const path = require('path')
 module.exports = {
   'pubsweet-server': {
     db: {
-      database: 'test',
+      // database: 'test',
       port: 5499,
       user: 'testuser',
       password: 'testpass',
+      database: global.__testDbName || 'test',
     },
     pool: { min: 0, max: 10, idleTimeoutMillis: 1000 },
     enableExperimentalGraphql: true,

@@ -1,16 +1,24 @@
-/**
- * FOREIGN KEYS
- * collectionId
- * contributors
- * funding
- */
-
 /*
-  Model representing a single book in Editoria.
+  Book: A single book
 */
 
-// When creating a new book, we need a corresponding translation and one division.
-// Add archived to data model diagram
+/*
+  TO DO
+  ---
+  On create, we need a corresponding translation (by default english).
+
+  On create, we need the corresponding divisions. Divisions should be read
+  from the config and fall back to a default.
+
+  Since we cannot enforce the integrity of division ids in sql (see note there),
+  we should check it here.
+
+  Foreign keys missing: (implement when their models are done)
+  - contributors
+  - funding
+
+  createNewEdition method: new book with same ref id
+*/
 
 const { Model } = require('objection')
 const uuid = require('uuid/v4')
@@ -36,25 +44,26 @@ class Book extends Base {
     return 'Book'
   }
 
-  // static get relationMappings() {
-  //   return {
-  //     bookCollection: {
-  //       relation: Model.BelongsToOneRelation,
-  //       modelClass: BookCollection,
-  //       join: {
-  //         from: 'Book.collectionId',
-  //         to: 'BookCollection.id',
-  //       },
-  //     },
-  //   }
-  // }
+  static get relationMappings() {
+    return {
+      bookCollection: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: BookCollection,
+        join: {
+          from: 'Book.collectionId',
+          to: 'BookCollection.id',
+        },
+      },
+    }
+  }
 
   static get schema() {
     return {
       type: 'object',
-      // required: ['divisions'],
+      required: ['collectionId'],
       properties: {
         archived: booleanDefaultFalse,
+        collectionId: id,
         divisions: {
           type: 'array',
           items: id,
@@ -75,16 +84,15 @@ class Book extends Base {
     }
   }
 
-  // If no reference id is given, assume that this is a new book and create one
   $beforeInsert() {
     super.$beforeInsert()
+    // If no reference id is given, assume that this is a new book & create one
     this.referenceId = this.referenceId || uuid()
   }
 
-  // TO DO
-  // createNewEdition() {
-  //   // create new book with same ref id
-  // }
+  getCollection() {
+    return this.$relatedQuery('bookCollection')
+  }
 }
 
 module.exports = Book

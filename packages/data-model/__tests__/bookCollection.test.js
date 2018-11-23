@@ -1,19 +1,9 @@
-const path = require('path')
-// const uuid = require('uuid/v4')
+const registerComponents = require('./helpers/registerComponents')
+registerComponents(['book', 'bookCollection'])
 
-const pathToComponent = path.resolve(
-  __dirname,
-  '..',
-  'src',
-  'bookCollection',
-  'index',
-)
-
-process.env.NODE_CONFIG_DIR = path.resolve(__dirname, 'config')
-process.env.NODE_CONFIG = `{"pubsweet":{"components":["${pathToComponent}"]}}`
-
-const { model: BookCollection } = require('../src/bookCollection')
+const uuid = require('uuid/v4')
 const { dbCleaner } = require('pubsweet-server/test')
+const { Book, BookCollection } = require('../src').models
 
 describe('BookCollection', () => {
   beforeEach(async () => {
@@ -22,5 +12,29 @@ describe('BookCollection', () => {
 
   it('can add book collections', async () => {
     // await new BookCollection().save()
+    const divisionId = uuid()
+
+    let collection, collectionId
+    await new BookCollection().save().then(res => {
+      // console.log(res)
+      collection = res
+      collectionId = res.id
+    })
+
+    await new Book({
+      collectionId,
+      divisions: [divisionId],
+    }).save()
+    // .then(res => console.log(res))
+
+    await new Book({
+      collectionId,
+      divisions: [uuid()],
+    }).save()
+    // .then(res => console.log(res))
+
+    // console.log(collection)
+
+    await collection.getBooks().then(res => console.log(res))
   })
 })

@@ -1,13 +1,9 @@
-const path = require('path')
+const registerComponents = require('./helpers/registerComponents')
+registerComponents(['book', 'bookCollection'])
+
 const uuid = require('uuid/v4')
-
-const pathToComponent = path.resolve(__dirname, '..', 'src', 'book', 'index')
-
-process.env.NODE_CONFIG_DIR = path.resolve(__dirname, 'config')
-process.env.NODE_CONFIG = `{"pubsweet":{"components":["${pathToComponent}"]}}`
-
-const { model: Book } = require('../src/book')
 const { dbCleaner } = require('pubsweet-server/test')
+const { Book, BookCollection } = require('../src').models
 
 describe('Book', () => {
   beforeEach(async () => {
@@ -18,9 +14,13 @@ describe('Book', () => {
     const divisionId = uuid()
     const publicationDate = new Date()
 
-    // await new Book({ title: 'new' }).save()
+    let collectionId
+    await new BookCollection().save().then(res => (collectionId = res.id))
 
+    // const book = await new Book({
     await new Book({
+      // collectionId: uuid(),
+      collectionId,
       copyrightStatement: 'lkfjslkjf',
       copyrightYear: 1999,
       copyrightHolder: 'djlsfjdsjlf',
@@ -29,5 +29,9 @@ describe('Book', () => {
       license: 'mine it is',
       publicationDate,
     }).save()
+
+    // await Book.all().then(res => console.log(res))
+    // await BookCollection.all().then(res => console.log(res))
+    // await book.getCollection().then(res => console.log(res))
   })
 })
