@@ -1,0 +1,14 @@
+type Division {
+  id: ID!
+  label: String
+  bookComponents: [BookComponent]!
+}
+
+type Mutation {
+  updateBookComponentOrder(
+    sourceDivisionId: ID!
+    targetDivisionId: ID!
+    bookComponentId: ID!
+    index: Int!
+  ): [Division]!
+}

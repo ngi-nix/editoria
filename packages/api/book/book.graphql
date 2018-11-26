@@ -2,6 +2,7 @@ type Book {
   id: ID!
   collectionId: ID!
   title: String!
+  divisions: [Division]!
 }
 
 input NewBookInput {
