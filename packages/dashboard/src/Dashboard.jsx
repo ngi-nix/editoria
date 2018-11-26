@@ -79,7 +79,7 @@ export class Dashboard extends React.Component {
 
     const book = {
       title: newTitle || 'Untitled',
-      productionEditor: this.isProductionEditor(user.id) ? [user] : [],
+      productionEditor: this.isGlobalProductionEditor(user.id) ? [user] : [],
     }
 
     createCollection(book).then(res => {
