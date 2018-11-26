@@ -12,14 +12,12 @@ describe('Book Collection Translation', () => {
   it('can add languages', async () => {
     await new Language({
       langIso: 'EL',
-    })
-      .save()
-      .then(res => console.log(res))
+    }).save()
+    // .then(res => console.log(res))
 
     await new Language({
       langIso: 'en',
-    })
-      .save()
-      .then(res => console.log(res))
+    }).save()
+    // .then(res => console.log(res))
   })
 })

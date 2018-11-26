@@ -15,8 +15,8 @@
   object.
 */
 
-const Base = require('./editoriaBase')
-const { foreignType, id, object } = require('./helpers').schema
+const Base = require('../editoriaBase')
+const { foreignType, id, object } = require('../helpers').schema
 
 class Activity extends Base {
   constructor(properties) {

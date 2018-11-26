@@ -13,7 +13,7 @@
 
 // TO DO make sure we want foreignType && foreignId ??
 
-const Base = require('./editoriaBase')
+const Base = require('../editoriaBase')
 
 const {
   arrayOfStringsNotEmpty,
@@ -23,7 +23,7 @@ const {
   mimetype,
   stringNotEmpty,
   uri,
-} = require('./helpers').schema
+} = require('../helpers').schema
 
 class File extends Base {
   constructor(properties) {

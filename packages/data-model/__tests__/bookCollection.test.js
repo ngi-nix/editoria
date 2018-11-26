@@ -35,6 +35,7 @@ describe('BookCollection', () => {
 
     // console.log(collection)
 
-    await collection.getBooks().then(res => console.log(res))
+    await collection.getBooks()
+    // .then(res => console.log(res))
   })
 })

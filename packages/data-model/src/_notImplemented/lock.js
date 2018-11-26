@@ -10,8 +10,8 @@
 
 // TO DO -- review foreign id and foreign type
 
-const Base = require('./editoriaBase')
-const { foreignType, id } = require('./helpers').schema
+const Base = require('../editoriaBase')
+const { foreignType, id } = require('../helpers').schema
 
 class Lock extends Base {
   constructor(properties) {

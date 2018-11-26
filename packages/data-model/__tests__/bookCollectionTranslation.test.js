@@ -36,7 +36,10 @@ describe('Book Collection Translation', () => {
       .then(res => (translation = res))
 
     // console.log(translation)
-    // await translation.getCollection().then(res => console.log(res))
-    // await translation.getLanguage().then(res => console.log(res))
+    await translation.getCollection()
+    // .then(res => console.log(res))
+
+    await translation.getLanguage()
+    // .then(res => console.log(res))
   })
 })

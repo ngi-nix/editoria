@@ -1,9 +1,11 @@
 /*
   TO DO
 
-  relation mappings
+  Relation mappings
 
-  force all iso input to either lowercase or uppercase
+  Force all iso input to either lowercase or uppercase
+
+  There should be no duplicate language ISO's
 */
 
 const Base = require('../editoriaBase')

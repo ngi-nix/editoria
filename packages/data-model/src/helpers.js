@@ -5,6 +5,7 @@ const schema = {
       type: 'string',
       format: 'uuid',
     },
+    default: [],
   },
   arrayOfStrings: {
     type: 'array',
@@ -18,6 +19,9 @@ const schema = {
       type: 'string',
       minLength: 1,
     },
+  },
+  boolean: {
+    type: 'boolean',
   },
   booleanDefaultFalse: {
     type: 'boolean',

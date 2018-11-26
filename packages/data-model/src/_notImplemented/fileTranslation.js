@@ -5,8 +5,8 @@
   fileId
 */
 
-const Base = require('./editoriaBase')
-const { string } = require('./helpers').schema
+const Base = require('../editoriaBase')
+const { string } = require('../helpers').schema
 
 class FileTranslation extends Base {
   constructor(properties) {
