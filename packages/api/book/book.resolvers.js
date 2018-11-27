@@ -9,15 +9,13 @@ const getBook = async (_, args, ctx, info) => {
 }
 
 const addBook = async (_, args, ctx) => {
-  const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
-  const languageId = language.id
   const newBook = await ctx.models.book.create({
     collectionId: args.input.collectionId,
   })
   const bookTranslation = await ctx.models.bookTranslation.create({
     bookId: newBook.id,
     title: args.input.title,
-    languageId,
+    langISO: 'en',
   })
 
   // TODO: Probably create and assign teams too
@@ -28,11 +26,9 @@ const addBook = async (_, args, ctx) => {
   }
 }
 const renameBook = async (_, args, ctx) => {
-  const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
-  const languageId = language.id
   const updatedTranslation = await ctx.models.bookTranslation.update({
     bookId: args.input.id,
-    languageId,
+    langISO: 'en',
     title: args.input.title,
   })
 
@@ -57,17 +53,16 @@ module.exports = {
   },
   Book: {
     async title(book, _, ctx) {
-      const language = await ctx.models.language
-        .findByISO({ langISO: 'en' })
-        .exec()
-      const languageId = language.id
       const bookTranslation = await ctx.models.bookTranslation
         .findByFields({
           book: book.id,
-          languageId,
+          langISO: 'en',
         })
         .exec()
       return bookTranslation.title
+    },
+    divisions(book, _, ctx) {
+      return ctx.model.division.findByBookId({ bookId: book.id }).exec()
     },
   },
 }

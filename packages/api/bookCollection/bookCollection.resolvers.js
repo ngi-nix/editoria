@@ -28,24 +28,16 @@ module.exports = {
   },
   BookCollection: {
     async title(bookCollection, _, ctx) {
-      const language = await ctx.models.language
-        .findByISO({ langISO: 'en' })
-        .exec()
-      const languageId = language.id
       const bookCollectionTranslation = await ctx.models.bookCollectionTranslation
         .findByFields({
           collectionId: bookCollection.id,
-          languageId,
+          langISO: 'en',
         })
         .exec()
       return bookCollectionTranslation.title
     },
     async books(bookCollection, _, ctx) {
       const resolvedBooks = []
-      const language = await ctx.models.language
-        .findByISO({ langISO: 'en' })
-        .exec()
-      const languageId = language.id
       const books = await ctx.models.book
         .findByCollectionId({
           collectionId: bookCollection.id,
@@ -54,7 +46,7 @@ module.exports = {
 
       forEach(books, async book => {
         const bookTranslation = await ctx.models.bookTranslation
-          .findById({ bookId: book.id, languageId })
+          .findById({ bookId: book.id, langISO: 'en' })
           .exec()
         resolvedBooks.push({ id: book.id, title: bookTranslation.title })
       })

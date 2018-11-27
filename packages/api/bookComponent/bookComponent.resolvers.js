@@ -1,9 +1,6 @@
 const findIndex = require('lodash/findIndex')
-const indexOf = require('lodash/indexOf')
 const groupBy = require('lodash/groupBy')
-const flatMapDepth = require('lodash/flatMapDepth')
 const map = require('lodash/flatMapDepth')
-const pullAll = require('lodash/pullAll')
 const get = require('lodash/get')
 const assign = require('lodash/assign')
 const config = require('config')
@@ -19,13 +16,6 @@ const getBookComponent = async (_, args, ctx) => {
 
   return bookComponent
 }
-const getBookComponents = async (_, args, ctx) => {
-  const bookComponents = await ctx.models.bookComponent
-    .find({ bookId: args.input.bookId })
-    .exec()
-
-  return bookComponents
-}
 
 // TODO: Pending implementation
 const ingestWordFile = async (_, args, ctx) => {
@@ -40,8 +30,6 @@ const addBookComponent = async (_, args, ctx) => {
   const division = await ctx.models.division
     .findByFields({ bookId: args.input.bookId, label: args.input.division })
     .exec()
-  const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
-  const languageId = language.id
   const newBookComponent = {
     bookId: args.input.bookId,
     componentType: args.input.componentType,
@@ -60,7 +48,7 @@ const addBookComponent = async (_, args, ctx) => {
   await ctx.models.bookComponentTranslation
     .create({
       bookComponentId: createdBookComponent.id,
-      languageId,
+      langISO: 'en',
       title: args.input.title,
       content: '',
     })
@@ -100,12 +88,10 @@ const addBookComponent = async (_, args, ctx) => {
 }
 
 const renameBookComponent = async (_, args, ctx) => {
-  const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
-  const languageId = language.id
   await ctx.models.bookComponentTranslation
     .update({
       bookComponentId: args.input.id,
-      languageId,
+      langISO: 'en',
       title: args.input.title,
     })
     .exec()
@@ -152,12 +138,6 @@ const updateWorkflowState = async (_, args, ctx) => {
   return ctx.models.bookComponent.findById({ id: args.input.id }).exec()
 }
 
-const updateBookComponentOrder = (
-  _,
-  args,
-  ctx, // take care of component type and division
-) => ctx.models.bookComponent.create(args.input)
-
 const unlockBookComponent = (_, args, ctx) => {
   ctx.models.lock.delete({
     foreignId: args.input.id,
@@ -175,12 +155,10 @@ const lockBookComponent = (_, args, ctx) => {
 }
 
 const updateContent = async (_, args, ctx) => {
-  const language = await ctx.models.language.findByISO({ langISO: 'en' }).exec()
-  const languageId = language.id
   await ctx.models.bookComponentTranslation
     .update({
       bookComponentId: args.input.id,
-      languageId,
+      langISO: 'en',
       content: args.input.content,
     })
     .exec()
@@ -200,7 +178,6 @@ const updatePagination = async (_, args, ctx) => {
 module.exports = {
   Query: {
     getBookComponent,
-    getBookComponents,
   },
   Mutation: {
     ingestWordFile,
@@ -210,43 +187,28 @@ module.exports = {
     archiveBookComponent,
     updateWorkflowState,
     updatePagination,
-    updateBookComponentOrder,
     unlockBookComponent,
     lockBookComponent,
     updateContent,
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
-      const language = await ctx.models.language
-        .findByISO({ langISO: 'en' })
-        .exec()
-      const languageId = language.id
       const bookComponentTranslation = await ctx.models.bookComponentTranslation
         .findByFields({
           bookComponentId: bookComponent.id,
-          languageId,
+          langISO: 'en',
         })
         .exec()
       return bookComponentTranslation.title
     },
     async content(bookComponent, _, ctx) {
-      const language = await ctx.models.language
-        .findByISO({ langISO: 'en' })
-        .exec()
-      const languageId = language.id
       const bookComponentTranslation = await ctx.models.bookComponentTranslation
         .findByFields({
           bookComponentId: bookComponent.id,
-          languageId,
+          langISO: 'en',
         })
         .exec()
       return bookComponentTranslation.content
-    },
-    async division(bookComponent, _, ctx) {
-      const division = await ctx.models.division
-        .findByBookId({ bookId: bookComponent.bookId })
-        .exec()
-      return division.label
     },
     async trackChanges(bookComponent, _, ctx) {
       const bookComponentState = await ctx.models.bookComponentState
@@ -267,34 +229,7 @@ module.exports = {
       }
       return locked
     },
-    async order(bookComponent, _, ctx) {
-      const dbDivisions = await ctx.models.division
-        .findByBookId({ bookId: bookComponent.bookId })
-        .exec()
-      const bookBuilder = get(config, 'bookBuilder')
-      const configDivisions = get(bookBuilder, 'divisions')
-
-      if (!configDivisions) {
-        throw new Error('Book Builder divisions config is missing')
-      }
-
-      const bookComponentsOrder = pullAll(
-        flatMapDepth(
-          configDivisions,
-          div =>
-            map(dbDivisions, division => {
-              if (div.name === division.label) {
-                return division.bookComponents
-              }
-              return null
-            }),
-          2,
-        ),
-        [null],
-      )
-      return indexOf(bookComponentsOrder, bookComponent.id)
-    },
-    async number(bookComponent, _, ctx) {
+    async componentTypeOrder(bookComponent, _, ctx) {
       const { componentType } = bookComponent
       const division = await ctx.models.division
         .findBookComponentId({ bookComponentId: bookComponent.id })

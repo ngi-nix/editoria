@@ -6,7 +6,6 @@ type Division {
 
 type Mutation {
   updateBookComponentOrder(
-    sourceDivisionId: ID!
     targetDivisionId: ID!
     bookComponentId: ID!
     index: Int!
