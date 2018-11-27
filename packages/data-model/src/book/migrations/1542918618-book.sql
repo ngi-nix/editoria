@@ -1,31 +1,31 @@
 
-CREATE TABLE book (
-  -- BASE
-  id UUID PRIMARY KEY,
-  type TEXT NOT NULL,
-  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
-  updated TIMESTAMP WITH TIME ZONE,
+create table book (
+  -- base
+  id uuid primary key,
+  type text not null,
+  created timestamp with time zone not null default current_timestamp,
+  updated timestamp with time zone,
 
-  -- EDITORIA BASE
-  deleted BOOLEAN DEFAULT FALSE,
+  -- editoria base
+  deleted boolean default false,
 
-  -- FOREIGN
-  collection_id UUID NOT NULL references book_collection,
+  -- foreign
+  collection_id uuid not null references book_collection,
   /*
-    TO DO
-    We cannot enforce the integrity of division id's, as an array of foreign
-    keys is not yet supported in postgres. There seems to be some work on this,
+    to do
+    we cannot enforce the integrity of division id's, as an array of foreign
+    keys is not yet supported in postgres. there seems to be some work on this,
     so we should update when the feature is in postgres.
   */
-  divisions JSONB NOT NULL,
+  divisions jsonb not null,
 
-  -- OWN
-  archived BOOLEAN DEFAULT FALSE,
-  copyright_statement TEXT,
-  copyright_holder TEXT,
-  copyright_year INT,
-  edition INT,
-  license TEXT,
-  publication_date DATE,
-  reference_id UUID
+  -- own
+  archived boolean default false,
+  copyright_statement text,
+  copyright_holder text,
+  copyright_year int,
+  edition int,
+  license text,
+  publication_date date,
+  reference_id uuid
 );

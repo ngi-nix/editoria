@@ -1,18 +1,23 @@
-CREATE TABLE book_collection_translation (
-  -- BASE
-  id UUID PRIMARY KEY,
-  type TEXT NOT NULL,
-  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
-  updated TIMESTAMP WITH TIME ZONE,
+create table book_collection_translation (
+  -- base
+  id uuid primary key,
+  type text not null,
+  created timestamp with time zone not null default current_timestamp,
+  updated timestamp with time zone,
 
-  -- EDITORIA BASE
-  deleted BOOLEAN DEFAULT FALSE,
+  -- editoria base
+  deleted boolean default false,
 
-  --FOREIGN
-  collection_id UUID NOT NULL REFERENCES book_collection,
-  language_id UUID NOT NULL REFERENCES language,
+  -- translation
+  language_iso text not null,
 
-  --OWN
-  description TEXT,
-  title TEXT NOT NULL
+  --foreign
+  collection_id uuid not null references book_collection,
+
+  --own
+  description text,
+  title text not null,
+
+  -- constraints
+  unique(collection_id, language_iso)
 );

@@ -1,14 +1,10 @@
 const registerComponents = require('./helpers/registerComponents')
-registerComponents(['book', 'language', 'bookTranslation', 'bookCollection'])
+registerComponents(['book', 'bookTranslation', 'bookCollection'])
 
 const uuid = require('uuid/v4')
 const { dbCleaner } = require('pubsweet-server/test')
-const {
-  Book,
-  BookCollection,
-  BookTranslation,
-  Language,
-} = require('../src').models
+
+const { Book, BookCollection, BookTranslation } = require('../src').models
 
 describe('BookTranslation', () => {
   beforeEach(async () => {
@@ -16,7 +12,7 @@ describe('BookTranslation', () => {
   })
 
   it('can add book translations', async () => {
-    let book, collection, language, translation
+    let book, collection, translation
 
     await new BookCollection().save().then(res => (collection = res))
 
@@ -33,11 +29,9 @@ describe('BookTranslation', () => {
       divisions: [uuid()],
     }).save()
 
-    await new Language({ langIso: 'en' }).save().then(res => (language = res))
-
     await new BookTranslation({
       bookId: book.id,
-      languageId: language.id,
+      languageIso: 'EN',
       title: 'some title',
     })
       .save()
@@ -46,10 +40,18 @@ describe('BookTranslation', () => {
         translation = res
       })
 
-    await translation.getBook()
-    // .then(res => console.log(res))
+    await new BookTranslation({
+      bookId: book.id,
+      languageIso: 'fr',
+      title: 'some title',
+    })
+      .save()
+      .then(res => {
+        // console.log(res)
+      })
 
-    await translation.getLanguage()
-    // .then(res => console.log(res))
+    await translation.getBook().then(res => {
+      // console.log(res)
+    })
   })
 })

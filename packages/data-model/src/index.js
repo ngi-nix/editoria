@@ -6,7 +6,6 @@ const bookComponentState = require('./bookComponentState')
 const bookComponentTranslation = require('./bookComponentTranslation')
 const bookTranslation = require('./bookTranslation')
 const division = require('./division')
-const language = require('./language')
 
 module.exports = {
   book,
@@ -16,7 +15,6 @@ module.exports = {
   bookComponentState,
   bookComponentTranslation,
   division,
-  language,
   models: {
     Book: book.model,
     BookCollection: bookCollection.model,
@@ -26,6 +24,5 @@ module.exports = {
     BookComponentTranslation: bookComponentTranslation.model,
     BookTranslation: bookTranslation.model,
     Division: division.model,
-    Language: language.model,
   },
 }

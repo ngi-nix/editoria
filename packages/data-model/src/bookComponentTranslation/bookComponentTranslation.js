@@ -1,10 +1,4 @@
 /*
-  FOREIGN
-  bookComponentId
-  languageId
-*/
-
-/*
   TO DO
 
   Define notes schema more accurately
@@ -12,12 +6,11 @@
 
 const { Model } = require('objection')
 
-const Base = require('../editoriaBase')
+const Translation = require('../translation')
 const { model: BookComponent } = require('../bookComponent')
-const { model: Language } = require('../language')
 const { id, string } = require('../helpers').schema
 
-class BookComponentTranslation extends Base {
+class BookComponentTranslation extends Translation {
   constructor(properties) {
     super(properties)
     this.type = 'bookComponentTranslation'
@@ -37,25 +30,16 @@ class BookComponentTranslation extends Base {
           to: 'BookComponent.id',
         },
       },
-      language: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: Language,
-        join: {
-          from: 'BookComponentTranslation.languageId',
-          to: 'Language.id',
-        },
-      },
     }
   }
 
   static get schema() {
     return {
       type: 'object',
-      required: ['bookComponentId', 'languageId'],
+      required: ['bookComponentId'],
       properties: {
         bookComponentId: id,
         content: string,
-        languageId: id,
         notes: {
           type: 'array',
           items: {
@@ -72,10 +56,6 @@ class BookComponentTranslation extends Base {
 
   getBookComponent() {
     return this.$relatedQuery('bookComponent')
-  }
-
-  getLanguage() {
-    return this.$relatedQuery('language')
   }
 }
 

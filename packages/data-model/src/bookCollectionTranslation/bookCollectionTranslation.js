@@ -8,12 +8,11 @@
 
 const { Model } = require('objection')
 
-const Base = require('../editoriaBase')
+const Translation = require('../translation')
 const { model: BookCollection } = require('../bookCollection')
-const { model: Language } = require('../language')
 const { id, string } = require('../helpers').schema
 
-class BookCollectionTranslation extends Base {
+class BookCollectionTranslation extends Translation {
   constructor(properties) {
     super(properties)
     this.type = 'bookCollectionTranslation'
@@ -33,25 +32,16 @@ class BookCollectionTranslation extends Base {
           to: 'BookCollection.id',
         },
       },
-      language: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: Language,
-        join: {
-          from: 'BookCollectionTranslation.languageId',
-          to: 'Language.id',
-        },
-      },
     }
   }
 
   static get schema() {
     return {
       type: 'object',
-      required: ['collectionId', 'languageId', 'title'],
+      required: ['collectionId', 'title'],
       properties: {
         collectionId: id,
         description: string,
-        languageId: id,
         title: string,
       },
     }
@@ -59,10 +49,6 @@ class BookCollectionTranslation extends Base {
 
   getCollection() {
     return this.$relatedQuery('bookCollection')
-  }
-
-  getLanguage() {
-    return this.$relatedQuery('language')
   }
 }
 

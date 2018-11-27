@@ -8,12 +8,17 @@ create table book_component_translation (
   -- editoria base
   deleted boolean default false,
 
+  -- translation
+  language_iso text not null,
+
   -- foreign
   book_component_id uuid not null references book_component,
-  language_id uuid not null references language,
 
   -- own
   content text,
   notes jsonb,
-  title text
+  title text,
+
+  -- constraints
+  unique(book_component_id, language_iso)
 );

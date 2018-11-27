@@ -1,10 +1,10 @@
-CREATE TABLE book_collection (
-  -- BASE
-  id UUID PRIMARY KEY,
-  type TEXT NOT NULL,
-  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
-  updated TIMESTAMP WITH TIME ZONE,
+create table book_collection (
+  -- base
+  id uuid primary key,
+  type text not null,
+  created timestamp with time zone not null default current_timestamp,
+  updated timestamp with time zone,
 
-  -- EDITORIA BASE
-  deleted BOOLEAN DEFAULT FALSE
+  -- editoria base
+  deleted boolean default false
 );

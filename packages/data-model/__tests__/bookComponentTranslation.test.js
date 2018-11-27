@@ -5,7 +5,6 @@ registerComponents([
   'bookComponent',
   'bookComponentTranslation',
   'division',
-  'language',
 ])
 
 const uuid = require('uuid/v4')
@@ -17,7 +16,6 @@ const {
   BookComponent,
   BookComponentTranslation,
   Division,
-  Language,
 } = require('../src').models
 
 describe('Book Component Translation', () => {
@@ -26,7 +24,7 @@ describe('Book Component Translation', () => {
   })
 
   it('can create book component translations', async () => {
-    let book, collection, component, division, language, translation
+    let book, collection, component, division, translation
 
     await new BookCollection().save().then(res => (collection = res))
     await new Book({
@@ -51,21 +49,22 @@ describe('Book Component Translation', () => {
       .save()
       .then(res => (component = res))
 
-    await new Language({ langIso: 'en' }).save().then(res => (language = res))
-
     await new BookComponentTranslation({
       bookComponentId: component.id,
-      languageId: language.id,
+      languageIso: 'EN',
     })
       .save()
       .then(res => (translation = res))
 
     // console.log(translation)
 
-    await translation.getBookComponent()
+    await new BookComponentTranslation({
+      bookComponentId: component.id,
+      languageIso: 'el',
+    }).save()
     // .then(res => console.log(res))
 
-    await translation.getLanguage()
+    await translation.getBookComponent()
     // .then(res => console.log(res))
   })
 })
