@@ -1,65 +1,40 @@
-const activity = require('./activity')
 const book = require('./book')
 const bookComponent = require('./bookComponent')
+const bookCollection = require('./bookCollection')
+const division = require('./division')
+const bookCollectionTranslation = require('./bookCollectionTranslation')
 const bookComponentState = require('./bookComponentState')
 const bookComponentTranslation = require('./bookComponentTranslation')
 const bookTranslation = require('./bookTranslation')
-const bookCollection = require('./bookCollection')
-const collectionTranslation = require('./collectionTranslation')
-const contributor = require('./contributor')
-const division = require('./division')
 const file = require('./file')
-const fileTranslation = require('./fileTranslation')
-const language = require('./language')
-const lock = require('./lock')
-const sponsor = require('./sponsor')
 const merge = require('lodash/merge')
 
 module.exports = {
   typeDefs: [
-    activity.typeDefs,
     book.typeDefs,
     bookComponent.typeDefs,
-    bookComponentState.typeDefs,
-    bookComponentTranslation.typeDefs,
-    bookTranslation.typeDefs,
     bookCollection.typeDefs,
-    collectionTranslation.typeDefs,
-    contributor.typeDefs,
     division.typeDefs,
     file.typeDefs,
-    fileTranslation.typeDefs,
-    language.typeDefs,
-    lock.typeDefs,
-    sponsor.typeDefs,
   ].join(' '),
   resolvers: merge(
     {},
-    activity.resolvers,
     book.resolvers,
     bookComponent.resolvers,
-    bookComponentState.resolvers,
-    bookComponentTranslation.resolvers,
-    bookTranslation.resolvers,
     bookCollection.resolvers,
-    collectionTranslation.resolvers,
-    contributor.resolvers,
     division.resolvers,
     file.resolvers,
-    fileTranslation.resolvers,
-    language.resolvers,
-    lock.resolvers,
-    sponsor.resolvers,
   ),
   context: {
-    // TODO: Models should be placed here
-    // models: {
-    // book: book.model,
-    // bookComponent: bookComponent.model,
-    // bookCollection: bookCollection.model,
+    book: book.model,
+    bookComponent: bookComponent.model,
+    bookCollection: bookCollection.model,
+    division: division.model,
+    bookCollectionTranslation: bookCollectionTranslation.model,
+    bookComponentState: bookComponentState.model,
+    bookComponentTranslation: bookComponentTranslation.model,
+    bookTranslation: bookTranslation.model,
     // file: file.model,
-    // lock: lock.model,
-    // },
     // TODO: loaders should be implemented
     // loaders: loaders()
   },

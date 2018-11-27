@@ -1,0 +1,16 @@
+{
+  "name": "editoria-api",
+  "version": "0.0.0",
+  "description": "GraphQl API for Editoria",
+  "main": "index.js",
+  "keywords": [
+    "pubsweet",
+    "pubsweet-component",
+    "graphql"
+  ],
+  "author": "Alexandros Georgantas",
+  "license": "ISC",
+  "dependencies": {
+    "editoria-data-model": "^0.0.0"
+  }
+}
