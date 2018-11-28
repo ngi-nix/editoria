@@ -28,7 +28,6 @@ type BookComponent {
   componentType: String!
   trackChanges: Boolean!
   uploading: Boolean!
-
 }
 
 input NewBookComponentInput {
@@ -54,11 +53,11 @@ input UpdateBookComponentInput {
   trackChanges: Boolean
 }
 
-type Query {
+extend type Query {
   getBookComponent(id: ID!): BookComponent!
 }
 
-type Mutation {
+extend type Mutation {
   ingestWordFile(input: [WordFileInput]!): [BookComponent]!
   addBookComponent(input: NewBookComponentInput): BookComponent!
   renameBookComponent(input: UpdateBookComponentInput): BookComponent!

@@ -1,10 +1,10 @@
 type BookCollection {
   id: ID!
   title: String!
-  books:[Book]!
+  books: [Book]!
 }
 
-input CollectionInput {
+input BookCollectionInput {
   id: ID!
 }
 
@@ -12,11 +12,11 @@ input NewBookCollectionInput {
   title: String!
 }
 
-type Query {
+extend type Query {
   getBookCollection(input: BookCollectionInput!): BookCollection!
   getBookCollections: [BookCollection]!
 }
 
-type Mutation {
+extend type Mutation {
   createBookCollection(input: NewBookCollectionInput!): BookCollection!
 }

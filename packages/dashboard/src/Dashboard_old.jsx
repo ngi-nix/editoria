@@ -14,6 +14,7 @@ import styles from './dashboard.local.scss'
 
 export class Dashboard extends React.Component {
   constructor(props) {
+    console.log('old JDLFJKSFJJLSDJFKJ')
     super(props)
 
     this.createBook = this.createBook.bind(this)
@@ -43,6 +44,7 @@ export class Dashboard extends React.Component {
     getTeams()
     // .then(() => this.findBooksWithNoTeams())
   }
+
   // This is due to the fact that user sse are not available.
   // Refactor on pubsweet-server is needed
   componentWillReceiveProps(nextProps) {
@@ -95,39 +97,6 @@ export class Dashboard extends React.Component {
     const { updateCollection } = this.props.actions
     updateCollection(patch)
   }
-
-  /*
-    Return an array of all the roles that the current user has
-  */
-  // getRoles() {
-  // const { user } = this.props
-  // console.log('teams', this.state)
-
-  // let roles = []
-  // if (user.admin) roles.push('admin')
-
-  // function addRole(role) {
-  //   roles = union(roles, [role])
-  // }
-
-  // forEach(user.teams, t => {
-  //   switch (t.teamType.name) {
-  //     case 'Production Editor':
-  //       addRole('production-editor')
-  //       break
-  //     case 'Copy Editor':
-  //       addRole('copy-editor')
-  //       break
-  //     case 'Author':
-  //       addRole('author')
-  //       break
-  //     default:
-  //       break
-  //   }
-  // })
-
-  // return roles
-  // }
 
   /*
     Remove the given book.

@@ -9,6 +9,6 @@ input NewFileInput {
   source: String
 }
 
-type Mutation {
+extend type Mutation {
   uploadFile(input: NewFileInput!): File
 }

@@ -14,6 +14,7 @@ module.exports = {
   bookComponent,
   bookComponentState,
   bookComponentTranslation,
+  bookTranslation,
   division,
   models: {
     Book: book.model,

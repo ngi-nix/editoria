@@ -12,6 +12,7 @@ const addBook = async (_, args, ctx) => {
   const newBook = await ctx.models.book.create({
     collectionId: args.input.collectionId,
   })
+
   const bookTranslation = await ctx.models.bookTranslation.create({
     bookId: newBook.id,
     title: args.input.title,
@@ -25,6 +26,7 @@ const addBook = async (_, args, ctx) => {
     title: bookTranslation.title,
   }
 }
+
 const renameBook = async (_, args, ctx) => {
   const updatedTranslation = await ctx.models.bookTranslation.update({
     bookId: args.input.id,

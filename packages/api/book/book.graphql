@@ -17,13 +17,14 @@ input BookInput {
 input DeleteBookInput {
   id: ID!
 }
-type Query {
+
+extend type Query {
   getBook(input: BookInput!): Book!
   exportBook(bookId: ID!): String!
   downloadBookEPUB(bookId: ID!): String!
 }
 
-type Mutation {
+extend type Mutation {
   addBook(input: NewBookInput!): Book!
   renameBook(input: NewBookInput!): Book!
   deleteBook(input: DeleteBookInput!): Book!
