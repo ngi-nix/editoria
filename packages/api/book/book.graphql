@@ -5,27 +5,23 @@ type Book {
   divisions: [Division]!
 }
 
-input NewBookInput {
-  title: String!
+input CreateBookInput {
   collectionId: ID!
+  title: String!
 }
 
-input BookInput {
-  id: ID!
-}
-
-input DeleteBookInput {
-  id: ID!
-}
+# input DeleteBookInput {
+#   id: ID!
+# }
 
 extend type Query {
-  getBook(input: BookInput!): Book!
+  getBook(id: ID!): Book!
   exportBook(bookId: ID!): String!
   downloadBookEPUB(bookId: ID!): String!
 }
 
 extend type Mutation {
-  addBook(input: NewBookInput!): Book!
-  renameBook(input: NewBookInput!): Book!
-  deleteBook(input: DeleteBookInput!): Book!
+  createBook(input: CreateBookInput!): Book!
+  renameBook(id: ID!, title: String!): Book!
+  deleteBook(id: ID!): Book!
 }

@@ -1,15 +1,32 @@
 scalar Date
+
 type Pagination {
   left: Boolean!
   right: Boolean!
 }
+
+input PaginationInput {
+  left: Boolean!
+  right: Boolean!
+}
+
 type Lock {
   created: Date!
   username: String!
   userId: ID!
 }
 
+input LockInput {
+  userId: ID!
+}
+
 type WorkFlowItem {
+  label: String!
+  type: String!
+  value: Int!
+}
+
+input WorkFlowItemInput {
   label: String!
   type: String!
   value: Int!
@@ -47,9 +64,9 @@ input UpdateBookComponentInput {
   id: ID!
   title: String
   deleted: Boolean
-  lock: Lock
-  pagination: Pagination
-  workflowStages: WorkFlowItem
+  lock: LockInput
+  pagination: PaginationInput
+  workflowStages: WorkFlowItemInput
   trackChanges: Boolean
 }
 

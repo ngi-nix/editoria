@@ -15,7 +15,6 @@
 const { Model } = require('objection')
 
 const Base = require('../editoriaBase')
-const { model: Book } = require('../book')
 const { arrayOfIds, id, stringNotEmpty } = require('../helpers').schema
 
 class Division extends Base {
@@ -41,6 +40,8 @@ class Division extends Base {
   }
 
   static get relationMappings() {
+    const { model: Book } = require('../book')
+
     return {
       book: {
         relation: Model.BelongsToOneRelation,

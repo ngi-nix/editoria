@@ -7,7 +7,7 @@ import styles from './dashboard.local.scss'
 
 class BookList extends React.Component {
   renderBookList() {
-    const { books, container, edit, remove } = this.props
+    const { books, container, renameBook, remove } = this.props
 
     if (!books) return 'Fetching...'
 
@@ -25,9 +25,9 @@ class BookList extends React.Component {
       <Book
         book={book}
         container={container}
-        edit={edit}
         key={book.id}
         remove={remove}
+        renameBook={renameBook}
       />
     ))
 
@@ -49,8 +49,8 @@ BookList.propTypes = {
     }),
   ).isRequired,
   container: PropTypes.any.isRequired,
-  edit: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
+  renameBook: PropTypes.func.isRequired,
   roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 

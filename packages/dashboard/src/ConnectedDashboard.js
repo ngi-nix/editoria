@@ -1,57 +1,50 @@
-/* eslint-disable */
+/* eslint-disable no-console */
 
 import React from 'react'
-
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 
 import Dashboard from './Dashboard'
-
-import { getBookCollections } from './queries'
+import {
+  createBookMutation,
+  getBookCollectionsQuery,
+  renameBookMutation,
+} from './queries'
 
 const mapper = {
-  getBookCollections,
+  createBookMutation,
+  getBookCollectionsQuery,
+  renameBookMutation,
 }
 
-const mapProps = args => {
-  return {
-    collections: args.getBookCollections.data.collections,
-    loading: args.getBookCollections.loading,
-  }
-}
+const mapProps = args => ({
+  collections: get(args.getBookCollectionsQuery, 'data.getBookCollections'),
+  createBook: args.createBookMutation.createBook,
+  loading: args.getBookCollectionsQuery.loading,
+  renameBook: args.renameBookMutation.renameBook,
+})
 
-// const Composed = adopt(mapper, mapProps)
+const Composed = adopt(mapper, mapProps)
 
 const Connected = () => {
-  // const collections = [
-  //   {
-  //     title: 'Books',
-  //     books: [],
-  //   },
-  // ]
-
-  const addBook = () => {
-    console.log('add book')
-  }
-
-  const renameBook = () => {
-    console.log('rename book')
-  }
-
   const deleteBook = () => {
     console.log('delete book')
   }
 
   return (
     <Composed>
-      {({ collections, loading }) => (
-        <Dashboard
-          addBook={addBook}
-          collections={collections}
-          deleteBook={deleteBook}
-          loading={loading}
-          renameBook={renameBook}
-        />
-      )}
+      {({ createBook, collections, loading, renameBook }) => {
+        console.log('coll', collections)
+        return (
+          <Dashboard
+            collections={collections}
+            createBook={createBook}
+            deleteBook={deleteBook}
+            loading={loading}
+            renameBook={renameBook}
+          />
+        )
+      }}
     </Composed>
   )
 }

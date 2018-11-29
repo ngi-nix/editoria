@@ -34,7 +34,7 @@ class AddBookModal extends React.Component {
 
   /* eslint-disable */
   onCreate() {
-    const { create, toggle } = this.props
+    const { collectionId, create, toggle } = this.props
 
     const input = this.textInput
     const newTitle = input.value.trim()
@@ -45,7 +45,15 @@ class AddBookModal extends React.Component {
       })
     }
 
-    create(newTitle)
+    create({
+      variables: {
+        input: {
+          collectionId,
+          title: newTitle,
+        },
+      },
+    })
+
     toggle()
   }
   /* eslint-enable */
@@ -113,6 +121,7 @@ class AddBookModal extends React.Component {
 }
 
 AddBookModal.propTypes = {
+  collectionId: PropTypes.string.isRequired,
   create: PropTypes.func.isRequired,
   container: PropTypes.any.isRequired,
   show: PropTypes.bool.isRequired,
