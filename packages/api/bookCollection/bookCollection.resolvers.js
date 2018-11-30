@@ -4,8 +4,8 @@ const {
   BookCollectionTranslation,
 } = require('editoria-data-model/src').models
 
-const { pubSubManager } = pubsweetServer
-const pubsub = pubSubManager.getPubsub()
+const { pubsubManager } = pubsweetServer
+const pubsub = pubsubManager.getPubsub()
 
 const { COLLECTION_ADDED } = require('./const')
 

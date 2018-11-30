@@ -1,7 +1,7 @@
 const pubsweetServer = require('pubsweet-server')
 
-const { pubSubManager } = pubsweetServer
-const pubsub = pubSubManager.getPubsub()
+const { pubsubManager } = pubsweetServer
+const pubsub = pubsubManager.getPubsub()
 
 const { BOOK_ADDED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
 const { Book, BookTranslation } = require('editoria-data-model/src').models

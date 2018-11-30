@@ -21,4 +21,4 @@ extend type Mutation {
   createBookCollection(input: NewBookCollectionInput!): BookCollection!
 }
 
-type Subscription { collectionAdded: BookCollection }
+extend type Subscription { collectionAdded: BookCollection }
