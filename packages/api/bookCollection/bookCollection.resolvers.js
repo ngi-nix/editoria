@@ -1,4 +1,10 @@
+const pubsweetServer = require('pubsweet-server')
 const forEach = require('lodash/forEach')
+
+const { pubSubManager } = pubsweetServer
+const pubsub = pubSubManager.getPubsub()
+
+const { COLLECTION_ADDED } = require('./const')
 
 const getBookCollection = async (_, args, ctx) => {
   const bookCollection = await ctx.models.bookCollection
@@ -15,8 +21,12 @@ const getBookCollection = async (_, args, ctx) => {
 const getBookCollections = (_, __, ctx) =>
   ctx.models.bookCollection.find({}).exec()
 
-const createBookCollection = (_, args, ctx) =>
-  ctx.models.bookCollection.create(args.input)
+const createBookCollection = async (_, args, ctx) => {
+  const bookCollection = await ctx.models.bookCollection
+    .create(args.input)
+    .exec()
+  pubsub.publish(COLLECTION_ADDED, { collectionAdded: bookCollection })
+}
 
 module.exports = {
   Query: {
@@ -52,6 +62,11 @@ module.exports = {
       })
 
       return resolvedBooks
+    },
+  },
+  Subscription: {
+    collectionAdded: {
+      subscribe: () => pubsub.asyncIterator(COLLECTION_ADDED),
     },
   },
 }

@@ -20,3 +20,5 @@ extend type Query {
 extend type Mutation {
   createBookCollection(input: NewBookCollectionInput!): BookCollection!
 }
+
+type Subscription { collectionAdded: BookCollection }

@@ -29,3 +29,9 @@ extend type Mutation {
   renameBook(input: NewBookInput!): Book!
   deleteBook(input: DeleteBookInput!): Book!
 }
+
+extend type Subscription { 
+  bookAdded: Book! 
+  bookDeleted: ID!
+  bookRenamed: Book!
+}

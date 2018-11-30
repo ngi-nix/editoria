@@ -1,3 +1,10 @@
+const pubsweetServer = require('pubsweet-server')
+
+const { pubSubManager } = pubsweetServer
+const pubsub = pubSubManager.getPubsub()
+
+const { BOOK_ADDED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
+
 const getBook = async (_, args, ctx, info) => {
   const book = await ctx.models.book.findById(args.input.id).exec()
 
@@ -19,6 +26,7 @@ const addBook = async (_, args, ctx) => {
     langISO: 'en',
   })
 
+  pubsub.publish(BOOK_ADDED, { bookAdded: newBook })
   // TODO: Probably create and assign teams too
   return {
     id: newBook.id,
@@ -34,6 +42,14 @@ const renameBook = async (_, args, ctx) => {
     title: args.input.title,
   })
 
+  pubsub.publish(BOOK_RENAMED, {
+    bookRenamed: {
+      id: args.input.id,
+      collectionId: args.input.collectionId,
+      title: updatedTranslation.title,
+    },
+  })
+
   return {
     id: args.input.id,
     collectionId: args.input.collectionId,
@@ -41,8 +57,13 @@ const renameBook = async (_, args, ctx) => {
   }
 }
 
-const deleteBook = async (_, args, ctx) =>
-  ctx.models.book.update({ id: args.input.id, deleted: true })
+const deleteBook = async (_, args, ctx) => {
+  const deletedBook = await ctx.models.book
+    .update({ id: args.input.id, deleted: true })
+    .exec()
+  pubsub.publish(BOOK_DELETED, { bookDeleted: deletedBook.id })
+  return deletedBook
+}
 
 module.exports = {
   Query: {
@@ -65,6 +86,17 @@ module.exports = {
     },
     divisions(book, _, ctx) {
       return ctx.model.division.findByBookId({ bookId: book.id }).exec()
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(BOOK_ADDED),
+    },
+    bookDeleted: {
+      subscribe: () => pubsub.asyncIterator(BOOK_DELETED),
+    },
+    bookRenamed: {
+      subscribe: () => pubsub.asyncIterator(BOOK_RENAMED),
     },
   },
 }
