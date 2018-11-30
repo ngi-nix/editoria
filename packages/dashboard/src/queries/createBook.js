@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 
 import { GET_BOOK_COLLECTIONS } from './getBookCollections'
 
-const ADD_BOOK = gql`
+const CREATE_BOOK = gql`
   mutation CreateBook($input: CreateBookInput!) {
     createBook(input: $input) {
       id
@@ -19,14 +19,16 @@ const refetchQueries = [
   },
 ]
 
-const addBookMutation = props => {
+const createBookMutation = props => {
   const { render } = props
 
   return (
-    <Mutation mutation={ADD_BOOK} refetchQueries={refetchQueries}>
-      {(addBook, addBookResult) => render({ addBook, addBookResult })}
+    <Mutation mutation={CREATE_BOOK} refetchQueries={refetchQueries}>
+      {(createBook, createBookResult) =>
+        render({ createBook, createBookResult })
+      }
     </Mutation>
   )
 }
 
-export default addBookMutation
+export default createBookMutation
