@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 const pubsweetServer = require('pubsweet-server')
-const forEach = require('lodash/forEach')
-=======
 const {
   Book,
   BookCollectionTranslation,
 } = require('editoria-data-model/src').models
->>>>>>> 8d8af1f556556b8076341ce9dba892a69af8de16
 
 const { pubSubManager } = pubsweetServer
 const pubsub = pubSubManager.getPubsub()
