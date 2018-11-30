@@ -3,25 +3,14 @@ import { State } from 'react-powerplug'
 
 import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
-// import AddBookModal from './AddBookModal'
+import AddBookModal from './AddBookModal'
 
 import styles from './dashboard.local.scss'
 
 const Dashboard = props => {
-  // console.log('KFJSLDJFLSDJLFJLKSDJ')
-  const {
-    collections,
-    // addBook,
-    // loading,
-    // renameBook,
-    deleteBook,
-  } = props
+  const { collections, createBook, deleteBook, loading, renameBook } = props
 
-  // if (loading) return spinner
-
-  const editBook = () => {
-    // console.log('edit book')
-  }
+  if (loading) return 'Loading...'
 
   const className = `${
     styles.bookList
@@ -30,30 +19,30 @@ const Dashboard = props => {
   return (
     <div className={className}>
       <State initial={{ showModal: false }}>
-        {(state, setState) => {
-          // console.log(state)
-          // const { showModal } = state
+        {({ state, setState }) => {
+          const { showModal } = state
           const toggleModal = () => {
             setState({ showModal: !state.showModal })
           }
 
-          collections.map(collection => (
+          return collections.map(collection => (
             <div className="container col-lg-offset-2 col-lg-8">
               <DashboardHeader title={collection.title} toggle={toggleModal} />
 
               <BookList
                 books={collection.books}
                 container={this}
-                edit={editBook}
                 remove={deleteBook}
+                renameBook={renameBook}
               />
 
-              {/* <AddBookModal
+              <AddBookModal
+                collectionId={collection.id}
                 container={this}
-                create={addBook}
+                create={createBook}
                 show={showModal}
                 toggle={toggleModal}
-              /> */}
+              />
             </div>
           ))
         }}

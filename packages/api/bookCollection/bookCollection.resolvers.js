@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 const pubsweetServer = require('pubsweet-server')
 const forEach = require('lodash/forEach')
+=======
+const {
+  Book,
+  BookCollectionTranslation,
+} = require('editoria-data-model/src').models
+>>>>>>> 8d8af1f556556b8076341ce9dba892a69af8de16
 
 const { pubSubManager } = pubsweetServer
 const pubsub = pubSubManager.getPubsub()
@@ -19,7 +26,7 @@ const getBookCollection = async (_, args, ctx) => {
 }
 
 const getBookCollections = (_, __, ctx) =>
-  ctx.models.bookCollection.find({}).exec()
+  ctx.connectors.BookCollection.fetchAll(ctx)
 
 const createBookCollection = async (_, args, ctx) => {
   const bookCollection = await ctx.models.bookCollection
@@ -38,30 +45,14 @@ module.exports = {
   },
   BookCollection: {
     async title(bookCollection, _, ctx) {
-      const bookCollectionTranslation = await ctx.models.bookCollectionTranslation
-        .findByFields({
-          collectionId: bookCollection.id,
-          langISO: 'en',
-        })
-        .exec()
-      return bookCollectionTranslation.title
+      const bookCollectionTranslation = await BookCollectionTranslation.query()
+        .where('collectionId', bookCollection.id)
+        .where('languageIso', 'en')
+
+      return bookCollectionTranslation[0].title
     },
     async books(bookCollection, _, ctx) {
-      const resolvedBooks = []
-      const books = await ctx.models.book
-        .findByCollectionId({
-          collectionId: bookCollection.id,
-        })
-        .exec()
-
-      forEach(books, async book => {
-        const bookTranslation = await ctx.models.bookTranslation
-          .findById({ bookId: book.id, langISO: 'en' })
-          .exec()
-        resolvedBooks.push({ id: book.id, title: bookTranslation.title })
-      })
-
-      return resolvedBooks
+      return Book.query().where('collectionId', bookCollection.id)
     },
   },
   Subscription: {

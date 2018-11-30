@@ -7,9 +7,6 @@
   ---
   On create, we need a corresponding translation (by default english).
 
-  On create, we need the corresponding divisions. Divisions should be read
-  from the config and fall back to a default.
-
   Since we cannot enforce the integrity of division ids in sql (see note there),
   we should check it here.
 
@@ -22,9 +19,13 @@
 
 const { Model } = require('objection')
 const uuid = require('uuid/v4')
+const get = require('lodash/get')
+
+const config = require('config')
 
 const Base = require('../editoriaBase')
 const { model: BookCollection } = require('../bookCollection')
+const { model: Division } = require('../division')
 
 const {
   booleanDefaultFalse,
@@ -67,7 +68,8 @@ class Book extends Base {
         divisions: {
           type: 'array',
           items: id,
-          minItems: 1,
+          default: [],
+          // minItems: 1,
         },
         referenceId: id,
         publicationDate: date,
@@ -84,10 +86,40 @@ class Book extends Base {
     }
   }
 
+  async $afterInsert() {
+    super.$afterInsert()
+
+    /*
+      ** Create divisions on book creation **
+      If no divisions in config, make a single default 'body' division.
+      Otherwise create the ones declared in the config.
+    */
+    const divisions = get(config, 'bookBuilder.divisions')
+
+    if (!divisions) {
+      const division = await this.addDivision('body')
+      this.divisions = [division.id]
+    } else {
+      const createdDivisions = await Promise.all(
+        divisions.map(division => this.addDivision(division.name)),
+      )
+      this.divisions = createdDivisions.map(d => d.id)
+    }
+
+    this.save()
+  }
+
   $beforeInsert() {
     super.$beforeInsert()
     // If no reference id is given, assume that this is a new book & create one
     this.referenceId = this.referenceId || uuid()
+  }
+
+  async addDivision(label) {
+    return new Division({
+      bookId: this.id,
+      label,
+    }).save()
   }
 
   getCollection() {

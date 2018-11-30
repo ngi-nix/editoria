@@ -59,7 +59,8 @@
   "dependencies": {
     "babel-preset-stage-0": "^6.24.1"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/react-adopt", "**/react-powerplug"]
+  }
 }

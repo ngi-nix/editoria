@@ -21,4 +21,5 @@ const getBookCollectionsQuery = props => {
   return <Query query={GET_BOOK_COLLECTIONS}>{render}</Query>
 }
 
+export { GET_BOOK_COLLECTIONS }
 export default getBookCollectionsQuery

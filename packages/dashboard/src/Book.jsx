@@ -17,7 +17,7 @@ class Book extends React.Component {
     this.onClickRename = this.onClickRename.bind(this)
     this.onClickSave = this.onClickSave.bind(this)
     this.removeBook = this.removeBook.bind(this)
-    this.renameBook = this.renameBook.bind(this)
+    this.rename = this.rename.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
 
     this.state = {
@@ -39,18 +39,18 @@ class Book extends React.Component {
 
   handleKeyOnInput(event) {
     if (event.charCode !== 13) return
-    this.renameBook()
+    this.rename()
   }
 
-  renameBook() {
-    const { book, edit } = this.props
+  rename() {
+    const { book, renameBook } = this.props
 
-    const patch = {
-      id: book.id,
-      title: this.renameTitle.value,
-    }
-
-    edit(patch)
+    renameBook({
+      variables: {
+        id: book.id,
+        title: this.renameTitle.value,
+      },
+    })
 
     this.setState({
       isRenaming: false,
@@ -81,9 +81,11 @@ class Book extends React.Component {
       isRenaming: true,
     })
   }
+
   onClickSave() {
-    this.renameBook()
+    this.rename()
   }
+
   renderTitle() {
     const { book } = this.props
     const { isRenaming } = this.state
@@ -217,8 +219,8 @@ Book.propTypes = {
   }).isRequired,
   container: PropTypes.any.isRequired,
   history: PropTypes.any.isRequired,
-  edit: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
+  renameBook: PropTypes.func.isRequired,
   roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 

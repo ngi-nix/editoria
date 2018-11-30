@@ -23,8 +23,8 @@ class EditoriaBase extends BaseModel {
     }
   }
 
-  findById(id) {
-    this.find(id)
+  static async findById(id) {
+    return this.find(id)
   }
 }
 

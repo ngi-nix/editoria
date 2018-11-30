@@ -19,7 +19,7 @@
     "font-awesome": "4.7.0",
     "formik": "^0.11.11",
     "lodash": "4.17.4",
-    "pubsweet-client": "^2.5.5",
+    "pubsweet-client": "^6.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "5.0.4",

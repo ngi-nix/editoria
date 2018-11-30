@@ -4,6 +4,7 @@ const { pubSubManager } = pubsweetServer
 const pubsub = pubSubManager.getPubsub()
 
 const { BOOK_ADDED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
+const { Book, BookTranslation } = require('editoria-data-model/src').models
 
 const getBook = async (_, args, ctx, info) => {
   const book = await ctx.models.book.findById(args.input.id).exec()
@@ -15,46 +16,40 @@ const getBook = async (_, args, ctx, info) => {
   return book
 }
 
-const addBook = async (_, args, ctx) => {
-  const newBook = await ctx.models.book.create({
-    collectionId: args.input.collectionId,
-  })
+const createBook = async (_, { input }, ctx) => {
+  const { collectionId, title } = input
 
-  const bookTranslation = await ctx.models.bookTranslation.create({
-    bookId: newBook.id,
-    title: args.input.title,
-    langISO: 'en',
-  })
+  const book = await new Book({
+    collectionId,
+  }).save()
+
+  await new BookTranslation({
+    bookId: book.id,
+    title,
+    languageIso: 'en',
+  }).save()
 
   pubsub.publish(BOOK_ADDED, { bookAdded: newBook })
   // TODO: Probably create and assign teams too
-  return {
-    id: newBook.id,
-    collectionId: newBook.collectionId,
-    title: bookTranslation.title,
-  }
+  return book
 }
 
-const renameBook = async (_, args, ctx) => {
-  const updatedTranslation = await ctx.models.bookTranslation.update({
-    bookId: args.input.id,
-    langISO: 'en',
-    title: args.input.title,
-  })
+const renameBook = async (_, { id, title }, ctx) => {
+  const bookTranslation = await BookTranslation.query()
+    .patch({ title })
+    .where('bookId', id)
+
+  const book = await Book.findById(id)
 
   pubsub.publish(BOOK_RENAMED, {
     bookRenamed: {
-      id: args.input.id,
-      collectionId: args.input.collectionId,
-      title: updatedTranslation.title,
+      id: book.id,
+      collectionId: book.collectionId,
+      title: bookTranslation.title,
     },
   })
 
-  return {
-    id: args.input.id,
-    collectionId: args.input.collectionId,
-    title: updatedTranslation.title,
-  }
+  return book
 }
 
 const deleteBook = async (_, args, ctx) => {
@@ -70,19 +65,17 @@ module.exports = {
     getBook,
   },
   Mutation: {
-    addBook,
+    createBook,
     renameBook,
     deleteBook,
   },
   Book: {
     async title(book, _, ctx) {
-      const bookTranslation = await ctx.models.bookTranslation
-        .findByFields({
-          book: book.id,
-          langISO: 'en',
-        })
-        .exec()
-      return bookTranslation.title
+      const bookTranslation = await BookTranslation.query()
+        .where('bookId', book.id)
+        .where('languageIso', 'en')
+
+      return bookTranslation[0].title
     },
     divisions(book, _, ctx) {
       return ctx.model.division.findByBookId({ bookId: book.id }).exec()
