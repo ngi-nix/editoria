@@ -29,7 +29,7 @@ const createBook = async (_, { input }, ctx) => {
     languageIso: 'en',
   }).save()
 
-  pubsub.publish(BOOK_ADDED, { bookAdded: newBook })
+  pubsub.publish(BOOK_ADDED, { bookAdded: book })
   // TODO: Probably create and assign teams too
   return book
 }
