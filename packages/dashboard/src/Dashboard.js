@@ -18,9 +18,9 @@ const Dashboard = props => {
 
   return (
     <div className={className}>
-      <State initial={{ showModal: false }}>
+      <State initial={{ showModal: false, container: this }}>
         {({ state, setState }) => {
-          const { showModal } = state
+          const { showModal, container } = state
           const toggleModal = () => {
             setState({ showModal: !state.showModal })
           }
@@ -31,14 +31,14 @@ const Dashboard = props => {
 
               <BookList
                 books={collection.books}
-                container={this}
+                container={container}
                 remove={deleteBook}
                 renameBook={renameBook}
               />
 
               <AddBookModal
                 collectionId={collection.id}
-                container={this}
+                container={container}
                 create={createBook}
                 show={showModal}
                 toggle={toggleModal}

@@ -5,26 +5,17 @@ const {
 } = require('editoria-data-model/src').models
 
 const { pubsubManager } = pubsweetServer
-const pubsub = pubsubManager.getPubsub()
 
 const { COLLECTION_ADDED } = require('./const')
 
-const getBookCollection = async (_, args, ctx) => {
-  const bookCollection = await ctx.models.bookCollection
-    .findById(args.input.id)
-    .exec()
-
-  if (!bookCollection) {
-    throw new Error(`Book Collection with id: ${args.input.id} does not exist`)
-  }
-
-  return bookCollection
-}
+const getBookCollection = async (_, args, ctx) =>
+  ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
 
 const getBookCollections = (_, __, ctx) =>
   ctx.connectors.BookCollection.fetchAll(ctx)
 
 const createBookCollection = async (_, args, ctx) => {
+  const pubsub = await pubsubManager.getPubsub()
   const bookCollection = await ctx.models.bookCollection
     .create(args.input)
     .exec()
@@ -53,7 +44,10 @@ module.exports = {
   },
   Subscription: {
     collectionAdded: {
-      subscribe: () => pubsub.asyncIterator(COLLECTION_ADDED),
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(COLLECTION_ADDED)
+      },
     },
   },
 }

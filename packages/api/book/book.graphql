@@ -27,7 +27,7 @@ extend type Mutation {
 }
 
 extend type Subscription { 
-  bookAdded: Book! 
+  bookCreated: Book! 
   bookDeleted: ID!
   bookRenamed: Book!
 }

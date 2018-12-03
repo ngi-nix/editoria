@@ -17,8 +17,11 @@ const GET_BOOK_COLLECTIONS = gql`
 
 const getBookCollectionsQuery = props => {
   const { render } = props
-
-  return <Query query={GET_BOOK_COLLECTIONS}>{render}</Query>
+  return (
+    <Query fetchPolicy="cache-and-network" query={GET_BOOK_COLLECTIONS}>
+      {render}
+    </Query>
+  )
 }
 
 export { GET_BOOK_COLLECTIONS }

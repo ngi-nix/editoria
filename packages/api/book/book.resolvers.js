@@ -1,9 +1,9 @@
 const pubsweetServer = require('pubsweet-server')
 
 const { pubsubManager } = pubsweetServer
-const pubsub = pubsubManager.getPubsub()
+// console.log('pubsweet', pubsweetServer)
 
-const { BOOK_ADDED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
+const { BOOK_CREATED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
 const { Book, BookTranslation } = require('editoria-data-model/src').models
 
 const getBook = async (_, args, ctx, info) => {
@@ -18,6 +18,7 @@ const getBook = async (_, args, ctx, info) => {
 
 const createBook = async (_, { input }, ctx) => {
   const { collectionId, title } = input
+  const pubsub = await pubsubManager.getPubsub()
 
   const book = await new Book({
     collectionId,
@@ -29,12 +30,13 @@ const createBook = async (_, { input }, ctx) => {
     languageIso: 'en',
   }).save()
 
-  pubsub.publish(BOOK_ADDED, { bookAdded: book })
+  pubsub.publish(BOOK_CREATED, { bookCreated: book })
   // TODO: Probably create and assign teams too
   return book
 }
 
 const renameBook = async (_, { id, title }, ctx) => {
+  const pubsub = await pubsubManager.getPubsub()
   const bookTranslation = await BookTranslation.query()
     .patch({ title })
     .where('bookId', id)
@@ -53,6 +55,7 @@ const renameBook = async (_, { id, title }, ctx) => {
 }
 
 const deleteBook = async (_, args, ctx) => {
+  const pubsub = await pubsubManager.getPubsub()
   const deletedBook = await ctx.models.book
     .update({ id: args.input.id, deleted: true })
     .exec()
@@ -82,14 +85,23 @@ module.exports = {
     },
   },
   Subscription: {
-    bookAdded: {
-      subscribe: () => pubsub.asyncIterator(BOOK_ADDED),
+    bookCreated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_CREATED)
+      },
     },
     bookDeleted: {
-      subscribe: () => pubsub.asyncIterator(BOOK_DELETED),
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_DELETED)
+      },
     },
     bookRenamed: {
-      subscribe: () => pubsub.asyncIterator(BOOK_RENAMED),
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_RENAMED)
+      },
     },
   },
 }
