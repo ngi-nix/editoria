@@ -73,7 +73,11 @@ class Book extends React.Component {
 
   removeBook() {
     const { book, remove } = this.props
-    remove(book)
+    remove({
+      variables: {
+        id: book.id,
+      },
+    })
   }
 
   onClickRename() {

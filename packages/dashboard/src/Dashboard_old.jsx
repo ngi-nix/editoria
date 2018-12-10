@@ -14,7 +14,6 @@ import styles from './dashboard.local.scss'
 
 export class Dashboard extends React.Component {
   constructor(props) {
-    console.log('old JDLFJKSFJJLSDJFKJ')
     super(props)
 
     this.createBook = this.createBook.bind(this)
