@@ -10,10 +10,6 @@ input CreateBookInput {
   title: String!
 }
 
-# input DeleteBookInput {
-#   id: ID!
-# }
-
 extend type Query {
   getBook(id: ID!): Book!
   exportBook(bookId: ID!): String!
@@ -28,6 +24,6 @@ extend type Mutation {
 
 extend type Subscription { 
   bookCreated: Book! 
-  bookDeleted: ID!
+  bookDeleted: Book!
   bookRenamed: Book!
 }

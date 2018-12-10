@@ -1,16 +1,22 @@
 const pubsweetServer = require('pubsweet-server')
+const forEach = require('lodash/forEach')
 
 const { pubsubManager } = pubsweetServer
 // console.log('pubsweet', pubsweetServer)
 
 const { BOOK_CREATED, BOOK_DELETED, BOOK_RENAMED } = require('./const')
-const { Book, BookTranslation } = require('editoria-data-model/src').models
+const {
+  Book,
+  BookTranslation,
+  BookComponent,
+  Division,
+} = require('editoria-data-model/src').models
 
-const getBook = async (_, args, ctx, info) => {
-  const book = await ctx.models.book.findById(args.input.id).exec()
+const getBook = async (_, { id }, ctx, info) => {
+  const book = await Book.findById(id)
 
   if (!book) {
-    throw new Error(`Book with id: ${args.input.id} does not exist`)
+    throw new Error(`Book with id: ${id} does not exist`)
   }
 
   return book
@@ -56,10 +62,27 @@ const renameBook = async (_, { id, title }, ctx) => {
 
 const deleteBook = async (_, args, ctx) => {
   const pubsub = await pubsubManager.getPubsub()
-  const deletedBook = await ctx.models.book
-    .update({ id: args.input.id, deleted: true })
-    .exec()
-  pubsub.publish(BOOK_DELETED, { bookDeleted: deletedBook.id })
+  const deletedBook = await Book.query().patchAndFetchById(args.id, {
+    deleted: true,
+  })
+
+  const associatedBookComponents = await BookComponent.query().where(
+    'bookId',
+    args.id,
+  )
+  if (associatedBookComponents.length > 0) {
+    Promise.all(
+      forEach(associatedBookComponents, async bookComponent => {
+        await bookComponent
+          .query()
+          .patch({ deleted: true })
+          .where('id', bookComponent.id)
+      }),
+    )
+  }
+  pubsub.publish(BOOK_DELETED, {
+    bookDeleted: deletedBook,
+  })
   return deletedBook
 }
 

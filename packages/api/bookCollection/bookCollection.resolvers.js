@@ -34,12 +34,14 @@ module.exports = {
     async title(bookCollection, _, ctx) {
       const bookCollectionTranslation = await BookCollectionTranslation.query()
         .where('collectionId', bookCollection.id)
-        .where('languageIso', 'en')
+        .andWhere('languageIso', 'en')
 
       return bookCollectionTranslation[0].title
     },
     async books(bookCollection, _, ctx) {
-      return Book.query().where('collectionId', bookCollection.id)
+      return Book.query()
+        .where('collectionId', bookCollection.id)
+        .andWhere('deleted', false)
     },
   },
   Subscription: {

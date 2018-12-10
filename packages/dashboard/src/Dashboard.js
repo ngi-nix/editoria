@@ -1,5 +1,5 @@
-import React from 'react'
-import { State } from 'react-powerplug'
+import React, { Component } from 'react'
+// import { State } from 'react-powerplug'
 
 import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
@@ -7,48 +7,62 @@ import AddBookModal from './AddBookModal'
 
 import styles from './dashboard.local.scss'
 
-const Dashboard = props => {
-  const { collections, createBook, deleteBook, loading, renameBook } = props
+export class Dashboard extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { showModal: false }
+    this.toggleModal = this.toggleModal.bind(this)
+  }
 
-  if (loading) return 'Loading...'
+  componentDidMount() {
+    this.props.subscribeToBookRenamed()
+    this.props.subscribeToNewBooks()
+    this.props.subscribeToBookDeleted()
+  }
 
-  const className = `${
-    styles.bookList
-  } bootstrap pubsweet-component pubsweet-component-scroll`
+  toggleModal() {
+    const { showModal } = this.state
+    this.setState({ showModal: !showModal })
+  }
 
-  return (
-    <div className={className}>
-      <State initial={{ showModal: false, container: this }}>
-        {({ state, setState }) => {
-          const { showModal, container } = state
-          const toggleModal = () => {
-            setState({ showModal: !state.showModal })
-          }
+  render() {
+    const {
+      collections,
+      createBook,
+      deleteBook,
+      loading,
+      renameBook,
+    } = this.props
+    const { showModal } = this.state
+    if (loading) return 'Loading...'
 
-          return collections.map(collection => (
-            <div className="container col-lg-offset-2 col-lg-8">
-              <DashboardHeader title={collection.title} toggle={toggleModal} />
+    const className = `${
+      styles.bookList
+    } bootstrap pubsweet-component pubsweet-component-scroll`
 
-              <BookList
-                books={collection.books}
-                container={container}
-                remove={deleteBook}
-                renameBook={renameBook}
-              />
+    return collections.map(collection => (
+      <div className={className}>
+        <div className="container col-lg-offset-2 col-lg-8">
+          <DashboardHeader title={collection.title} toggle={this.toggleModal} />
 
-              <AddBookModal
-                collectionId={collection.id}
-                container={container}
-                create={createBook}
-                show={showModal}
-                toggle={toggleModal}
-              />
-            </div>
-          ))
-        }}
-      </State>
-    </div>
-  )
+          <BookList
+            books={collection.books}
+            container={this}
+            remove={deleteBook}
+            renameBook={renameBook}
+          />
+
+          <AddBookModal
+            collectionId={collection.id}
+            container={this}
+            create={createBook}
+            show={showModal}
+            toggle={this.toggleModal}
+          />
+        </div>
+      </div>
+    ))
+  }
 }
 
 export default Dashboard
