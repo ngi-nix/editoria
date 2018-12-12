@@ -4,6 +4,13 @@ const map = require('lodash/flatMapDepth')
 const get = require('lodash/get')
 const assign = require('lodash/assign')
 const config = require('config')
+const {
+  Book,
+  BookTranslation,
+  BookComponent,
+  BookComponentTranslation,
+  Division,
+} = require('editoria-data-model/src').models
 
 const getBookComponent = async (_, args, ctx) => {
   const bookComponent = await ctx.models.bookComponent

@@ -1,6 +1,7 @@
 const map = require('lodash/flatMapDepth')
 const findIndex = require('lodash/findIndex')
 const utils = require('../helpers/utils')
+const { BookComponent } = require('editoria-data-model/src').models
 
 const updateBookComponentOrder = async (
   _,
@@ -63,8 +64,10 @@ module.exports = {
   },
   Division: {
     async bookComponents(division, _, ctx) {
-      const bookComponents = map(division.bookComponents, async bookComponent =>
-        ctx.model.bookComponent.findById({ id: bookComponent.id }),
+      const bookComponents = await Promise.all(
+        map(division.bookComponents, async bookComponent =>
+          BookComponent.query().where('id', bookComponent.id),
+        ),
       )
       return bookComponents
     },

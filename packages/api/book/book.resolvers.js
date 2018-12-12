@@ -1,5 +1,7 @@
 const pubsweetServer = require('pubsweet-server')
 const forEach = require('lodash/forEach')
+const keys = require('lodash/keys')
+const config = require('config')
 
 const { pubsubManager } = pubsweetServer
 // console.log('pubsweet', pubsweetServer)
@@ -9,7 +11,6 @@ const {
   Book,
   BookTranslation,
   BookComponent,
-  Division,
 } = require('editoria-data-model/src').models
 
 const getBook = async (_, { id }, ctx, info) => {
@@ -37,13 +38,35 @@ const createBook = async (_, { input }, ctx) => {
   }).save()
 
   pubsub.publish(BOOK_CREATED, { bookCreated: book })
+  // await Promise.all(
+  const teamTypes = keys(config.authsome.teams)
+  await Promise.all(
+    forEach(teamTypes, async teamType => {
+      const team = await ctx.connectors.Team.create(
+        {
+          name: config.authsome.teams[teamType].name,
+          object: { id: book.id },
+          teamType: teamType,
+          // type: 'team',
+          // deleted: false,
+          // members: [],
+          // global: false,
+        },
+        ctx,
+      )
+      console.log('team', team)
+    }),
+  )
+
+  // )
+  // console.log('sssdfsa', ctx.connectors)
   // TODO: Probably create and assign teams too
   return book
 }
 
 const renameBook = async (_, { id, title }, ctx) => {
   const pubsub = await pubsubManager.getPubsub()
-  const bookTranslation = await BookTranslation.query()
+  await BookTranslation.query()
     .patch({ title })
     .where('bookId', id)
 
@@ -53,7 +76,7 @@ const renameBook = async (_, { id, title }, ctx) => {
     bookRenamed: {
       id: book.id,
       collectionId: book.collectionId,
-      title: bookTranslation.title,
+      title,
     },
   })
 
@@ -71,7 +94,7 @@ const deleteBook = async (_, args, ctx) => {
     args.id,
   )
   if (associatedBookComponents.length > 0) {
-    Promise.all(
+    await Promise.all(
       forEach(associatedBookComponents, async bookComponent => {
         await bookComponent
           .query()
@@ -104,7 +127,7 @@ module.exports = {
       return bookTranslation[0].title
     },
     divisions(book, _, ctx) {
-      return ctx.model.division.findByBookId({ bookId: book.id }).exec()
+      return book.divisions
     },
   },
   Subscription: {
