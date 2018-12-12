@@ -74,7 +74,7 @@ cd packages/editoria-app
 ```
 
 Create a `config/local-development.json` file.  
-Edit that to enter your database secret, as well as to connect to [INK](https://gitlab.coko.foundation/INK/ink-api).  
+Edit that to enter your database secret as well as placeholders for INK credentials [INK](https://gitlab.coko.foundation/INK/ink-api).  
 In this file, add the following:  
 ```json
 {
@@ -91,10 +91,11 @@ In this file, add the following:
     }
 }
 ```
+INK credentials are optional, you don't need them to run Editoria, you will just not be able to upload Word (docx) files.
 
-We recommend using a demo instance of INK hosted by Coko in your initial Editoria setup. Please contact the team on https://mattermost.coko.foundation/coko/channels/editoria in order to get the required credentials and information.
+If you do wish to use INK we recommend using a demo instance of INK hosted by Coko in your initial Editoria setup. Please contact the team on https://mattermost.coko.foundation/coko/channels/editoria in order to get the required credentials and information.
 
-If you do want to run your own instance of [INK](https://gitlab.coko.foundation/INK/ink-api), be sure that:
+If you want to run your own instance of [INK](https://gitlab.coko.foundation/INK/ink-api), be sure that:
 * the `<your-ink-api-endpoint>` in `local-development.json` ends with a trailing slash
 * if INK is running as a service on a port, ensure it is on port `3000`
 * If INK and Editoria are on the same server, Editoria should be set to run on another port than `3000`, AND the `postgres` docker component for INK should run on a different port (`4321` instead of `5432`for instance).
