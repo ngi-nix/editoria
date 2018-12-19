@@ -1,7 +1,7 @@
 {
   "name": "pubsweet-component-wax",
   "description": "PubSweet component for the Wax collaborative document editor",
-  "version": "0.6.16",
+  "version": "0.7.0",
   "main": "index.js",
   "keywords": [
     "wax",
@@ -16,7 +16,7 @@
     "react-dom": "^16.2.0",
     "react-redux": "5.0.4",
     "redux": "3.6.0",
-    "wax-editor-react": "^0.2.10"
+    "wax-editor-react": "^0.2.11"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
