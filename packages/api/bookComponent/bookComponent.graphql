@@ -35,23 +35,25 @@ input WorkFlowItemInput {
 type BookComponent {
   id: ID!
   title: String!
-  division: String!
+  bookId: ID!
   componentTypeOrder: Int!
-  lock: Lock
+  hasContent: Boolean!
+  divisionId: ID!
+  # lock: Lock
   pagination: Pagination!
   archived: Boolean!
   workflowStages: [WorkFlowItem]
   content: String
   componentType: String!
-  trackChanges: Boolean!
+  trackChangesEnabled: Boolean!
   uploading: Boolean!
 }
 
-input NewBookComponentInput {
+input BookComponentInput {
   title: String!
   bookId: ID!
   componentType: String!
-  division: String!
+  divisionId: ID!
 }
 
 input WordFileInput {
@@ -66,8 +68,9 @@ input UpdateBookComponentInput {
   deleted: Boolean
   lock: LockInput
   pagination: PaginationInput
-  workflowStages: WorkFlowItemInput
-  trackChanges: Boolean
+  workflowStages: [WorkFlowItemInput]
+  trackChangesEnabled: Boolean
+  content: String
 }
 
 extend type Query {
@@ -76,7 +79,7 @@ extend type Query {
 
 extend type Mutation {
   ingestWordFile(input: [WordFileInput]!): [BookComponent]!
-  addBookComponent(input: NewBookComponentInput): BookComponent!
+  addBookComponent(input: BookComponentInput): BookComponent!
   renameBookComponent(input: UpdateBookComponentInput): BookComponent!
   deleteBookComponent(input: UpdateBookComponentInput): BookComponent!
   archiveBookComponent(input: UpdateBookComponentInput): BookComponent!
@@ -86,4 +89,13 @@ extend type Mutation {
   lockBookComponent(input: UpdateBookComponentInput): BookComponent!
   updateTrackChanges(input: UpdateBookComponentInput): BookComponent!
   updateContent(input: UpdateBookComponentInput): BookComponent!
+}
+
+extend type Subscription {
+  bookComponentAdded: BookComponent!
+  bookComponentDeleted: BookComponent!
+  bookComponentWorkflowUpdated: BookComponent!
+  bookComponentPaginationUpdated: BookComponent!
+  bookComponentTrackChangesUpdated: BookComponent!
+  bookComponentTitleUpdated: BookComponent!
 }

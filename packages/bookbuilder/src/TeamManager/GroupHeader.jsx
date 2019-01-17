@@ -7,7 +7,7 @@ import styles from '../styles/teamManager.local.scss'
 
 export class GroupHeader extends React.Component {
   render() {
-    const { title, showInput, allowed } = this.props
+    const { title, showInput, allowed, show } = this.props
 
     return (
       <div className={styles.groupHeader}>
@@ -17,8 +17,8 @@ export class GroupHeader extends React.Component {
         {allowed ? (
           <Authorize object={title} operation="can view add team member">
             <div className={styles.groupBtn} onClick={showInput}>
-              <div className={styles.addIcon} />
-              <a>{`add ${title}`}</a>
+              {!show ? <div className={styles.addIcon} /> : null}
+              <a>{!show ? `add ${title}` : 'hide input'}</a>
             </div>
           </Authorize>
         ) : null}

@@ -21,13 +21,13 @@ const stateItem = ({
   const handleInteractionLeft = () => {
     if (disabled) return
     const nextIndex = arrayShift(values, index, 'left')
-    update(item.type, values[nextIndex])
+    update(item.title, item.type, values[nextIndex])
   }
 
   const handleInteractionRight = () => {
     if (disabled) return
     const nextIndex = arrayShift(values, index, 'right')
-    update(item.type, values[nextIndex])
+    update(item.title, item.type, values[nextIndex])
   }
 
   const arrayShift = (array, i, direction) => {
@@ -44,12 +44,24 @@ const stateItem = ({
   }
 
   const renderIndicator = (disabled, side) => {
+    // console.log('disabled', disabled)
+    // console.log('interactive', interactive)
+    // console.log('type', type)
+    // console.log('vale', values[index])
+    // console.log(
+    //   'condL',
+    //   disabled || !interactive || (values[index] === 0 || values[index] === -1),
+    // )
+    // console.log(
+    //   'condR',
+    //   disabled || !interactive || (values[index] === 1 || values[index] === -1),
+    // )
     if (side === 'left') {
       return (
         <button
           className={classes[side]}
           disabled={
-            !disabled ||
+            disabled ||
             !interactive ||
             (values[index] === 0 || values[index] === -1)
           }
@@ -62,7 +74,7 @@ const stateItem = ({
       <button
         className={classes[side]}
         disabled={
-          !disabled ||
+          disabled ||
           !interactive ||
           (values[index] === 1 || values[index] === -1)
         }
@@ -101,17 +113,17 @@ const stateItem = ({
         <Authorize
           object={{ bookId, type, currentValues }}
           operation="can change progressList left"
-          unauthorized={renderIndicator(false, 'left')}
+          unauthorized={renderIndicator(true, 'left')}
         >
-          {renderIndicator(true, 'left')}
+          {renderIndicator(false, 'left')}
         </Authorize>
         <span>{item.title}</span>
         <Authorize
           object={{ bookId, type, currentValues }}
           operation="can change progressList right"
-          unauthorized={renderIndicator(false, 'right')}
+          unauthorized={renderIndicator(true, 'right')}
         >
-          {renderIndicator(true, 'right')}
+          {renderIndicator(false, 'right')}
         </Authorize>
       </div>
       <StateIndicator state={values[index]} withEnd={isLast} />

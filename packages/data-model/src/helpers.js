@@ -197,6 +197,9 @@ const langIsoRegex = ['^(', languageString, ')$'].join('')
 /* Define language regex */
 
 const schema = {
+  array: {
+    type: 'array',
+  },
   arrayOfIds: {
     type: 'array',
     items: {

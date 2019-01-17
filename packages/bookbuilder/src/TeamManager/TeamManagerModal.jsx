@@ -5,16 +5,18 @@ import AbstractModal from 'editoria-common/src/AbstractModal'
 import TeamManager from './TeamManager'
 
 class TeamManagerModal extends React.Component {
+  componentDidMount() {
+    this.props.subscribeToMoreTeamMembers()
+  }
   renderBody() {
-    const { teams, users, updateTeam, updateCollection, book } = this.props
+    const { teams, findUser, updateTeam, book } = this.props
 
     return (
       <TeamManager
         book={book}
+        findUser={findUser}
         teams={teams}
-        updateCollection={updateCollection}
         updateTeam={updateTeam}
-        users={users}
       />
     )
   }

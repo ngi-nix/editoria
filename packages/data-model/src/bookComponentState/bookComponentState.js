@@ -13,7 +13,7 @@ const { Model } = require('objection')
 
 const Base = require('../editoriaBase')
 const { model: BookComponent } = require('../bookComponent')
-const { booleanDefaultFalse, id, object } = require('../helpers').schema
+const { array, booleanDefaultFalse, id } = require('../helpers').schema
 
 class BookComponentState extends Base {
   constructor(properties) {
@@ -62,8 +62,9 @@ class BookComponentState extends Base {
           },
         },
         trackChangesEnabled: booleanDefaultFalse,
+        uploading: booleanDefaultFalse,
         // left loose on purpose to allow for configurability
-        workflowStages: object,
+        workflowStages: array,
       },
     }
   }

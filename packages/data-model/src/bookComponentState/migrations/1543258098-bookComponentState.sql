@@ -14,5 +14,6 @@ create table book_component_state (
   -- own
   comments jsonb,
   track_changes_enabled boolean default false,
-  workflow_stages jsonb
+  workflow_stages jsonb,
+  uploading boolean default false
 );

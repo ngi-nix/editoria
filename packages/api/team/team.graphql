@@ -1,19 +1,19 @@
-type Team {
-  id: ID!
-  name: String!
-  members: [ID]!
-}
 
-type Query {
+extend type Query {
   getBookTeams(bookId: ID!): [Team]!
   getGlobalTeams: [Team]!
 }
 
-input UpdateTeamInput {
-  id: ID!
-  members: [ID]!
+type TeamSub {
+  bookId: ID!
+  teamId: ID!
+  teamType: String!
+  members: [User]!
 }
 
-type Mutation {
-  updateTeamMembers(input: UpdateTeamInput): [Team]!
+
+extend type Mutation {
+  updateTeamMembers(id: String!, input: TeamInput!): Team!
 }
+
+extend type Subscription { teamMembersUpdated: TeamSub!, productionEditorsUpdated: TeamSub! }

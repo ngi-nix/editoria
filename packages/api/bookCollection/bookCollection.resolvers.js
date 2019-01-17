@@ -6,7 +6,7 @@ const {
 
 const { pubsubManager } = pubsweetServer
 
-const { COLLECTION_ADDED } = require('./const')
+const { COLLECTION_ADDED } = require('./consts')
 
 const getBookCollection = async (_, args, ctx) =>
   ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
@@ -42,6 +42,7 @@ module.exports = {
       return Book.query()
         .where('collectionId', bookCollection.id)
         .andWhere('deleted', false)
+        .andWhere('archived', false)
     },
   },
   Subscription: {

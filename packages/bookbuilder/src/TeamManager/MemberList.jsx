@@ -13,8 +13,6 @@ export class MemberList extends React.Component {
       team,
       update,
       book,
-      updateCollection,
-      users,
     } = this.props
     // const remove = team.teamType.name !== 'Production Editor'
 
@@ -26,9 +24,8 @@ export class MemberList extends React.Component {
         team={team}
         update={update}
         book={book}
-        updateCollection={updateCollection}
         user={member}
-        users={users}
+        users={[]}
       />
     ))
 

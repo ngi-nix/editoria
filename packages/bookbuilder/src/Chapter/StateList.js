@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import config from 'config'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
-import { map, uniqueId, last, indexOf } from 'lodash'
+import { map, uniqueId, last, indexOf, find } from 'lodash'
 
 import classes from './StateList.local.scss'
 import StateItem from './StateItem'
@@ -15,15 +15,19 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
   }
   const lastItem = last(stageItems).type
   // console.log('values', values)
-  // console.log('progressIds', progressIds)
+  // // console.log('progressIds', progressIds)
   // console.log('lastItem', lastItem)
   // console.log('currentValues', currentValues)
 
   // TODO: Placeholder -- to be implemented with authsome
   // const canAct = key => true
+  const getCurrentValue = (currentObjects, type) => {
+    const currentObject = find(currentObjects, ['type', type])
+    return currentObject.value
+  }
 
-  const handleUpdate = (name, index) => {
-    update(name, index)
+  const handleUpdate = (title, type, index) => {
+    update(title, type, index)
   }
 
   const progressOrder = []
@@ -56,12 +60,17 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
   )
   const items = map(stageItems, stageItem => {
     const { type } = stageItem
-    const currentValueIndex = indexOf(values, currentValues[stageItem.type])
+    const currentValueIndex = indexOf(
+      values,
+      getCurrentValue(currentValues, stageItem.type),
+    )
     const previousStageIndex = indexOf(progressOrder, stageItem.type) - 1
     let previousNotDone = false
 
     if (previousStageIndex !== -1) {
-      if (currentValues[progressOrder[previousStageIndex]] !== 1) {
+      if (
+        getCurrentValue(currentValues, progressOrder[previousStageIndex]) !== 1
+      ) {
         previousNotDone = true
       }
     }

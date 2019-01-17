@@ -27,7 +27,7 @@ class ChapterFirstRow extends React.Component {
 
   /* eslint-disable  consistent-return */
   onSaveRename(title) {
-    const { chapter, update } = this.props
+    const { bookComponentId, update } = this.props
     title = title.trim()
 
     if (title.length === 0) {
@@ -39,7 +39,7 @@ class ChapterFirstRow extends React.Component {
     this.setState({ isRenameEmpty: false })
 
     const patch = {
-      id: chapter.id,
+      id: bookComponentId,
       title,
     }
     update(patch)
@@ -57,14 +57,17 @@ class ChapterFirstRow extends React.Component {
 
   render() {
     const {
-      book,
-      chapter,
-      isUploadInProgress,
+      divisionType,
+      bookComponentId,
+      bookId,
+      uploading,
+      componentTypeOrder,
       outerContainer,
       remove,
       user,
       title,
-      type,
+      lock,
+      componentType,
       update,
     } = this.props
     const { isRenameEmpty, isRenamingTitle } = this.state
@@ -72,28 +75,31 @@ class ChapterFirstRow extends React.Component {
     return (
       <div className={styles.FirstRow}>
         <ChapterTitle
-          chapter={chapter}
+          bookComponentId={bookComponentId}
+          bookId={bookId}
+          componentType={componentType}
+          componentTypeOrder={componentTypeOrder}
+          divisionType={divisionType}
           isRenameEmpty={isRenameEmpty}
           isRenaming={isRenamingTitle}
-          isUploadInProgress={isUploadInProgress}
+          lock={lock}
           onSaveRename={this.onSaveRename}
-          // ref={node => { this.chapterTitle = node}}
           title={title}
-          type={type}
           update={update}
+          uploading={uploading}
         />
 
         <ChapterButtons
-          bookId={book.id}
-          chapter={chapter}
+          bookComponentId={bookComponentId}
+          bookId={bookId}
+          componentType={componentType}
           isRenaming={isRenamingTitle}
-          isUploadInProgress={isUploadInProgress}
+          lock={lock}
           modalContainer={outerContainer}
           onClickRename={this.onClickRename}
-          // onClickSave={this.onClickSave}
           remove={remove}
-          type={type}
           update={update}
+          uploading={uploading}
           user={user}
         />
       </div>

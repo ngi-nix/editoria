@@ -1,4 +1,4 @@
-import { without, find } from 'lodash'
+import { without, findIndex, map } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
@@ -13,23 +13,15 @@ export class Member extends React.Component {
   }
 
   _remove() {
-    const { user, team, update, book, updateCollection, users } = this.props
+    const { user, team, update } = this.props
 
-    team.members = without(team.members, user.id)
-    update(team).then(res => {
-      if (res.team.teamType === 'productionEditor') {
-        const productionEditors = []
-        for (let i = 0; i < res.team.members.length; i += 1) {
-          productionEditors.push(find(users, c => c.id === res.team.members[i]))
-        }
-        // if (productionEditors.length < 1) {
-        //   productionEditors = null
-        // }
-        updateCollection({
-          id: book.id,
-          productionEditor: productionEditors,
-        })
-      }
+    const memberIndex = findIndex(team.members, { id: user.id })
+
+    team.members.splice(memberIndex, 1)
+    const withoutMember = map(team.members, member => member.id)
+
+    update({
+      variables: { id: team.id, input: { members: withoutMember } },
     })
   }
   renderRemove(authorized) {

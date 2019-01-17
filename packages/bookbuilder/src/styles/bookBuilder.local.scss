@@ -19,7 +19,7 @@ $upload-multiple: #b1b1b1;
     margin: 0 auto;
     width: 76%;
   }
-  .divisionsConetainer {
+  .divisionsContainer {
     padding-left: 15px;
     margin-bottom: 5%;
   }
@@ -234,16 +234,6 @@ $upload-multiple: #b1b1b1;
     // }
   }
 
-  .sectionDivider {
-    // clear: both;
-    // padding-top: 2%;
-  }
-
-  .separator {
-    // clear: both;
-    // height: 1px;
-  }
-
   .noPadding {
     padding: 0 !important;
   }
@@ -301,6 +291,8 @@ $upload-multiple: #b1b1b1;
   .sectionChapters {
     // width: 100%;
     padding-left: 1%;
+    counter-reset: chapter;   
+    
 
     .chapterContainer {
       display: flex;
@@ -485,13 +477,12 @@ $upload-multiple: #b1b1b1;
       flex-direction: column;
     }
 
-    .isChapter {
+    .isChapter {  
       padding-left: 1% !important;
-
-      // h3::before {
-      //   counter-increment: chapter;
-      //   content: "" counter(chapter) ". ";
-      // }
+      h3::before {
+        counter-increment: chapter;
+        content: "" counter(chapter) ". ";
+      }
     }
 
     .FirstRow {
@@ -512,9 +503,9 @@ $upload-multiple: #b1b1b1;
       display: flex;
       flex: 0 1 83%;
 
-      // .bodyTitle {
-      //   width: 92%;
-      // }
+      .bodyTitle {
+        width: 92%;
+      }
 
       h3 {
         background-color: $white;
@@ -693,7 +684,7 @@ $upload-multiple: #b1b1b1;
     //   margin: 0px;
     // }
 
-    .firstRowActionsSeperator {
+    .firstRowActionsSeparator {
       // border-right: 1px solid black;
       background-image: linear-gradient(
         to right,

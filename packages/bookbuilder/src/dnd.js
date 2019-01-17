@@ -1,19 +1,24 @@
 import { findDOMNode } from 'react-dom'
 
-const itemTypes = { CHAPTER: 'chapter' }
+const itemTypes = { BOOK_COMPONENT: 'bookComponent' }
 
-const chapterSource = {
+const bookComponentSource = {
   beginDrag(props) {
-    const { chapter, id, no } = props
+    const { divisionId, id, no } = props
 
     return {
-      division: chapter.division,
+      divisionId,
       id,
       no,
     }
   },
   endDrag(props, monitor, component) {
-    props.onEndDrag()
+    const params = {
+      divisionId: monitor.getItem().divisionId,
+      id: monitor.getItem().id,
+      no: monitor.getItem().no,
+    }
+    props.onEndDrag(params)
   },
   isDragging(props, monitor) {
     return props.id === monitor.getItem().id
@@ -23,14 +28,14 @@ const chapterSource = {
   },
 }
 
-const chapterTarget = {
+const bookComponentTarget = {
   // for an explanation of how this works go to
   // https://github.com/gaearon/react-dnd/blob/master/examples/04%20Sortable/Simple/Card.js
 
   hover(props, monitor, component) {
     // can only reorder within the same division
-    const dragDivision = monitor.getItem().division
-    const hoverDivision = props.chapter.division
+    const dragDivision = monitor.getItem().divisionId
+    const hoverDivision = props.divisionId
 
     if (dragDivision !== hoverDivision) return
 
@@ -38,6 +43,7 @@ const chapterTarget = {
     const hoverIndex = props.no
 
     if (dragIndex === hoverIndex) return
+
     // eslint-disable-next-line react/no-find-dom-node
     const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
     const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
@@ -47,7 +53,7 @@ const chapterTarget = {
     if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return
     if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return
 
-    props.onMove(dragIndex, hoverIndex)
+    props.onMove(dragIndex, hoverIndex, dragDivision, hoverDivision)
     monitor.getItem().no = hoverIndex
   },
 }
@@ -65,4 +71,10 @@ const collectDrop = (connect, monitor) => {
   }
 }
 /* eslint-enable */
-export { chapterSource, chapterTarget, collectDrag, collectDrop, itemTypes }
+export {
+  bookComponentSource,
+  bookComponentTarget,
+  collectDrag,
+  collectDrop,
+  itemTypes,
+}

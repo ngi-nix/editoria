@@ -12,7 +12,13 @@ const uuid = require('uuid/v4')
 const Base = require('../editoriaBase')
 const { model: Book } = require('../book')
 const { model: Division } = require('../division')
-const { boolean, id, integerPositive, string } = require('../helpers').schema
+const {
+  boolean,
+  booleanDefaultFalse,
+  id,
+  integerPositive,
+  string,
+} = require('../helpers').schema
 
 class BookComponent extends Base {
   constructor(properties) {
@@ -50,6 +56,7 @@ class BookComponent extends Base {
       type: 'object',
       required: ['bookId', 'componentType', 'divisionId'],
       properties: {
+        archived: booleanDefaultFalse,
         bookId: id,
         /*
           component type (eg. 'chapter', 'part' etc) needs to be loose, as

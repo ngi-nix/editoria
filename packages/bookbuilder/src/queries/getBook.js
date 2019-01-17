@@ -3,29 +3,33 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const GET_BOOK = gql`
-  query GetBook {
-    getBook {
+  query GetBook($id: ID!) {
+    getBook(id: $id) {
+      id
       title
+      productionEditors
       divisions {
+        id
         label
         bookComponents {
           id
+          divisionId
           title
+          bookId
+          hasContent
           componentTypeOrder
-          lock {
-            created
-            username
-          }
           pagination {
             left
             right
           }
           workflowStages {
             label
+            type
             value
           }
           componentType
           uploading
+          archived
         }
       }
     }
@@ -33,9 +37,10 @@ const GET_BOOK = gql`
 `
 
 const getBookQuery = props => {
-  const { render } = props
+  const { bookId: id, render } = props
+
   return (
-    <Query fetchPolicy="cache-and-network" query={GET_BOOK}>
+    <Query fetchPolicy="cache-and-network" query={GET_BOOK} variables={{ id }}>
       {render}
     </Query>
   )

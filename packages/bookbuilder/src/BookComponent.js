@@ -8,8 +8,8 @@ import FirstRow from './Chapter/FirstRow'
 import SecondRow from './Chapter/SecondRow'
 
 import {
-  chapterSource,
-  chapterTarget,
+  bookComponentSource,
+  bookComponentTarget,
   collectDrag,
   collectDrop,
   itemTypes,
@@ -17,7 +17,7 @@ import {
 
 import styles from './styles/bookBuilder.local.scss'
 
-class Chapter extends React.PureComponent {
+class BookComponent extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -30,7 +30,7 @@ class Chapter extends React.PureComponent {
   }
 
   update(patch) {
-    const { book, update, chapter } = this.props
+    const { bookId, update, trackChangesEnabled } = this.props
     // SHOULD BE REMOVED. This automaticaly sets track changes on for the case
     // or review in progress
     if (
@@ -38,13 +38,16 @@ class Chapter extends React.PureComponent {
       config.bookBuilder.instance &&
       config.bookBuilder.instance === 'UCP'
     ) {
-      if (patch.progress) {
-        if (patch.progress.review === 0 && chapter.trackChanges === false) {
+      if (patch.workflowStages) {
+        if (
+          patch.workflowStages.review === 0 &&
+          trackChangesEnabled === false
+        ) {
           patch.trackChanges = true
         }
       }
     }
-    update(book, patch)
+    update(bookId, patch)
   }
 
   toggleUpload() {
@@ -55,87 +58,37 @@ class Chapter extends React.PureComponent {
     // if (!this.state.isUploadInProgress) this.removeUploadState()
   }
 
-  renderHasContent() {
-    const { chapter } = this.props
-    const source = chapter.source || ''
-    const hasContent = source.trim().length > 0
-    return hasContent
-  }
-
-  // componentWillReceiveProps(nextProps) {
-  //   const { chapter } = nextProps
-  //   const source = chapter.source || ''
-  //   const sourceBefore = this.props.chapter.source || ''
-  //   const hasContentBefore = sourceBefore.trim().length > 0
-  //   const hasContent = source.trim().length > 0
-  //   // console.log('fragment old', this.props.chapter.source)
-  //   // console.log('fragment new', chapter.source)
-  //   if (!hasContentBefore && hasContent) {
-  //     const patch = {
-  //       id: chapter.id,
-  //       progress: chapter.progress,
-  //     }
-  //     patch.progress.upload = 1
-  //     patch.progress.file_prep = 0
-  //     this.update(patch)
-  //   }
-  // }
-
-  // getLocalStorageKey () {
-  //   const { chapter } = this.props
-  //   return 'chapter:upload:' + chapter.id
-  // }
-  //
-  // persistUploadState () {
-  //   const key = this.getLocalStorageKey()
-  //   window.localStorage.setItem(key, true)
-  // }
-  //
-  // removeUploadState () {
-  //   const key = this.getLocalStorageKey()
-  //   window.localStorage.removeItem(key)
-  // }
-  //
-  // componentWillMount () {
-  //   const key = this.getLocalStorageKey()
-  //   var entry = window.localStorage.getItem(key)
-  //   if (entry) {
-  //     this.setState({
-  //       isUploadInProgress: true
-  //     })
-  //   }
-  // }
-  //
-  // componentWillUnmount () {
-  //   if (this.state.isUploadInProgress) {
-  //     this.persistUploadState()
-  //   }
-  // }
-
   render() {
     const {
-      book,
-      chapter,
+      bookId,
       connectDragSource,
       connectDropTarget,
+      componentType,
+      componentTypeOrder,
+      hasContent,
+      divisionId,
+      divisionType,
+      id,
       ink,
       isDragging,
+      lock,
       outerContainer,
+      pagination,
       remove,
-      user,
       title,
-      type,
+      workflowStages,
+      trackChangesEnabled,
       uploading,
+      updatePagination,
+      updateWorkflowState,
+      user,
     } = this.props
-
-    const hasContent = this.renderHasContent()
-    const { isUploadInProgress } = this.state
-
+    // const { isUploadInProgress } = this.state
     const listItemStyle = {
-      opacity: isDragging ? 0 : 1,
+      opacity: isDragging ? 0.5 : 1,
     }
     const indicatorGrabAllowed = allowed => {
-      if (isUploadInProgress || !allowed) {
+      if (uploading || !allowed) {
         return (
           <div className={`${styles.grabContainer} ${styles.notAllowed}`}>
             <svg viewBox="0 0 24 48">
@@ -193,15 +146,14 @@ class Chapter extends React.PureComponent {
       connectDropTarget(
         <li
           className={`${styles.chapterContainer}  ${
-            chapter.subCategory === 'chapter' ||
-            chapter.subCategory === 'un-numbered'
+            componentType === 'chapter' || componentType === 'unnumbered'
               ? styles.isChapter
               : ''
           }`}
           style={listItemStyle}
         >
           <Authorize
-            object={book}
+            object={bookId}
             operation="can reorder bookComponents"
             unauthorized={indicatorGrabAllowed(false)}
           >
@@ -210,26 +162,36 @@ class Chapter extends React.PureComponent {
 
           <div className={` ${styles.chapterMainContent}`}>
             <FirstRow
-              book={book}
-              chapter={chapter}
-              isUploadInProgress={isUploadInProgress || uploading}
+              bookComponentId={id}
+              bookId={bookId}
+              componentType={componentType}
+              componentTypeOrder={componentTypeOrder}
+              divisionType={divisionType}
+              lock={lock}
               outerContainer={outerContainer}
               remove={remove}
               title={title}
-              type={type}
               update={this.update}
+              uploading={uploading}
               user={user}
             />
 
             <SecondRow
-              chapter={chapter}
+              bookComponentId={id}
+              bookId={bookId}
+              componentType={componentType}
               convertFile={ink}
-              isUploadInProgress={isUploadInProgress || uploading}
+              isUploadInProgress={uploading}
               outerContainer={outerContainer}
+              pagination={pagination}
               toggleUpload={this.toggleUpload}
+              trackChangesEnabled={trackChangesEnabled}
               update={this.update}
+              updatePagination={updatePagination}
+              updateWorkflowState={updateWorkflowState}
               user={user}
               viewOrEdit={this._viewOrEdit}
+              workflowStages={workflowStages}
             />
           </div>
         </li>,
@@ -238,7 +200,7 @@ class Chapter extends React.PureComponent {
   }
 }
 
-Chapter.propTypes = {
+BookComponent.propTypes = {
   book: PropTypes.shape({
     id: PropTypes.string,
     rev: PropTypes.string,
@@ -269,7 +231,7 @@ Chapter.propTypes = {
     rev: PropTypes.string,
     source: PropTypes.string,
     status: PropTypes.string,
-    subCategory: PropTypes.string,
+    componentType: PropTypes.string,
     title: PropTypes.string,
     trackChanges: PropTypes.bool,
     type: PropTypes.string,
@@ -294,19 +256,14 @@ Chapter.propTypes = {
   uploading: PropTypes.bool,
 }
 
-Chapter.defaultProps = {
+BookComponent.defaultProps = {
   uploading: false,
   title: null,
 }
 
-export { Chapter as UnwrappedChapter }
+export { BookComponent as UnwrappedBookComponent }
 
-// const comparison = (nextProps, props) => {
-//   return nextProps.chapter.id === props.chapter.id && nextProps.chapter.index === props.chapter.index
-// }
-
-// combine them, as each chapter can be both a source and a target
 export default flow(
-  DragSource(itemTypes.CHAPTER, chapterSource, collectDrag),
-  DropTarget(itemTypes.CHAPTER, chapterTarget, collectDrop),
-)(Chapter)
+  DragSource(itemTypes.BOOK_COMPONENT, bookComponentSource, collectDrag),
+  DropTarget(itemTypes.BOOK_COMPONENT, bookComponentTarget, collectDrop),
+)(BookComponent)

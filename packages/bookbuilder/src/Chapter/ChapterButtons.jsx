@@ -27,8 +27,8 @@ class ChapterButtons extends React.Component {
 
   // TODO -- should maybe check for lock
   isLocked() {
-    const { chapter } = this.props
-    return get(chapter, 'lock.editor.username')
+    const { lock } = this.props
+    return get(lock, 'username')
   }
 
   // canEdit() {
@@ -58,11 +58,11 @@ class ChapterButtons extends React.Component {
   }
 
   renderEditingNotification() {
-    const { chapter, modalContainer, user, update } = this.props
+    const { bookComponentId, modalContainer, user, update } = this.props
 
     return (
       <EditingNotification
-        chapter={chapter}
+        bookComponentId={bookComponentId}
         modalContainer={modalContainer}
         update={update}
         user={user}
@@ -100,7 +100,7 @@ class ChapterButtons extends React.Component {
   // }
 
   renderDeleteButton() {
-    const { chapter, modalContainer, remove } = this.props
+    const { bookComponentId, modalContainer, remove } = this.props
     const { showDeleteModal } = this.state
     const toggle = this.toggleDeleteModal
 
@@ -109,7 +109,7 @@ class ChapterButtons extends React.Component {
     if (showDeleteModal) {
       deleteModal = (
         <DeleteModal
-          chapter={chapter}
+          bookComponentId={bookComponentId}
           container={modalContainer}
           remove={remove}
           show={showDeleteModal}
@@ -127,8 +127,8 @@ class ChapterButtons extends React.Component {
   }
 
   renderRightArea() {
-    const { isUploadInProgress, chapter } = this.props
-    const url = `/books/${chapter.book}/fragments/${chapter.id}`
+    const { uploading, bookComponentId, bookId } = this.props
+    const url = `/books/${bookId}/bookComponents/${bookComponentId}`
 
     if (this.isLocked()) return this.renderEditingNotification()
     // close Rename of Title
@@ -137,7 +137,7 @@ class ChapterButtons extends React.Component {
     const deleteButton = this.renderDeleteButton()
 
     let buttonsStyle = {}
-    if (isUploadInProgress) {
+    if (uploading) {
       buttonsStyle = {
         opacity: '0.3',
         pointerEvents: 'none',
@@ -147,14 +147,17 @@ class ChapterButtons extends React.Component {
     return (
       <div className={styles.chapterActions} style={buttonsStyle}>
         <Authorize
-          object={chapter}
+          object={bookComponentId}
           operation="can view fragmentEdit"
           unauthorized={withLink('View', url)}
         >
           {withLink('Edit', url)}
         </Authorize>
-        <Authorize object={chapter} operation="can view deleteComponent">
-          <div className={styles.firstRowActionsSeperator} />
+        <Authorize
+          object={bookComponentId}
+          operation="can view deleteComponent"
+        >
+          <div className={styles.firstRowActionsSeparator} />
           {deleteButton}
         </Authorize>
       </div>

@@ -19,7 +19,7 @@ export class Group extends React.Component {
   }
 
   _showAddMember() {
-    this.setState({ isAddMemberOpen: true })
+    this.setState({ isAddMemberOpen: !this.state.isAddMemberOpen })
   }
 
   _closeAddMember() {
@@ -27,29 +27,18 @@ export class Group extends React.Component {
   }
 
   render() {
-    const { team, users, options, update, updateCollection, book } = this.props
-    const members = users.filter(user => _.includes(team.members, user.id))
+    const { team, findUser, options, update, book } = this.props
+    const { members } = team
+
     const allowed = true
-    // if (team.teamType === 'productionEditor' && team.members.length >= 1) {
-    //   allowed = false
-    // }
 
     return (
       <div>
         <GroupHeader
           allowed={allowed}
+          show={this.state.isAddMemberOpen}
           showInput={this._showAddMember}
           title={options.title}
-        />
-
-        <AddMember
-          book={book}
-          hideInput={this._closeAddMember}
-          show={this.state.isAddMemberOpen}
-          team={team}
-          update={update}
-          updateCollection={updateCollection}
-          users={users}
         />
 
         <MemberList
@@ -58,8 +47,14 @@ export class Group extends React.Component {
           members={members}
           team={team}
           update={update}
-          updateCollection={updateCollection}
-          users={users}
+        />
+        <AddMember
+          book={book}
+          findUser={findUser}
+          hideInput={this._closeAddMember}
+          show={this.state.isAddMemberOpen}
+          team={team}
+          update={update}
         />
       </div>
     )

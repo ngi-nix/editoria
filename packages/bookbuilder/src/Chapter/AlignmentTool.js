@@ -10,9 +10,8 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
     const { id } = currentTarget
     onClickAlignmentBox(id)
   }
-
-  const leftData = data[0]
-  const rightData = data[1]
+  const leftData = data.left
+  const rightData = data.right
 
   const noBorderRight = { right: true }
   const noBorderLeft = { left: true }
@@ -20,9 +19,9 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
   return (
     <div className={classes.root}>
       <AlignmentBoxWithLabel
-        active={leftData.active}
-        id={leftData.id}
-        labelText={leftData.label}
+        active={leftData}
+        id="left"
+        labelText="left"
         noBorder={noBorderRight}
         onClick={onClick}
       />
@@ -30,10 +29,10 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
       <div className={classes.middleLine} />
 
       <AlignmentBoxWithLabel
-        active={rightData.active}
-        id={rightData.id}
+        active={rightData}
+        id="right"
         labelPositionRight
-        labelText={rightData.label}
+        labelText="right"
         noBorder={noBorderLeft}
         onClick={onClick}
       />

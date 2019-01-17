@@ -1,5 +1,5 @@
 module.exports = {
   frontend: {
-    components: [() => require('./src/WaxPubsweet')],
+    components: [() => require('./src/ConnectedWax')],
   },
 }

@@ -10,27 +10,33 @@ class DeleteModal extends React.Component {
   }
 
   onDelete() {
-    const { chapter, remove, toggle } = this.props
+    const { bookComponentId, remove, toggle } = this.props
 
-    remove(chapter)
+    remove(bookComponentId)
     toggle()
   }
 
   render() {
-    const { chapter, container, show, toggle } = this.props
-    const { type } = chapter
+    const {
+      bookComponentId,
+      container,
+      show,
+      toggle,
+      componentType,
+    } = this.props
+    // const { type } = chapter
 
     return (
       <Modal
         action="delete"
-        chapter={chapter}
+        bookComponentId={bookComponentId}
         container={container}
         show={show}
         successAction={this.onDelete}
         successText="Delete"
-        title={`Delete ${type}`}
+        title={`Delete ${componentType}`}
         toggle={toggle}
-        type={type}
+        type={componentType}
       />
     )
   }

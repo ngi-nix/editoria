@@ -266,7 +266,7 @@ class FileUploader extends React.Component {
         </label>
 
         <input
-          accept=".doc,.docx"
+          accept=".docx"
           id="file-uploader"
           multiple
           name="file-uploader"

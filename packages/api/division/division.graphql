@@ -9,5 +9,7 @@ extend type Mutation {
     targetDivisionId: ID!
     bookComponentId: ID!
     index: Int!
-  ): [Division]!
+  ): Division
 }
+
+extend type Subscription { bookComponentOrderUpdated: Book! }

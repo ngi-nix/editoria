@@ -4,7 +4,7 @@ create table book_component (
   type text not null,
   created timestamp with time zone not null default current_timestamp,
   updated timestamp with time zone,
-
+  
   -- editoria base
   deleted boolean default false,
 
@@ -13,10 +13,11 @@ create table book_component (
   division_id uuid not null references division,
 
   -- own
+  archived boolean default false,
   component_type text,
   pagination jsonb not null,
   reference_id uuid not null,
-
+  
   -- own -> counters
   equation_counter int,
   figure_counter int,

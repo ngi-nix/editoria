@@ -7,7 +7,7 @@ import styles from '../styles/teamManager.local.scss'
 
 export class TeamManager extends React.Component {
   render() {
-    const { teams, users, updateTeam, updateCollection, book } = this.props
+    const { teams, users,findUser, updateTeam, book } = this.props
 
     return (
       <div className={styles.teamManager}>
@@ -15,8 +15,7 @@ export class TeamManager extends React.Component {
           teams={teams}
           book={book}
           update={updateTeam}
-          updateCollection={updateCollection}
-          users={users}
+          findUser={findUser}
         />
       </div>
     )

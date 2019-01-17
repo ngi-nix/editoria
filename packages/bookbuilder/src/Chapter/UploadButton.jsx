@@ -23,11 +23,11 @@ export class UploadButton extends React.Component {
     const file = event.target.files[0]
     const filename = file.name
     const title = filename.split('.')[0]
-    const { chapter, convertFile, toggleUpload, update } = this.props
+    const { bookComponentId, convertFile, toggleUpload, update } = this.props
 
     toggleUpload()
     const patch = {
-      id: chapter.id,
+      id: bookComponentId,
       progress: {
         upload: 0,
         file_prep: -1,
@@ -44,18 +44,9 @@ export class UploadButton extends React.Component {
     convertFile(file)
       .then(response => {
         const patch = {
-          id: chapter.id,
-          source: response.converted,
+          id: bookComponentId,
+          content: response.converted,
           title,
-          progress: {
-            upload: 1,
-            file_prep: 0,
-            edit: -1,
-            review: -1,
-            clean_up: -1,
-            page_check: -1,
-            final: -1,
-          },
         }
 
         update(patch)
@@ -64,16 +55,7 @@ export class UploadButton extends React.Component {
       .catch(error => {
         console.error('INK error', error)
         const patch = {
-          id: chapter.id,
-          progress: {
-            upload: -1,
-            file_prep: -1,
-            edit: -1,
-            review: -1,
-            clean_up: -1,
-            page_check: -1,
-            final: -1,
-          },
+          id: bookComponentId,
         }
         update(patch)
         toggleUpload()
@@ -88,9 +70,9 @@ export class UploadButton extends React.Component {
   }
 
   isLocked() {
-    const { chapter } = this.props
+    const { lock } = this.props
 
-    if (chapter.lock === null) return false
+    if (lock === null) return false
     return true
   }
 
@@ -119,26 +101,26 @@ export class UploadButton extends React.Component {
     }
     if (this.isLocked()) noAction = true
 
-    const { accept, title, type, chapter } = this.props
+    const { accept, title, type, bookComponentId } = this.props
 
     return (
       <div className={styles.btnContainer}>
         <i
           className={`${styles.uploadIcon} ${uploadClass} ${disabled}`}
           disabled={noAction}
-          htmlFor={`single-file-uploader${chapter.id}`}
+          htmlFor={`single-file-uploader${bookComponentId}`}
         />
         <label
           className={`${styles.uploadText} ${disabled}`}
           disabled={noAction}
-          htmlFor={`single-file-uploader${chapter.id}`}
+          htmlFor={`single-file-uploader${bookComponentId}`}
         >
           {text}
         </label>
         <input
           accept={accept}
           disabled={noAction}
-          id={`single-file-uploader${chapter.id}`}
+          id={`single-file-uploader${bookComponentId}`}
           name="single-file-uploader"
           onChange={this.handleFileUpload}
           title={title}
@@ -152,15 +134,14 @@ export class UploadButton extends React.Component {
     if (!this.isLocked()) return null
 
     const { showModal } = this.state
-    const { chapter, modalContainer } = this.props
-    const type = chapter.subCategory
+    const { componentType, modalContainer } = this.props
 
     return (
       <UploadWarningModal
         container={modalContainer}
         show={showModal}
         toggle={this.toggleModal}
-        type={type}
+        type={componentType}
       />
     )
   }
@@ -216,7 +197,7 @@ UploadButton.propTypes = {
     ),
     progress: PropTypes.objectOf(PropTypes.number),
     rev: PropTypes.string,
-    source: PropTypes.string,
+    content: PropTypes.string,
     status: PropTypes.string,
     subCategory: PropTypes.string,
     title: PropTypes.string,

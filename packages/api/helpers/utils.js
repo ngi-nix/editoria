@@ -11,7 +11,8 @@ utils.reorderArray = (array, item, to, from = undefined) => {
     resArray.push(item)
     from = from || resArray.length - 1
   }
-  resArray.splice(to, 0, resArray.splice(from, 1)[0])
+  const dragged = resArray.splice(from, 1)[0]
+  resArray.splice(to, 0, dragged)
   return resArray
 }
 

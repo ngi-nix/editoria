@@ -10,16 +10,16 @@ class UnlockModal extends React.Component {
   }
 
   onUnlock() {
-    const { chapter, toggle, update } = this.props
+    const { bookComponentId, toggle, update } = this.props
 
-    chapter.lock = null
-    update(chapter)
+    const lock = null
+    update(bookComponentId, lock)
     toggle()
   }
 
   render() {
-    const { chapter, container, show, toggle } = this.props
-    const { type } = chapter
+    const { chapter, container, show, toggle, componentType } = this.props
+    // const { type } = chapter
 
     return (
       <Modal
@@ -29,9 +29,9 @@ class UnlockModal extends React.Component {
         show={show}
         successAction={this.onUnlock}
         successText="Unlock"
-        title={`Unlock ${type}`}
+        title={`Unlock ${componentType}`}
         toggle={toggle}
-        type={type}
+        type={componentType}
       />
     )
   }

@@ -2,6 +2,8 @@ const book = require('./book')
 const bookComponent = require('./bookComponent')
 const bookCollection = require('./bookCollection')
 const division = require('./division')
+const team = require('./team')
+const user = require('./user')
 // const bookCollectionTranslation = require('./bookCollectionTranslation')
 // const bookComponentState = require('./bookComponentState')
 // const bookComponentTranslation = require('./bookComponentTranslation')
@@ -16,6 +18,8 @@ module.exports = {
     bookCollection.typeDefs,
     division.typeDefs,
     file.typeDefs,
+    team.typeDefs,
+    user.typeDefs,
   ].join(' '),
   resolvers: merge(
     {},
@@ -24,6 +28,8 @@ module.exports = {
     bookCollection.resolvers,
     division.resolvers,
     file.resolvers,
+    team.resolvers,
+    user.resolvers,
   ),
   // context: {
   //   book: book.model,

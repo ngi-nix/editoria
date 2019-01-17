@@ -9,25 +9,25 @@ class ProgressModal extends React.Component {
   render() {
     const {
       changeProgressState,
-      chapter,
+      bookComponentId,
+      componentType,
       container,
       show,
       toggle,
       modalType,
     } = this.props
-    const type = chapter.type
 
     return (
       <Modal
         action={`workflow-warning-${modalType}`}
-        chapter={chapter}
+        bookComponentId={bookComponentId}
         container={container}
         show={show}
         successAction={changeProgressState}
         successText="OK"
         title="Change of workflow status"
         toggle={toggle}
-        type={type}
+        type={componentType}
       />
     )
   }

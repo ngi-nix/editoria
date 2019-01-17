@@ -22,35 +22,43 @@ class ChapterTitle extends React.Component {
   }
 
   goToEditor() {
-    const { chapter, history, isUploadInProgress } = this.props
-    if (chapter.lock !== null || isUploadInProgress) return
+    const { lock, uploading, bookComponentId, bookId, history } = this.props
+    if (lock !== null || uploading) return
 
-    history.push(`/books/${chapter.book}/fragments/${chapter.id}`)
+    history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   }
 
   renderTitle() {
     const {
-      chapter,
+      componentTypeOrder,
+      lock,
       isRenaming,
       onSaveRename,
       title,
+      componentType,
+      divisionType,
       // type,
       // update,
     } = this.props
     const { divisions } = config.bookBuilder
-    const { division, subCategory } = chapter
-    const { showNumberBeforeComponents } = find(divisions, ['name', division])
+    // const { componentType } = bookComponent
+    const { showNumberBeforeComponents } = find(divisions, [
+      'name',
+      divisionType,
+    ])
+
+    // console.log('loock', lock)
     const showNumber =
-      indexOf(showNumberBeforeComponents, subCategory) > -1 || false
+      indexOf(showNumberBeforeComponents, componentType) > -1 || false
 
     return (
       <Title
+        componentType={componentType}
+        componentTypeOrder={componentTypeOrder || null}
         goToEditor={this.goToEditor}
-        isLocked={chapter.lock !== null}
+        isLocked={lock !== null && lock !== undefined}
         isRenaming={isRenaming}
-        number={chapter.number || null}
         onSaveRename={onSaveRename}
-        // ref={node => (this.title = node)}
         showNumber={showNumber}
         title={title}
       />
@@ -79,10 +87,10 @@ class ChapterTitle extends React.Component {
   }
 
   render() {
-    const { chapter, isUploadInProgress } = this.props
+    const { bookComponentId, bookId, uploading, lock } = this.props
     let title = this.renderTitle()
-    const url = `/books/${chapter.book}/fragments/${chapter.id}`
-    if (chapter.lock === null && !isUploadInProgress) {
+    const url = `/books/${bookId}/bookComponents/${bookComponentId}`
+    if ((lock === null || lock === undefined) && !uploading) {
       title = withLink(this.renderTitle(), url)
     }
     const renameEmptyError = this.renderError()

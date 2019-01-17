@@ -1,22 +1,22 @@
 import {
   // each,
   // filter,
-  find,
+  // find,
   get,
   // includes,
   // some,
   // union,
-  debounce,
+  // debounce,
   // isEmpty,
 } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { bindActionCreators, compose } from 'redux'
+// import { connect } from 'react-redux'
+import { compose } from 'redux'
 import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
-import Actions from 'pubsweet-client/src/actions'
+// import Actions from 'pubsweet-client/src/actions'
 import Wax from 'wax-editor-react'
 // import { getFragment } from 'pubsweet-client/src/actions/fragments'
 
@@ -28,29 +28,40 @@ export class WaxPubsweet extends React.Component {
     this.save = this.save.bind(this)
     // this.unlock = this.unlock.bind(this)
     this.update = this.update.bind(this)
-    this.handlePolling = this.handlePolling.bind(this)
+    // this.handlePolling = this.handlePolling.bind(this)
     this.renderWax = this.renderWax.bind(this)
 
-    this.stackUpdateData = []
-    this.pollingInterval = null
+    // this.stackUpdateData = []
+    // this.pollingInterval = null
+    let mode = 'full'
+    if (props.history.location.pathname.includes('preview')) {
+      mode = 'selection'
+    }
     this.state = {
-      editing: null,
-      lockConflict: true,
-      pollingIsLive: false,
+      editing: mode,
+      // lockConflict: true,
+      // pollingIsLive: false,
     }
   }
 
-  componentWillMount() {
-    const { getCollections, getFragments, getTeams } = this.props.actions
-    // const { fragment } = this.props
-
-    getCollections().then(() => {
-      const { book } = this.props
-      getTeams().then(() => {
-        getFragments(book).then(() => {})
-      })
-    })
+  componentDidMount() {
+    const { editing } = this.state
+    if (editing !== 'selection') {
+      this.props.subscribeToTrackChangesUpdated()
+      this.props.subscribeToTitleUpdated()
+    }
   }
+  // componentWillMount() {
+  //   const { getCollections, getFragments, getTeams } = this.props.actions
+  //   // const { fragment } = this.props
+
+  //   getCollections().then(() => {
+  //     const { book } = this.props
+  //     getTeams().then(() => {
+  //       getFragments(book).then(() => {})
+  //     })
+  //   })
+  // }
 
   // lock() {
   //   const { user, match } = this.props
@@ -108,102 +119,117 @@ export class WaxPubsweet extends React.Component {
   //   return 'selection'
   // }
 
-  componentWillReceiveProps(nextProps) {
-    const { authsome } = this.props
-    if (nextProps.fragment !== this.props.fragment) {
-      authsome
-        .can(this.props.user.id, 'can interact with editor', nextProps.fragment)
-        .then(res => {
-          // For the case of admin as there is no granularity in authsome
-          if (res === true) {
-            this.setState({ editing: 'full' })
-          } else {
-            this.setState({ editing: res })
-          }
-        })
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { authsome } = this.props
+  //   if (nextProps.fragment !== this.props.fragment) {
+  //     authsome
+  //       .can(this.props.user.id, 'can interact with editor', nextProps.fragment)
+  //       .then(res => {
+  //         // For the case of admin as there is no granularity in authsome
+  //         if (res === true) {
+  //           this.setState({ editing: 'full' })
+  //         } else {
+  //           this.setState({ editing: res })
+  //         }
+  //       })
+  //   }
+  // }
   componentWillUpdate(nextProps, nextState) {
-    const { book, history, config } = this.props
-    let { pollingTimer } = config
-
-    if (pollingTimer === undefined) {
-      pollingTimer = 1000
-    }
-
-    if (this.state.editing === null && nextState.editing) {
-      if (
-        this.shouldLock() &&
-        (nextState.editing === 'full' ||
-          nextState.editing === 'full_without_tc' ||
-          nextState.editing === 'review')
-      ) {
-        this.pollingInterval = setInterval(this.handlePolling, pollingTimer)
-        // this.lock()
-      }
-    }
-    if (
-      this.props.fragment &&
-      this.props.fragment.lock !== null &&
-      nextProps.fragment.lock === null
-    ) {
-      // console.log('old lock', this.props.fragment.lock)
-      // console.log('new lock', nextProps.fragment.lock)
-      history.push(`/books/${book.id}/book-builder`)
-    }
+    // const { book, history, config } = this.props
+    // let { pollingTimer } = config
+    // if (pollingTimer === undefined) {
+    //   pollingTimer = 1000
+    // }
+    // if (this.state.editing === null && nextState.editing) {
+    //   if (
+    //     this.shouldLock() &&
+    //     (nextState.editing === 'full' ||
+    //       nextState.editing === 'full_without_tc' ||
+    //       nextState.editing === 'review')
+    //   ) {
+    //     this.pollingInterval = setInterval(this.handlePolling, pollingTimer)
+    //     // this.lock()
+    //   }
+    // }
+    // if (
+    //   this.props.fragment &&
+    //   this.props.fragment.lock !== null &&
+    //   nextProps.fragment.lock === null
+    // ) {
+    //   // console.log('old lock', this.props.fragment.lock)
+    //   // console.log('new lock', nextProps.fragment.lock)
+    //   history.push(`/books/${book.id}/book-builder`)
+    // }
   }
 
   componentWillUnmount() {
-    // const { editing, lockConflict, pollingIsLive } = this.state
-    // if (!lockConflict) {
-    // if (this.shouldLock() && editing === 'full') this.unlock()
-    // if (this.shouldLock() && editing === 'full') {
-    // console.log('ha')
-    clearInterval(this.pollingInterval)
-    // if (!pollingIsLive && editing !== 'selection') {
-    //   let dialog = confirm('Polling was not initiated, manual unlock will be performed')
-    //   // this.unlock()
-    // } else {
-    //   clearInterval(this.pollingInterval)
-    // }
-    // }
-    // }
+    // // const { editing, lockConflict, pollingIsLive } = this.state
+    // // if (!lockConflict) {
+    // // if (this.shouldLock() && editing === 'full') this.unlock()
+    // // if (this.shouldLock() && editing === 'full') {
+    // // console.log('ha')
+    // clearInterval(this.pollingInterval)
+    // // if (!pollingIsLive && editing !== 'selection') {
+    // //   let dialog = confirm('Polling was not initiated, manual unlock will be performed')
+    // //   // this.unlock()
+    // // } else {
+    // //   clearInterval(this.pollingInterval)
+    // // }
+    // // }
+    // // }
   }
 
-  save(source) {
-    const { fragment } = this.props
-
-    const patch = {
-      id: fragment.id,
-      source,
-      progress: fragment.progress,
-    }
-
-    const sourceBefore = fragment.source || ''
+  save(content) {
+    const { bookComponent, updateBookComponentContent } = this.props
+    const sourceBefore = bookComponent.content || ''
     const hasContentBefore = sourceBefore.trim().length > 0
-    const hasContent = source.trim().length > 0
-    if (!hasContentBefore && hasContent) {
-      patch.progress.upload = 1
-      patch.progress.file_prep = 0
-    }
-    return this.update(patch)
-  }
-  handlePolling() {
-    const { polling } = this.props.actions
-    const { user, match, history } = this.props
-    const { bookId, fragmentId } = match.params
+    const hasContent = content.trim().length > 0
+    let workflowStages
 
-    polling(bookId, fragmentId, user)
-      .then(res => {
-        this.setState({ pollingIsLive: true })
+    if (!hasContentBefore && hasContent) {
+      workflowStages = bookComponent.workflowStages.map(stage => ({
+        label: stage.label,
+        type: stage.type,
+        value: stage.value,
+      }))
+      workflowStages[0].value = 1 // upload stage
+      workflowStages[1].value = 0 // file_prep stage
+      return updateBookComponentContent({
+        variables: {
+          input: {
+            id: bookComponent.id,
+            content,
+            workflowStages,
+          },
+        },
       })
-      .catch(err => {
-        this.setState({ pollingIsLive: true })
-        if (err.message === 'Forbidden') {
-          history.push(`/books/${bookId}/book-builder`)
-        }
-      })
+    }
+
+    return updateBookComponentContent({
+      variables: {
+        input: {
+          id: bookComponent.id,
+          content,
+        },
+      },
+    })
   }
+  // handlePolling() {
+  //   const { polling } = this.props.actions
+  //   const { user, match, history } = this.props
+  //   const { bookId, fragmentId } = match.params
+
+  //   polling(bookId, fragmentId, user)
+  //     .then(res => {
+  //       this.setState({ pollingIsLive: true })
+  //     })
+  //     .catch(err => {
+  //       this.setState({ pollingIsLive: true })
+  //       if (err.message === 'Forbidden') {
+  //         history.push(`/books/${bookId}/book-builder`)
+  //       }
+  //     })
+  // }
 
   // TODO -- Theoretically, we shouldn't lock when the editor is in read only
   // mode. This gets complicated however, as the user will be able to be add
@@ -214,53 +240,96 @@ export class WaxPubsweet extends React.Component {
   }
 
   fileUpload(file) {
-    const { fileUpload } = this.props.actions
-    return fileUpload(file)
+    const { uploadFile } = this.props
+    return new Promise((resolve, reject) => {
+      uploadFile({
+        variables: {
+          file,
+        },
+      }).then(res => {
+        console.log('resta', res)
+        resolve({ file: `http://localhost:3050/uploads${res.data.upload.url}` })
+      })
+    })
+    // uploadFile({
+    //   variables: {
+    //     file,
+    //   },
+    // }).then(res => console.log('res', res))
+    // return uploadFile(file)
   }
 
   update(patch) {
-    const { actions, book, fragment, history } = this.props
-    const { updateFragment } = actions
+    const {
+      bookComponent,
+      updateBookComponentTrackChanges,
+      renameBookComponent,
+    } = this.props
+    const { trackChanges, title } = patch
 
-    // if (!patch.id) { patch.id = fragment.id }
-    // return updateFragment(book, patch)
+    if (trackChanges !== undefined) {
+      return updateBookComponentTrackChanges({
+        variables: {
+          input: {
+            id: bookComponent.id,
+            trackChangesEnabled: trackChanges,
+          },
+        },
+      })
+    }
 
-    this.stackUpdateData.push(patch)
+    if (title !== undefined) {
+      return renameBookComponent({
+        variables: {
+          input: {
+            id: bookComponent.id,
+            title,
+          },
+        },
+      })
+    }
+    // const { actions, book, fragment, history } = this.props
+    // const { updateFragment } = actions
 
-    // TODO -- this is temporary but works
-    // It should DEFINITELY be removed in the near future though
-    /* eslint-disable */
-    debounce(() => {
-      const patchData = this.stackUpdateData.reduce((acc, x) => {
-        for (const key in x) acc[key] = x[key]
-        return acc
-      }, {})
+    // // if (!patch.id) { patch.id = fragment.id }
+    // // return updateFragment(book, patch)
 
-      if (this.stackUpdateData.length > 0) {
-        if (!patchData.id) {
-          patchData.id = fragment.id
-        }
+    // this.stackUpdateData.push(patch)
 
-        updateFragment(book, patchData).then(res => {
-          // const { user, fragment } = this.props
-          if (res.error) {
-            // When you reload within the editor check if the same user has the lock
-            // if (fragment.lock && user.id !== fragment.lock.editor.userId) {
-            history.push(`/books/${book.id}/book-builder`)
-            // }
-          } else if (this.state.lockConflict !== false) {
-            this.setState({ lockConflict: false })
-          }
-        })
-      }
-      this.stackUpdateData = []
-    }, 100)()
-    /* eslint-enable */
+    // // TODO -- this is temporary but works
+    // // It should DEFINITELY be removed in the near future though
+    // /* eslint-disable */
+    // debounce(() => {
+    //   const patchData = this.stackUpdateData.reduce((acc, x) => {
+    //     for (const key in x) acc[key] = x[key]
+    //     return acc
+    //   }, {})
+
+    //   if (this.stackUpdateData.length > 0) {
+    //     if (!patchData.id) {
+    //       patchData.id = fragment.id
+    //     }
+
+    //     updateFragment(book, patchData).then(res => {
+    //       // const { user, fragment } = this.props
+    //       if (res.error) {
+    //         // When you reload within the editor check if the same user has the lock
+    //         // if (fragment.lock && user.id !== fragment.lock.editor.userId) {
+    //         history.push(`/books/${book.id}/book-builder`)
+    //         // }
+    //       } else if (this.state.lockConflict !== false) {
+    //         this.setState({ lockConflict: false })
+    //       }
+    //     })
+    //   }
+    //   this.stackUpdateData = []
+    // }, 100)()
+    // /* eslint-enable */
     return Promise.resolve()
   }
 
   renderWax(editing) {
-    const { config, fragment, history, user } = this.props
+    const { config, bookComponent, history, user } = this.props
     const { layout, autoSave, tools } = config
 
     // From editoria config, this is just for testing purposes
@@ -337,39 +406,48 @@ export class WaxPubsweet extends React.Component {
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
-    const content = get(fragment, 'source')
-    const trackChanges = get(fragment, 'trackChanges')
+    const content = get(bookComponent, 'content')
+    const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')
 
     let chapterNumber
-    if (get(fragment, 'subCategory') === 'chapter') {
-      chapterNumber = get(fragment, 'number')
+    if (get(bookComponent, 'componentType') === 'chapter') {
+      chapterNumber = get(bookComponent, 'componentTypeOrder')
+    }
+    let header
+    if (chapterNumber) {
+      header = <h1>{`Chapter ${chapterNumber}. ${bookComponent.title}`}</h1>
+    } else {
+      header = <h1>{`${bookComponent.title}`}</h1>
     }
 
     return (
-      <Wax
-        autoSave={autoSave === undefined ? false : autoSave}
-        chapterNumber={chapterNumber}
-        className="editor-wrapper"
-        content={content}
-        editing={translatedEditing}
-        fileUpload={this.fileUpload}
-        history={history}
-        layout={layout}
-        mode={mode}
-        onSave={this.save}
-        tools={tools}
-        trackChanges={trackChanges}
-        update={this.update}
-        user={user}
-      />
+      <div>
+        {header}
+        <Wax
+          autoSave={autoSave === undefined ? false : autoSave}
+          chapterNumber={chapterNumber}
+          className="editor-wrapper"
+          content={content}
+          editing={translatedEditing}
+          fileUpload={this.fileUpload}
+          history={history}
+          layout={layout}
+          mode={mode}
+          onSave={this.save}
+          tools={tools}
+          trackChanges={trackChangesEnabled}
+          update={this.update}
+          user={user}
+        />
+      </div>
     )
   }
 
   render() {
     // const { config, fragment, history, user } = this.props
-    const { fragment } = this.props
+    const { bookComponent, loading } = this.props
     // const { layout } = config
-    const { editing, lockConflict, pollingIsLive } = this.state
+    const { editing } = this.state
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
@@ -380,13 +458,13 @@ export class WaxPubsweet extends React.Component {
     // if (get(fragment, 'subCategory') === 'chapter') {
     //   chapterNumber = get(fragment, 'number')
     // }
-    if (!editing && lockConflict && !pollingIsLive) {
+    if (loading) {
       return <p>Loading</p>
     }
 
     return (
       <Authorize
-        object={fragment}
+        object={bookComponent}
         operation="can toggle track changes"
         unauthorized={this.renderWax(editing)}
       >
@@ -482,32 +560,5 @@ WaxPubsweet.defaultProps = {
 
 //   return roles
 // }
-const mapStateToProps = (state, { match }) => {
-  const { params } = match
-  const { bookId } = params
-  const { currentUser } = state
-  const book = find(state.collections, c => c.id === bookId)
 
-  const { fragmentId } = params
-  const fragment = state.fragments[fragmentId]
-
-  const { user } = currentUser
-
-  return {
-    book,
-    fragment,
-    user,
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(Actions, dispatch),
-})
-
-export default compose(
-  withAuthsome(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(WaxPubsweet)
+export default compose(withAuthsome())(WaxPubsweet)

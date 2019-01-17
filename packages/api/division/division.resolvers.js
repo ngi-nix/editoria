@@ -1,61 +1,71 @@
-const map = require('lodash/flatMapDepth')
-const findIndex = require('lodash/findIndex')
+const map = require('lodash/map')
+const indexOf = require('lodash/indexOf')
+const pullAll = require('lodash/pullAll')
 const utils = require('../helpers/utils')
-const { BookComponent } = require('editoria-data-model/src').models
+const {
+  BookComponent,
+  Division,
+  Book,
+} = require('editoria-data-model/src').models
+
+const pubsweetServer = require('pubsweet-server')
+
+const { pubsubManager } = pubsweetServer
+
+const { BOOK_COMPONENT_ORDER_UPDATED } = require('./consts')
 
 const updateBookComponentOrder = async (
   _,
   { targetDivisionId, bookComponentId, index },
   ctx,
 ) => {
-  const bookComponent = await ctx.model.bookComponent
-    .findById({ id: bookComponentId })
-    .exec()
-  const sourceDivision = await ctx.model.division
-    .findById({ id: bookComponent.divisionId })
-    .exec()
-  const found = findIndex(sourceDivision.bookComponents, bookComponentId)
+  const bookComponent = await BookComponent.findById(bookComponentId)
+  const sourceDivision = await Division.findById(bookComponent.divisionId)
+  const found = indexOf(sourceDivision.bookComponents, bookComponentId)
+  const book = await Book.findById(sourceDivision.bookId)
+  const pubsub = await pubsubManager.getPubsub()
 
   if (sourceDivision.id === targetDivisionId) {
-    await ctx.model.division
-      .update({
-        id: sourceDivision.id,
-        bookComponents: utils.reorderArray(
-          sourceDivision.bookComponents,
-          bookComponentId,
-          index,
-          found,
-        ),
-      })
-      .exec()
+    const updatedBookComponents = utils.reorderArray(
+      sourceDivision.bookComponents,
+      bookComponentId,
+      index,
+      found,
+    )
+    const updatedDivision = await Division.query().patchAndFetchById(
+      sourceDivision.id,
+      {
+        bookComponents: updatedBookComponents,
+      },
+    )
+
+    pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
+      bookComponentOrderUpdated: book,
+    })
   } else {
-    await ctx.model.division
-      .update({
-        id: sourceDivision.id,
-        bookComponents: sourceDivision.bookComponents.splice(
-          found,
-          0,
-          bookComponentId,
-        ),
-      })
-      .exec()
-    const targetDivision = await ctx.model.division
-      .findById({ id: targetDivisionId })
-      .exec()
-    await ctx.model.division
-      .update({
-        id: targetDivisionId,
-        bookComponents: utils.reorderArray(
-          targetDivision.bookComponents,
-          bookComponentId,
-          index,
-        ),
-      })
-      .exec()
+    await Division.query().patchAndFetchById(sourceDivision.id, {
+      bookComponents: sourceDivision.bookComponents.splice(
+        found,
+        0,
+        bookComponentId,
+      ),
+    })
+    const targetDivision = Division.findById(targetDivisionId)
+    const updatedTargetDivisionBookComponents = utils.reorderArray(
+      targetDivision.bookComponents,
+      bookComponentId,
+      index,
+    )
+    await Division.query().patchAndFetchById(targetDivision.id, {
+      bookComponents: updatedTargetDivisionBookComponents,
+    })
+
+    pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
+      bookComponentOrderUpdated: book,
+    })
   }
-  return ctx.model.division
-    .findByBookId({ bookId: bookComponent.bookId })
-    .exec()
+  const div = await Division.query().where('bookId', bookComponent.bookId)
+  return div[0].id
 }
 
 module.exports = {
@@ -63,13 +73,35 @@ module.exports = {
     updateBookComponentOrder,
   },
   Division: {
-    async bookComponents(division, _, ctx) {
-      const bookComponents = await Promise.all(
-        map(division.bookComponents, async bookComponent =>
-          BookComponent.query().where('id', bookComponent.id),
-        ),
-      )
-      return bookComponents
+    async bookComponents(divisionId, _, ctx) {
+      const dbDivision = await Division.findById(divisionId)
+      if (dbDivision.bookComponents.length > 0) {
+        const bookComponents = await Promise.all(
+          map(dbDivision.bookComponents, async bookComponentId => {
+            const dbBookComponent = await BookComponent.query()
+              .where('id', bookComponentId)
+              .andWhere('deleted', false)
+            return dbBookComponent[0]
+          }),
+        )
+        return pullAll(bookComponents, [undefined])
+      }
+      return []
+    },
+    async label(divisionId, _, ctx) {
+      const dbDivision = await Division.findById(divisionId)
+      return dbDivision.label
+    },
+    async id(divisionId, _, ctx) {
+      return divisionId
+    },
+  },
+  Subscription: {
+    bookComponentOrderUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_ORDER_UPDATED)
+      },
     },
   },
 }

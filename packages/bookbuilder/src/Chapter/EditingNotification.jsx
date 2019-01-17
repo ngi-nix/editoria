@@ -55,11 +55,9 @@ class EditingNotification extends React.Component {
   /* eslint-enable */
 
   render() {
-    const { chapter, modalContainer, update } = this.props
+    const { lock, modalContainer, update, bookComponentId } = this.props
     const { showModal } = this.state
-    const { lock } = chapter
-    const { editor } = lock
-    const username = editor
+    const { username, timestamp } = lock
     const isAdmin = this.isAdmin()
 
     const message = `${username} is editing`
@@ -71,7 +69,7 @@ class EditingNotification extends React.Component {
 
       unlockModal = (
         <UnlockModal
-          chapter={chapter}
+          bookComponentId={bookComponentId}
           container={modalContainer}
           show={showModal}
           toggle={toggle}
@@ -79,8 +77,8 @@ class EditingNotification extends React.Component {
         />
       )
 
-      if (chapter.lock.timestamp) {
-        const date = this.formatDate(chapter.lock.timestamp)
+      if (timestamp) {
+        const date = this.formatDate(timestamp)
         hoverTitle = `${username} has been editing since ${date}`
       }
     }
