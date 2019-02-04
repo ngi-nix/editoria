@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { map } from 'lodash'
+import axios from 'axios'
 
 import UploadWarningModal from './UploadWarningModal'
 import styles from '../styles/bookBuilder.local.scss'
@@ -19,47 +21,91 @@ export class UploadButton extends React.Component {
 
   handleFileUpload(event) {
     event.preventDefault()
-
+    const {
+      updateBookComponentContent,
+      updateBookComponentUploading,
+      workflowStages,
+    } = this.props
+    const { bookComponentId } = this.props
     const file = event.target.files[0]
     const filename = file.name
     const title = filename.split('.')[0]
-    const { bookComponentId, convertFile, toggleUpload, update } = this.props
 
-    toggleUpload()
-    const patch = {
-      id: bookComponentId,
-      progress: {
-        upload: 0,
-        file_prep: -1,
-        edit: -1,
-        review: -1,
-        clean_up: -1,
-        page_check: -1,
-        final: -1,
-      },
-    }
-
-    update(patch)
-    // update(patch).then(res => {
-    convertFile(file)
-      .then(response => {
-        const patch = {
+    const bodyFormData = new FormData()
+    bodyFormData.append('file', file)
+    updateBookComponentUploading({
+      variables: {
+        input: {
           id: bookComponentId,
-          content: response.converted,
-          title,
-        }
-
-        update(patch)
-        toggleUpload()
+          uploading: true,
+        },
+      },
+    })
+    // toggleUpload()
+    axios({
+      method: 'post',
+      url: 'http://localhost:3050/api/ink',
+      data: bodyFormData,
+      config: { headers: { 'Content-Type': 'multipart/form-data' } },
+    })
+      .then(response => {
+        workflowStages[0].value = 1
+        workflowStages[1].value = 0
+        const resWorkflowStages = map(workflowStages, item => ({
+          label: item.label,
+          type: item.type,
+          value: item.value,
+        }))
+        updateBookComponentContent({
+          variables: {
+            input: {
+              id: bookComponentId,
+              title,
+              content: response.data.converted,
+              uploading: false,
+              workflowStages: resWorkflowStages,
+            },
+          },
+        })
       })
       .catch(error => {
-        console.error('INK error', error)
-        const patch = {
-          id: bookComponentId,
-        }
-        update(patch)
-        toggleUpload()
+        console.log('error', error)
       })
+
+    // const patch = {
+    //   id: bookComponentId,
+    //   progress: {
+    //     upload: 0,
+    //     file_prep: -1,
+    //     edit: -1,
+    //     review: -1,
+    //     clean_up: -1,
+    //     page_check: -1,
+    //     final: -1,
+    //   },
+    // }
+
+    // update(patch)
+    // // update(patch).then(res => {
+    // convertFile(file)
+    //   .then(response => {
+    //     const patch = {
+    //       id: bookComponentId,
+    //       content: response.converted,
+    //       title,
+    //     }
+
+    //     update(patch)
+    //     toggleUpload()
+    //   })
+    //   .catch(error => {
+    //     console.error('INK error', error)
+    //     const patch = {
+    //       id: bookComponentId,
+    //     }
+    //     update(patch)
+    //     toggleUpload()
+    //   })
     // })
   }
 
@@ -93,15 +139,15 @@ export class UploadButton extends React.Component {
     let uploadClass = ''
     let text = 'upload word'
     let disabled = ''
-    const uploadIndicator = this.renderUploadIndicator()
-    if (uploadIndicator) {
+
+    const { accept, title, type, bookComponentId, uploading } = this.props
+    // const uploadIndicator = this.renderUploadIndicator()
+    if (uploading) {
       uploadClass = styles['animate-flicker']
       text = 'uploading...'
       disabled = styles['no-actions']
     }
     if (this.isLocked()) noAction = true
-
-    const { accept, title, type, bookComponentId } = this.props
 
     return (
       <div className={styles.btnContainer}>

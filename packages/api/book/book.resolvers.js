@@ -5,6 +5,7 @@ const map = require('lodash/map')
 const filter = require('lodash/filter')
 const config = require('config')
 const logger = require('@pubsweet/logger')
+const exporter = require('./utils/exporter')
 
 const { pubsubManager } = pubsweetServer
 
@@ -218,6 +219,14 @@ const archiveBook = async (_, { id, archive }, ctx) => {
   }
 }
 
+const exportBook = async (
+  _,
+  { bookId, destination, converter, previewer, style },
+  ctx,
+) => {
+  return exporter(bookId, destination, converter, previewer, style)
+}
+
 module.exports = {
   Query: {
     getBook,
@@ -227,6 +236,7 @@ module.exports = {
     createBook,
     renameBook,
     deleteBook,
+    exportBook,
   },
   Book: {
     async title(book, _, ctx) {

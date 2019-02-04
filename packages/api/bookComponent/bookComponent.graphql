@@ -54,6 +54,7 @@ input BookComponentInput {
   bookId: ID!
   componentType: String!
   divisionId: ID!
+  uploading: Boolean
 }
 
 input WordFileInput {
@@ -67,6 +68,7 @@ input UpdateBookComponentInput {
   title: String
   deleted: Boolean
   lock: LockInput
+  uploading: Boolean
   pagination: PaginationInput
   workflowStages: [WorkFlowItemInput]
   trackChangesEnabled: Boolean
@@ -78,8 +80,9 @@ extend type Query {
 }
 
 extend type Mutation {
-  ingestWordFile(input: [WordFileInput]!): [BookComponent]!
+  ingestWordFile(files: [Upload]!): UploadResult!
   addBookComponent(input: BookComponentInput): BookComponent!
+  addBookComponents(input: [BookComponentInput]): [BookComponent]!
   renameBookComponent(input: UpdateBookComponentInput): BookComponent!
   deleteBookComponent(input: UpdateBookComponentInput): BookComponent!
   archiveBookComponent(input: UpdateBookComponentInput): BookComponent!
@@ -89,6 +92,7 @@ extend type Mutation {
   lockBookComponent(input: UpdateBookComponentInput): BookComponent!
   updateTrackChanges(input: UpdateBookComponentInput): BookComponent!
   updateContent(input: UpdateBookComponentInput): BookComponent!
+  updateUploading(input: UpdateBookComponentInput): BookComponent!
 }
 
 extend type Subscription {
@@ -98,4 +102,6 @@ extend type Subscription {
   bookComponentPaginationUpdated: BookComponent!
   bookComponentTrackChangesUpdated: BookComponent!
   bookComponentTitleUpdated: BookComponent!
+  bookComponentContentUpdated: BookComponent!
+  bookComponentUploadingUpdated: BookComponent!
 }

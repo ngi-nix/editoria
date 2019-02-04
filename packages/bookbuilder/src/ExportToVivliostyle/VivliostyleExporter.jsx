@@ -30,20 +30,29 @@ class VivliostyleExporter extends Component {
       style: 'epub.css',
     }
     // console.log('queryPar', queryParams)
-
-    htmlToEpub(book.id, queryParams)
+    htmlToEpub({
+      variables: {
+        bookId: book.id,
+        destination: 'folder',
+        converter: !converter ? 'default' : `${converter}`,
+        previewer: `${selectedOption.value}`,
+        style: 'epub.css',
+      },
+    })
       .then(res => {
-        const path = res.extractedEpubPath
+        console.log('res', res)
+        const { data } = res
+        const { exportBook } = data
         let url
         if (selectedOption.value === 'vivliostyle') {
           const viliostylePath = '/vivliostyle/viewer/vivliostyle-viewer.html'
-          url = `${viliostylePath}#b=/uploads/${path}`
+          url = `${viliostylePath}#b=/uploads/${exportBook}`
           window.open(url, '_blank')
         } else {
           const pagedPath = '/paged/previewer/index.html'
-          const stylePath = `/uploads/${path}/default.css`
-          url = `${pagedPath}?url=/uploads/${path}/index.html&stylesheet=${stylePath}`
-          history.push(`/books/${book.id}/pagedPreviewer/${path}`)
+          const stylePath = `/uploads/${exportBook}/default.css`
+          url = `${pagedPath}?url=/uploads/${exportBook}/index.html&stylesheet=${stylePath}`
+          history.push(`/books/${book.id}/pagedPreviewer/${exportBook}`)
         }
       })
       .catch(error => {

@@ -51,9 +51,9 @@ class BookComponent extends React.PureComponent {
   }
 
   toggleUpload() {
-    this.setState({
-      isUploadInProgress: !this.state.isUploadInProgress,
-    })
+    // this.setState({
+    //   isUploadInProgress: !this.state.isUploadInProgress,
+    // })
 
     // if (!this.state.isUploadInProgress) this.removeUploadState()
   }
@@ -69,7 +69,7 @@ class BookComponent extends React.PureComponent {
       divisionId,
       divisionType,
       id,
-      ink,
+      updateBookComponentUploading,
       isDragging,
       lock,
       outerContainer,
@@ -81,6 +81,7 @@ class BookComponent extends React.PureComponent {
       uploading,
       updatePagination,
       updateWorkflowState,
+      updateBookComponentContent,
       user,
     } = this.props
     // const { isUploadInProgress } = this.state
@@ -180,16 +181,16 @@ class BookComponent extends React.PureComponent {
               bookComponentId={id}
               bookId={bookId}
               componentType={componentType}
-              convertFile={ink}
-              isUploadInProgress={uploading}
+              updateBookComponentContent={updateBookComponentContent}
+              updateBookComponentUploading={updateBookComponentUploading}
+              divisionId={divisionId}
               outerContainer={outerContainer}
               pagination={pagination}
-              toggleUpload={this.toggleUpload}
+              uploading={uploading}
               trackChangesEnabled={trackChangesEnabled}
               update={this.update}
               updatePagination={updatePagination}
               updateWorkflowState={updateWorkflowState}
-              user={user}
               viewOrEdit={this._viewOrEdit}
               workflowStages={workflowStages}
             />

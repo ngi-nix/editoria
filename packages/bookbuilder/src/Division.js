@@ -132,10 +132,10 @@ class Division extends React.Component {
 
   render() {
     const {
-      ink,
+      updateBookComponentUploading,
+      updateBookComponentContent,
       outerContainer,
       // bookComponents,
-      user,
       label,
       update,
       reorderingAllowed,
@@ -176,7 +176,8 @@ class Division extends React.Component {
           divisionId={divisionId}
           divisionType={label}
           id={id}
-          ink={ink}
+          updateBookComponentContent={updateBookComponentContent}
+          updateBookComponentUploading={updateBookComponentUploading}
           key={bookComponent.id}
           lock={lock}
           no={i}
@@ -192,7 +193,6 @@ class Division extends React.Component {
           updatePagination={onUpdatePagination}
           updateWorkflowState={onUpdateWorkflowState}
           uploading={uploading}
-          user={user}
           workflowStages={workflowStages}
         />
       )

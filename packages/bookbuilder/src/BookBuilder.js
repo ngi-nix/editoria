@@ -59,7 +59,7 @@ export class BookBuilder extends React.Component {
   }
 
   updateUploadStatus(status) {
-    this.setState({ uploading: status })
+    // this.setState({ uploading: status })
   }
 
   renderTeamManagerModal() {
@@ -106,16 +106,19 @@ export class BookBuilder extends React.Component {
     const {
       book,
       history,
-      user,
       addBookComponent,
+      addBookComponents,
       deleteBookComponent,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
+      updateBookComponentUploading,
+      updateBookComponentContent,
+      exportBook,
     } = this.props
     const { divisions } = book
     // console.log('bb', book)
-    const { outerContainer, uploading } = this.state
+    const { outerContainer } = this.state
     const teamManagerModal = this.renderTeamManagerModal()
 
     return (
@@ -145,34 +148,24 @@ export class BookBuilder extends React.Component {
                   operation="can view multipleFilesUpload"
                 >
                   <FileUploader
-                    backChapters={[]}
-                    bodyChapters={[]}
                     book={book}
-                    convert={() => {
-                      console.log('ink')
-                    }}
-                    create={() => {
-                      console.log('add')
-                    }}
-                    frontChapters={[]}
-                    update={() => {
-                      console.log('updated')
-                    }}
-                    updateUploadStatus={this.updateUploadStatus}
+                    create={addBookComponents}
+                    divisions={divisions}
+                    update={updateBookComponentContent}
+                    updateUploadStatus={updateBookComponentUploading}
                   />
                 </Authorize>
                 <VivliostyleExporter
                   book={book}
                   history={history}
-                  htmlToEpub={() => {
-                    console.log('html')
-                  }}
+                  htmlToEpub={exportBook}
                   outerContainer={outerContainer}
                   showModal={this.state.showModal}
                   showModalToggle={this.toggleModal}
                 />
                 <DownloadEpub
                   book={book}
+                  htmlToEpub={exportBook}
                   outerContainer={outerContainer}
                   showModal={this.state.showModal}
                   showModalToggle={this.toggleModal}
@@ -181,17 +174,18 @@ export class BookBuilder extends React.Component {
             </div>
             <DivisionList
               addBookComponent={addBookComponent}
+              addBookComponents={addBookComponents}
               bookId={book.id}
               deleteBookComponent={deleteBookComponent}
               divisions={divisions}
               outerContainer={outerContainer}
+              updateBookComponentContent={updateBookComponentContent}
               updateBookComponentOrder={updateBookComponentOrder}
               updateBookComponentPagination={updateBookComponentPagination}
+              updateBookComponentUploading={updateBookComponentUploading}
               updateBookComponentWorkflowState={
                 updateBookComponentWorkflowState
               }
-              uploading={uploading}
-              user={user}
             />
           </div>
         </div>

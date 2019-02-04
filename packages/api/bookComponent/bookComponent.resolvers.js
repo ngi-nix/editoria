@@ -1,7 +1,9 @@
 const findIndex = require('lodash/findIndex')
-const pullAll = require('lodash/pullAll')
 const groupBy = require('lodash/groupBy')
-const map = require('lodash/flatMapDepth')
+const pullAll = require('lodash/pullAll')
+// const map = require('lodash/flatMapDepth')
+const keys = require('lodash/keys')
+const map = require('lodash/map')
 const forEach = require('lodash/forEach')
 const clone = require('lodash/clone')
 const get = require('lodash/get')
@@ -24,6 +26,8 @@ const {
   BOOK_COMPONENT_WORKFLOW_UPDATED,
   BOOK_COMPONENT_TRACK_CHANGES_UPDATED,
   BOOK_COMPONENT_TITLE_UPDATED,
+  BOOK_COMPONENT_CONTENT_UPDATED,
+  BOOK_COMPONENT_UPLOADING_UPDATED,
 } = require('./consts')
 
 const { pubsubManager } = pubsweetServer
@@ -37,12 +41,12 @@ const getBookComponent = async (_, { id }, ctx) => {
 }
 
 // TODO: Pending implementation
-const ingestWordFile = async (_, args, ctx) => {
-  // bookComponentState -> update uploading to true
+const ingestWordFile = async (_, { files }, ctx) => {
+  //
 }
 
-const addBookComponent = async (_, { input }, ctx) => {
-  const { divisionId, bookId, componentType, title } = input
+const addBookComponent = async (_, args, ctx, info) => {
+  const { divisionId, bookId, componentType, title, uploading } = args.input
   const bookBuilder = get(config, 'bookBuilder')
   const workflowStages = get(bookBuilder, 'stages')
   let bookComponentWorkflowStages
@@ -107,7 +111,7 @@ const addBookComponent = async (_, { input }, ctx) => {
         {
           bookComponentId: createdBookComponent.id,
           trackChangesEnabled: false,
-          uploading: false,
+          uploading: uploading || false,
         },
         bookComponentWorkflowStages,
       ),
@@ -125,6 +129,85 @@ const addBookComponent = async (_, { input }, ctx) => {
   }
 }
 
+const addBookComponents = async (_, { input }, ctx, info) => {
+  const bookBuilder = get(config, 'bookBuilder')
+  const workflowStages = get(bookBuilder, 'stages')
+  let bookComponentWorkflowStages
+
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    const createdBookComponents = await Promise.all(
+      map(
+        input,
+        async ({ divisionId, bookId, componentType, title, uploading }) => {
+          const newBookComponent = {
+            bookId,
+            componentType,
+            divisionId,
+            archived: false,
+            deleted: false,
+          }
+          const bookComponent = await new BookComponent(newBookComponent).save()
+          await new BookComponentTranslation({
+            bookComponentId: bookComponent.id,
+            languageIso: 'en',
+            title,
+          }).save()
+
+          if (workflowStages) {
+            bookComponentWorkflowStages = {
+              workflowStages: map(workflowStages, stage => ({
+                type: stage.type,
+                label: stage.title,
+                value: -1,
+              })),
+            }
+          }
+
+          await new BookComponentState(
+            assign(
+              {},
+              {
+                bookComponentId: bookComponent.id,
+                trackChangesEnabled: false,
+                uploading: uploading || false,
+              },
+              bookComponentWorkflowStages,
+            ),
+          ).save()
+          return bookComponent
+        },
+      ),
+    )
+    const groupByDivision = groupBy(createdBookComponents, 'divisionId')
+    const divisionIds = keys(groupByDivision)
+    await Promise.all(
+      map(divisionIds, async divisionId => {
+        const division = await Division.findById(divisionId)
+        const newBookComponents = []
+        forEach(division.bookComponents, bookComponent => {
+          newBookComponents.push(bookComponent)
+        })
+        forEach(groupByDivision[divisionId], bookComponent => {
+          newBookComponents.push(bookComponent.id)
+        })
+        return Division.query().patchAndFetchById(divisionId, {
+          bookComponents: newBookComponents,
+        })
+      }),
+    )
+    forEach(createdBookComponents, bookComponent => {
+      pubsub.publish(BOOK_COMPONENT_ADDED, {
+        bookComponentAdded: bookComponent,
+      })
+    })
+
+    return createdBookComponents
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
 // TODO: Pending implementation
 const renameBookComponent = async (_, { input }, ctx) => {
   const { id, title } = input
@@ -253,7 +336,7 @@ const lockBookComponent = (_, args, ctx) => {
 
 // TODO: Pending implementation
 const updateContent = async (_, { input }, ctx) => {
-  const { id, content, workflowStages } = input
+  const { id, content, workflowStages, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
   const bookComponentTranslation = await BookComponentTranslation.query().where(
     'bookComponentId',
@@ -276,10 +359,22 @@ const updateContent = async (_, { input }, ctx) => {
         workflowStages,
       },
     )
-    pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
-      bookComponentWorkflowUpdated: updatedBookComponent,
-    })
   }
+  if (uploading !== undefined) {
+    const bookComponentState = await BookComponentState.query().where(
+      'bookComponentId',
+      id,
+    )
+    await BookComponentState.query().patchAndFetchById(
+      bookComponentState[0].id,
+      {
+        uploading,
+      },
+    )
+  }
+  pubsub.publish(BOOK_COMPONENT_CONTENT_UPDATED, {
+    bookComponentContentUpdated: updatedBookComponent,
+  })
   return updatedBookComponent
 }
 
@@ -315,6 +410,23 @@ const updateTrackChanges = async (_, { input }, ctx) => {
   return updatedBookComponent
 }
 
+const updateUploading = async (_, { input }, ctx) => {
+  const { id, uploading } = input
+  const pubsub = await pubsubManager.getPubsub()
+  const bookComponentState = await BookComponentState.query().where(
+    'bookComponentId',
+    id,
+  )
+  await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
+    uploading,
+  })
+  const updatedBookComponent = await BookComponent.findById(id)
+  pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+    bookComponentUploadingUpdated: updatedBookComponent,
+  })
+  return updatedBookComponent
+}
+
 module.exports = {
   Query: {
     getBookComponent,
@@ -322,6 +434,7 @@ module.exports = {
   Mutation: {
     ingestWordFile,
     addBookComponent,
+    addBookComponents,
     renameBookComponent,
     deleteBookComponent,
     archiveBookComponent,
@@ -330,6 +443,7 @@ module.exports = {
     unlockBookComponent,
     lockBookComponent,
     updateContent,
+    updateUploading,
     updateTrackChanges,
   },
   BookComponent: {
@@ -430,7 +544,6 @@ module.exports = {
         return pubsub.asyncIterator(BOOK_COMPONENT_ADDED)
       },
     },
-
     bookComponentDeleted: {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
@@ -459,6 +572,18 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_COMPONENT_TITLE_UPDATED)
+      },
+    },
+    bookComponentContentUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_CONTENT_UPDATED)
+      },
+    },
+    bookComponentUploadingUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_UPLOADING_UPDATED)
       },
     },
   },
