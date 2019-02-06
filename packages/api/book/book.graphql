@@ -13,8 +13,6 @@ input CreateBookInput {
 
 extend type Query {
   getBook(id: ID!): Book!
-  exportBook(bookId: ID!): String!
-  downloadBookEPUB(bookId: ID!): String!
 }
 
 extend type Mutation {
@@ -22,6 +20,7 @@ extend type Mutation {
   createBook(input: CreateBookInput!): Book!
   renameBook(id: ID!, title: String!): Book!
   deleteBook(id: ID!): Book!
+  exportBook(bookId: ID!,destination:String!, converter:String, previewer: String, style:String): String!
 }
 
 extend type Subscription { 

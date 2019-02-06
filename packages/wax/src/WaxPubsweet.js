@@ -247,16 +247,9 @@ export class WaxPubsweet extends React.Component {
           file,
         },
       }).then(res => {
-        console.log('resta', res)
-        resolve({ file: `http://localhost:3050/uploads${res.data.upload.url}` })
+        resolve({ file: `/uploads${res.data.upload.url}` })
       })
     })
-    // uploadFile({
-    //   variables: {
-    //     file,
-    //   },
-    // }).then(res => console.log('res', res))
-    // return uploadFile(file)
   }
 
   update(patch) {

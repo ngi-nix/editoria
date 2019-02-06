@@ -8,10 +8,15 @@ import BookBuilder from './BookBuilder'
 import {
   getBookQuery,
   createBookComponentMutation,
+  createBookComponentsMutation,
   deleteBookComponentMutation,
+  ingestWordFilesMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
+  updateBookComponentContentMutation,
+  updateBookComponentUploadingMutation,
+  exportBookMutation,
 } from './queries'
 
 import {
@@ -27,16 +32,22 @@ import {
 const mapper = {
   getBookQuery,
   createBookComponentMutation,
+  createBookComponentsMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
+  updateBookComponentContentMutation,
+  updateBookComponentUploadingMutation,
+  ingestWordFilesMutation,
+  exportBookMutation,
 }
 
 const mapProps = args => ({
   book: get(args.getBookQuery, 'data.getBook'),
   subscribeToMore: get(args.getBookQuery, 'subscribeToMore'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
+  addBookComponents: args.createBookComponentsMutation.addBookComponents,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
   updateBookComponentPagination:
     args.updateBookComponentPaginationMutation.updateBookComponentPagination,
@@ -45,13 +56,19 @@ const mapProps = args => ({
   updateBookComponentWorkflowState:
     args.updateBookComponentWorkflowStateMutation
       .updateBookComponentWorkflowState,
+  updateBookComponentContent:
+    args.updateBookComponentContentMutation.updateContent,
+  updateBookComponentUploading:
+    args.updateBookComponentUploadingMutation.updateUploading,
+  ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
+  exportBook: args.exportBookMutation.exportBook,
   loading: args.getBookQuery.loading,
 })
 
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match } = props
+  const { match, history } = props
   const { id: bookId } = match.params
 
   return (
@@ -59,11 +76,16 @@ const Connected = props => {
       {({
         book,
         addBookComponent,
+        addBookComponents,
         deleteBookComponent,
         updateBookComponentPagination,
         updateBookComponentOrder,
         updateBookComponentWorkflowState,
+        updateBookComponentContent,
+        updateBookComponentUploading,
+        ingestWordFiles,
         loading,
+        exportBook,
         subscribeToMore,
       }) => {
         if (loading) return 'Loading...'
@@ -71,11 +93,17 @@ const Connected = props => {
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
+            addBookComponents={addBookComponents}
             book={book}
+            history={history}
+            exportBook={exportBook}
             deleteBookComponent={deleteBookComponent}
+            ingestWordFiles={ingestWordFiles}
             loading={loading}
+            updateBookComponentContent={updateBookComponentContent}
             updateBookComponentOrder={updateBookComponentOrder}
             updateBookComponentPagination={updateBookComponentPagination}
+            updateBookComponentUploading={updateBookComponentUploading}
             updateBookComponentWorkflowState={updateBookComponentWorkflowState}
             subscribeToBookComponentOrderUpdated={() =>
               subscribeToMore({

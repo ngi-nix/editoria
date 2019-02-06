@@ -15,10 +15,13 @@ class DivisionList extends Component {
     const {
       user,
       addBookComponent,
+      addBookComponents,
       deleteBookComponent,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
+      updateBookComponentContent,
+      updateBookComponentUploading,
       bookId,
       outerContainer,
       uploading,
@@ -26,6 +29,7 @@ class DivisionList extends Component {
     return (
       <Division
         add={addBookComponent}
+        addBookComponents={addBookComponents}
         bookComponents={bookComponents}
         bookId={bookId}
         deleteBookComponent={deleteBookComponent}
@@ -40,8 +44,10 @@ class DivisionList extends Component {
         update={() => {
           console.log('update')
         }}
+        updateBookComponentContent={updateBookComponentContent}
         updateBookComponentOrder={updateBookComponentOrder}
         updateBookComponentPagination={updateBookComponentPagination}
+        updateBookComponentUploading={updateBookComponentUploading}
         updateBookComponentWorkflowState={updateBookComponentWorkflowState}
         uploadStatus={uploading}
         user={user}

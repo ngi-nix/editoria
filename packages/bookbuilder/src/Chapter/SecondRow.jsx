@@ -37,9 +37,9 @@ class ChapterSecondRow extends React.Component {
 
   updateStateList(title, type, value) {
     const { bookComponentId, workflowStages, updateWorkflowState } = this.props
-    console.log('title', title)
-    console.log('type', type)
-    console.log('index', value)
+    const isLast =
+      workflowStages.length - 1 ===
+      findIndex(workflowStages, { label: title, type })
     if (
       config.bookBuilder &&
       config.bookBuilder.instance &&
@@ -256,15 +256,17 @@ class ChapterSecondRow extends React.Component {
 
         const indexOfStage = findIndex(workflowStages, { label: title, type })
         // console.log('workflow', workflowStages)
-    
+
         if (value === 1) {
           workflowStages[indexOfStage].value = value
-          workflowStages[indexOfStage + 1].value = 0
+          if (!isLast) {
+            workflowStages[indexOfStage + 1].value = 0
+          }
           // const next = indexOf(this.progressOrder, type) + 1
           // // const type = this.progressOrder[next]
           // patch.workflowStages[type] = 0
         }
-    
+
         if (value === -1) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
@@ -276,7 +278,7 @@ class ChapterSecondRow extends React.Component {
           }
           workflowStages[next].value = -1
         }
-    
+
         if (value === 0) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
@@ -285,7 +287,7 @@ class ChapterSecondRow extends React.Component {
             workflowStages[i].value = -1
           }
         }
-        updateWorkflowState(bookComponentId, workflowStages)    
+        updateWorkflowState(bookComponentId, workflowStages)
       }
     }
     if (
@@ -361,15 +363,17 @@ class ChapterSecondRow extends React.Component {
 
         const indexOfStage = findIndex(workflowStages, { label: title, type })
         // console.log('workflow', workflowStages)
-    
+
         if (value === 1) {
           workflowStages[indexOfStage].value = value
-          workflowStages[indexOfStage + 1].value = 0
+          if (!isLast) {
+            workflowStages[indexOfStage + 1].value = 0
+          }
           // const next = indexOf(this.progressOrder, type) + 1
           // // const type = this.progressOrder[next]
           // patch.workflowStages[type] = 0
         }
-    
+
         if (value === -1) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
@@ -381,7 +385,7 @@ class ChapterSecondRow extends React.Component {
           }
           workflowStages[next].value = -1
         }
-    
+
         if (value === 0) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
@@ -400,12 +404,17 @@ class ChapterSecondRow extends React.Component {
     const { nextProgressValues } = this.state
     const { title, type, value } = nextProgressValues
     // const index = this.state.nextProgressValues.value
+    const isLast =
+      workflowStages.length - 1 ===
+      findIndex(workflowStages, { label: title, type })
     const indexOfStage = findIndex(workflowStages, { label: title, type })
     // console.log('workflow', workflowStages)
 
     if (value === 1) {
       workflowStages[indexOfStage].value = value
-      workflowStages[indexOfStage + 1].value = 0
+      if (!isLast) {
+        workflowStages[indexOfStage + 1].value = 0
+      }
       // const next = indexOf(this.progressOrder, type) + 1
       // // const type = this.progressOrder[next]
       // patch.workflowStages[type] = 0
@@ -486,8 +495,9 @@ class ChapterSecondRow extends React.Component {
       bookId,
       bookComponentId,
       componentType,
-      convertFile,
-      isUploadInProgress,
+      uploading,
+      updateBookComponentContent,
+      updateBookComponentUploading,
       outerContainer,
       pagination,
       toggleUpload,
@@ -503,8 +513,10 @@ class ChapterSecondRow extends React.Component {
             accept=".doc,.docx"
             bookComponentId={bookComponentId}
             componentType={componentType}
-            convertFile={convertFile}
-            isUploadInProgress={isUploadInProgress}
+            updateBookComponentContent={updateBookComponentContent}
+            updateBookComponentUploading={updateBookComponentUploading}
+            workflowStages={workflowStages}
+            uploading={uploading}
             lock={null}
             modalContainer={outerContainer}
             title=" "

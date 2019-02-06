@@ -11,6 +11,11 @@
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
-    "editoria-data-model": "^0.0.0"
+    "editoria-data-model": "^0.0.0",
+    "cheerio": "^1.0.0-rc.2",
+    "highlight.js": "^9.13.1",
+    "html-epub": "git+https://git@gitlab.coko.foundation/pubsweet/html-epub#updated-libtidy",
+    "mkdirp": "^0.5.1",
+    "unzipper": "^0.8.9"
   }
 }
