@@ -66,17 +66,17 @@ const Login = ({
         </form>
 
         {signup && (
-          <>
+          <div>
             <span>Don&apos;t have an account? </span>
             <Link to="/signup">Sign up</Link>
-          </>
+          </div>
         )}
 
         {passwordReset && (
-          <>
+          <div>
             <span>Forgot your password? </span>
             <Link to="/password-reset">Reset password</Link>
-          </>
+          </div>
         )}
       </FormContainer>
     </CenteredColumn>

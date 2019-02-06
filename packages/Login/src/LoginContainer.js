@@ -1,8 +1,8 @@
 import { compose, withState, withHandlers } from 'recompose'
 import { withFormik } from 'formik'
 import { graphql } from 'react-apollo'
-import mutations from './mutations'
-import Login from '../Login'
+import { LOGIN_USER } from './graphql/mutations/'
+import Login from './Login'
 
 const getNextUrl = () => {
   const url = new URL(window.location.href)
@@ -43,7 +43,7 @@ const enhancedFormik = withFormik({
 })(Login)
 
 export default compose(
-  graphql(mutations.LOGIN_USER, {
+  graphql(LOGIN_USER, {
     name: 'loginUser',
   }),
   withState('redirectLink', 'loggedIn', null),
