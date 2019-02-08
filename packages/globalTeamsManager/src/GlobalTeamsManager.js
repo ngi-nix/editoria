@@ -4,11 +4,6 @@ import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import Select from 'react-select'
 import { sortBy, keys } from 'lodash'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-
-// TODO -- clean up this import
-import Actions from 'pubsweet-client/src/actions'
 
 const TeamHeadingWrapper = styled.h4`
   border-bottom: 1px solid black;
@@ -156,13 +151,6 @@ class GlobalTeamsManager extends Component {
     }
   }
 
-  componentWillMount() {
-    const { getUsers, getTeams } = this.props.actions
-    Promise.all([getUsers(), getTeams()]).then(values => {
-      this.setState({ ready: true })
-    })
-  }
-
   handleSubmit = (formValues, formikBag) => {
     const { teams, actions } = this.props
     const { updateTeam } = actions
@@ -198,11 +186,11 @@ class GlobalTeamsManager extends Component {
     )
   }
 
-  render() {
+  render({ loading }) {
     const { users, teams } = this.props
-    const { hideRibbon, ready } = this.state
+    const { hideRibbon } = this.state
 
-    if (!ready) return null
+    if (loading) return 'Loading...'
 
     let globalTeams = teams.filter(team => team.global)
     const infoMessage = 'Your teams have been successfully updated'
@@ -240,21 +228,4 @@ GlobalTeamsManager.defaultProps = {
   users: null,
 }
 
-function mapStateToProps(state, { match }) {
-  const { users, teams } = state
-  return {
-    users: users.users,
-    teams,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch),
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(GlobalTeamsManager)
+export default GlobalTeamsManager
