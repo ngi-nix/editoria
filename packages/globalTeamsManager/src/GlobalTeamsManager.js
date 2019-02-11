@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import Select from 'react-select'
-import { sortBy, keys } from 'lodash'
+import { sortBy, keys, omit } from 'lodash'
 
 const TeamHeadingWrapper = styled.h4`
   border-bottom: 1px solid black;
@@ -82,19 +82,19 @@ const TeamSection = props => {
   const options = users
     ? users.map(user => ({
         label: user.username,
-        value: user.id,
+        id: user.id,
       }))
     : []
 
-  const selectValue = value.map(userId => {
-    const user = users.find(u => u.id === userId)
+  const selectValue = value.map(usr => {
+    const user = users.find(u => u.id === usr.id)
     if (user) {
       return {
         label: user.username,
-        value: userId,
+        id: usr.id,
       }
     }
-    return userId
+    return usr.id
   })
 
   const handleChange = newValue => {
@@ -106,6 +106,7 @@ const TeamSection = props => {
       <TeamHeading name={name} />
       <StyledSelect
         closeMenuOnSelect={false}
+        getOptionValue={option => option.id}
         isMulti
         name={type}
         onChange={handleChange}
@@ -152,18 +153,22 @@ class GlobalTeamsManager extends Component {
   }
 
   handleSubmit = (formValues, formikBag) => {
-    const { teams, actions } = this.props
-    const { updateTeam } = actions
+    const { teams, updateGlobalTeam } = this.props
 
-    const data = keys(formValues).map(teamType => ({
-      id: teams.find(t => t.teamType === teamType && t.global).id,
-      members: formValues[teamType].map(item => {
-        if (item.id) return item.id
-        return item.value
+    const data = keys(formValues).map(teamType => {
+      const team = teams.find(t => t.teamType === teamType)
+      team.members = formValues[teamType].map(item => item.id)
+      return team
+    })
+
+    const promises = data.map(team =>
+      updateGlobalTeam({
+        variables: {
+          id: team.id,
+          input: omit(team, ['id', '__typename', 'type']),
+        },
       }),
-    }))
-
-    const promises = data.map(team => updateTeam(team))
+    )
 
     Promise.all(promises).then(res => {
       this.showRibbon()
@@ -186,8 +191,8 @@ class GlobalTeamsManager extends Component {
     )
   }
 
-  render({ loading }) {
-    const { users, teams } = this.props
+  render() {
+    const { users, teams, loading } = this.props
     const { hideRibbon } = this.state
 
     if (loading) return 'Loading...'

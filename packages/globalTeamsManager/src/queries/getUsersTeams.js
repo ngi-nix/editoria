@@ -8,7 +8,7 @@ const GET_USERS_TEAMS = gql`
       id
       type
       username
-      emai
+      email
       admin
     }
 
@@ -25,7 +25,7 @@ const GET_USERS_TEAMS = gql`
         id
         type
         username
-        emai
+        email
         admin
       }
       global

@@ -14,7 +14,7 @@ const {
 
 const getBookTeams = async (_, { bookId }, ctx) => {
   try {
-    const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
     const bookTeams = filter(allTeams, team => {
       if (team.object) {
         return team.object.objectId === bookId && team.global === false
@@ -33,7 +33,7 @@ const getBookTeams = async (_, { bookId }, ctx) => {
 }
 
 const getGlobalTeams = async (_, __, ctx) => {
-  const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+  const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
   const globalTeams = filter(allTeams, { global: true })
   return globalTeams
 }
@@ -48,6 +48,10 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       updatedTeam.members,
       ctx,
     )
+
+    if (updatedTeam.global === true) {
+      return updatedTeam
+    }
 
     if (updatedTeam.teamType === 'productionEditor') {
       pubsub.publish(BOOK_PRODUCTION_EDITORS_UPDATED, {
