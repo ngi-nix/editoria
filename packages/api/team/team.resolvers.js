@@ -1,9 +1,6 @@
 const pubsweetServer = require('pubsweet-server')
 const logger = require('@pubsweet/logger')
 const filter = require('lodash/filter')
-const map = require('lodash/map')
-const clone = require('lodash/clone')
-const forEach = require('lodash/forEach')
 
 const { pubsubManager } = pubsweetServer
 
