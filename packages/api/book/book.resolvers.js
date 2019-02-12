@@ -149,7 +149,7 @@ const deleteBook = async (_, args, ctx) => {
       }),
     )
 
-    const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
     const associatedTeams = filter(allTeams, team => {
       if (team.object) {
         return team.object.id === args.id
@@ -250,7 +250,7 @@ module.exports = {
       return book.divisions
     },
     async productionEditors(book, _, ctx) {
-      const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
       const productionEditorTeam = filter(allTeams, team => {
         if (team.object) {
           return (
