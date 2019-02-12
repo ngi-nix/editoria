@@ -153,13 +153,13 @@ class BookComponent extends React.PureComponent {
           }`}
           style={listItemStyle}
         >
-          <Authorize
+          {/* <Authorize
             object={bookId}
             operation="can reorder bookComponents"
             unauthorized={indicatorGrabAllowed(false)}
-          >
+          > */}
             {indicatorGrabAllowed(true)}
-          </Authorize>
+          {/* </Authorize> */}
 
           <div className={` ${styles.chapterMainContent}`}>
             <FirstRow

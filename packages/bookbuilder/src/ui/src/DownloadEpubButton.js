@@ -1,8 +1,7 @@
 import React from 'react'
 import config from 'config'
-import axios from 'axios'
-import classes from './DownloadEpub.local.scss'
 import ErrorModal from './ErrorModal'
+import { ButtonWithIcon } from './Button'
 
 const DownloadEpub = ({
   book,
@@ -27,10 +26,8 @@ const DownloadEpub = ({
       },
     })
       .then(res => {
-        console.log('res', res)
         const { data } = res
         const { exportBook } = data
-        console.log('e', exportBook)
         window.location.replace(exportBook)
       })
       .catch(error => {
@@ -42,6 +39,17 @@ const DownloadEpub = ({
   const toggleModal = () => {
     showModalToggle()
   }
+  const icon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+      <path d="M0 0h24v24H0z" fill="none" />
+    </svg>
+  )
   if (showModal) {
     modal = (
       <ErrorModal
@@ -53,11 +61,14 @@ const DownloadEpub = ({
   }
 
   return (
-    <div className={`${classes.exportBookContainer}`} onClick={handleDownload}>
-      <i className={classes.exportToBookIcon} />
-      <label className={classes.downloadEpubText}>Download Epub</label>
+    <React.Fragment>
+      <ButtonWithIcon
+        icon={icon}
+        label="Download Epub"
+        onClick={handleDownload}
+      />
       {modal}
-    </div>
+    </React.Fragment>
   )
 }
 

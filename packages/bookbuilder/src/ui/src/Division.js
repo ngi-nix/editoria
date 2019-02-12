@@ -1,28 +1,58 @@
-import {
-  clone,
-  each,
-  filter,
-  findIndex,
-  forEach,
-  find,
-  difference,
-  groupBy,
-  has,
-  isEmpty,
-  omit,
-  map,
-} from 'lodash'
+import { clone, find, map } from 'lodash'
 import config from 'config'
 import React from 'react'
-import PropTypes from 'prop-types'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
 
-import AddButton from './AddButton'
+import AddComponentButton from './AddComponentButton'
 import BookComponent from './BookComponent'
-import styles from './styles/bookBuilder.local.scss'
 
+const DivisionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: calc(4 * ${th('gridUnit')});
+`
+const DivisionHeader = styled.span`
+  color: ${th('colorPrimary')};
+  flex-basis: content;
+  font-family: 'Vollkorn';
+  font-size: ${th('fontSizeHeading3')};
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: 5px;
+  line-height: ${th('lineHeightHeading3')};
+  margin: 0 calc(2 * ${th('gridUnit')}) 0 0;
+  padding-top: 0.1em;
+`
+const HeaderContainer = styled.div`
+  align-items: center;
+  display: flex;
+  margin-bottom: calc(2 * ${th('gridUnit')});
+`
+const DivisionActions = styled.div`
+  display: flex;
+`
+
+const EmptyList = styled.div`
+  color: ${th('colorText')};
+  font-family: 'Fira Sans';
+  font-size: ${th('fontSizeBase')};
+  font-style: normal;
+  font-weight: normal;
+  line-height: ${th('lineHeightBase')};
+  margin-left: calc(2 * ${th('gridUnit')});
+`
+const BookComponentList = styled.ul`
+  color: ${th('colorText')};
+  font-family: 'Fira Sans';
+  font-size: ${th('fontSizeBase')};
+  font-style: normal;
+  font-weight: normal;
+  line-height: ${th('lineHeightBase')};
+`
 class Division extends React.Component {
   constructor(props) {
     super(props)
@@ -43,9 +73,9 @@ class Division extends React.Component {
     // const diff = difference(this.state.bookComponents, nextProps.bookComponents)
     // if (diff.length > 0) {
     //   console.log('diff', diff)
-      this.setState({
-        bookComponents: nextProps.bookComponents,
-      })
+    this.setState({
+      bookComponents: nextProps.bookComponents,
+    })
     // }
     // return false
   }
@@ -113,13 +143,12 @@ class Division extends React.Component {
   }
   onUpdateWorkflowState(bookComponentId, workflowStates) {
     const { updateBookComponentWorkflowState } = this.props
-    // console.log('bookvomponentid', bookComponentId)
-    // console.log('workflow', workflowStates)
     const workflowStages = map(workflowStates, item => ({
       label: item.label,
       type: item.type,
       value: item.value,
     }))
+
     updateBookComponentWorkflowState({
       variables: {
         input: {
@@ -150,7 +179,6 @@ class Division extends React.Component {
       onMove,
       onEndDrag,
     } = this
-    // console.log('bookComponents', bookComponents)
 
     const bookComponentInstances = map(bookComponents, (bookComponent, i) => {
       const {
@@ -199,93 +227,43 @@ class Division extends React.Component {
     })
     const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
 
-    const addButtons = (
-      <Authorize object={bookId} operation="can view addComponent">
-        {map(divisionsConfig.allowedComponentTypes, componentType => (
-          <AddButton add={onAddClick} group={componentType} />
-        ))}
-      </Authorize>
-    )
+    const addButtons =
+      // <Authorize object={bookId} operation="can view addComponent">
+      map(divisionsConfig.allowedComponentTypes, componentType => (
+        <AddComponentButton
+          add={onAddClick}
+          label={`add ${componentType}`}
+          type={componentType}
+        />
+      ))
+    // </Authorize>
 
-    const list = (
-      <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
-    )
+    // const list = (
+    //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
+    // )
 
-    const emptyList = (
-      <div className={styles.noChapters}>
-        There are no items in this division.
-      </div>
-    )
+    // const emptyList = (
+    //   <div className={styles.noChapters}>
+    //     There are no items in this division.
+    //   </div>
+    // )
 
-    const displayed = bookComponents.length > 0 ? list : emptyList
+    // const displayed = bookComponents.length > 0 ? list : emptyList
 
     return (
-      <div className={styles.divisionsContainer}>
-        <div className={styles.sectionHeader}>
-          <h1> {label} </h1>
-          {addButtons}
-        </div>
-        <div id="displayed"> {displayed} </div>
-      </div>
+      <DivisionContainer>
+        <HeaderContainer>
+          <DivisionHeader>{label.toUpperCase()}</DivisionHeader>
+          <DivisionActions>{addButtons}</DivisionActions>
+        </HeaderContainer>
+        {bookComponents.length > 0 ? (
+          <BookComponentList>{bookComponentInstances}</BookComponentList>
+        ) : (
+          <EmptyList>There are no items in this division.</EmptyList>
+        )}
+      </DivisionContainer>
     )
   }
-}
-
-Division.propTypes = {
-  add: PropTypes.func.isRequired,
-  book: PropTypes.shape({
-    id: PropTypes.string,
-    rev: PropTypes.string,
-    title: PropTypes.string,
-  }).isRequired,
-  chapters: PropTypes.arrayOf(
-    PropTypes.shape({
-      alignment: PropTypes.objectOf(PropTypes.bool),
-      author: PropTypes.string,
-      book: PropTypes.string,
-      division: PropTypes.string,
-      id: PropTypes.string,
-      index: PropTypes.number,
-      kind: PropTypes.string,
-      lock: PropTypes.shape({
-        editor: PropTypes.shape({
-          username: PropTypes.string,
-        }),
-        timestamp: PropTypes.string,
-      }),
-      number: PropTypes.number,
-      owners: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string,
-          username: PropTypes.string,
-        }),
-      ),
-      progress: PropTypes.objectOf(PropTypes.number),
-      rev: PropTypes.string,
-      source: PropTypes.string,
-      status: PropTypes.string,
-      subCategory: PropTypes.string,
-      title: PropTypes.string,
-      trackChanges: PropTypes.bool,
-      type: PropTypes.string,
-    }),
-  ).isRequired,
-  ink: PropTypes.func.isRequired,
-  outerContainer: PropTypes.any.isRequired,
-  remove: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    admin: PropTypes.bool,
-    email: PropTypes.string,
-    id: PropTypes.string,
-    rev: PropTypes.string,
-    type: PropTypes.string,
-    username: PropTypes.string,
-  }),
-  title: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  update: PropTypes.func.isRequired,
-  reorderingAllowed: PropTypes.bool.isRequired,
-  uploadStatus: PropTypes.objectOf(PropTypes.bool),
 }
 
 export { Division as UnWrappedDivision }

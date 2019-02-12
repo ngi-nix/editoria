@@ -1,10 +1,26 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import PropTypes from 'prop-types'
 import config from 'config'
-import classes from './VivliostyleExporter.local.scss'
 import ErrorModal from './ErrorModal'
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
+import { DefaultButton } from './Button'
 
+const Form = styled.form`
+  display: flex;
+  align-items: center;
+`
+const Icon = styled.span`
+  height: calc(3 * ${th('gridUnit')});
+  margin: 0 ${th('gridUnit')} 0 0;
+  padding: 0;
+  width: calc(3 * ${th('gridUnit')});
+`
+const Label = styled.div`
+  font-size: ${th('fontSizeBase')};
+  margin: 0 ${th('gridUnit')} 0 0;
+  line-height: ${th('lineHeightBase')};
+`
 class VivliostyleExporter extends Component {
   constructor(props) {
     super(props)
@@ -18,18 +34,12 @@ class VivliostyleExporter extends Component {
     e.preventDefault()
     const { book, htmlToEpub, showModalToggle, history } = this.props
     const { selectedOption } = this.state
-
     let converter
+
     if (config['pubsweet-client'] && config['pubsweet-client'].converter) {
       converter = config['pubsweet-client'].converter
     }
-    const queryParams = {
-      destination: 'folder',
-      converter: !converter ? 'default' : `${converter}`,
-      previewer: `${selectedOption.value}`,
-      style: 'epub.css',
-    }
-    // console.log('queryPar', queryParams)
+
     htmlToEpub({
       variables: {
         bookId: book.id,
@@ -40,7 +50,6 @@ class VivliostyleExporter extends Component {
       },
     })
       .then(res => {
-        console.log('res', res)
         const { data } = res
         const { exportBook } = data
         let url
@@ -79,15 +88,38 @@ class VivliostyleExporter extends Component {
     ]
 
     let modal
-
+    const label = 'Export Book'
+    const icon = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z" />
+        <path d="M0 0h24v24H0z" fill="none" />
+      </svg>
+    )
     const customStyles = {
-      container: base => ({
+      container: (base, state) => ({
         ...base,
         width: 120,
-        margin: 0,
+        margin: '0 8px 0 0',
         padding: 0,
         fontFamily: 'Fira Sans Condensed',
       }),
+      control: (base, state) => {
+        return {
+          ...base,
+          borderRadius: 0,
+          boxShadow: state.isFocused ? 0 : 0,
+          minHeight: 0,
+          borderColor: state.isFocused ? th('colorText') : th('colorText'),
+          '&:hover': {
+            borderColor: state.isFocused ? th('colorText') : th('colorText'),
+          },
+        }
+      },
       dropdownIndicator: base => ({
         ...base,
         padding: 0,
@@ -96,11 +128,6 @@ class VivliostyleExporter extends Component {
         ...base,
         paddingTop: 0,
         paddingBottom: 0,
-      }),
-      control: base => ({
-        ...base,
-        borderRadius: 0,
-        minHeight: 0,
       }),
     }
 
@@ -115,14 +142,9 @@ class VivliostyleExporter extends Component {
     }
 
     return (
-      <form
-        className={classes.exportBookContainer}
-        onSubmit={this.handleHTMLToEpub}
-      >
-        <label className={classes.exportLabel}>
-          <i className={classes.exportToBookIcon} />
-          <span className={classes.vivliostyleExportText}>Export Book</span>
-        </label>
+      <Form onSubmit={this.handleHTMLToEpub}>
+        <Icon>{icon}</Icon>
+        <Label>{label.toUpperCase()}</Label>
         <Select
           isClearable={false}
           isSearchable={false}
@@ -131,25 +153,11 @@ class VivliostyleExporter extends Component {
           styles={customStyles}
           value={selectedOption}
         />
-        <button className={classes.submitBtn} disabled={!selectedOption}>
-          Go
-        </button>
+        <DefaultButton label="go" />
         {modal}
-      </form>
+      </Form>
     )
   }
-}
-
-VivliostyleExporter.propTypes = {
-  book: PropTypes.shape({
-    id: PropTypes.string,
-    rev: PropTypes.string,
-    title: PropTypes.string,
-  }).isRequired,
-  htmlToEpub: PropTypes.func.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  showModalToggle: PropTypes.func.isRequired,
-  outerContainer: PropTypes.any.isRequired,
 }
 
 export default VivliostyleExporter
