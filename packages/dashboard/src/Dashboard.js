@@ -36,9 +36,7 @@ export class Dashboard extends Component {
     const { showModal } = this.state
     if (loading) return 'Loading...'
 
-    const className = `${
-      styles.bookList
-    } bootstrap pubsweet-component pubsweet-component-scroll`
+    const className = `bootstrap pubsweet-component pubsweet-component-scroll`
 
     return collections.map(collection => (
       <div className={className}>

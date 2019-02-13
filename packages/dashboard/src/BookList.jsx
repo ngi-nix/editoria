@@ -1,9 +1,14 @@
 import { isEmpty, map, sortBy } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 import Book from './Book'
-import styles from './dashboard.local.scss'
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 class BookList extends React.Component {
   renderBookList() {
@@ -12,11 +17,7 @@ class BookList extends React.Component {
     if (!books) return 'Fetching...'
 
     if (isEmpty(books)) {
-      return (
-        <div className={styles['booklist-empty']}>
-          There are no books to display.
-        </div>
-      )
+      return <div>There are no books to display.</div>
     }
 
     const items = sortBy(books, [book => book.title.toLowerCase()])
@@ -37,7 +38,7 @@ class BookList extends React.Component {
   render() {
     const bookList = this.renderBookList()
 
-    return <div className="col-lg-12">{bookList}</div>
+    return <Wrapper>{bookList}</Wrapper>
   }
 }
 

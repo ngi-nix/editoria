@@ -86,7 +86,6 @@ const Connected = props => {
         subscribeToMore,
       }) => {
         if (loading) return 'Loading...'
-        console.log('book', book)
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
@@ -257,8 +256,6 @@ const Connected = props => {
               subscribeToMore({
                 document: PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION,
                 updateQuery: (prev, { subscriptionData }) => {
-                  console.log('team', prev)
-                  console.log('team2', subscriptionData)
                   const { productionEditorsUpdated } = subscriptionData.data
                   const { getBook } = prev
                   if (getBook.id === productionEditorsUpdated.bookId) {

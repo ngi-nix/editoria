@@ -1,11 +1,19 @@
 // import { includes, some } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, withRouter } from 'react-router-dom'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import { withRouter } from 'react-router-dom'
+import styled from 'styled-components'
 
 import RemoveBookModal from './RemoveBookModal'
-import styles from './dashboard.local.scss'
+
+import BookTitle from './BookTitle'
+import BookActions from './BookActions'
+
+const Wrapper = styled.div`
+  display: flex;
+  margin: 8px 0;
+  padding: 0 0 0 24px;
+`
 
 // TODO -- Book and Chapter should both extend a common component
 class Book extends React.Component {
@@ -13,7 +21,6 @@ class Book extends React.Component {
     super(props)
 
     this.goToBookBuilder = this.goToBookBuilder.bind(this)
-    this.handleKeyOnInput = this.handleKeyOnInput.bind(this)
     this.onClickRename = this.onClickRename.bind(this)
     this.onClickSave = this.onClickSave.bind(this)
     this.removeBook = this.removeBook.bind(this)
@@ -26,29 +33,19 @@ class Book extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    const { isRenaming } = this.state
-    if (isRenaming) this.renameTitle.focus()
-  }
-
   toggleModal() {
     this.setState({
       showModal: !this.state.showModal,
     })
   }
 
-  handleKeyOnInput(event) {
-    if (event.charCode !== 13) return
-    this.rename()
-  }
-
-  rename() {
+  rename(value) {
     const { book, renameBook } = this.props
 
     renameBook({
       variables: {
         id: book.id,
-        title: this.renameTitle.value,
+        title: value,
       },
     })
 
@@ -56,14 +53,6 @@ class Book extends React.Component {
       isRenaming: false,
     })
   }
-
-  // TODO -- refactor all roles based function into a util
-  // canEditBook() {
-  //   const { roles } = this.props
-  //   const accepted = ['admin', 'production-editor']
-  //   const pass = some(accepted, role => includes(roles, role))
-  //   return pass
-  // }
 
   goToBookBuilder() {
     const { book, history } = this.props
@@ -87,100 +76,9 @@ class Book extends React.Component {
   }
 
   onClickSave() {
-    this.rename()
-  }
-
-  renderTitle() {
-    const { book } = this.props
-    const { isRenaming } = this.state
-
-    if (isRenaming) {
-      return (
-        <input
-          defaultValue={book.title}
-          name="renameTitle"
-          onKeyPress={this.handleKeyOnInput}
-          ref={el => {
-            this.renameTitle = el
-          }}
-        />
-      )
-    }
-
-    return (
-      <div className={styles.bookTitleBorder}>
-        <div className={styles.bookTitleWidth}>
-          <h3 onDoubleClick={this.goToBookBuilder}>{book.title}</h3>
-        </div>
-      </div>
-    )
-  }
-
-  // TODO -- edit, rename and remove should be reusable components
-  renderEdit() {
-    const { book } = this.props
-
-    return (
-      <div className={styles.actionContainer}>
-        <Link className={styles.editBook} to={`/books/${book.id}/book-builder`}>
-          Edit
-        </Link>
-      </div>
-    )
-  }
-
-  renderRename() {
-    const { isRenaming } = this.state
-    const { book } = this.props
-
-    if (isRenaming) {
-      return (
-        <Authorize object={book} operation="can rename books">
-          <div className={styles.actionContainer}>
-            <a className={styles.editBook} href="#" onClick={this.onClickSave}>
-              Save
-            </a>
-          </div>
-        </Authorize>
-      )
-    }
-
-    return (
-      <Authorize object={book} operation="can rename books">
-        <div className={styles.actionContainer}>
-          <a className={styles.editBook} href="#" onClick={this.onClickRename}>
-            Rename
-          </a>
-        </div>
-      </Authorize>
-    )
-  }
-
-  renderRemove() {
-    const { book } = this.props
-    return (
-      <Authorize object={book} operation="can delete books">
-        <div className={styles.actionContainer}>
-          <a className={styles.editBook} href="#" onClick={this.toggleModal}>
-            Delete
-          </a>
-        </div>
-      </Authorize>
-    )
-  }
-
-  renderButtons() {
-    const edit = this.renderEdit()
-    const rename = this.renderRename()
-    const remove = this.renderRemove()
-
-    return (
-      <div className={styles.bookActions}>
-        {edit}
-        {rename}
-        {remove}
-      </div>
-    )
+    // SUPER HACK -- Needs to be redesigned, but it works for now
+    const el = document.getElementById('renameTitle')
+    this.rename(el.value)
   }
 
   renderRemoveModal() {
@@ -200,17 +98,29 @@ class Book extends React.Component {
   }
 
   render() {
+    const { isRenaming } = this.state
     const { book } = this.props
-    const title = this.renderTitle(book)
-    const buttons = this.renderButtons(book)
     const removeModal = this.renderRemoveModal()
 
     return (
-      <div className={styles.bookContainer}>
-        {title}
-        {buttons}
+      <Wrapper>
+        <BookTitle
+          isRenaming={isRenaming}
+          onDoubleClick={this.goToBookBuilder}
+          rename={this.rename}
+          title={book.title}
+        />
+
+        <BookActions
+          book={book}
+          isRenaming={isRenaming}
+          onClickRename={this.onClickRename}
+          onClickSave={this.onClickSave}
+          toggleModal={this.toggleModal}
+        />
+
         {removeModal}
-      </div>
+      </Wrapper>
     )
   }
 }

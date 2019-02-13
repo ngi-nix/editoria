@@ -1,22 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import styled from 'styled-components'
 
-import styles from './dashboard.local.scss'
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import { H1 } from '@pubsweet/ui'
+
+import AddBookButton from './AddBookButton'
+import SortMenu from './SortMenu'
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+`
+
+const Side = styled.div`
+  align-items: center;
+  display: flex;
+`
+
+const Title = styled(H1)`
+  display: inline-flex;
+  font-family: 'Vollkorn' !important;
+  margin: 0 !important;
+  padding-top: 5px !important;
+  text-transform: uppercase;
+`
 
 const DashboardHeader = props => {
   const { title, toggle } = props
 
   return (
-    <div className="col-lg-12">
-      <h1 className={styles.bookTitle}>{title}</h1>
-      <Authorize operation="can add books">
-        <div className={styles.addBookBtn} onClick={toggle}>
-          <div className={styles.addBookIcon} />
-          <a>add book</a>
-        </div>
-      </Authorize>
-    </div>
+    <HeaderWrapper>
+      <Side>
+        <Title>{title}</Title>
+
+        <Authorize operation="can add books">
+          <AddBookButton onClick={toggle} />
+        </Authorize>
+      </Side>
+
+      <Side>
+        <SortMenu />
+      </Side>
+    </HeaderWrapper>
   )
 }
 
