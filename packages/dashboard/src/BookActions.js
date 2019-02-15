@@ -66,7 +66,7 @@ const ActionGroup = styled(UIActionGroup)`
   align-items: flex-end;
   display: flex;
   flex-shrink: 0;
-  margin-bottom: 7px;
+  margin-bottom: 12px;
   margin-left: 8px;
 
   div {

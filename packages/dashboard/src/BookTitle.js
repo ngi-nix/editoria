@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     #666 50%,
     rgba(255, 255, 255, 0) 0%
   );
-  background-position: bottom 7px left 0;
+  background-position: bottom 12px left 0;
   background-repeat: repeat-x;
   background-size: 6px 1px;
   flex-grow: 1;
@@ -20,7 +20,7 @@ const Text = styled.span`
   font-size: 28px !important;
   font-style: italic;
   font-family: 'Vollkorn' !important;
-  line-height: 30px;
+  line-height: 39px;
   margin: 0 !important;
   word-wrap: break-word;
   user-select: none;

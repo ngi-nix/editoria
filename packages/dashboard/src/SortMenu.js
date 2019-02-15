@@ -49,22 +49,21 @@ const Menu = styled(UIMenu)`
     background: white;
 
     > div:nth-child(2) {
-      left: 50%;
-      width: 300px;
-      transform: translate(-50%, 0);
+      left: 95%;
+      width: 100px;
+      transform: translate(-95%, 0);
       z-index: 100;
     }
 
     div[open] {
       background: white;
       border: 1px solid #666;
-      border-radius: 2px;
       box-shadow: 0 2px 10px #666;
       margin-top: 16px;
       position: relative;
       overflow-y: unset;
       text-transform: uppercase;
-      width: 300px;
+      width: 100px;
 
       &::before {
         ${triangleUp}
@@ -148,17 +147,17 @@ const Opener = props => {
 
 const options = [
   {
+    label: 'author',
+    value: 'author',
+  },
+  {
     label: 'title',
     value: 'title',
   },
   {
-    label: 'author',
-    value: 'author',
+    label: 'status',
+    value: 'status',
   },
-  // {
-  //   label: 'i am long so long this is ridiculous',
-  //   value: 3,
-  // },
 ]
 
 const SortMenu = ({ onChange }) => (
