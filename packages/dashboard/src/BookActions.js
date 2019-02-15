@@ -26,12 +26,14 @@ const underlineAnimation = css`
 
   &:before {
     content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: 0;
-    left: 0;
     background-color: #0d78f2;
+    bottom: 0;
+    display: block;
+    height: 2px;
+    left: 0;
+    right: 0;
+    margin: 0 8px;
+    position: absolute;
     visibility: hidden;
   }
 
@@ -58,8 +60,6 @@ const Action = styled(UIAction)`
     color: #0d78f2;
     text-decoration: underline;
   }
-
-  ${underlineAnimation};
 `
 
 const ActionGroup = styled(UIActionGroup)`
@@ -73,12 +73,18 @@ const ActionGroup = styled(UIActionGroup)`
     border-right: 1px solid #0d78f2;
     display: inline-block;
     padding: 0 8px;
+
+    ${underlineAnimation};
   }
 
   > * {
     &:last-child {
       border-right: 0;
       padding-right: 0;
+
+      &::before {
+        margin-right: 0;
+      }
     }
   }
 `
