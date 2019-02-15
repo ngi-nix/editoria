@@ -14,19 +14,19 @@ The current features on our list are the following:
 | PROJECT       | DESCRIPTION                                                               | ISSUE # | IN PROGRESS | DONE |
 |---------------|---------------------------------------------------------------------------|---------|-------------|------|
 | EDITORIA      | Editoria Upgrade                                                          | #233      | ✔           |      |
-| WAX           | Wax Upgrade                                                               | #234        | ✔           |      |
+| WAX           | Wax Upgrade                                                               | #234        |            |✔      |
 | WAX           | Color code tracked changes by user                                        | #164    |             |      |
 | EDITORIA      | Configure book builder to omit blue buttons                               | #172    |             |      |
 | EDITORIA      | Indenting chapters in book builder                                        | #171    |             |      |
 | EDITORIA      | Error message when uploading incorrect file format                        | #189    |             |      |
-| WAX           | Author Style                                                              | #191    |             |      |
-| WAX           | Provide a larger text box for inputting figure captions                   | #216    |             |      |
+| WAX           | Author Style                                                              | #191    |             |  ✔   |
+| WAX           | Provide a larger text box for inputting figure captions                   | #216    |             |  ✔   |
 | EDITORIA      | enable "read only" chapter mode                                           | #170    |             |      |
 | EDITORIA      | Autocomplete for adding book team roles                                   | #186    |             |      |
 | EDITORIA      | Always show chapter name                                                  | #193    |             |      |
 | EDITORIA      | Book-level (and perhaps chapter-level) metadata                           | #210    |             |      |
 | EDITORIA      | Configurable archive options for completed / abandoned books              | #226    |             |      |
-| WAX           | Toolbar button to change case                                             | #203    |             |      |
+| WAX           | Toolbar button to change case                                             | #203    |             |   ✔  |
 | PUBSWEET CORE | Usernames allowed with special characters                                 | #195    |             |      |
 | PUBSWEET CORE | Ask for first name and surname on sign up                                 | #197    |             |      |
 | XSWEET        | Kill automatic numbering in numbered list style                           | #198    |             |      |
