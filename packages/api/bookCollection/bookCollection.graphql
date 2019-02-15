@@ -14,7 +14,7 @@ input NewBookCollectionInput {
 
 extend type Query {
   getBookCollection(input: BookCollectionInput!): BookCollection!
-  getBookCollections: [BookCollection]!
+  getBookCollections(ascending: Boolean, sortKey: String): [BookCollection]!
   # getBookCollections(archivedBooks:Boolean!, deletedBooks:Boolean!): [BookCollection]!
 }
 
@@ -22,4 +22,6 @@ extend type Mutation {
   createBookCollection(input: NewBookCollectionInput!): BookCollection!
 }
 
-extend type Subscription { collectionAdded: BookCollection }
+extend type Subscription {
+  collectionAdded: BookCollection
+}

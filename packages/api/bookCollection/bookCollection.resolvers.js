@@ -11,8 +11,12 @@ const { COLLECTION_ADDED } = require('./consts')
 const getBookCollection = async (_, args, ctx) =>
   ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
 
-const getBookCollections = (_, __, ctx) =>
-  ctx.connectors.BookCollection.fetchAll({}, ctx)
+const getBookCollections = (_, args, ctx) => {
+  /* eslint-disable-next-line no-console */
+  console.log('sorting args', args)
+
+  return ctx.connectors.BookCollection.fetchAll({}, ctx)
+}
 
 const createBookCollection = async (_, args, ctx) => {
   const pubsub = await pubsubManager.getPubsub()

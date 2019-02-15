@@ -7,7 +7,7 @@ import { Menu as UIMenu } from '@pubsweet/ui'
 import sortIcon from './images/icon_add.svg'
 
 const SortIcon = styled.div`
-  background-color: #666;
+  background-color: ${props => (props.ascending ? '#666' : 'blue')};
   cursor: pointer;
   height: 24px;
   mask: url(${sortIcon}) no-repeat 100% 100%;
@@ -79,6 +79,10 @@ const Menu = styled(UIMenu)`
       padding: 4px 4px 4px 12px;
       position: relative;
 
+      &::selection {
+        background: none;
+      }
+
       &::before {
         ${triangleOption}
         opacity: 0;
@@ -89,14 +93,9 @@ const Menu = styled(UIMenu)`
         font-weight: normal;
 
         &::before {
-          /* ${triangleOption} */
           background: #0d78f2;
-          /* opa */
+          opacity: 1;
         }
-      }
-
-      &::selection {
-        background: none;
       }
 
       &:hover {
@@ -105,7 +104,6 @@ const Menu = styled(UIMenu)`
         transition: 0.2s ease-in-out;
 
         &::before {
-          /* ${triangleOption} */
           background: gray;
           opacity: 1;
         }
@@ -131,7 +129,7 @@ const OpenerWrapper = styled.div`
 `
 
 const Opener = props => {
-  const { ascending, changeOrder, selected, toggleMenu } = props
+  const { ascending, onChangeSortOrder, selected, toggleMenu } = props
 
   return (
     <OpenerWrapper>
@@ -141,7 +139,7 @@ const Opener = props => {
 
       <SortIcon
         ascending={ascending}
-        onClick={changeOrder}
+        onClick={onChangeSortOrder}
         title={ascending ? 'Ascending' : 'Descending'}
       />
     </OpenerWrapper>
@@ -163,39 +161,31 @@ const options = [
   // },
 ]
 
-const SortMenu = () => {
-  const sendIt = (value, ascending) => {
-    console.log(value, ascending)
-  }
+const SortMenu = ({ onChange }) => (
+  <State initial={{ ascending: true, sortKey: 'title' }} onChange={onChange}>
+    {({ state, setState }) => {
+      const { ascending, sortKey } = state
 
-  return (
-    <State initial={{ ascending: true, value: 'title' }}>
-      {({ state, setState }) => {
-        const { ascending, value } = state
+      const handleChangeSortKey = value => {
+        setState({ sortKey: value })
+      }
 
-        const handleChange = value => {
-          // console.log(value, ascending)
-          setState({ value })
-        }
+      const handleChangeSortOrder = () => {
+        setState({ ascending: !state.ascending })
+      }
 
-        const changeOrder = () => {
-          setState({ ascending: !state.ascending })
-          // handleChange()
-        }
-
-        return (
-          <Menu
-            ascending={ascending}
-            changeOrder={changeOrder}
-            onChange={handleChange}
-            options={options}
-            renderOpener={Opener}
-            selected={value}
-          />
-        )
-      }}
-    </State>
-  )
-}
+      return (
+        <Menu
+          ascending={ascending}
+          onChange={handleChangeSortKey}
+          onChangeSortOrder={handleChangeSortOrder}
+          options={options}
+          renderOpener={Opener}
+          value={sortKey}
+        />
+      )
+    }}
+  </State>
+)
 
 export default SortMenu

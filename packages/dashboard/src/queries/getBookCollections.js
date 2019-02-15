@@ -3,8 +3,11 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const GET_BOOK_COLLECTIONS = gql`
-  query GetBookCollections {
-    getBookCollections {
+  query GetBookCollections(
+    $ascending: Boolean = true
+    $sortKey: String = "title"
+  ) {
+    getBookCollections(ascending: $ascending, sortKey: $sortKey) {
       id
       title
       books {
@@ -17,8 +20,13 @@ const GET_BOOK_COLLECTIONS = gql`
 
 const getBookCollectionsQuery = props => {
   const { render } = props
+
   return (
-    <Query fetchPolicy="cache-and-network" query={GET_BOOK_COLLECTIONS}>
+    <Query
+      fetchPolicy="cache-and-network"
+      notifyOnNetworkStatusChange
+      query={GET_BOOK_COLLECTIONS}
+    >
       {render}
     </Query>
   )

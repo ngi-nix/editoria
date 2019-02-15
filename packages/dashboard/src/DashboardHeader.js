@@ -28,7 +28,7 @@ const Title = styled(H1)`
 `
 
 const DashboardHeader = props => {
-  const { title, toggle } = props
+  const { onChangeSort, title, toggle } = props
 
   return (
     <HeaderWrapper>
@@ -41,7 +41,7 @@ const DashboardHeader = props => {
       </Side>
 
       <Side>
-        <SortMenu />
+        <SortMenu onChange={onChangeSort} />
       </Side>
     </HeaderWrapper>
   )

@@ -5,8 +5,6 @@ import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
 import AddBookModal from './AddBookModal'
 
-import styles from './dashboard.local.scss'
-
 export class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -31,8 +29,11 @@ export class Dashboard extends Component {
       createBook,
       deleteBook,
       loading,
+      onChangeSort,
+      refetching,
       renameBook,
     } = this.props
+
     const { showModal } = this.state
     if (loading) return 'Loading...'
 
@@ -41,11 +42,16 @@ export class Dashboard extends Component {
     return collections.map(collection => (
       <div className={className}>
         <div className="container col-lg-offset-2 col-lg-8">
-          <DashboardHeader title={collection.title} toggle={this.toggleModal} />
+          <DashboardHeader
+            onChangeSort={onChangeSort}
+            title={collection.title}
+            toggle={this.toggleModal}
+          />
 
           <BookList
             books={collection.books}
             container={this}
+            refetching={refetching}
             remove={deleteBook}
             renameBook={renameBook}
           />
