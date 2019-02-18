@@ -4,16 +4,7 @@ import { State } from 'react-powerplug'
 
 import { Menu as UIMenu } from '@pubsweet/ui'
 
-import sortIcon from './images/icon_add.svg'
-
-const SortIcon = styled.div`
-  background-color: ${props => (props.ascending ? '#666' : 'blue')};
-  cursor: pointer;
-  height: 24px;
-  mask: url(${sortIcon}) no-repeat 100% 100%;
-  mask-size: cover;
-  width: 24px;
-`
+import SortIcon from './IconArrows'
 
 const triangle = css`
   background: #3f3f3f;
@@ -50,8 +41,8 @@ const Menu = styled(UIMenu)`
 
     > div:nth-child(2) {
       left: 95%;
-      width: 100px;
       transform: translate(-95%, 0);
+      width: 100px;
       z-index: 100;
     }
 
@@ -117,7 +108,6 @@ const OpenerWrapper = styled.div`
 
   > span {
     font-family: 'Fira Sans Condensed';
-    margin-right: 8px;
     text-transform: uppercase;
 
     span {
@@ -136,11 +126,7 @@ const Opener = props => {
         Sort By <span onClick={toggleMenu}>{selected}</span>
       </span>
 
-      <SortIcon
-        ascending={ascending}
-        onClick={onChangeSortOrder}
-        title={ascending ? 'Ascending' : 'Descending'}
-      />
+      <SortIcon ascending={ascending} onClick={onChangeSortOrder} />
     </OpenerWrapper>
   )
 }

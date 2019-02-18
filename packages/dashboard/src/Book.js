@@ -24,7 +24,7 @@ const TopRow = styled.div`
 `
 
 const Status = styled.span`
-  color: ${props => (props.published ? '#008800' : '#0B65CB')}
+  color: ${props => (props.published ? '#0B65CB' : '#666')}
   text-transform: uppercase;
 `
 
