@@ -70,7 +70,7 @@ const ActionGroup = styled(UIActionGroup)`
   margin-left: 8px;
 
   div {
-    border-right: 1px solid #0d78f2;
+    border-right: 2px solid #aaa;
     display: inline-block;
     padding: 0 8px;
 
