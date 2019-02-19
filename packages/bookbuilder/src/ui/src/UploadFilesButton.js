@@ -146,6 +146,7 @@ class UploadFilesButton extends React.Component {
     return (
       <UploadButton
         accept=".docx"
+        id="generic"
         disabled={uploading}
         label={labelText}
         multiple

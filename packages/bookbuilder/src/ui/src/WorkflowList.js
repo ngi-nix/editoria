@@ -3,24 +3,29 @@ import React from 'react'
 import config from 'config'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { map, uniqueId, last, indexOf, find } from 'lodash'
-
-import classes from './StateList.local.scss'
-import StateItem from './StateItem'
-
-const stateList = ({ bookId, className, currentValues, update, values }) => {
-  // const progressItems = keys(values)
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
+import Arrow from './Arrow'
+import Label from './Label'
+import WorkflowItem from './WorkflowItem'
+const Container = styled.div`
+  display: flex;
+  flex-basis: 76%;
+  &:hover {
+    ${Arrow}:not([disabled]) {
+      visibility: visible;
+    }
+    ${Label} {
+      visibility: visible;
+    }
+  }
+`
+const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
   let stageItems
   if (config && config.bookBuilder && config.bookBuilder.stages) {
     stageItems = config.bookBuilder.stages
   }
   const lastItem = last(stageItems).type
-  // console.log('values', values)
-  // // console.log('progressIds', progressIds)
-  // console.log('lastItem', lastItem)
-  // console.log('currentValues', currentValues)
-
-  // TODO: Placeholder -- to be implemented with authsome
-  // const canAct = key => true
   const getCurrentValue = (currentObjects, type) => {
     const currentObject = find(currentObjects, ['type', type])
     return currentObject.value
@@ -45,7 +50,7 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
     type,
     currentValues,
   ) => (
-    <StateItem
+    <WorkflowItem
       bookId={bookId}
       currentValues={currentValues}
       disabled={disabled}
@@ -76,41 +81,32 @@ const stateList = ({ bookId, className, currentValues, update, values }) => {
     }
 
     return (
-      <div className={classes.itemContainer} key={uniqueId()}>
-        <Authorize
-          object={{ bookId, type, currentValues }}
-          operation="can change progressList"
-          unauthorized={renderStateItem(
-            previousNotDone || true,
-            currentValueIndex,
-            stageItem,
-            handleUpdate,
-            bookId,
-            type,
-            currentValues,
-          )}
-        >
-          {renderStateItem(
-            previousNotDone || false,
-            currentValueIndex,
-            stageItem,
-            handleUpdate,
-            bookId,
-            type,
-            currentValues,
-          )}
-        </Authorize>
-      </div>
+      <Authorize
+        object={{ bookId, type, currentValues }}
+        operation="can change progressList"
+        unauthorized={renderStateItem(
+          previousNotDone || true,
+          currentValueIndex,
+          stageItem,
+          handleUpdate,
+          bookId,
+          type,
+          currentValues,
+        )}
+      >
+        {renderStateItem(
+          previousNotDone || false,
+          currentValueIndex,
+          stageItem,
+          handleUpdate,
+          bookId,
+          type,
+          currentValues,
+        )}
+      </Authorize>
     )
   })
-  return <div className={classes.stateListContainer}>{items}</div>
+  return <Container>{items}</Container>
 }
 
-stateList.propTypes = {
-  bookId: PropTypes.string.isRequired,
-  currentValues: PropTypes.objectOf(PropTypes.number).isRequired,
-  update: PropTypes.func.isRequired,
-  values: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
-}
-
-export default stateList
+export default WorkflowList

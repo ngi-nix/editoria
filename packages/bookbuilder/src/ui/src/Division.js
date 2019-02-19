@@ -11,6 +11,7 @@ import AddComponentButton from './AddComponentButton'
 import BookComponent from './BookComponent'
 
 const DivisionContainer = styled.div`
+  counter-reset: component chapter part unnumbered;
   display: flex;
   flex-direction: column;
   margin-bottom: calc(4 * ${th('gridUnit')});
@@ -47,11 +48,8 @@ const EmptyList = styled.div`
 `
 const BookComponentList = styled.ul`
   color: ${th('colorText')};
-  font-family: 'Fira Sans';
-  font-size: ${th('fontSizeBase')};
   font-style: normal;
   font-weight: normal;
-  line-height: ${th('lineHeightBase')};
 `
 class Division extends React.Component {
   constructor(props) {
@@ -164,11 +162,13 @@ class Division extends React.Component {
       updateBookComponentUploading,
       updateBookComponentContent,
       outerContainer,
+      showModal,
+      showModalToggle,
+      history,
       // bookComponents,
       label,
       update,
       reorderingAllowed,
-      bookId,
     } = this.props
     const { bookComponents } = this.state
     const {
@@ -203,16 +203,19 @@ class Division extends React.Component {
           componentTypeOrder={componentTypeOrder}
           divisionId={divisionId}
           divisionType={label}
+          history={history}
           id={id}
           updateBookComponentContent={updateBookComponentContent}
           updateBookComponentUploading={updateBookComponentUploading}
-          key={bookComponent.id}
+          key={id}
           lock={lock}
           no={i}
           onEndDrag={onEndDrag}
           hasContent={hasContent}
           onMove={onMove}
           outerContainer={outerContainer}
+          showModal={showModal}
+          showModalToggle={showModalToggle}
           pagination={pagination}
           remove={onRemove}
           title={title}

@@ -1,16 +1,24 @@
-import { keys, map, indexOf, findIndex, find } from 'lodash'
-import React from 'react'
-import PropTypes from 'prop-types'
+import { findIndex, find, forIn } from 'lodash'
+import React, { Component } from 'react'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import config from 'config'
-import AlignmentTool from './AlignmentTool'
-import StateList from './StateList'
-import UploadButton from './UploadButton'
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
+import { AlignmentTool } from '@pubsweet/ui'
+// import AlignmentTool from './AlignmentTool'
+import WorkflowList from './WorkflowList'
+import UploadFileButton from './UploadFileButton'
 import ProgressModal from './ProgressModal'
+// import {AlignmentTool} from '@pubsweet/ui'
 
-import styles from '../styles/bookBuilder.local.scss'
+const SecondRowContainer = styled.div`
+  display: flex;
+  padding-left: calc(4 * ${th('gridUnit')});
+  align-items: center;
+  justify-content: space-between;
+`
 
-class ChapterSecondRow extends React.Component {
+class SecondRow extends Component {
   constructor(props) {
     super(props)
 
@@ -209,7 +217,6 @@ class ChapterSecondRow extends React.Component {
           })
         }
       } else if (type === 'page_check' && value === -1) {
-        // if (index === -1) {
         this.setState({
           nextProgressValues: {
             title,
@@ -219,61 +226,22 @@ class ChapterSecondRow extends React.Component {
           modalType: 'cp-yes',
           showModal: true,
         })
-        // }
       } else {
-        // const patch = {
-        //   id: bookComponentId,
-        //   workflowStages,
-        // }
-        // if (value === 1) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   // const type = this.progressOrder[next]
-        //   patch.workflowStages[type] = 0
-        // }
-
-        // if (index === -1) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   const typeNext = this.progressOrder[next]
-        //   if (type !== 'file_prep') {
-        //     const previous = indexOf(this.progressOrder, type) - 1
-        //     const typePrevious = this.progressOrder[previous]
-        //     patch.workflowStages[typePrevious] = 0
-        //   }
-        //   patch.workflowStages[typeNext] = -1
-        // }
-
-        // if (index === 0) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   for (let i = next; i < this.progressOrder.length; i += 1) {
-        //     const type = this.progressOrder[i]
-        //     patch.workflowStages[type] = -1
-        //   }
-        // }
-        // update(patch)
-
         const indexOfStage = findIndex(workflowStages, { label: title, type })
-        // console.log('workflow', workflowStages)
 
         if (value === 1) {
           workflowStages[indexOfStage].value = value
           if (!isLast) {
             workflowStages[indexOfStage + 1].value = 0
           }
-          // const next = indexOf(this.progressOrder, type) + 1
-          // // const type = this.progressOrder[next]
-          // patch.workflowStages[type] = 0
         }
 
         if (value === -1) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
-          // const typeNext = workflowStages[next].type
+
           if (type !== 'file_prep') {
             const previous = indexOfStage - 1
-            // const typePrevious = workflowStages[previous].type
             workflowStages[previous].value = 0
           }
           workflowStages[next].value = -1
@@ -283,7 +251,6 @@ class ChapterSecondRow extends React.Component {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
           for (let i = next; i < workflowStages.length; i += 1) {
-            // const type = this.progressOrder[i]
             workflowStages[i].value = -1
           }
         }
@@ -328,59 +295,20 @@ class ChapterSecondRow extends React.Component {
           showModal: true,
         })
       } else {
-        // const patch = {
-        //   id: bookComponentId,
-        //   workflowStages,
-        // }
-        // if (index === 1) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   // const type = this.progressOrder[next]
-        //   patch.workflowStages[type] = 0
-        // }
-
-        // if (index === -1) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   const typeNext = this.progressOrder[next]
-        //   if (type !== 'file_prep') {
-        //     const previous = indexOf(this.progressOrder, type) - 1
-        //     const typePrevious = this.progressOrder[previous]
-        //     patch.workflowStages[typePrevious] = 0
-        //   }
-        //   patch.workflowStages[typeNext] = -1
-        // }
-
-        // if (index === 0) {
-        //   patch.workflowStages[type] = index
-        //   const next = indexOf(this.progressOrder, type) + 1
-        //   for (let i = next; i < this.progressOrder.length; i += 1) {
-        //     const type = this.progressOrder[i]
-        //     patch.workflowStages[type] = -1
-        //   }
-        // }
-        // update(patch)
-
         const indexOfStage = findIndex(workflowStages, { label: title, type })
-        // console.log('workflow', workflowStages)
 
         if (value === 1) {
           workflowStages[indexOfStage].value = value
           if (!isLast) {
             workflowStages[indexOfStage + 1].value = 0
           }
-          // const next = indexOf(this.progressOrder, type) + 1
-          // // const type = this.progressOrder[next]
-          // patch.workflowStages[type] = 0
         }
 
         if (value === -1) {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
-          // const typeNext = workflowStages[next].type
           if (type !== 'file_prep') {
             const previous = indexOfStage - 1
-            // const typePrevious = workflowStages[previous].type
             workflowStages[previous].value = 0
           }
           workflowStages[next].value = -1
@@ -390,7 +318,6 @@ class ChapterSecondRow extends React.Component {
           workflowStages[indexOfStage].value = value
           const next = indexOfStage + 1
           for (let i = next; i < workflowStages.length; i += 1) {
-            // const type = this.progressOrder[i]
             workflowStages[i].value = -1
           }
         }
@@ -403,30 +330,23 @@ class ChapterSecondRow extends React.Component {
     const { bookComponentId, workflowStages, updateWorkflowState } = this.props
     const { nextProgressValues } = this.state
     const { title, type, value } = nextProgressValues
-    // const index = this.state.nextProgressValues.value
     const isLast =
       workflowStages.length - 1 ===
       findIndex(workflowStages, { label: title, type })
     const indexOfStage = findIndex(workflowStages, { label: title, type })
-    // console.log('workflow', workflowStages)
 
     if (value === 1) {
       workflowStages[indexOfStage].value = value
       if (!isLast) {
         workflowStages[indexOfStage + 1].value = 0
       }
-      // const next = indexOf(this.progressOrder, type) + 1
-      // // const type = this.progressOrder[next]
-      // patch.workflowStages[type] = 0
     }
 
     if (value === -1) {
       workflowStages[indexOfStage].value = value
       const next = indexOfStage + 1
-      // const typeNext = workflowStages[next].type
       if (type !== 'file_prep') {
         const previous = indexOfStage - 1
-        // const typePrevious = workflowStages[previous].type
         workflowStages[previous].value = 0
       }
       workflowStages[next].value = -1
@@ -436,11 +356,9 @@ class ChapterSecondRow extends React.Component {
       workflowStages[indexOfStage].value = value
       const next = indexOfStage + 1
       for (let i = next; i < workflowStages.length; i += 1) {
-        // const type = this.progressOrder[i]
         workflowStages[i].value = -1
       }
     }
-    // console.log('workafter', workflowStages)
 
     updateWorkflowState(bookComponentId, workflowStages)
     this.setState({
@@ -474,9 +392,6 @@ class ChapterSecondRow extends React.Component {
     const { bookComponentId, componentType, outerContainer } = this.props
     const { modalType, showModal } = this.state
 
-    // const typesWithModal = ['edit', 'review']
-    // if (!includes(typesWithModal, type)) return null
-
     return (
       <ProgressModal
         bookComponentId={bookComponentId}
@@ -496,37 +411,42 @@ class ChapterSecondRow extends React.Component {
       bookComponentId,
       componentType,
       uploading,
+      lock,
+      showModal,
+      showModalToggle,
       updateBookComponentContent,
       updateBookComponentUploading,
       outerContainer,
       pagination,
-      toggleUpload,
-      update,
       workflowStages,
     } = this.props
     const warningModal = this.renderModal()
+    const paginationData = []
+    forIn(pagination, (value, key) => {
+      if (key !== '__typename') {
+        paginationData.push({ id: key, active: value, label: key })
+      }
+    })
+
     return (
-      <div className={styles.secondLineContainer}>
+      <SecondRowContainer>
         {warningModal}
         <Authorize object={bookComponentId} operation="can view uploadButton">
-          <UploadButton
-            accept=".doc,.docx"
+          <UploadFileButton
             bookComponentId={bookComponentId}
-            componentType={componentType}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentUploading={updateBookComponentUploading}
             workflowStages={workflowStages}
+            componentType={componentType}
+            lock={lock}
             uploading={uploading}
-            lock={null}
             modalContainer={outerContainer}
-            title=" "
-            toggleUpload={toggleUpload}
-            type="file"
-            update={update}
+            showModal={showModal}
+            showModalToggle={showModalToggle}
           />
         </Authorize>
         <Authorize object={bookComponentId} operation="can view stateList">
-          <StateList
+          <WorkflowList
             bookId={bookId}
             currentValues={workflowStages}
             update={this.updateStateList}
@@ -535,55 +455,13 @@ class ChapterSecondRow extends React.Component {
         </Authorize>
         <Authorize object={bookComponentId} operation="can view alignmentTool">
           <AlignmentTool
-            data={pagination}
+            data={paginationData}
             onClickAlignmentBox={this.onClickAlignmentBox}
           />
         </Authorize>
-      </div>
+      </SecondRowContainer>
     )
   }
 }
 
-ChapterSecondRow.propTypes = {
-  chapter: PropTypes.shape({
-    alignment: PropTypes.objectOf(PropTypes.bool),
-    author: PropTypes.string,
-    book: PropTypes.string,
-    division: PropTypes.string,
-    id: PropTypes.string,
-    index: PropTypes.number,
-    kind: PropTypes.string,
-    lock: PropTypes.shape({
-      editor: PropTypes.shape({
-        username: PropTypes.string,
-      }),
-      timestamp: PropTypes.string,
-    }),
-    number: PropTypes.number,
-    owners: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string,
-        username: PropTypes.string,
-      }),
-    ),
-    progress: PropTypes.objectOf(PropTypes.number),
-    rev: PropTypes.string,
-    source: PropTypes.string,
-    status: PropTypes.string,
-    subCategory: PropTypes.string,
-    title: PropTypes.string,
-    trackChanges: PropTypes.bool,
-    type: PropTypes.string,
-  }).isRequired,
-  convertFile: PropTypes.func.isRequired,
-  outerContainer: PropTypes.any.isRequired,
-  isUploadInProgress: PropTypes.bool,
-  toggleUpload: PropTypes.func.isRequired,
-  update: PropTypes.func.isRequired,
-}
-
-ChapterSecondRow.defaultProps = {
-  isUploadInProgress: false,
-}
-
-export default ChapterSecondRow
+export default SecondRow

@@ -12,6 +12,7 @@ const DivisionsContainer = styled.div`
 const DivisionsArea = ({
   bookId,
   divisions,
+  history,
   addBookComponent,
   addBookComponents,
   deleteBookComponent,
@@ -21,6 +22,8 @@ const DivisionsArea = ({
   updateBookComponentContent,
   updateBookComponentUploading,
   outerContainer,
+  showModal,
+  showModalToggle,
   uploading,
 }) => {
   const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
@@ -34,7 +37,10 @@ const DivisionsArea = ({
         divisionId={id}
         key={id}
         label={label}
+        history={history}
         outerContainer={outerContainer}
+        showModal={showModal}
+        showModalToggle={showModalToggle}
         reorderingAllowed={reorderingAllowed}
         updateBookComponentContent={updateBookComponentContent}
         updateBookComponentOrder={updateBookComponentOrder}

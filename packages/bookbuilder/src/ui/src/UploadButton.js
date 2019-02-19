@@ -6,12 +6,20 @@ import { th } from '@pubsweet/ui-toolkit'
 const Input = styled.input`
   display: none !important;
 `
-const onClick = event => {
-  event.preventDefault()
-  document.getElementById('file-uploader').click()
-}
 
-const UploadButton = ({ onChange, multiple, accept, label, disabled }) => {
+const UploadButton = ({
+  onChange,
+  multiple,
+  accept,
+  label,
+  disabled,
+  id,
+  className,
+}) => {
+  const onClick = event => {
+    event.preventDefault()
+    document.getElementById(`file-uploader-${id}`).click()
+  }
   const icon = (
     <svg
       fill="#000000"
@@ -27,6 +35,7 @@ const UploadButton = ({ onChange, multiple, accept, label, disabled }) => {
   return (
     <React.Fragment>
       <ButtonWithIcon
+        className={className}
         icon={icon}
         label={label}
         onClick={onClick}
@@ -34,7 +43,7 @@ const UploadButton = ({ onChange, multiple, accept, label, disabled }) => {
       />
       <Input
         accept={accept}
-        id="file-uploader"
+        id={`file-uploader-${id}`}
         multiple={multiple}
         type="file"
         onChange={onChange}

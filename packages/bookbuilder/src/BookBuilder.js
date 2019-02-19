@@ -1,5 +1,7 @@
 import React from 'react'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import styled from 'styled-components'
+
 import {
   ProductionEditorsArea,
   TeamManagerButton,
@@ -12,11 +14,18 @@ import {
 
 import ConnectedTeamManager from './TeamManager/ConnectedTeamManager'
 
-import styles from './styles/bookBuilder.local.scss'
+// import styles from './styles/bookBuilder.local.scss'
 
 // TODO -- this doesn't work if imported in the css files. why?
-import './styles/fontAwesome.scss'
+// import './styles/fontAwesome.scss'
 
+const Container = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
+  width: 76%;
+`
 export class BookBuilder extends React.Component {
   constructor(props) {
     super(props)
@@ -122,30 +131,29 @@ export class BookBuilder extends React.Component {
 
     return (
       <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
-        <div className={styles.bookBuilder}>
-          <div className={styles.universe}>
-            <ProductionEditorsArea
-              actions={productionEditorActions}
-              productionEditors={productionEditors}
-            />
-            <Header bookTitle={book.title} actions={headerActions} />
-            <DivisionsArea
-              addBookComponent={addBookComponent}
-              addBookComponents={addBookComponents}
-              bookId={book.id}
-              deleteBookComponent={deleteBookComponent}
-              divisions={divisions}
-              outerContainer={outerContainer}
-              updateBookComponentContent={updateBookComponentContent}
-              updateBookComponentOrder={updateBookComponentOrder}
-              updateBookComponentPagination={updateBookComponentPagination}
-              updateBookComponentUploading={updateBookComponentUploading}
-              updateBookComponentWorkflowState={
-                updateBookComponentWorkflowState
-              }
-            />
-          </div>
-        </div>
+        <Container>
+          <ProductionEditorsArea
+            actions={productionEditorActions}
+            productionEditors={productionEditors}
+          />
+          <Header bookTitle={book.title} actions={headerActions} />
+          <DivisionsArea
+            addBookComponent={addBookComponent}
+            addBookComponents={addBookComponents}
+            history={history}
+            bookId={book.id}
+            deleteBookComponent={deleteBookComponent}
+            divisions={divisions}
+            outerContainer={outerContainer}
+            showModal={this.state.showModal}
+            showModalToggle={this.toggleModal}
+            updateBookComponentContent={updateBookComponentContent}
+            updateBookComponentOrder={updateBookComponentOrder}
+            updateBookComponentPagination={updateBookComponentPagination}
+            updateBookComponentUploading={updateBookComponentUploading}
+            updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+          />
+        </Container>
         {/* <Authorize object={book.id} operation="can view teamManager"> */}
         {teamManagerModal}
         {/* </Authorize> */}

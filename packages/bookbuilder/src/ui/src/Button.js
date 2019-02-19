@@ -52,32 +52,59 @@ const Icon = styled.span`
   padding: 0;
   width: calc(3 * ${th('gridUnit')});
 `
+const OnlyIcon = styled.span`
+  height: calc(3 * ${th('gridUnit')});
+  padding: 0;
+  width: calc(3 * ${th('gridUnit')});
+`
 const Label = styled.div`
   font-size: ${th('fontSizeBase')};
   line-height: ${th('lineHeightBase')};
 `
 
-const ButtonWithIcon = ({ onClick, icon, label, disabled, className }) => {
+const ButtonWithIcon = ({
+  onClick,
+  icon,
+  label,
+  disabled,
+  title,
+  className,
+}) => {
   return (
-    <Button className={className} onClick={onClick} disabled={disabled}>
+    <Button
+      title={title}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+    >
       <Icon>{icon}</Icon>
       <Label>{label.toUpperCase()}</Label>
     </Button>
   )
 }
 
-const DefaultButton = ({ onClick, label, disabled, className }) => {
+const DefaultButton = ({ onClick, label, disabled, className, title }) => {
   return (
-    <Button className={className} onClick={onClick} disabled={disabled}>
+    <Button
+      title={title}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+    >
       <Label>{label.toUpperCase()}</Label>
     </Button>
   )
 }
 
-const ButtonWithoutLabel = ({ onClick, icon, disabled, className }) => {
+const ButtonWithoutLabel = ({ onClick, icon, disabled, className, title }) => {
   return (
-    <Button className={className} onClick={onClick} disabled={disabled}>
-      <Icon>{icon}</Icon>
+    <Button
+      title={title}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <OnlyIcon>{icon}</OnlyIcon>
     </Button>
   )
 }

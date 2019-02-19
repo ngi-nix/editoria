@@ -1,8 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
 import AlignmentBoxWithLabel from './AlignmentBoxWithLabel'
-import classes from './AlignmentTool.local.scss'
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+`
+const Separator = styled.div`
+  background-color: ${th('colorText')};
+  height: 40px;
+  width: 1px;
+`
 
 const AlignmentTool = ({ data, onClickAlignmentBox }) => {
   const onClick = event => {
@@ -17,7 +26,7 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
   const noBorderLeft = { left: true }
 
   return (
-    <div className={classes.root}>
+    <Container>
       <AlignmentBoxWithLabel
         active={leftData}
         id="left"
@@ -26,7 +35,7 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
         onClick={onClick}
       />
 
-      <div className={classes.middleLine} />
+      <Separator />
 
       <AlignmentBoxWithLabel
         active={rightData}
@@ -36,19 +45,8 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
         noBorder={noBorderLeft}
         onClick={onClick}
       />
-    </div>
+    </Container>
   )
-}
-
-AlignmentTool.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      active: PropTypes.bool.isRequired,
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  onClickAlignmentBox: PropTypes.func.isRequired,
 }
 
 export default AlignmentTool
