@@ -17,23 +17,13 @@ const GET_USERS_TEAMS = gql`
       type
       role
       name
-      object {
-        objectId
-        objectType
-      }
       members {
         id
         user {
           id
-          type
           username
           email
           admin
-        }
-        status
-        alias {
-          name
-          email
         }
       }
       global

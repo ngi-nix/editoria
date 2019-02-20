@@ -87,14 +87,14 @@ const TeamSection = props => {
     : []
 
   const selectValue = value.map(usr => {
-    const user = users.find(u => u.id === usr.id)
+    const user = users.find(u => u.id === usr)
     if (user) {
       return {
         label: user.username,
-        id: usr.id,
+        id: usr,
       }
     }
-    return usr.id
+    return usr
   })
 
   const handleChange = newValue => {
@@ -127,9 +127,9 @@ const TeamManagerForm = props => {
           key={team.id}
           name={team.name}
           setFieldValue={setFieldValue}
-          type={team.teamType}
+          type={team.role}
           users={users}
-          value={values[team.teamType]}
+          value={values[team.role]}
         />
       ))}
 
@@ -155,9 +155,9 @@ class GlobalTeamsManager extends Component {
   handleSubmit = (formValues, formikBag) => {
     const { teams, updateGlobalTeam } = this.props
 
-    const data = keys(formValues).map(teamType => {
-      const team = teams.find(t => t.teamType === teamType)
-      team.members = formValues[teamType].map(item => item.id)
+    const data = keys(formValues).map(role => {
+      const team = teams.find(t => t.role === role)
+      team.members = formValues[role].map(item => ({ user: { id: item.id } }))
       return team
     })
 
@@ -197,12 +197,12 @@ class GlobalTeamsManager extends Component {
 
     if (loading) return 'Loading...'
 
-    let globalTeams = teams.filter(team => team.global)
+    let globalTeams = (teams || []).filter(team => team.global)
     const infoMessage = 'Your teams have been successfully updated'
 
     const initialValues = {}
     globalTeams.forEach(team => {
-      initialValues[team.teamType] = team.members
+      initialValues[team.role] = team.members.map(member => member.user.id)
     })
 
     globalTeams = sortBy(globalTeams, 'name')

@@ -40,24 +40,30 @@ const getGlobalTeams = async (_, __, ctx) => {
 const updateTeamMembers = async (_, { id, input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
-    const updatedTeam = await ctx.connectors.Team.update(id, input, ctx)
+    const updatedTeam = await ctx.connectors.Team.update(id, input, ctx, {
+      unrelate: false,
+      eager: 'members.user.teams',
+    })
     logger.info(`Team with id ${id} updated`)
 
-    const userMembers = await ctx.connectors.User.fetchSome(
-      updatedTeam.members,
-      ctx,
-    )
+    console.log(updatedTeam.members)
+    // const userMembers = await ctx.connectors.User.fetchSome(
+    //   updatedTeam.members,
+    //   ctx,
+    //   { eager },
+    // )
 
     if (updatedTeam.global === true) {
+      console.log(updatedTeam)
       return updatedTeam
     }
 
-    if (updatedTeam.teamType === 'productionEditor') {
+    if (updatedTeam.role === 'productionEditor') {
       pubsub.publish(BOOK_PRODUCTION_EDITORS_UPDATED, {
         productionEditorsUpdated: {
           bookId: updatedTeam.object.objectId,
           teamId: id,
-          teamType: updatedTeam.teamType,
+          teamType: updatedTeam.role,
           members: userMembers,
         },
       })
@@ -66,7 +72,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       teamMembersUpdated: {
         bookId: updatedTeam.object.objectId,
         teamId: id,
-        teamType: updatedTeam.teamType,
+        teamType: updatedTeam.role,
         members: userMembers,
       },
     })
