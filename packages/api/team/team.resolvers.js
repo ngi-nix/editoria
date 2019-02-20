@@ -29,8 +29,10 @@ const getBookTeams = async (_, { bookId }, ctx) => {
   }
 }
 
+const eager = '[members.[user, alias]]'
+
 const getGlobalTeams = async (_, __, ctx) => {
-  const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
+  const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
   const globalTeams = filter(allTeams, { global: true })
   return globalTeams
 }
