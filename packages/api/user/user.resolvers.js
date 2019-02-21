@@ -3,7 +3,7 @@ const forEach = require('lodash/forEach')
 const startsWith = require('lodash/startsWith')
 
 const findUser = async (_, { search, exclude }, ctx, info) => {
-  const allUsers = await ctx.connectors.User.fetchAll(ctx)
+  const allUsers = await ctx.connectors.User.fetchAll({}, ctx)
   const searchLow = search.toLowerCase()
   const res = []
 
