@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, find, findIndex, difference, forEach } from 'lodash'
+import { get, forEach } from 'lodash'
 import { adopt } from 'react-adopt'
 import TeamManagerModal from './TeamManagerModal'
 import {
