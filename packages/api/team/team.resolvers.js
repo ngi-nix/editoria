@@ -9,12 +9,14 @@ const {
   BOOK_PRODUCTION_EDITORS_UPDATED,
 } = require('./consts')
 
+const eager = '[members.[user, alias]]'
+
 const getBookTeams = async (_, { bookId }, ctx) => {
   try {
-    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
+    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
     const bookTeams = filter(allTeams, team => {
-      if (team.object) {
-        return team.object.objectId === bookId && team.global === false
+      if (team.objectId) {
+        return team.objectId === bookId && team.global === false
       }
       return false
     })
@@ -28,8 +30,6 @@ const getBookTeams = async (_, { bookId }, ctx) => {
     throw new Error(e)
   }
 }
-
-const eager = '[members.[user, alias]]'
 
 const getGlobalTeams = async (_, __, ctx) => {
   const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
@@ -46,15 +46,13 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     })
     logger.info(`Team with id ${id} updated`)
 
-    console.log(updatedTeam.members)
-    // const userMembers = await ctx.connectors.User.fetchSome(
-    //   updatedTeam.members,
-    //   ctx,
-    //   { eager },
-    // )
+    const userMembers = await ctx.connectors.User.fetchSome(
+      updatedTeam.members,
+      ctx,
+      { eager },
+    )
 
     if (updatedTeam.global === true) {
-      console.log(updatedTeam)
       return updatedTeam
     }
 

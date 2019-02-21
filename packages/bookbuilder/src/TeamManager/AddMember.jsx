@@ -140,6 +140,7 @@ export class AddMember extends React.Component {
     const addSingleMember = show ? (
       <div className={styles.userInputContainer}>
         <AsyncSelect
+          autoload={false}
           value={this.state.selectedOption}
           closeMenuOnSelect
           onChange={this.handleChange}

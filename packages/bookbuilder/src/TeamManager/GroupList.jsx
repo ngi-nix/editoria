@@ -35,7 +35,7 @@ export class GroupList extends React.Component {
     // do it like this to guarantee order of groups
     const groups = keys(options).map((key, i) => {
       // get team of this name
-      const team = find(teams, team => team.teamType === key)
+      const team = find(teams, team => team.role === key)
 
       if (!team) return null
       /* eslint-disable */
@@ -43,7 +43,7 @@ export class GroupList extends React.Component {
         <div key={i}>
           <Group
             book={book}
-            options={options[team.teamType]}
+            options={options[team.role]}
             team={team}
             update={update}
             findUser={findUser}
