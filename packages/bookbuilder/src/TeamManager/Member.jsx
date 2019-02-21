@@ -60,7 +60,7 @@ export class Member extends React.Component {
 
     const authorizationObject = {
       id: book.id,
-      teamType: team.teamType,
+      teamType: team.role,
     }
     return (
       <Authorize
@@ -89,7 +89,7 @@ Member.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
     rev: PropTypes.string,
-    teamType: PropTypes.shape({
+    role: PropTypes.shape({
       name: PropTypes.string,
       permissions: PropTypes.arrayOf(PropTypes.string),
     }),

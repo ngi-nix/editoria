@@ -24,7 +24,7 @@ export class MemberList extends React.Component {
         team={team}
         update={update}
         book={book}
-        user={member}
+        user={member.user}
         users={[]}
       />
     ))

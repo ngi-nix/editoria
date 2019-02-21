@@ -47,7 +47,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     logger.info(`Team with id ${id} updated`)
 
     const userMembers = await ctx.connectors.User.fetchSome(
-      updatedTeam.members,
+      updatedTeam.members.map(member => member.user.id),
       ctx,
       { eager },
     )
@@ -59,7 +59,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     if (updatedTeam.role === 'productionEditor') {
       pubsub.publish(BOOK_PRODUCTION_EDITORS_UPDATED, {
         productionEditorsUpdated: {
-          bookId: updatedTeam.object.objectId,
+          bookId: updatedTeam.objectId,
           teamId: id,
           teamType: updatedTeam.role,
           members: userMembers,
@@ -68,7 +68,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     }
     pubsub.publish(TEAM_MEMBERS_UPDATED, {
       teamMembersUpdated: {
-        bookId: updatedTeam.object.objectId,
+        bookId: updatedTeam.objectId,
         teamId: id,
         teamType: updatedTeam.role,
         members: userMembers,

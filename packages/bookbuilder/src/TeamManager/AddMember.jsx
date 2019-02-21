@@ -102,8 +102,9 @@ export class AddMember extends React.Component {
   handleChange(selectedOption) {
     this.setState({ selectedOption })
     const { team, update } = this.props
-    const updatedMembers = map(team.members, member => member.id)
-    updatedMembers.push(selectedOption.value)
+    const updatedMembers = map(team.members, member => member.user)
+    updatedMembers.push({ user: { id: selectedOption.value } })
+
     update({
       variables: { id: team.id, input: { members: updatedMembers } },
     }).then(res => this.setState({ selectedOption: null }))
@@ -111,7 +112,8 @@ export class AddMember extends React.Component {
 
   promiseOptions(inputValue, callback) {
     const { findUser, team } = this.props
-    const teamMemberIds = map(team.members, member => member.id)
+    const teamMemberIds = map(team.members, member => member.user.id)
+
     findUser({
       variables: {
         search: inputValue,

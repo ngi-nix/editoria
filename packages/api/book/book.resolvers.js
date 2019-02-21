@@ -263,8 +263,8 @@ module.exports = {
         return false
       })
       const productionEditors = await Promise.all(
-        map(productionEditorTeam[0].members, async id => {
-          const user = await ctx.connectors.User.fetchOne(id, ctx)
+        map(productionEditorTeam[0].members, async member => {
+          const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
           return user.username
         }),
       )
