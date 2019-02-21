@@ -11,9 +11,8 @@ import {
 } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
-import { compose } from 'redux'
-import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
+import { compose } from 'react-apollo'
+// import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 // import Actions from 'pubsweet-client/src/actions'
@@ -554,4 +553,4 @@ WaxPubsweet.defaultProps = {
 //   return roles
 // }
 
-export default compose(withAuthsome())(WaxPubsweet)
+export default compose()(WaxPubsweet) // withAuthsome()
