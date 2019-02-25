@@ -6,16 +6,19 @@ const UPDATE_BOOK_TEAM = gql`
   mutation UpdateBookTeam($id: String!, $input: TeamInput!) {
     updateTeamMembers(id: $id, input: $input) {
       id
-      teamType
+      role
       name
       object {
         objectId
       }
       members {
         id
-        username
-        email
-        admin
+        user {
+          id
+          username
+          email
+          admin
+        }
       }
       global
     }

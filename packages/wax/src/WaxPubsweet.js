@@ -11,9 +11,8 @@ import {
 } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
-import { compose } from 'redux'
-import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
+import { compose } from 'react-apollo'
+// import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
 import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 // import Actions from 'pubsweet-client/src/actions'
@@ -270,8 +269,8 @@ export class WaxPubsweet extends React.Component {
         },
       })
     }
-
-    if (title !== undefined) {
+    console.log('title', title)
+    if (title) {
       return renameBookComponent({
         variables: {
           input: {
@@ -399,7 +398,12 @@ export class WaxPubsweet extends React.Component {
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
-    const content = get(bookComponent, 'content')
+    // const content = get(bookComponent, 'content')
+    let { content } = bookComponent
+
+    if (content === null) {
+      content = ''
+    }
     const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')
 
     let chapterNumber
@@ -412,7 +416,6 @@ export class WaxPubsweet extends React.Component {
     } else {
       header = <h1>{`${bookComponent.title}`}</h1>
     }
-
     return (
       <div>
         {header}
@@ -441,6 +444,7 @@ export class WaxPubsweet extends React.Component {
     const { bookComponent, loading } = this.props
     // const { layout } = config
     const { editing } = this.state
+    console.log('edt', editing)
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
@@ -554,4 +558,4 @@ WaxPubsweet.defaultProps = {
 //   return roles
 // }
 
-export default compose(withAuthsome())(WaxPubsweet)
+export default compose()(WaxPubsweet) // withAuthsome()

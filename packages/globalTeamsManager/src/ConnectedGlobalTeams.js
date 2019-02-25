@@ -1,0 +1,40 @@
+/* eslint-disable no-console */
+
+import React from 'react'
+import { get } from 'lodash'
+import { adopt } from 'react-adopt'
+
+import GlobalTeamsManager from './GlobalTeamsManager'
+import { getUsersTeamsQuery, globalTeamMutation } from './queries'
+
+const mapper = {
+  getUsersTeamsQuery,
+  globalTeamMutation,
+}
+
+const mapProps = args => ({
+  users: get(args.getUsersTeamsQuery, 'data.users'),
+  teams: get(args.getUsersTeamsQuery, 'data.getGlobalTeams'),
+  loading: args.getUsersTeamsQuery.loading,
+  updateGlobalTeam: args.globalTeamMutation.updateGlobalTeam,
+})
+
+const Composed = adopt(mapper, mapProps)
+
+const Connected = () => (
+  <Composed>
+    {({ users, teams, updateGlobalTeam, loading }) => {
+      if (loading) return 'Loading...'
+      return (
+        <GlobalTeamsManager
+          loading={loading}
+          teams={teams}
+          updateGlobalTeam={updateGlobalTeam}
+          users={users}
+        />
+      )
+    }}
+  </Composed>
+)
+
+export default Connected

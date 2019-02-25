@@ -1,0 +1,39 @@
+{
+  "name": "pubsweet-component-editoria-navigation",
+  "version": "0.1.0",
+  "description": "The navigation for the Editoria project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pubsweet-component",
+    "pubsweet-client"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.coko.foundation/editoria/editoria-navigation"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "editoria-common": "^0.1.2",
+    "lodash": "4.17.4",
+    "pubsweet-client": "^8.0.0",
+    "react": "^16.2.0",
+    "react-adopt": "^0.6.0",
+    "react-powerplug": "^1.0.0",
+    "react-router-dom": "4.2.2"
+  },
+  "devDependencies": {
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^1.5.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^20.0.4",
+    "prop-types": "^15.5.10",
+    "react-addons-test-utils": "^15.6.0",
+    "react-test-renderer": "^15.6.1",
+    "sinon": "^2.3.8",
+    "sinon-as-promised": "^4.0.3"
+  }
+}

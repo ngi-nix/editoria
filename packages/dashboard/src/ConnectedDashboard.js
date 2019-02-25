@@ -10,13 +10,10 @@ import {
   getBookCollectionsQuery,
   renameBookMutation,
   deleteBookMutation,
-} from './queries'
-
-import {
   BOOK_CREATED_SUBSCRIPTION,
   BOOK_RENAMED_SUBSCRIPTION,
   BOOK_DELETED_SUBSCRIPTION,
-} from './queries/bookSubscriptions'
+} from './queries'
 
 const mapper = {
   getBookCollectionsQuery,

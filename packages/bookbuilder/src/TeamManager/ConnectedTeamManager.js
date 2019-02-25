@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, find, findIndex, difference, forEach } from 'lodash'
+import { get, forEach } from 'lodash'
 import { adopt } from 'react-adopt'
 import TeamManagerModal from './TeamManagerModal'
 import {
@@ -52,7 +52,7 @@ const Connected = props => {
                   const { teamMembersUpdated } = subscriptionData.data
                   const copy = Object.assign({}, prev)
                   forEach(copy.getBookTeams, team => {
-                    if (team.object.objectId === teamMembersUpdated.bookId) {
+                    if (team.objectId === teamMembersUpdated.bookId) {
                       if (teamMembersUpdated.teamId === team.id) {
                         team.members = teamMembersUpdated.members
                       }

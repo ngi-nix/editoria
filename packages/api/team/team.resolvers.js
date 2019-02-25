@@ -1,9 +1,6 @@
 const pubsweetServer = require('pubsweet-server')
 const logger = require('@pubsweet/logger')
 const filter = require('lodash/filter')
-const map = require('lodash/map')
-const clone = require('lodash/clone')
-const forEach = require('lodash/forEach')
 
 const { pubsubManager } = pubsweetServer
 
@@ -12,12 +9,14 @@ const {
   BOOK_PRODUCTION_EDITORS_UPDATED,
 } = require('./consts')
 
+const eager = '[members.[user, alias]]'
+
 const getBookTeams = async (_, { bookId }, ctx) => {
   try {
-    const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
     const bookTeams = filter(allTeams, team => {
-      if (team.object) {
-        return team.object.objectId === bookId && team.global === false
+      if (team.objectId) {
+        return team.objectId === bookId && team.global === false
       }
       return false
     })
@@ -33,7 +32,7 @@ const getBookTeams = async (_, { bookId }, ctx) => {
 }
 
 const getGlobalTeams = async (_, __, ctx) => {
-  const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+  const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
   const globalTeams = filter(allTeams, { global: true })
   return globalTeams
 }
@@ -41,29 +40,37 @@ const getGlobalTeams = async (_, __, ctx) => {
 const updateTeamMembers = async (_, { id, input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
-    const updatedTeam = await ctx.connectors.Team.update(id, input, ctx)
+    const updatedTeam = await ctx.connectors.Team.update(id, input, ctx, {
+      unrelate: false,
+      eager: 'members.user.teams',
+    })
     logger.info(`Team with id ${id} updated`)
 
     const userMembers = await ctx.connectors.User.fetchSome(
-      updatedTeam.members,
+      updatedTeam.members.map(member => member.user.id),
       ctx,
+      { eager },
     )
 
-    if (updatedTeam.teamType === 'productionEditor') {
+    if (updatedTeam.global === true) {
+      return updatedTeam
+    }
+
+    if (updatedTeam.role === 'productionEditor') {
       pubsub.publish(BOOK_PRODUCTION_EDITORS_UPDATED, {
         productionEditorsUpdated: {
-          bookId: updatedTeam.object.objectId,
+          bookId: updatedTeam.objectId,
           teamId: id,
-          teamType: updatedTeam.teamType,
+          teamType: updatedTeam.role,
           members: userMembers,
         },
       })
     }
     pubsub.publish(TEAM_MEMBERS_UPDATED, {
       teamMembersUpdated: {
-        bookId: updatedTeam.object.objectId,
+        bookId: updatedTeam.objectId,
         teamId: id,
-        teamType: updatedTeam.teamType,
+        teamType: updatedTeam.role,
         members: userMembers,
       },
     })

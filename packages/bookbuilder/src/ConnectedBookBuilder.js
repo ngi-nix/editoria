@@ -17,9 +17,6 @@ import {
   updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
   exportBookMutation,
-} from './queries'
-
-import {
   BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION,
   BOOK_COMPONENT_ADDED_SUBSCRIPTION,
   BOOK_COMPONENT_DELETED_SUBSCRIPTION,
@@ -27,7 +24,7 @@ import {
   BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION,
   BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION,
   PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION,
-} from './queries/bookBuilderSubscriptions'
+} from './queries'
 
 const mapper = {
   getBookQuery,
