@@ -1,9 +1,10 @@
 import { clone, find, map } from 'lodash'
 import config from 'config'
 import React from 'react'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
+// import { DragDropContext } from 'react-dnd'
+// import HTML5Backend from 'react-dnd-html5-backend'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
+// import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
@@ -46,34 +47,35 @@ const EmptyList = styled.div`
   line-height: ${th('lineHeightBase')};
   margin-left: calc(2 * ${th('gridUnit')});
 `
-const BookComponentList = styled.ul`
+const BookComponentList = styled.div`
   color: ${th('colorText')};
   font-style: normal;
   font-weight: normal;
+  z-index: 1;
 `
 class Division extends React.Component {
   constructor(props) {
     super(props)
 
     this.onAddClick = this.onAddClick.bind(this)
-    this.onEndDrag = this.onEndDrag.bind(this)
-    this.onMove = this.onMove.bind(this)
+    // this.onEndDrag = this.onEndDrag.bind(this)
+    // this.onMove = this.onMove.bind(this)
     this.onRemove = this.onRemove.bind(this)
     this.onUpdatePagination = this.onUpdatePagination.bind(this)
     this.onUpdateWorkflowState = this.onUpdateWorkflowState.bind(this)
 
-    this.state = {
-      bookComponents: props.bookComponents,
-    }
+    // this.state = {
+    //   bookComponents: props.bookComponents,
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
     // const diff = difference(this.state.bookComponents, nextProps.bookComponents)
     // if (diff.length > 0) {
     //   console.log('diff', diff)
-    this.setState({
-      bookComponents: nextProps.bookComponents,
-    })
+    // this.setState({
+    //   bookComponents: nextProps.bookComponents,
+    // })
     // }
     // return false
   }
@@ -94,27 +96,27 @@ class Division extends React.Component {
   }
 
   // When drag is released, send all updates necessary
-  onEndDrag(params) {
-    // console.log('comp', params)
-    const { updateBookComponentOrder } = this.props
-    updateBookComponentOrder({
-      variables: {
-        targetDivisionId: params.divisionId,
-        bookComponentId: params.id,
-        index: params.no,
-      },
-    })
-  }
+  // onEndDrag(params) {
+  //   // console.log('comp', params)
+  //   const { updateBookComponentOrder } = this.props
+  //   updateBookComponentOrder({
+  //     variables: {
+  //       targetDivisionId: params.divisionId,
+  //       bookComponentId: params.id,
+  //       index: params.no,
+  //     },
+  //   })
+  // }
 
   // // When moving chapters, keep their order in the state
-  onMove(dragIndex, hoverIndex, dragDivision, hoverDivision) {
-    const { bookComponents } = this.state
-    const chs = clone(bookComponents)
-    // Change dragged fragment position in the array
-    const dragged = chs.splice(dragIndex, 1)[0] // remove
-    chs.splice(hoverIndex, 0, dragged) // reinsert at new position
-    this.setState({ bookComponents: chs })
-  }
+  // onMove(dragIndex, hoverIndex, dragDivision, hoverDivision) {
+  //   const { bookComponents } = this.state
+  //   const chs = clone(bookComponents)
+  //   // Change dragged fragment position in the array
+  //   const dragged = chs.splice(dragIndex, 1)[0] // remove
+  //   chs.splice(hoverIndex, 0, dragged) // reinsert at new position
+  //   this.setState({ bookComponents: chs })
+  // }
 
   onRemove(bookComponentId) {
     const { deleteBookComponent } = this.props
@@ -162,23 +164,15 @@ class Division extends React.Component {
       updateBookComponentUploading,
       updateBookComponentContent,
       outerContainer,
+      divisionId,
       showModal,
       showModalToggle,
       history,
-      // bookComponents,
+      bookComponents,
       label,
       update,
       reorderingAllowed,
     } = this.props
-    const { bookComponents } = this.state
-    const {
-      onAddClick,
-      onRemove,
-      onUpdatePagination,
-      onUpdateWorkflowState,
-      onMove,
-      onEndDrag,
-    } = this
 
     const bookComponentInstances = map(bookComponents, (bookComponent, i) => {
       const {
@@ -196,36 +190,45 @@ class Division extends React.Component {
         trackChangesEnabled,
       } = bookComponent
       return (
-        <BookComponent
-          bookId={bookId}
-          canDrag={reorderingAllowed}
-          componentType={componentType}
-          componentTypeOrder={componentTypeOrder}
-          divisionId={divisionId}
-          divisionType={label}
-          history={history}
-          id={id}
-          updateBookComponentContent={updateBookComponentContent}
-          updateBookComponentUploading={updateBookComponentUploading}
-          key={id}
-          lock={lock}
-          no={i}
-          onEndDrag={onEndDrag}
-          hasContent={hasContent}
-          onMove={onMove}
-          outerContainer={outerContainer}
-          showModal={showModal}
-          showModalToggle={showModalToggle}
-          pagination={pagination}
-          remove={onRemove}
-          title={title}
-          trackChangesEnabled={trackChangesEnabled}
-          update={update}
-          updatePagination={onUpdatePagination}
-          updateWorkflowState={onUpdateWorkflowState}
-          uploading={uploading}
-          workflowStages={workflowStages}
-        />
+        <Draggable key={id} draggableId={id} index={i}>
+          {(provided, snapshot) => {
+            return (
+              <div ref={provided.innerRef} {...provided.draggableProps}>
+                <BookComponent
+                  provided={provided}
+                  bookId={bookId}
+                  canDrag={reorderingAllowed}
+                  componentType={componentType}
+                  componentTypeOrder={componentTypeOrder}
+                  divisionId={divisionId}
+                  divisionType={label}
+                  history={history}
+                  id={id}
+                  updateBookComponentContent={updateBookComponentContent}
+                  updateBookComponentUploading={updateBookComponentUploading}
+                  key={id}
+                  lock={lock}
+                  no={i}
+                  onEndDrag={() => console.log('hello')}
+                  hasContent={hasContent}
+                  onMove={() => console.log('hello')}
+                  outerContainer={outerContainer}
+                  showModal={showModal}
+                  showModalToggle={showModalToggle}
+                  pagination={pagination}
+                  remove={this.onRemove}
+                  title={title}
+                  trackChangesEnabled={trackChangesEnabled}
+                  update={update}
+                  updatePagination={this.onUpdatePagination}
+                  updateWorkflowState={this.onUpdateWorkflowState}
+                  uploading={uploading}
+                  workflowStages={workflowStages}
+                />
+              </div>
+            )
+          }}
+        </Draggable>
       )
     })
     const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
@@ -234,7 +237,7 @@ class Division extends React.Component {
       // <Authorize object={bookId} operation="can view addComponent">
       map(divisionsConfig.allowedComponentTypes, componentType => (
         <AddComponentButton
-          add={onAddClick}
+          add={this.onAddClick}
           label={`add ${componentType}`}
           type={componentType}
         />
@@ -259,16 +262,33 @@ class Division extends React.Component {
           <DivisionHeader>{label.toUpperCase()}</DivisionHeader>
           <DivisionActions>{addButtons}</DivisionActions>
         </HeaderContainer>
-        {bookComponents.length > 0 ? (
-          <BookComponentList>{bookComponentInstances}</BookComponentList>
-        ) : (
-          <EmptyList>There are no items in this division.</EmptyList>
-        )}
+        <Droppable droppableId={divisionId}>
+          {(provided, snapshot) => {
+            return (
+              <div
+                ref={provided.innerRef}
+                style={{
+                  opacity: snapshot.isDraggingOver ? 0.5 : 1,
+                  minHeight: '96px',
+                }}
+              >
+                {bookComponents.length > 0 ? (
+                  <BookComponentList>
+                    {bookComponentInstances}
+                  </BookComponentList>
+                ) : (
+                  <EmptyList>There are no items in this division.</EmptyList>
+                )}
+                {provided.placeholder}
+              </div>
+            )
+          }}
+        </Droppable>
       </DivisionContainer>
     )
   }
 }
 
-export { Division as UnWrappedDivision }
-// export default Division
-export default DragDropContext(HTML5Backend)(Division)
+// export { Division as UnWrappedDivision }
+export default Division
+// export default DragDropContext(HTML5Backend)(Division)

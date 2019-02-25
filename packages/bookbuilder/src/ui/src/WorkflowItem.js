@@ -6,7 +6,7 @@ import { ButtonWithoutLabel } from './Button'
 import Label from './Label'
 import Arrow from './Arrow'
 
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
+// import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 // const StyledButton = styled(ButtonWithoutLabel)`
 //   padding: 0;
@@ -31,6 +31,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  align-self: flex-end;
 `
 
 const WorkflowItem = ({
@@ -144,23 +145,23 @@ const WorkflowItem = ({
     >
       {/* <div className={classes.content}> */}
       <FirstRow>
-        <Authorize
+        {/* <Authorize
           object={{ bookId, type, currentValues }}
           operation="can change progressList left"
           unauthorized={renderIndicator(true, 'left')}
-        >
+        > */}
           {renderIndicator(false, 'left')}
-        </Authorize>
+        {/* </Authorize> */}
         <Label active={values[index] === 0} completed={values[index] === 1}>
           {item.title}
         </Label>
-        <Authorize
+        {/* <Authorize
           object={{ bookId, type, currentValues }}
           operation="can change progressList right"
           unauthorized={renderIndicator(true, 'right')}
-        >
+        > */}
           {renderIndicator(false, 'right')}
-        </Authorize>
+        {/* </Authorize> */}
       </FirstRow>
       <WorkflowIndicator state={values[index]} withEnd={isLast} />
     </Container>
