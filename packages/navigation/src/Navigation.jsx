@@ -13,11 +13,13 @@ class Navigation extends React.Component {
     this.inPaged = null
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    console.log('sdfgsdfgsdfgsdfg')
     this.shouldAddBookLink()
   }
 
   componentWillUpdate() {
+    console.log('sdfgsdfgsdfgsdfg')
     this.shouldAddBookLink()
   }
 
@@ -32,6 +34,7 @@ class Navigation extends React.Component {
 
     this.inEditor = pathname.match(/bookComponents/g)
     this.inPaged = pathname.match(/pagedPreviewer\/paged/g)
+
     if (this.inEditor || this.inPaged) {
       const pathnameSplitted = pathname.split('/')
       this.collectionId = pathnameSplitted[2] // eslint-disable-line

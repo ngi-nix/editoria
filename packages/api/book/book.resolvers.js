@@ -252,6 +252,7 @@ module.exports = {
       return bookTranslation[0].title
     },
     divisions(book, _, ctx) {
+      console.log('book', book)
       return book.divisions
     },
     async productionEditors(book, _, ctx) {

@@ -14,7 +14,7 @@
     "pubsweet-client": "^9.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "wax-editor-react": "^0.2.10",
+    "wax-editor-react": "^0.2.11",
     "config": "^1.27.0",
     "react-adopt": "^0.6.0",
     "react-router-dom": "4.2.2",

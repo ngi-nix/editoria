@@ -269,8 +269,8 @@ export class WaxPubsweet extends React.Component {
         },
       })
     }
-
-    if (title !== undefined) {
+    console.log('title', title)
+    if (title) {
       return renameBookComponent({
         variables: {
           input: {
@@ -398,7 +398,12 @@ export class WaxPubsweet extends React.Component {
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
-    const content = get(bookComponent, 'content')
+    // const content = get(bookComponent, 'content')
+    let { content } = bookComponent
+
+    if (content === null) {
+      content = ''
+    }
     const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')
 
     let chapterNumber
@@ -411,7 +416,6 @@ export class WaxPubsweet extends React.Component {
     } else {
       header = <h1>{`${bookComponent.title}`}</h1>
     }
-
     return (
       <div>
         {header}
@@ -440,6 +444,7 @@ export class WaxPubsweet extends React.Component {
     const { bookComponent, loading } = this.props
     // const { layout } = config
     const { editing } = this.state
+    console.log('edt', editing)
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
