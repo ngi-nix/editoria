@@ -23,14 +23,7 @@ const registerComponents = componentNames => {
   }
 
   components.forEach(comp => {
-    const componentPath = path.resolve(
-      __dirname,
-      '..',
-      '..',
-      'src',
-      comp,
-      // 'index',
-    )
+    const componentPath = path.resolve(__dirname, '..', '..', 'src', comp)
     paths.push(componentPath)
   })
 
