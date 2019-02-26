@@ -20,6 +20,9 @@ const Logo = styled.div`
   ${override('Login.Logo')};
 `
 
+const FullnameInput = props => (
+  <TextField label="Fullname" {...props.field} placeholder="Fullname" />
+)
 const UsernameInput = props => (
   <TextField label="Username" {...props.field} placeholder="Username" />
 )
@@ -49,6 +52,7 @@ const Signup = ({ error, handleSubmit, logo = null }) => (
       {error && <ErrorText>{error}</ErrorText>}
 
       <form onSubmit={handleSubmit}>
+        <Field component={FullnameInput} name="fullname" />
         <Field component={UsernameInput} name="username" />
         <Field component={EmailInput} name="email" />
         <Field component={PasswordInput} name="password" />

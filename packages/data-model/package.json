@@ -11,9 +11,10 @@
   "author": "Yannis Barlas",
   "license": "ISC",
   "dependencies": {
-    "@pubsweet/base-model": "^3.0.0",
-    "@pubsweet/model-team": "^2.0.0",
-    "@pubsweet/db-manager": "^2.3.0",
+    "@pubsweet/base-model": "^3.0.2",
+    "@pubsweet/model-team": "^2.0.2",
+    "@pubsweet/model-user": "^4.0.2",
+    "@pubsweet/db-manager": "^3.0.1",
     "@pubsweet/logger": "^0.2.7",
     "jest": "^23.6.0",
     "knex": "^0.15.2",

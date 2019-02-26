@@ -12,11 +12,13 @@ const handleSubmit = (values, { props, setSubmitting, setErrors }) =>
 
 const enhancedFormik = withFormik({
   initialValues: {
+    fullname: '',
     username: '',
     email: '',
     password: '',
   },
   mapPropsToValues: props => ({
+    fullname: props.fullname,
     username: props.username,
     password: props.password,
     email: props.email,

@@ -7,11 +7,13 @@ const bookComponentTranslation = require('./bookComponentTranslation')
 const bookTranslation = require('./bookTranslation')
 const division = require('./division')
 const team = require('./team')
+const user = require('./user')
 const lock = require('./lock')
 
 module.exports = {
   book,
   team,
+  user,
   bookCollection,
   bookCollectionTranslation,
   bookComponent,
@@ -30,6 +32,7 @@ module.exports = {
     BookTranslation: bookTranslation.model,
     Division: division.model,
     Team: team.model,
+    User: user.model,
     Lock: lock.model,
   },
 }
