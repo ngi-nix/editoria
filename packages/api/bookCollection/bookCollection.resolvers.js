@@ -12,7 +12,7 @@ const getBookCollection = async (_, args, ctx) =>
   ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
 
 const getBookCollections = (_, __, ctx) =>
-  ctx.connectors.BookCollection.fetchAll(ctx)
+  ctx.connectors.BookCollection.fetchAll({}, ctx)
 
 const createBookCollection = async (_, args, ctx) => {
   const pubsub = await pubsubManager.getPubsub()

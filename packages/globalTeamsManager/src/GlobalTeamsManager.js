@@ -3,12 +3,7 @@ import styled from 'styled-components'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import Select from 'react-select'
-import { sortBy, keys } from 'lodash'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-
-// TODO -- clean up this import
-import Actions from 'pubsweet-client/src/actions'
+import { sortBy, keys, omit } from 'lodash'
 
 const TeamHeadingWrapper = styled.h4`
   border-bottom: 1px solid black;
@@ -87,19 +82,19 @@ const TeamSection = props => {
   const options = users
     ? users.map(user => ({
         label: user.username,
-        value: user.id,
+        id: user.id,
       }))
     : []
 
-  const selectValue = value.map(userId => {
-    const user = users.find(u => u.id === userId)
+  const selectValue = value.map(usr => {
+    const user = users.find(u => u.id === usr)
     if (user) {
       return {
         label: user.username,
-        value: userId,
+        id: usr,
       }
     }
-    return userId
+    return usr
   })
 
   const handleChange = newValue => {
@@ -111,6 +106,7 @@ const TeamSection = props => {
       <TeamHeading name={name} />
       <StyledSelect
         closeMenuOnSelect={false}
+        getOptionValue={option => option.id}
         isMulti
         name={type}
         onChange={handleChange}
@@ -131,9 +127,9 @@ const TeamManagerForm = props => {
           key={team.id}
           name={team.name}
           setFieldValue={setFieldValue}
-          type={team.teamType}
+          type={team.role}
           users={users}
-          value={values[team.teamType]}
+          value={values[team.role]}
         />
       ))}
 
@@ -156,26 +152,23 @@ class GlobalTeamsManager extends Component {
     }
   }
 
-  componentWillMount() {
-    const { getUsers, getTeams } = this.props.actions
-    Promise.all([getUsers(), getTeams()]).then(values => {
-      this.setState({ ready: true })
-    })
-  }
-
   handleSubmit = (formValues, formikBag) => {
-    const { teams, actions } = this.props
-    const { updateTeam } = actions
+    const { teams, updateGlobalTeam } = this.props
 
-    const data = keys(formValues).map(teamType => ({
-      id: teams.find(t => t.teamType === teamType && t.global).id,
-      members: formValues[teamType].map(item => {
-        if (item.id) return item.id
-        return item.value
+    const data = keys(formValues).map(role => {
+      const team = teams.find(t => t.role === role)
+      team.members = formValues[role].map(item => ({ user: { id: item.id } }))
+      return team
+    })
+
+    const promises = data.map(team =>
+      updateGlobalTeam({
+        variables: {
+          id: team.id,
+          input: omit(team, ['id', '__typename', 'type']),
+        },
       }),
-    }))
-
-    const promises = data.map(team => updateTeam(team))
+    )
 
     Promise.all(promises).then(res => {
       this.showRibbon()
@@ -199,17 +192,17 @@ class GlobalTeamsManager extends Component {
   }
 
   render() {
-    const { users, teams } = this.props
-    const { hideRibbon, ready } = this.state
+    const { users, teams, loading } = this.props
+    const { hideRibbon } = this.state
 
-    if (!ready) return null
+    if (loading) return 'Loading...'
 
-    let globalTeams = teams.filter(team => team.global)
+    let globalTeams = (teams || []).filter(team => team.global)
     const infoMessage = 'Your teams have been successfully updated'
 
     const initialValues = {}
     globalTeams.forEach(team => {
-      initialValues[team.teamType] = team.members
+      initialValues[team.role] = team.members.map(member => member.user.id)
     })
 
     globalTeams = sortBy(globalTeams, 'name')
@@ -240,21 +233,4 @@ GlobalTeamsManager.defaultProps = {
   users: null,
 }
 
-function mapStateToProps(state, { match }) {
-  const { users, teams } = state
-  return {
-    users: users.users,
-    teams,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch),
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(GlobalTeamsManager)
+export default GlobalTeamsManager

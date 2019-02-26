@@ -6,16 +6,19 @@ const GET_BOOK_TEAMS = gql`
   query GetBookTeams($bookId: ID!) {
     getBookTeams(bookId: $bookId) {
       id
-      teamType
+      role
       name
       object {
         objectId
       }
       members {
         id
-        username
-        email
-        admin
+        user {
+          id
+          username
+          email
+          admin
+        }
       }
       global
     }

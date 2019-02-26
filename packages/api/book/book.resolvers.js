@@ -22,6 +22,8 @@ const {
   Division,
 } = require('editoria-data-model/src').models
 
+const eager = '[members.[user, alias]]'
+
 const getBook = async (_, { id }, ctx, info) => {
   const book = await Book.findById(id)
 
@@ -50,20 +52,25 @@ const createBook = async (_, { input }, ctx) => {
     )
     pubsub.publish(BOOK_CREATED, { bookCreated: book })
 
-    const teamTypes = keys(config.authsome.teams)
+    const roles = keys(config.authsome.teams)
     await Promise.all(
-      forEach(teamTypes, async teamType => {
+      forEach(roles, async role => {
         await ctx.connectors.Team.create(
           {
-            name: config.authsome.teams[teamType].name,
-            object: { objectId: book.id, objectType: 'book' },
-            teamType,
+            name: config.authsome.teams[role].name,
+            objectId: book.id,
+            objectType: 'book',
+            role,
             deleted: false,
             global: false,
           },
           ctx,
+          {
+            relate: true,
+            unrelate: true,
+          },
         )
-        logger.info(`Team of type ${teamType} created for the book ${book.id}`)
+        logger.info(`Team of type ${role} created for the book ${book.id}`)
       }),
     )
     return book
@@ -149,7 +156,7 @@ const deleteBook = async (_, args, ctx) => {
       }),
     )
 
-    const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
     const associatedTeams = filter(allTeams, team => {
       if (team.object) {
         return team.object.id === args.id
@@ -223,9 +230,7 @@ const exportBook = async (
   _,
   { bookId, destination, converter, previewer, style },
   ctx,
-) => {
-  return exporter(bookId, destination, converter, previewer, style)
-}
+) => exporter(bookId, destination, converter, previewer, style)
 
 module.exports = {
   Query: {
@@ -247,22 +252,20 @@ module.exports = {
       return bookTranslation[0].title
     },
     divisions(book, _, ctx) {
+      console.log('book', book)
       return book.divisions
     },
     async productionEditors(book, _, ctx) {
-      const allTeams = await ctx.connectors.Team.fetchAll(ctx)
+      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
       const productionEditorTeam = filter(allTeams, team => {
-        if (team.object) {
-          return (
-            team.object.objectId === book.id &&
-            team.teamType === 'productionEditor'
-          )
+        if (team.objectId) {
+          return team.objectId === book.id && team.role === 'productionEditor'
         }
         return false
       })
       const productionEditors = await Promise.all(
-        map(productionEditorTeam[0].members, async id => {
-          const user = await ctx.connectors.User.fetchOne(id, ctx)
+        map(productionEditorTeam[0].members, async member => {
+          const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
           return user.username
         }),
       )

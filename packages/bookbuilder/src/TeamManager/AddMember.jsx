@@ -1,4 +1,4 @@
-import { find, union, forEach, map, debounce, isEmpty } from 'lodash'
+import { map, debounce, isEmpty } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import AsyncSelect from 'react-select/lib/Async'
@@ -102,8 +102,9 @@ export class AddMember extends React.Component {
   handleChange(selectedOption) {
     this.setState({ selectedOption })
     const { team, update } = this.props
-    const updatedMembers = map(team.members, member => member.id)
-    updatedMembers.push(selectedOption.value)
+    const updatedMembers = map(team.members, member => member.user)
+    updatedMembers.push({ user: { id: selectedOption.value } })
+
     update({
       variables: { id: team.id, input: { members: updatedMembers } },
     }).then(res => this.setState({ selectedOption: null }))
@@ -111,7 +112,8 @@ export class AddMember extends React.Component {
 
   promiseOptions(inputValue, callback) {
     const { findUser, team } = this.props
-    const teamMemberIds = map(team.members, member => member.id)
+    const teamMemberIds = map(team.members, member => member.user.id)
+
     findUser({
       variables: {
         search: inputValue,
@@ -140,6 +142,7 @@ export class AddMember extends React.Component {
     const addSingleMember = show ? (
       <div className={styles.userInputContainer}>
         <AsyncSelect
+          autoload={false}
           value={this.state.selectedOption}
           closeMenuOnSelect
           onChange={this.handleChange}

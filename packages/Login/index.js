@@ -1,5 +1,5 @@
 module.exports = {
   client: {
-    components: [() => require('./LoginContainer')],
+    components: [() => require('./src/LoginContainer')],
   },
 }

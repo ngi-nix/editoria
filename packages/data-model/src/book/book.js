@@ -103,10 +103,11 @@ class Book extends Base {
       const createdDivisions = await Promise.all(
         divisions.map(division => this.addDivision(division.name)),
       )
+      console.log('divi', createdDivisions)
       this.divisions = createdDivisions.map(d => d.id)
     }
 
-    this.save()
+    return this.save()
   }
 
   $beforeInsert() {
