@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { State } from 'react-powerplug'
+import { map, forEach } from 'lodash'
 
 import RemoveBookModal from './RemoveBookModal'
 
@@ -24,7 +25,7 @@ const TopRow = styled.div`
 `
 
 const Status = styled.span`
-  color: ${props => (props.published ? '#0B65CB' : '#666')}
+  color: ${props => (props.publicationDate !== null ? '#0B65CB' : '#666')}
   text-transform: uppercase;
 `
 
@@ -63,18 +64,21 @@ const MainRow = styled.div`
 
 const Author = ({ author }) => <TopRowKeyValue key="author" value={author} />
 
-const TopRowValues = ({ author }) => {
-  if (!author) return null
+const TopRowValues = ({ authors }) => {
+  if (!authors) return null
 
   return (
     <TopRowValuesWrapper>
-      <Author author={author} />
+      {map(authors, author => {
+        return <Author author={author.username} />
+      })}
     </TopRowValuesWrapper>
   )
 }
 
 const Book = props => {
   const { book, container, history, renameBook, remove } = props
+  const { authors, publicationDate } = book
 
   return (
     <State initial={{ isRenaming: false, showModal: false }}>
@@ -120,18 +124,14 @@ const Book = props => {
           setState({ showModal: !showModal })
         }
 
-        // TO DO -- Remove when the data comes in from the server
-        book.published = Math.random() >= 0.5
-
         return (
           <Wrapper>
             <TopRow>
-              <Status published={book.published}>
-                {book.published ? 'published' : 'in progress'}
+              <Status publicationDate={publicationDate}>
+                {publicationDate !== null ? 'published' : 'in progress'}
               </Status>
 
-              {/* TO DO -- Remove when the data comes in from the server */}
-              <TopRowValues author="adam Hyde" />
+              <TopRowValues authors={authors} />
             </TopRow>
 
             <MainRow>

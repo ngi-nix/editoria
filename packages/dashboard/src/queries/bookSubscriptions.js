@@ -32,8 +32,24 @@ const BOOK_DELETED_SUBSCRIPTION = gql`
   }
 `
 
-export {
-  BOOK_CREATED_SUBSCRIPTION,
-  BOOK_RENAMED_SUBSCRIPTION,
-  BOOK_DELETED_SUBSCRIPTION,
+// export {
+//   BOOK_CREATED_SUBSCRIPTION,
+//   BOOK_RENAMED_SUBSCRIPTION,
+//   BOOK_DELETED_SUBSCRIPTION,
+// }
+
+// import React from 'react'
+// import { Subscription } from 'react-apollo'
+// import gql from 'graphql-tag'
+
+const bookSubscriptions = props => {
+  const { render } = props
+
+  return (
+    <Subscription subscription={BOOK_CREATED_SUBSCRIPTION}>
+      {({ data, loading }) => render({ data, loading })}
+    </Subscription>
+  )
 }
+
+export default bookSubscriptions

@@ -36,6 +36,7 @@ const getBook = async (_, { id }, ctx, info) => {
 
 const createBook = async (_, { input }, ctx) => {
   const { collectionId, title } = input
+  console.log('ctx', ctx)
   try {
     const pubsub = await pubsubManager.getPubsub()
     const book = await new Book({
@@ -50,11 +51,10 @@ const createBook = async (_, { input }, ctx) => {
     logger.info(
       `New Book Translation (title: ${title})created for the book ${book.id}`,
     )
-    pubsub.publish(BOOK_CREATED, { bookCreated: book })
 
     const roles = keys(config.authsome.teams)
     await Promise.all(
-      forEach(roles, async role => {
+      map(roles, async role => {
         await ctx.connectors.Team.create(
           {
             name: config.authsome.teams[role].name,
@@ -73,6 +73,7 @@ const createBook = async (_, { input }, ctx) => {
         logger.info(`Team of type ${role} created for the book ${book.id}`)
       }),
     )
+    pubsub.publish(BOOK_CREATED, { bookCreated: book })
     return book
   } catch (e) {
     logger.error(e)
@@ -252,8 +253,26 @@ module.exports = {
       return bookTranslation[0].title
     },
     divisions(book, _, ctx) {
-      console.log('book', book)
       return book.divisions
+    },
+    async authors(book, args, ctx, info) {
+      console.log('arguments', arguments)
+      console.log('in custom ctx', ctx)
+      console.log('in custom book', book)
+      console.log('in custom args', args)
+      console.log('in custom', info)
+      const teams = await ctx.connectors.Team.fetchAll(
+        { objectId: book.id, role: 'author' },
+        ctx,
+        { eager },
+      )
+      let authors = null
+      if (teams[0] && teams[0].members.length > 0) {
+        authors = map(teams[0].members, teamMemeber => {
+          return teamMemeber.user
+        })
+      }
+      return authors
     },
     async productionEditors(book, _, ctx) {
       const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })

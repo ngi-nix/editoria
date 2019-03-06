@@ -19,12 +19,9 @@ const BookList = props => {
     return <div>There are no books to display.</div>
   }
 
-  // TO DO: Delete this when the backend returns sorted results
-  const items = sortBy(books, [book => book.title.toLowerCase()])
-
   return (
     <Wrapper>
-      {items.map(book => (
+      {books.map(book => (
         <Book
           book={book}
           container={container}

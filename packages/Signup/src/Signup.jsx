@@ -52,7 +52,7 @@ const Signup = ({ error, handleSubmit, logo = null }) => (
       {error && <ErrorText>{error}</ErrorText>}
 
       <form onSubmit={handleSubmit}>
-        <Field component={FullnameInput} name="fullname" />
+        {/* <Field component={FullnameInput} name="fullname" /> */}
         <Field component={UsernameInput} name="username" />
         <Field component={EmailInput} name="email" />
         <Field component={PasswordInput} name="password" />
