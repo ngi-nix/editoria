@@ -17,10 +17,8 @@ const eager = '[members.[user, alias]]'
 const getBookCollection = async (_, args, ctx) =>
   ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
 
-const getBookCollections = async (_, args, ctx) => {
-  const collections = await ctx.connectors.BookCollection.fetchAll({}, ctx)
-  return collections
-}
+const getBookCollections = async (_, __, ctx) =>
+  ctx.connectors.BookCollection.fetchAll({}, ctx)
 
 const createBookCollection = async (_, args, ctx) => {
   const pubsub = await pubsubManager.getPubsub()
@@ -49,14 +47,22 @@ module.exports = {
     async books(bookCollection, { ascending, sortKey, archived }, ctx, info) {
       let books
       if (archived) {
-        books = await Book.query()
-          .where('collectionId', bookCollection.id)
-          .andWhere('deleted', false)
+        books = await ctx.connectors.Book.fetchAll(
+          {
+            collectionId: bookCollection.id,
+            deleted: false,
+          },
+          ctx,
+        )
       } else {
-        books = await Book.query()
-          .where('collectionId', bookCollection.id)
-          .andWhere('deleted', false)
-          .andWhere('archived', archived)
+        books = await ctx.connectors.Book.fetchAll(
+            {
+              collectionId: bookCollection.id,
+              deleted: false,
+              archived: false,
+            },
+            ctx,
+          )
       }
 
       const sortable = await Promise.all(

@@ -4,7 +4,7 @@ import React from 'react'
 // import { DragDropContext } from 'react-dnd'
 // import HTML5Backend from 'react-dnd-html5-backend'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
@@ -161,6 +161,7 @@ class Division extends React.Component {
 
   render() {
     const {
+      bookId,
       updateBookComponentUploading,
       updateBookComponentContent,
       outerContainer,
@@ -235,16 +236,17 @@ class Division extends React.Component {
     })
     const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
 
-    const addButtons =
-      // <Authorize object={bookId} operation="can view addComponent">
-      map(divisionsConfig.allowedComponentTypes, componentType => (
-        <AddComponentButton
-          add={this.onAddClick}
-          label={`add ${componentType}`}
-          type={componentType}
-        />
-      ))
-    // </Authorize>
+    const addButtons = (
+      <Authorize object={{ id: bookId }} operation="can view addComponent">
+        {map(divisionsConfig.allowedComponentTypes, componentType => (
+          <AddComponentButton
+            add={this.onAddClick}
+            label={`add ${componentType}`}
+            type={componentType}
+          />
+        ))}
+      </Authorize>
+    )
 
     // const list = (
     //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>

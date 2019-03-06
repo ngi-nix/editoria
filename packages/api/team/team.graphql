@@ -7,7 +7,7 @@ extend type Query {
 type TeamSub {
   bookId: ID!
   teamId: ID!
-  teamType: String!
+  role: String!
   members: [User]!
 }
 

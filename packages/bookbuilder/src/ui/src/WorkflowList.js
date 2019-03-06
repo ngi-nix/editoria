@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import config from 'config'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { map, uniqueId, last, indexOf, find } from 'lodash'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
@@ -80,21 +80,21 @@ const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
       }
     }
 
-    // return (
-      // <Authorize
-      //   object={{ bookId, type, currentValues }}
-      //   operation="can change progressList"
-      //   unauthorized={renderStateItem(
-      //     previousNotDone || true,
-      //     currentValueIndex,
-      //     stageItem,
-      //     handleUpdate,
-      //     bookId,
-      //     type,
-      //     currentValues,
-      //   )}
-      // >
-       return renderStateItem(
+    return (
+      <Authorize
+        object={{ bookId, type, currentValues }}
+        operation="can change progressList"
+        unauthorized={renderStateItem(
+          previousNotDone || true,
+          currentValueIndex,
+          stageItem,
+          handleUpdate,
+          bookId,
+          type,
+          currentValues,
+        )}
+      >
+        {renderStateItem(
           previousNotDone || false,
           currentValueIndex,
           stageItem,
@@ -102,9 +102,9 @@ const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
           bookId,
           type,
           currentValues,
-        )
-      {/* </Authorize> */}
-    // )
+        )}
+      </Authorize>
+    )
   })
   return <Container>{items}</Container>
 }

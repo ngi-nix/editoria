@@ -36,6 +36,8 @@ const getBook = async (_, { id }, ctx, info) => {
 const createBook = async (_, { input }, ctx) => {
   const { collectionId, title } = input
   try {
+    await ctx.helpers.can(ctx.user, 'create', 'Book')
+
     const pubsub = await pubsubManager.getPubsub()
     const book = await new Book({
       collectionId,
@@ -81,6 +83,8 @@ const createBook = async (_, { input }, ctx) => {
 
 const renameBook = async (_, { id, title }, ctx) => {
   try {
+    await ctx.helpers.can(ctx.user, 'update', await Book.findById(id))
+
     const pubsub = await pubsubManager.getPubsub()
     const bookTranslation = await BookTranslation.query()
       .where('bookId', id)
@@ -110,6 +114,8 @@ const renameBook = async (_, { id, title }, ctx) => {
 const deleteBook = async (_, args, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
+    await ctx.helpers.can(ctx.user, 'update', await Book.findById(args.id))
+
     const deletedBook = await Book.query().patchAndFetchById(args.id, {
       deleted: true,
     })
@@ -271,7 +277,7 @@ module.exports = {
       return authors
     },
     async productionEditors(book, _, ctx) {
-      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
+      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
       const productionEditorTeam = filter(allTeams, team => {
         if (team.objectId) {
           return team.objectId === book.id && team.role === 'productionEditor'

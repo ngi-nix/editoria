@@ -62,7 +62,7 @@ export class Member extends React.Component {
 
     const authorizationObject = {
       id: book.id,
-      teamType: team.role,
+      role: team.role,
     }
     return (
       <Authorize

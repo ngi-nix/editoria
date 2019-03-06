@@ -89,24 +89,23 @@ export class BookBuilder extends React.Component {
     const { outerContainer } = this.state
     const teamManagerModal = this.renderTeamManagerModal()
     const productionEditorActions = [
-      // <Authorize object={book.id} operation="can view teamManager">
-      <TeamManagerButton
-        label="Team Manager"
-        onClick={this.toggleTeamManager}
-      />,
-
-      /* </Authorize>, */
+      <Authorize object={book} operation="can view teamManager">
+        <TeamManagerButton
+          label="Team Manager"
+          onClick={this.toggleTeamManager}
+        />
+      </Authorize>,
     ]
     const headerActions = [
-      // <Authorize object={book.id} operation="can view multipleFilesUpload">
-      <UploadFilesButton
-        book={book}
-        create={addBookComponents}
-        divisions={divisions}
-        update={updateBookComponentContent}
-        updateUploadStatus={updateBookComponentUploading}
-      />,
-      // </Authorize>,
+      <Authorize object={book} operation="can view multipleFilesUpload">
+        <UploadFilesButton
+          book={book}
+          create={addBookComponents}
+          divisions={divisions}
+          update={updateBookComponentContent}
+          updateUploadStatus={updateBookComponentUploading}
+        />
+      </Authorize>,
       <BookExporter
         book={book}
         history={history}

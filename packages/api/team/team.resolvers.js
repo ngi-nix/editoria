@@ -61,7 +61,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
         productionEditorsUpdated: {
           bookId: updatedTeam.objectId,
           teamId: id,
-          teamType: updatedTeam.role,
+          role: updatedTeam.role,
           members: userMembers,
         },
       })
@@ -70,7 +70,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       teamMembersUpdated: {
         bookId: updatedTeam.objectId,
         teamId: id,
-        teamType: updatedTeam.role,
+        role: updatedTeam.role,
         members: userMembers,
       },
     })

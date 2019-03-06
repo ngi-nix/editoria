@@ -1,6 +1,6 @@
 import { findIndex, find, forIn } from 'lodash'
 import React, { Component } from 'react'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
+import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import config from 'config'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
@@ -431,7 +431,7 @@ class SecondRow extends Component {
     return (
       <SecondRowContainer>
         {warningModal}
-        {/* <Authorize object={bookComponentId} operation="can view uploadButton"> */}
+        <Authorize object={{ id: bookId }} operation="can view uploadButton">
           <UploadFileButton
             bookComponentId={bookComponentId}
             updateBookComponentContent={updateBookComponentContent}
@@ -444,21 +444,21 @@ class SecondRow extends Component {
             showModal={showModal}
             showModalToggle={showModalToggle}
           />
-        {/* </Authorize> */}
-        {/* <Authorize object={bookComponentId} operation="can view stateList"> */}
+        </Authorize>
+        <Authorize object={bookComponentId} operation="can view stateList">
           <WorkflowList
             bookId={bookId}
             currentValues={workflowStages}
             update={this.updateStateList}
             values={this.progressValues}
           />
-        {/* </Authorize> */}
-        {/* <Authorize object={bookComponentId} operation="can view alignmentTool"> */}
+        </Authorize>
+        <Authorize object={bookComponentId} operation="can view alignmentTool">
           <AlignmentTool
             data={paginationData}
             onClickAlignmentBox={this.onClickAlignmentBox}
           />
-        {/* </Authorize> */}
+        </Authorize>
       </SecondRowContainer>
     )
   }
