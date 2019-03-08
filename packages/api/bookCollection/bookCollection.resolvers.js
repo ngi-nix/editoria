@@ -1,6 +1,5 @@
 const pubsweetServer = require('pubsweet-server')
 const orderBy = require('lodash/orderBy')
-const forEach = require('lodash/forEach')
 const map = require('lodash/map')
 const find = require('lodash/find')
 const {
@@ -12,6 +11,7 @@ const {
 const { pubsubManager } = pubsweetServer
 
 const { COLLECTION_ADDED } = require('./consts')
+
 const eager = '[members.[user, alias]]'
 
 const getBookCollection = async (_, args, ctx) =>
@@ -19,7 +19,6 @@ const getBookCollection = async (_, args, ctx) =>
 
 const getBookCollections = async (_, args, ctx) => {
   const collections = await ctx.connectors.BookCollection.fetchAll({}, ctx)
-  console.log('col', collections)
   return collections
 }
 
@@ -80,7 +79,6 @@ module.exports = {
         }),
       )
       const order = ascending ? 'asc' : 'desc'
-      // const sorter = sortKey === 'title' ? sortKey : `'${sortKey}', 'title'`
       const sorter = []
       if (sortKey === 'title') {
         sorter.push(sortKey)
@@ -89,7 +87,6 @@ module.exports = {
         sorter.push('title')
       }
       const sorted = orderBy(sortable, sorter, [order])
-      console.log('sorted', sorted)
       const result = map(sorted, item => {
         return find(books, { id: item.id })
       })

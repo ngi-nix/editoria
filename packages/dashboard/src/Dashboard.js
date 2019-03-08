@@ -12,16 +12,6 @@ export class Dashboard extends Component {
     this.toggleModal = this.toggleModal.bind(this)
   }
 
-  componentDidMount() {
-    console.log('in did')
-    // this.props.subscribeToBookRenamed()
-    // this.props.subscribeToNewBooks()
-    // this.props.subscribeToBookDeleted()
-  }
-  componentWillReceiveProps(nextProps) {
-    console.log('nect', nextProps)
-  }
-
   toggleModal() {
     const { showModal } = this.state
     this.setState({ showModal: !showModal })
@@ -39,7 +29,7 @@ export class Dashboard extends Component {
     } = this.props
 
     const { showModal } = this.state
-    if (!collections) return 'Loading...'
+    if (loading) return 'Loading...'
 
     const className = `bootstrap pubsweet-component pubsweet-component-scroll`
 

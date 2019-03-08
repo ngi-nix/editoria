@@ -1,9 +1,6 @@
 import React from 'react'
 import { Subscription } from 'react-apollo'
 import gql from 'graphql-tag'
-import { find } from 'lodash'
-
-import { GET_BOOK_COLLECTIONS } from './getBookCollections'
 
 const BOOK_CREATED_SUBSCRIPTION = gql`
   subscription BookCreated {
@@ -32,24 +29,56 @@ const BOOK_DELETED_SUBSCRIPTION = gql`
   }
 `
 
-// export {
-//   BOOK_CREATED_SUBSCRIPTION,
-//   BOOK_RENAMED_SUBSCRIPTION,
-//   BOOK_DELETED_SUBSCRIPTION,
-// }
-
-// import React from 'react'
-// import { Subscription } from 'react-apollo'
-// import gql from 'graphql-tag'
-
-const bookSubscriptions = props => {
-  const { render } = props
+const bookCreatedSubscription = props => {
+  const { render, getBookCollectionsQuery } = props
+  const { refetch } = getBookCollectionsQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_CREATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const bookRenamedSubscription = props => {
+  const { render, getBookCollectionsQuery } = props
+  const { refetch } = getBookCollectionsQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
 
   return (
-    <Subscription subscription={BOOK_CREATED_SUBSCRIPTION}>
-      {({ data, loading }) => render({ data, loading })}
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_RENAMED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const bookDeletedSubscription = props => {
+  const { render, getBookCollectionsQuery } = props
+  const { refetch } = getBookCollectionsQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_DELETED_SUBSCRIPTION}
+    >
+      {render}
     </Subscription>
   )
 }
 
-export default bookSubscriptions
+export {
+  bookCreatedSubscription,
+  bookRenamedSubscription,
+  bookDeletedSubscription,
+}

@@ -1,5 +1,4 @@
 const pubsweetServer = require('pubsweet-server')
-const forEach = require('lodash/forEach')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
 const filter = require('lodash/filter')
@@ -36,7 +35,6 @@ const getBook = async (_, { id }, ctx, info) => {
 
 const createBook = async (_, { input }, ctx) => {
   const { collectionId, title } = input
-  console.log('ctx', ctx)
   try {
     const pubsub = await pubsubManager.getPubsub()
     const book = await new Book({
@@ -124,7 +122,7 @@ const deleteBook = async (_, args, ctx) => {
 
     if (associatedBookComponents.length > 0) {
       await Promise.all(
-        forEach(associatedBookComponents, async bookComponent => {
+        map(associatedBookComponents, async bookComponent => {
           await BookComponent.query().patchAndFetchById(bookComponent.id, {
             deleted: true,
           })
@@ -140,7 +138,7 @@ const deleteBook = async (_, args, ctx) => {
       deletedBook.id,
     )
     await Promise.all(
-      forEach(associatedDivisions, async division => {
+      map(associatedDivisions, async division => {
         const updatedDivision = await Division.query().patchAndFetchById(
           division.id,
           {
@@ -167,7 +165,7 @@ const deleteBook = async (_, args, ctx) => {
 
     if (associatedTeams.length > 0) {
       await Promise.all(
-        forEach(associatedTeams, async team => {
+        map(associatedTeams, async team => {
           const updatedTeam = await ctx.connectors.Team.update(
             team.id,
             { deleted: true, object: {} },
@@ -206,7 +204,7 @@ const archiveBook = async (_, { id, archive }, ctx) => {
 
     if (associatedBookComponents.length > 0) {
       await Promise.all(
-        forEach(associatedBookComponents, async bookComponent => {
+        map(associatedBookComponents, async bookComponent => {
           await BookComponent.query().patchAndFetchById(bookComponent.id, {
             archived: archive,
           })
@@ -256,11 +254,6 @@ module.exports = {
       return book.divisions
     },
     async authors(book, args, ctx, info) {
-      console.log('arguments', arguments)
-      console.log('in custom ctx', ctx)
-      console.log('in custom book', book)
-      console.log('in custom args', args)
-      console.log('in custom', info)
       const teams = await ctx.connectors.Team.fetchAll(
         { objectId: book.id, role: 'author' },
         ctx,
