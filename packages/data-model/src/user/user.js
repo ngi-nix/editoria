@@ -11,7 +11,10 @@ class EditoriaUser extends User {
     return {
       type: 'object',
       properties: {
-        fullname: {
+        givenName: {
+          type: 'string',
+        },
+        surname: {
           type: 'string',
         },
       },
