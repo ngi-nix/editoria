@@ -4,6 +4,9 @@ type Book {
   title: String!
   productionEditors: [String]!
   divisions: [Division]!
+  authors: [User]
+  publicationDate: Date
+  archived: Boolean!
 }
 
 input CreateBookInput {

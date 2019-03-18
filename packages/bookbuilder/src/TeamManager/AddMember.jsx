@@ -124,7 +124,7 @@ export class AddMember extends React.Component {
       const { findUser } = data
       const options = map(findUser, user => ({
         value: user.id,
-        label: user.username,
+        label: `${user.givenName} ${user.surname}`,
       }))
       return callback(options)
     })

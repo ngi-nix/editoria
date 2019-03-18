@@ -5,19 +5,11 @@ import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
 import AddBookModal from './AddBookModal'
 
-import styles from './dashboard.local.scss'
-
 export class Dashboard extends Component {
   constructor(props) {
     super(props)
     this.state = { showModal: false }
     this.toggleModal = this.toggleModal.bind(this)
-  }
-
-  componentDidMount() {
-    this.props.subscribeToBookRenamed()
-    this.props.subscribeToNewBooks()
-    this.props.subscribeToBookDeleted()
   }
 
   toggleModal() {
@@ -28,28 +20,36 @@ export class Dashboard extends Component {
   render() {
     const {
       collections,
+      archiveBook,
       createBook,
       deleteBook,
       loading,
+      onChangeSort,
+      refetching,
       renameBook,
     } = this.props
+
     const { showModal } = this.state
     if (loading) return 'Loading...'
 
-    const className = `${
-      styles.bookList
-    } bootstrap pubsweet-component pubsweet-component-scroll`
+    const className = `bootstrap pubsweet-component pubsweet-component-scroll`
 
     return collections.map(collection => (
       <div className={className}>
         <div className="container col-lg-offset-2 col-lg-8">
-          <DashboardHeader title={collection.title} toggle={this.toggleModal} />
+          <DashboardHeader
+            onChangeSort={onChangeSort}
+            title={collection.title}
+            toggle={this.toggleModal}
+          />
 
           <BookList
             books={collection.books}
             container={this}
+            refetching={refetching}
             remove={deleteBook}
             renameBook={renameBook}
+            archiveBook={archiveBook}
           />
 
           <AddBookModal

@@ -1,8 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 import AbstractModal from 'editoria-common/src/AbstractModal'
-import styles from './dashboard.local.scss'
+
+const Input = styled.input`
+  &:placeholder-shown {
+    font-size: 13px !important;
+  }
+`
 
 class AddBookModal extends React.Component {
   constructor(props) {
@@ -77,9 +83,9 @@ class AddBookModal extends React.Component {
         {message}
         {error}
 
-        <input
+        <Input
           autoFocus // eslint-disable-line
-          className={styles['add-book-input']}
+          // className={styles['add-book-input']}
           name="title"
           onChange={this.onInputChange}
           onKeyPress={this.handleKeyOnInput}

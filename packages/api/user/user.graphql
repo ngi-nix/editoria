@@ -1,3 +1,18 @@
+extend type User {
+    givenName: String!
+    surname: String!
+  }
+
+input EditoriaUserInput {
+    username: String!
+    email: String!
+    password: String!
+    surname: String!
+    givenName: String!
+  }
+
 extend type Mutation {
   findUser(search: String!, exclude: [ID]!): [User]!
+  createEditoriaUser(input: EditoriaUserInput): User!
+  updateEditoriaUser(id: ID, input: EditoriaUserInput): User!
 }

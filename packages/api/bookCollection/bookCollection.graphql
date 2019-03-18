@@ -1,7 +1,7 @@
 type BookCollection {
   id: ID!
   title: String!
-  books: [Book]!
+  books(ascending: Boolean, sortKey: String, archived:Boolean): [Book]!
 }
 
 input BookCollectionInput {
@@ -22,4 +22,6 @@ extend type Mutation {
   createBookCollection(input: NewBookCollectionInput!): BookCollection!
 }
 
-extend type Subscription { collectionAdded: BookCollection }
+extend type Subscription {
+  collectionAdded: BookCollection
+}
