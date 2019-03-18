@@ -31,7 +31,7 @@ export class Member extends React.Component {
         <li>
           <div className={styles.personContainer} style={{ cursor: 'default' }}>
             <div>
-              <span>{user.username}</span>
+              <span>{`${user.givenName} ${user.surname}`}</span>
             </div>
           </div>
           <div className={styles.actionsContainer}>
@@ -49,7 +49,9 @@ export class Member extends React.Component {
           style={{ backgroundImage: 'none' }}
         >
           <div>
-            <span>{user.username}</span>
+            <span>{`${user.givenName} ${user.surname} (${
+              user.username
+            })`}</span>
           </div>
         </div>
       </li>

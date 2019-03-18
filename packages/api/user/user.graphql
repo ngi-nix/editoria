@@ -1,6 +1,6 @@
 extend type User {
     givenName: String!
-    firstName: String!
+    surname: String!
   }
 
 input EditoriaUserInput {

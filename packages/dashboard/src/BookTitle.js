@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const Text = styled.span`
   background-color: white;
   color: #404040 !important;
-  cursor: pointer;
+  cursor: ${({ archived }) => (archived ? 'inherit' : 'pointer')};
   font-size: 28px !important;
   font-style: italic;
   font-family: 'Vollkorn' !important;
@@ -39,7 +39,14 @@ const Input = styled.input`
 `
 
 const BookTitle = props => {
-  const { handleKeyOnInput, isRenaming, rename, title, ...rest } = props
+  const {
+    handleKeyOnInput,
+    isRenaming,
+    rename,
+    title,
+    archived,
+    ...rest
+  } = props
   let input
 
   if (isRenaming) {
@@ -63,7 +70,9 @@ const BookTitle = props => {
 
   return (
     <Wrapper>
-      <Text {...rest}>{title}</Text>
+      <Text {...rest} archived={archived}>
+        {title}
+      </Text>
     </Wrapper>
   )
 }

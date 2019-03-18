@@ -215,7 +215,7 @@ const archiveBook = async (_, { id, archive }, ctx) => {
       )
     }
 
-    pubsub.publish(BOOK_DELETED, {
+    pubsub.publish(BOOK_ARCHIVED, {
       bookArchived: archivedBook,
     })
     return archivedBook
@@ -253,6 +253,9 @@ module.exports = {
     divisions(book, _, ctx) {
       return book.divisions
     },
+    archived(book, _, ctx) {
+      return book.archived
+    },
     async authors(book, args, ctx, info) {
       const teams = await ctx.connectors.Team.fetchAll(
         { objectId: book.id, role: 'author' },
@@ -261,8 +264,8 @@ module.exports = {
       )
       let authors = null
       if (teams[0] && teams[0].members.length > 0) {
-        authors = map(teams[0].members, teamMemeber => {
-          return teamMemeber.user
+        authors = map(teams[0].members, teamMember => {
+          return teamMember.user
         })
       }
       return authors
@@ -278,7 +281,7 @@ module.exports = {
       const productionEditors = await Promise.all(
         map(productionEditorTeam[0].members, async member => {
           const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
-          return user.username
+          return `${user.givenName} ${user.surname}`
         }),
       )
       return productionEditors
@@ -289,6 +292,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_CREATED)
+      },
+    },
+    bookArchived: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_ARCHIVED)
       },
     },
     bookDeleted: {

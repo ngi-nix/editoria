@@ -22,11 +22,18 @@ const TopRow = styled.div`
   font-family: 'Fira Sans Condensed';
   font-size: 14px;
   line-height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: ${({ archived }) => (archived ? '-26px' : 0)};
 `
 
 const Status = styled.span`
-  color: ${props => (props.publicationDate !== null ? '#0B65CB' : '#666')}
+  color: ${props => (props.publicationDate !== null ? '#0B65CB' : '#666')};
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const TopRowKey = styled.span`
@@ -61,24 +68,61 @@ const TopRowValuesWrapper = styled.div`
 const MainRow = styled.div`
   display: flex;
 `
+const ArchivedIndicator = styled.i`
+  svg {
+    height: 24px;
+    margin-right: 4px;
+    align-self: center;
+    width: 24px;
+    #folder {
+      fill: #828282;
+    }
+  }
+`
+const icon = (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect id="background" width="28" height="28" fill="white" />
+    <path id="folderFill" d="M9 10H9.94478L12.5539 13.1288H19V17H9V10Z" />
+    <path
+      id="folder"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7.6 18.1402C7.6 18.3222 7.7792 18.4706 8 18.4706H20C20.2208 18.4706 20.4 18.3222 20.4 18.1402V11.5714C20.4 11.3886 20.2208 11.2411 20 11.2411H14C13.76 11.2411 13.5328 11.1378 13.3808 10.9596L11.3008 8.52941H8C7.7792 8.52941 7.6 8.677 7.6 8.859V18.1402ZM20 20H8C6.8976 20 6 19.1657 6 18.1402V8.859C6 7.83353 6.8976 7 8 7H11.6808C11.92 7 12.148 7.10247 12.3 7.28065L14.3792 9.71165H20C21.1024 9.71165 22 10.5452 22 11.5714V18.1402C22 19.1657 21.1024 20 20 20Z"
+    />
+  </svg>
+)
 
 const Author = ({ author }) => <TopRowKeyValue key="author" value={author} />
 
 const TopRowValues = ({ authors }) => {
-  if (!authors) return null
+  if (!authors)
+    return (
+      <TopRowValuesWrapper>
+        <Author author="Unassigned" />
+      </TopRowValuesWrapper>
+    )
 
   return (
     <TopRowValuesWrapper>
       {map(authors, author => {
-        return <Author author={author.username} />
+        if (!author.surname || !author.givenName) {
+          return <Author author={author.username} />
+        }
+        return <Author author={`${author.givenName} ${author.surname}`} />
       })}
     </TopRowValuesWrapper>
   )
 }
 
 const Book = props => {
-  const { book, container, history, renameBook, remove } = props
-  const { authors, publicationDate } = book
+  const { book, container, history, renameBook, remove, archiveBook } = props
+  const { authors, publicationDate, archived } = book
 
   return (
     <State initial={{ isRenaming: false, showModal: false }}>
@@ -87,6 +131,7 @@ const Book = props => {
 
         // TO DO -- probably shouldn't be here
         const goToBookBuilder = () => {
+          if (archived) return false
           const url = `/books/${book.id}/book-builder`
           history.push(url)
         }
@@ -123,12 +168,26 @@ const Book = props => {
         const toggleModal = () => {
           setState({ showModal: !showModal })
         }
+        let statusLabel
+        if (publicationDate !== null) {
+          if (archived) {
+            statusLabel = 'published (archived)'
+          } else {
+            statusLabel = 'published'
+          }
+        }
+        if (archived) {
+          statusLabel = 'in progress (archived)'
+        } else {
+          statusLabel = 'in progress'
+        }
 
         return (
           <Wrapper>
-            <TopRow>
+            <TopRow archived={archived}>
               <Status publicationDate={publicationDate}>
-                {publicationDate !== null ? 'published' : 'in progress'}
+                {archived && <ArchivedIndicator>{icon}</ArchivedIndicator>}
+                {statusLabel}
               </Status>
 
               <TopRowValues authors={authors} />
@@ -137,6 +196,7 @@ const Book = props => {
             <MainRow>
               <BookTitle
                 isRenaming={isRenaming}
+                archived={archived}
                 onDoubleClick={goToBookBuilder}
                 rename={rename}
                 title={book.title}
@@ -148,6 +208,7 @@ const Book = props => {
                 onClickRename={onClickRename}
                 onClickSave={onClickSave}
                 toggleModal={toggleModal}
+                archiveBook={archiveBook}
               />
 
               {showModal && (

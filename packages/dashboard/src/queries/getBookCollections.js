@@ -5,17 +5,21 @@ import gql from 'graphql-tag'
 const GET_BOOK_COLLECTIONS = gql`
   query GetBookCollections(
     $ascending: Boolean = true
+    $archived: Boolean = false
     $sortKey: String = "title"
   ) {
     getBookCollections {
       id
       title
-      books(ascending: $ascending, sortKey: $sortKey) {
+      books(ascending: $ascending, sortKey: $sortKey, archived: $archived) {
         id
         title
         publicationDate
+        archived
         authors {
           username
+          givenName
+          surname
         }
       }
     }

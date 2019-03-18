@@ -20,6 +20,7 @@ export class Dashboard extends Component {
   render() {
     const {
       collections,
+      archiveBook,
       createBook,
       deleteBook,
       loading,
@@ -48,6 +49,7 @@ export class Dashboard extends Component {
             refetching={refetching}
             remove={deleteBook}
             renameBook={renameBook}
+            archiveBook={archiveBook}
           />
 
           <AddBookModal

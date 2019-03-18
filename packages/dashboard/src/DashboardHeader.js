@@ -6,6 +6,7 @@ import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { H1 } from '@pubsweet/ui'
 
 import AddBookButton from './AddBookButton'
+import ToggleArchivedButton from './ToggleArchivedButton'
 import SortMenu from './SortMenu'
 
 const HeaderWrapper = styled.div`
@@ -41,6 +42,7 @@ const DashboardHeader = props => {
       </Side>
 
       <Side>
+        <ToggleArchivedButton onChange={onChangeSort} />
         <SortMenu onChange={onChangeSort} />
       </Side>
     </HeaderWrapper>

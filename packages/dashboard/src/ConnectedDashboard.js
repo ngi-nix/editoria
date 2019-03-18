@@ -4,6 +4,7 @@ import { adopt } from 'react-adopt'
 
 import Dashboard from './Dashboard'
 import {
+  archiveBookMutation,
   createBookMutation,
   getBookCollectionsQuery,
   renameBookMutation,
@@ -11,21 +12,25 @@ import {
   bookCreatedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
+  bookArchivedSubscription,
 } from './queries'
 
 const mapper = {
   getBookCollectionsQuery,
+  archiveBookMutation,
   createBookMutation,
   renameBookMutation,
   deleteBookMutation,
   bookCreatedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
+  bookArchivedSubscription,
 }
 
 const mapProps = args => ({
   collections: get(args.getBookCollectionsQuery, 'data.getBookCollections'),
   createBook: args.createBookMutation.createBook,
+  archiveBook: args.archiveBookMutation.archiveBook,
   deleteBook: args.deleteBookMutation.deleteBook,
   loading: args.getBookCollectionsQuery.networkStatus === 1,
   onChangeSort: args.getBookCollectionsQuery.refetch,
@@ -40,6 +45,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = () => (
   <Composed>
     {({
+      archiveBook,
       collections,
       createBook,
       deleteBook,
@@ -50,6 +56,7 @@ const Connected = () => (
     }) => {
       return (
         <Dashboard
+          archiveBook={archiveBook}
           collections={collections}
           createBook={createBook}
           deleteBook={deleteBook}

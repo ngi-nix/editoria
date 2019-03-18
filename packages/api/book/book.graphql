@@ -6,6 +6,7 @@ type Book {
   divisions: [Division]!
   authors: [User]
   publicationDate: Date
+  archived: Boolean!
 }
 
 input CreateBookInput {

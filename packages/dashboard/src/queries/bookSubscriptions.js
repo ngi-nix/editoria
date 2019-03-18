@@ -11,6 +11,15 @@ const BOOK_CREATED_SUBSCRIPTION = gql`
     }
   }
 `
+const BOOK_ARCHIVED_SUBSCRIPTION = gql`
+  subscription BookArchived {
+    bookArchived {
+      id
+      title
+      collectionId
+    }
+  }
+`
 const BOOK_RENAMED_SUBSCRIPTION = gql`
   subscription BookRenamed {
     bookRenamed {
@@ -39,6 +48,22 @@ const bookCreatedSubscription = props => {
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_CREATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const bookArchivedSubscription = props => {
+  const { render, getBookCollectionsQuery } = props
+  const { refetch } = getBookCollectionsQuery
+  const triggerRefetch = () => {
+    console.log('hello')
+    refetch()
+  }
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_ARCHIVED_SUBSCRIPTION}
     >
       {render}
     </Subscription>
@@ -79,6 +104,7 @@ const bookDeletedSubscription = props => {
 
 export {
   bookCreatedSubscription,
+  bookArchivedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
 }

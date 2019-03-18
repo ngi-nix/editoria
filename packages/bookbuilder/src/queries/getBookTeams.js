@@ -16,6 +16,8 @@ const GET_BOOK_TEAMS = gql`
         user {
           id
           username
+          surname
+          givenName
           email
           admin
         }

@@ -46,11 +46,19 @@ module.exports = {
 
       return bookCollectionTranslation[0].title
     },
-    async books(bookCollection, { ascending, sortKey }, ctx, info) {
-      const books = await Book.query()
-        .where('collectionId', bookCollection.id)
-        .andWhere('deleted', false)
-        .andWhere('archived', false)
+    async books(bookCollection, { ascending, sortKey, archived }, ctx, info) {
+      let books
+      if (archived) {
+        books = await Book.query()
+          .where('collectionId', bookCollection.id)
+          .andWhere('deleted', false)
+      } else {
+        books = await Book.query()
+          .where('collectionId', bookCollection.id)
+          .andWhere('deleted', false)
+          .andWhere('archived', archived)
+      }
+
       const sortable = await Promise.all(
         map(books, async book => {
           const translation = await BookTranslation.query()
@@ -64,7 +72,7 @@ module.exports = {
           )
           let auth = 'z'
           if (teams[0] && teams[0].members.length > 0) {
-            auth = teams[0].members[0].user.username
+            auth = teams[0].members[0].user.surname
           }
           let published = ''
           if (book.publicationDate !== null) {
