@@ -28,7 +28,14 @@ export class GroupList extends React.Component {
   }
 
   render() {
-    const { teams, findUser, update, book } = this.props
+    const {
+      teams,
+      findUser,
+      update,
+      book,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
     const { options } = this
 
     // TODO -- refactor
@@ -44,6 +51,8 @@ export class GroupList extends React.Component {
           <Group
             book={book}
             options={options[team.role]}
+            rules={rules}
+            canViewAddTeamMember={canViewAddTeamMember}
             team={team}
             update={update}
             findUser={findUser}

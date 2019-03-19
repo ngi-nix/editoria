@@ -21,6 +21,7 @@ export class Dashboard extends Component {
     const {
       collections,
       archiveBook,
+      rules,
       createBook,
       deleteBook,
       loading,
@@ -39,11 +40,13 @@ export class Dashboard extends Component {
         <div className="container col-lg-offset-2 col-lg-8">
           <DashboardHeader
             onChangeSort={onChangeSort}
+            canAddBooks={rules.canAddBooks}
             title={collection.title}
             toggle={this.toggleModal}
           />
 
           <BookList
+            bookRules={rules.bookRules}
             books={collection.books}
             container={this}
             refetching={refetching}

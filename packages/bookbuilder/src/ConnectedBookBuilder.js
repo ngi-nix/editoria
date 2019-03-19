@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, find, findIndex, difference, forEach, map } from 'lodash'
+import { get, findIndex, map } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import BookBuilder from './BookBuilder'
 import {
   getBookQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -31,6 +32,7 @@ import {
 
 const mapper = {
   getBookQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -73,6 +75,8 @@ const mapProps = args => ({
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
   loading: args.getBookQuery.networkStatus === 1,
+  loadingRules: args.getBookBuilderRulesQuery.loading,
+  rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
   refetching:
     args.getBookQuery.networkStatus === 4 ||
     args.getBookQuery.networkStatus === 2, // possible apollo bug
@@ -99,9 +103,13 @@ const Connected = props => {
         updateBookComponentUploading,
         ingestWordFiles,
         loading,
-        refetching,
+        loadingRules,
         exportBook,
+        rules,
+        refetching,
       }) => {
+        if (loading || loadingRules) return 'Loading...'
+        console.log('book', book, rules)
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
@@ -113,6 +121,7 @@ const Connected = props => {
             deleteBookComponent={deleteBookComponent}
             ingestWordFiles={ingestWordFiles}
             loading={loading}
+            rules={rules}
             updateBookComponentContent={updateBookComponentContent}
             updateComponentType={updateComponentType}
             updateBookComponentOrder={updateBookComponentOrder}

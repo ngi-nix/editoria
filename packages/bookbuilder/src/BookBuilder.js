@@ -1,5 +1,4 @@
 import React from 'react'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import styled from 'styled-components'
 
 import {
@@ -82,30 +81,26 @@ export class BookBuilder extends React.Component {
       updateBookComponentContent,
       updateComponentType,
       exportBook,
+      rules,
       loading,
     } = this.props
+    // console.log(rules)
     if (loading) return 'Loading...'
+    const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
     const { outerContainer } = this.state
     const teamManagerModal = this.renderTeamManagerModal()
-    const productionEditorActions = [
-      <Authorize object={book} operation="can view teamManager">
+    const productionEditorActions = []
+    if (canViewTeamManager) {
+      productionEditorActions.push(
         <TeamManagerButton
           label="Team Manager"
           onClick={this.toggleTeamManager}
-        />
-      </Authorize>,
-    ]
+        />,
+      )
+    }
+
     const headerActions = [
-      <Authorize object={book} operation="can view multipleFilesUpload">
-        <UploadFilesButton
-          book={book}
-          create={addBookComponents}
-          divisions={divisions}
-          update={updateBookComponentContent}
-          updateUploadStatus={updateBookComponentUploading}
-        />
-      </Authorize>,
       <BookExporter
         book={book}
         history={history}
@@ -122,6 +117,19 @@ export class BookBuilder extends React.Component {
         showModalToggle={this.toggleModal}
       />,
     ]
+
+    if (canViewMultipleFilesUpload) {
+      headerActions.unshift(
+        <UploadFilesButton
+          book={book}
+          create={addBookComponents}
+          divisions={divisions}
+          update={updateBookComponentContent}
+          updateUploadStatus={updateBookComponentUploading}
+        />,
+      )
+    }
+
     return (
       <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
         <Container>
@@ -138,6 +146,7 @@ export class BookBuilder extends React.Component {
             deleteBookComponent={deleteBookComponent}
             divisions={divisions}
             outerContainer={outerContainer}
+            rules={rules}
             showModal={this.state.showModal}
             showModalToggle={this.toggleModal}
             updateBookComponentContent={updateBookComponentContent}
@@ -148,9 +157,7 @@ export class BookBuilder extends React.Component {
             updateComponentType={updateComponentType}
           />
         </Container>
-        {/* <Authorize object={book.id} operation="can view teamManager"> */}
         {teamManagerModal}
-        {/* </Authorize> */}
       </div>
     )
   }

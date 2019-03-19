@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import React from 'react'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
+
 import DeleteModal from './DeleteModal'
 import EditingNotification from './EditingNotification'
 import { DefaultButton } from './Button'

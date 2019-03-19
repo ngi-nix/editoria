@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -27,7 +26,15 @@ export class Group extends React.Component {
   }
 
   render() {
-    const { team, findUser, options, update, book } = this.props
+    const {
+      team,
+      findUser,
+      options,
+      update,
+      book,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
     const { members } = team
 
     const allowed = true
@@ -36,15 +43,17 @@ export class Group extends React.Component {
       <div>
         <GroupHeader
           allowed={allowed}
+          canViewAddTeamMember={canViewAddTeamMember}
+          rules={rules}
           show={this.state.isAddMemberOpen}
           showInput={this._showAddMember}
           title={options.title}
         />
 
         <MemberList
-          book={book}
           color={options.color}
           members={members}
+          rules={rules}
           team={team}
           update={update}
         />

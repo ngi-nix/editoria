@@ -7,12 +7,14 @@ import styles from '../styles/teamManager.local.scss'
 
 export class TeamManager extends React.Component {
   render() {
-    const { teams, users,findUser, updateTeam, book } = this.props
+    const { teams, users,findUser, updateTeam, book, rules, canViewAddTeamMember } = this.props
 
     return (
       <div className={styles.teamManager}>
         <GroupList
           teams={teams}
+          rules={rules}
+          canViewAddTeamMember={canViewAddTeamMember}
           book={book}
           update={updateTeam}
           findUser={findUser}

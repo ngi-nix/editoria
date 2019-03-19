@@ -1,10 +1,9 @@
-import { clone, find, map } from 'lodash'
+import { find, map } from 'lodash'
 import config from 'config'
 import React from 'react'
 // import { DragDropContext } from 'react-dnd'
 // import HTML5Backend from 'react-dnd-html5-backend'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
@@ -174,8 +173,9 @@ class Division extends React.Component {
       update,
       reorderingAllowed,
       updateComponentType,
+      rules,
     } = this.props
-
+    const { canViewAddComponent } = rules
     const bookComponentInstances = map(bookComponents, (bookComponent, i) => {
       const {
         componentType,
@@ -220,6 +220,7 @@ class Division extends React.Component {
                   showModalToggle={showModalToggle}
                   pagination={pagination}
                   remove={this.onRemove}
+                  rules={rules}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   update={update}
@@ -236,17 +237,16 @@ class Division extends React.Component {
     })
     const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
 
-    const addButtons = (
-      <Authorize object={{ id: bookId }} operation="can view addComponent">
-        {map(divisionsConfig.allowedComponentTypes, componentType => (
-          <AddComponentButton
-            add={this.onAddClick}
-            label={`add ${componentType}`}
-            type={componentType}
-          />
-        ))}
-      </Authorize>
-    )
+    let addButtons = null
+    if (canViewAddComponent) {
+      addButtons = map(divisionsConfig.allowedComponentTypes, componentType => (
+        <AddComponentButton
+          add={this.onAddClick}
+          label={`add ${componentType}`}
+          type={componentType}
+        />
+      ))
+    }
 
     // const list = (
     //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>

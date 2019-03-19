@@ -176,6 +176,7 @@ const BookComponent = ({
   showModalToggle,
   pagination,
   remove,
+  rules,
   title,
   workflowStages,
   trackChangesEnabled,
@@ -274,6 +275,7 @@ const BookComponent = ({
         lock={lock}
         outerContainer={outerContainer}
         pagination={pagination}
+        rules={rules}
         uploading={uploading}
         trackChangesEnabled={trackChangesEnabled}
         // update={update}

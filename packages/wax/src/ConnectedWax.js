@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, find, findIndex, difference, forEach } from 'lodash'
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import WaxPubsweet from './WaxPubsweet'
 import {
   getBookComponentQuery,
+  getWaxRulesQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
@@ -19,6 +20,7 @@ import {
 
 const mapper = {
   getBookComponentQuery,
+  getWaxRulesQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
@@ -30,6 +32,7 @@ const mapper = {
 }
 
 const mapProps = args => ({
+  rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
   subscribeToMore: get(args.getBookComponentQuery, 'subscribeToMore'),
   updateBookComponentContent:
@@ -41,6 +44,7 @@ const mapProps = args => ({
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   loading: args.getBookComponentQuery.networkStatus === 1,
+  waxLoading: args.getWaxRulesQuery.loading,
   refetching:
     args.getBookComponentQuery.networkStatus === 4 ||
     args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
@@ -57,6 +61,7 @@ const Connected = props => {
     <Composed bookComponentId={bookComponentId} bookId={bookId}>
       {({
         bookComponent,
+        rules,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
@@ -64,20 +69,24 @@ const Connected = props => {
         unlockBookComponent,
         renameBookComponent,
         loading,
+        waxLoading,
       }) => {
+        if (loading || waxLoading) return 'Loading...'
+
         return (
           <WaxPubsweet
-            bookComponentId={bookComponentId}
             bookComponent={bookComponent}
-            lockBookComponent={lockBookComponent}
-            unlockBookComponent={unlockBookComponent}
+            bookComponentId={bookComponentId}
             config={config}
             history={history}
             loading={loading}
+            lockBookComponent={lockBookComponent}
+            renameBookComponent={renameBookComponent}
+            rules={rules}
+            unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}
-            renameBookComponent={renameBookComponent}
           />
         )
       }}

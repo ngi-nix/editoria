@@ -1,6 +1,5 @@
 import { findIndex, find, forIn } from 'lodash'
 import React, { Component } from 'react'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import config from 'config'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
@@ -418,8 +417,16 @@ class SecondRow extends Component {
       updateBookComponentUploading,
       outerContainer,
       pagination,
+      rules,
       workflowStages,
     } = this.props
+    const {
+      canViewUploadButton,
+      canViewStateList,
+      canViewAlignmentTool,
+      bookComponentStateRules,
+    } = rules
+
     const warningModal = this.renderModal()
     const paginationData = []
     forIn(pagination, (value, key) => {
@@ -427,11 +434,10 @@ class SecondRow extends Component {
         paginationData.push({ id: key, active: value, label: key })
       }
     })
-
     return (
       <SecondRowContainer>
         {warningModal}
-        <Authorize object={{ id: bookId }} operation="can view uploadButton">
+        {canViewUploadButton && (
           <UploadFileButton
             bookComponentId={bookComponentId}
             updateBookComponentContent={updateBookComponentContent}
@@ -444,21 +450,25 @@ class SecondRow extends Component {
             showModal={showModal}
             showModalToggle={showModalToggle}
           />
-        </Authorize>
-        <Authorize object={bookComponentId} operation="can view stateList">
+        )}
+        {canViewStateList && (
           <WorkflowList
+            bookComponentStateRules={bookComponentStateRules.find(
+              bookComponentState =>
+                bookComponentState.bookComponentId === bookComponentId,
+            )}
             bookId={bookId}
             currentValues={workflowStages}
             update={this.updateStateList}
             values={this.progressValues}
           />
-        </Authorize>
-        <Authorize object={bookComponentId} operation="can view alignmentTool">
+        )}
+        {canViewAlignmentTool && (
           <AlignmentTool
             data={paginationData}
             onClickAlignmentBox={this.onClickAlignmentBox}
           />
-        </Authorize>
+        )}
       </SecondRowContainer>
     )
   }

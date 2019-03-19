@@ -162,21 +162,18 @@ export class WaxPubsweet extends React.Component {
   //   return 'selection'
   // }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { authsome } = this.props
-  //   if (nextProps.fragment !== this.props.fragment) {
-  //     authsome
-  //       .can(this.props.user.id, 'can interact with editor', nextProps.fragment)
-  //       .then(res => {
-  //         // For the case of admin as there is no granularity in authsome
-  //         if (res === true) {
-  //           this.setState({ editing: 'full' })
-  //         } else {
-  //           this.setState({ editing: res })
-  //         }
-  //       })
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.bookComponent !== this.props.bookComponent) {
+      if (nextProps.rules.canEditFull) {
+        this.setState({ editing: 'full' })
+      } else if (nextProps.rules.canEditSelection) {
+        this.setState({ editing: 'selection' })
+      } else if (nextProps.rules.canEditReview) {
+        this.setState({ editing: 'review' })
+      }
+    }
+  }
+
   componentWillUpdate(nextProps, nextState) {
     // const { book, history, config } = this.props
     // let { pollingTimer } = config
@@ -313,7 +310,7 @@ export class WaxPubsweet extends React.Component {
         },
       })
     }
-    console.log('title', title)
+
     if (title) {
       return renameBookComponent({
         variables: {
