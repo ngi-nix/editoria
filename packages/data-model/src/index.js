@@ -9,6 +9,9 @@ const division = require('./division')
 const team = require('./team')
 const user = require('./user')
 const lock = require('./lock')
+const { models } = require('./dataloader')
+
+const loader = models.reduce((r, c) => Object.assign(r, c), {})
 
 module.exports = {
   book,
@@ -22,6 +25,7 @@ module.exports = {
   bookTranslation,
   division,
   lock,
+  loader,
   models: {
     Book: book.model,
     BookCollection: bookCollection.model,
@@ -34,5 +38,6 @@ module.exports = {
     Team: team.model,
     User: user.model,
     Lock: lock.model,
+    loader,
   },
 }
