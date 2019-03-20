@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { H1 } from '@pubsweet/ui'
 
 import AddBookButton from './AddBookButton'
