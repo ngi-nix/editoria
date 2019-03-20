@@ -56,7 +56,6 @@ const Connected = () => (
       loadingRules,
       renameBook,
       deleteBook,
-      renameBook,
       onChangeSort,
       refetching,
       loading,
