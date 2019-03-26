@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
-import CodeMirror from 'react-codemirror'
 import 'codemirror/mode/css/css'
 import 'codemirror/lib/codemirror.css'
+import { UnControlled as CodeMirror } from 'react-codemirror2'
+// import { highlight, languages } from 'prismjs/components/prism-core'
+// import CodeMirror from 'react-codemirror'
+// import CodeMirror from '@uiw/react-codemirror'
+// import '@uiw/react-codemirror/node_modules/codemirror/theme/eclipse.css'
 // import classes from './PagedStyler.local.scss'
 
 const Wrapper = styled.div`
@@ -18,8 +22,8 @@ const CodeEditorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 650px;
-    width: 650px;
-    height: 100%;
+  width: 650px;
+  height: 100%;
 `
 const EditorToolbar = styled.div`
   display: flex;
@@ -35,12 +39,11 @@ const Actions = styled.button`
   margin-right: 20px;
 `
 const EditorArea = styled.div`
-  height: calc(100% - 35px);
-  height: 80vh;
+  
 `
 const PreviewArea = styled.div`
-   flex-grow: 1;
-    height: 100%;
+  flex-grow: 1;
+  height: 100%;
 `
 class PagedStyler extends Component {
   constructor(props) {
@@ -68,7 +71,8 @@ class PagedStyler extends Component {
   }
 
   handleChange(doc, change) {
-    this.setState({ changed: doc })
+    console.log(doc)
+    // this.setState({ changed: doc })
   }
 
   /* eslint-disable */
@@ -133,6 +137,7 @@ class PagedStyler extends Component {
               options={{
                 mode: 'css',
                 lineNumbers: true,
+                readOnly: false,
               }}
               value={css}
             />
@@ -145,7 +150,7 @@ class PagedStyler extends Component {
             id="printBook"
             key={this.state.random}
             src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
-            title="desktop-payment-page"
+            title="PagedJS"
           />
         </PreviewArea>
       </Wrapper>

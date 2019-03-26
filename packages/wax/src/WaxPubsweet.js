@@ -375,6 +375,7 @@ export class WaxPubsweet extends React.Component {
       trackChanges: {
         toggle: true,
         view: true,
+        color:'#fff',
         own: {
           accept: true,
           reject: true,
