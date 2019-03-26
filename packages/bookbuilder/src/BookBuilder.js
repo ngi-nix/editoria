@@ -40,15 +40,7 @@ export class BookBuilder extends React.Component {
       uploading: {},
     }
   }
-  componentDidMount() {
-    this.props.subscribeToBookComponentOrderUpdated()
-    this.props.subscribeToBookComponentAdded()
-    this.props.subscribeToBookComponentDeleted()
-    this.props.subscribeToBookComponentPaginationUpdated()
-    this.props.subscribeToBookComponentWorkflowUpdated()
-    this.props.subscribeToBookComponentTitleUpdated()
-    this.props.subscribeToBookTeamMembersUpdated()
-  }
+
   toggleModal() {
     this.setState({
       showModal: !this.state.showModal,
@@ -88,8 +80,11 @@ export class BookBuilder extends React.Component {
       updateBookComponentWorkflowState,
       updateBookComponentUploading,
       updateBookComponentContent,
+      updateComponentType,
       exportBook,
+      loading,
     } = this.props
+    if (loading) return 'Loading...'
     const { divisions, productionEditors } = book
     const { outerContainer } = this.state
     const teamManagerModal = this.renderTeamManagerModal()
@@ -128,7 +123,6 @@ export class BookBuilder extends React.Component {
         showModalToggle={this.toggleModal}
       />,
     ]
-
     return (
       <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
         <Container>
@@ -152,6 +146,7 @@ export class BookBuilder extends React.Component {
             updateBookComponentPagination={updateBookComponentPagination}
             updateBookComponentUploading={updateBookComponentUploading}
             updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+            updateComponentType={updateComponentType}
           />
         </Container>
         {/* <Authorize object={book.id} operation="can view teamManager"> */}

@@ -1,33 +1,11 @@
 import gql from 'graphql-tag'
+import React from 'react'
+import { Subscription } from 'react-apollo'
 
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentOrderUpdated {
     bookComponentOrderUpdated {
       id
-      divisions {
-        id
-        label
-        bookComponents {
-          id
-          divisionId
-          title
-          bookId
-          hasContent
-          componentTypeOrder
-          pagination {
-            left
-            right
-          }
-          workflowStages {
-            label
-            type
-            value
-          }
-          componentType
-          uploading
-          archived
-        }
-      }
     }
   }
 `
@@ -35,23 +13,6 @@ const BOOK_COMPONENT_ADDED_SUBSCRIPTION = gql`
   subscription BookComponentAdded {
     bookComponentAdded {
       id
-      divisionId
-      title
-      bookId
-      hasContent
-      componentTypeOrder
-      pagination {
-        left
-        right
-      }
-      workflowStages {
-        label
-        type
-        value
-      }
-      componentType
-      uploading
-      archived
     }
   }
 `
@@ -59,23 +20,6 @@ const BOOK_COMPONENT_DELETED_SUBSCRIPTION = gql`
   subscription BookComponentDeleted {
     bookComponentDeleted {
       id
-      divisionId
-      title
-      bookId
-      hasContent
-      componentTypeOrder
-      pagination {
-        left
-        right
-      }
-      workflowStages {
-        label
-        type
-        value
-      }
-      componentType
-      uploading
-      archived
     }
   }
 `
@@ -84,23 +28,6 @@ const BOOK_COMPONENT_PAGINATION_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentPaginationUpdated {
     bookComponentPaginationUpdated {
       id
-      divisionId
-      title
-      bookId
-      hasContent
-      componentTypeOrder
-      pagination {
-        left
-        right
-      }
-      workflowStages {
-        label
-        type
-        value
-      }
-      componentType
-      uploading
-      archived
     }
   }
 `
@@ -108,23 +35,6 @@ const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentWorkflowUpdated {
     bookComponentWorkflowUpdated {
       id
-      divisionId
-      title
-      bookId
-      hasContent
-      componentTypeOrder
-      pagination {
-        left
-        right
-      }
-      workflowStages {
-        label
-        type
-        value
-      }
-      componentType
-      uploading
-      archived
     }
   }
 `
@@ -133,40 +43,13 @@ const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
       id
-      divisions {
-        id
-        label
-        bookComponents {
-          id
-          divisionId
-          title
-          bookId
-          hasContent
-          componentTypeOrder
-          pagination {
-            left
-            right
-          }
-          workflowStages {
-            label
-            type
-            value
-          }
-          componentType
-          uploading
-          archived
-        }
-      }
     }
   }
 `
 const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentTitleUpdated {
     bookComponentTitleUpdated {
-      title
-      bookId
       id
-      divisionId
     }
   }
 `
@@ -174,14 +57,14 @@ const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
   subscription TeamMembersUpdated {
     teamMembersUpdated {
       bookId
-      teamId
-      teamType
-      members {
-        id
-        username
-        email
-        admin
-      }
+    }
+  }
+`
+
+const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
+  subscription ComponentTypeUpdated {
+    bookComponentTypeUpdated {
+      id
     }
   }
 `
@@ -189,23 +72,180 @@ const PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION = gql`
   subscription ProductionEditorsUpdated {
     productionEditorsUpdated {
       bookId
-      teamId
-      teamType
-      members {
-        username
-      }
     }
   }
 `
+const orderChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
 
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
+const componentTypeChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={COMPONENT_TYPE_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
+const bookComponentAddedSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_ADDED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const bookComponentDeletedSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_DELETED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const paginationChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_PAGINATION_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const workflowChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const lockChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const titleChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const teamMembersChangeSubscription = props => {
+  const { render, getBookTeamsQuery } = props
+  const { refetch } = getBookTeamsQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={TEAM_MEMBERS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const productionEditorChangeSubscription = props => {
+  const { render, getBookQuery } = props
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
 export {
-  BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_ADDED_SUBSCRIPTION,
-  BOOK_COMPONENT_DELETED_SUBSCRIPTION,
-  BOOK_COMPONENT_PAGINATION_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION,
-  TEAM_MEMBERS_UPDATED_SUBSCRIPTION,
-  PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION,
+  orderChangeSubscription,
+  bookComponentAddedSubscription,
+  bookComponentDeletedSubscription,
+  paginationChangeSubscription,
+  workflowChangeSubscription,
+  lockChangeSubscription,
+  titleChangeSubscription,
+  teamMembersChangeSubscription,
+  productionEditorChangeSubscription,
+  componentTypeChangeSubscription,
 }

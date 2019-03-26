@@ -10,20 +10,23 @@ import {
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
+  lockBookComponentMutation,
+  unlockBookComponentMutation,
   uploadFileMutation,
+  trackChangeSubscription,
+  titleChangeSubscription,
 } from './queries'
-
-import {
-  BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION,
-} from './queries/waxPubsweetSubscriptions'
 
 const mapper = {
   getBookComponentQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
+  lockBookComponentMutation,
+  unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
+  trackChangeSubscription,
+  titleChangeSubscription,
 }
 
 const mapProps = args => ({
@@ -35,7 +38,12 @@ const mapProps = args => ({
     args.updateBookComponentTrackChangesMutation.updateTrackChanges,
   uploadFile: args.uploadFileMutation.uploadFile,
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
-  loading: args.getBookComponentQuery.loading,
+  lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
+  unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+  loading: args.getBookComponentQuery.networkStatus === 1,
+  refetching:
+    args.getBookComponentQuery.networkStatus === 4 ||
+    args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -43,6 +51,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { match, history, config } = props
   const { bookId, bookComponentId } = match.params
+  console.log('props', props)
 
   return (
     <Composed bookComponentId={bookComponentId} bookId={bookId}>
@@ -51,14 +60,17 @@ const Connected = props => {
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
+        lockBookComponent,
+        unlockBookComponent,
         renameBookComponent,
-        subscribeToMore,
         loading,
       }) => {
-        if (loading) return 'Loading...'
         return (
           <WaxPubsweet
+            bookComponentId={bookComponentId}
             bookComponent={bookComponent}
+            lockBookComponent={lockBookComponent}
+            unlockBookComponent={unlockBookComponent}
             config={config}
             history={history}
             loading={loading}
@@ -66,34 +78,6 @@ const Connected = props => {
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}
             renameBookComponent={renameBookComponent}
-            subscribeToTrackChangesUpdated={() =>
-              subscribeToMore({
-                document: BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION,
-                updateQuery: (prev, { subscriptionData }) => {
-                  if (prev.getBookComponent.id !== subscriptionData.data.id)
-                    return prev
-
-                  const copy = Object.assign({}, prev)
-                  copy.getBookComponent.trackChangesEnabled =
-                    subscriptionData.data.bookComponentTrackChangesUpdated.trackChangesEnabled
-                  return Object.assign({}, prev, copy)
-                },
-              })
-            }
-            subscribeToTitleUpdated={() =>
-              subscribeToMore({
-                document: BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION,
-                updateQuery: (prev, { subscriptionData }) => {
-                  if (prev.getBookComponent.id !== subscriptionData.data.id)
-                    return prev
-
-                  const copy = Object.assign({}, prev)
-                  copy.getBookComponent.title =
-                    subscriptionData.data.bookComponentTitleUpdated.title
-                  return Object.assign({}, prev, copy)
-                },
-              })
-            }
           />
         )
       }}

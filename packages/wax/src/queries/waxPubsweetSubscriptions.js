@@ -1,4 +1,6 @@
 import gql from 'graphql-tag'
+import React from 'react'
+import { Subscription } from 'react-apollo'
 
 const BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentTrackChangesUpdated {
@@ -20,7 +22,37 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
-export {
-  BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION,
-  BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION,
+const trackChangeSubscription = props => {
+  const { render, getBookComponentQuery } = props
+  const { refetch } = getBookComponentQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
 }
+
+const titleChangeSubscription = props => {
+  const { render, getBookComponentQuery } = props
+  const { refetch } = getBookComponentQuery
+  const triggerRefetch = () => {
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+export { trackChangeSubscription, titleChangeSubscription }

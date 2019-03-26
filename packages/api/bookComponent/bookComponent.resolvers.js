@@ -17,6 +17,9 @@ const {
   BookComponent,
   BookComponentTranslation,
   Division,
+  Book,
+  BookTranslation,
+  Lock,
 } = require('editoria-data-model/src').models
 
 const {
@@ -28,6 +31,8 @@ const {
   BOOK_COMPONENT_TITLE_UPDATED,
   BOOK_COMPONENT_CONTENT_UPDATED,
   BOOK_COMPONENT_UPLOADING_UPDATED,
+  BOOK_COMPONENT_LOCK_UPDATED,
+  BOOK_COMPONENT_TYPE_UPDATED,
 } = require('./consts')
 
 const { pubsubManager } = pubsweetServer
@@ -317,21 +322,57 @@ const updateWorkflowState = async (_, { input }, ctx) => {
 }
 
 // TODO: Pending implementation
-const unlockBookComponent = (_, args, ctx) => {
-  // ctx.models.lock.delete({
-  //   foreignId: args.input.id,
-  //   userId: args.input.lock.userId,
-  // })
-  // return ctx.models.bookComponent.findById({ id: args.input.id }).exec()
+const unlockBookComponent = async (_, { input }, ctx) => {
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    const { id } = input
+    const locks = await Lock.query()
+      .where('foreignId', id)
+      .andWhere('deleted', false)
+
+    await Lock.query().patchAndFetchById(locks[0].id, {
+      deleted: true,
+    })
+    const updatedBookComponent = await BookComponent.findById(id)
+    pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
+      bookComponentLockUpdated: updatedBookComponent,
+    })
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
 }
 
 // TODO: Pending implementation
-const lockBookComponent = (_, args, ctx) => {
-  // ctx.models.lock.create({
-  //   foreignId: args.input.id,
-  //   userId: ctx.currentUser.id,
-  // })
-  // return ctx.models.bookComponent.findById({ id: args.input.id }).exec()
+const lockBookComponent = async (_, { input }, ctx) => {
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    const { id } = input
+    const lock = await Lock.query()
+      .where('foreignId', id)
+      .andWhere('deleted', false)
+    if (lock.length > 0) {
+      const errorMsg = `There is a lock already for this book component for the user with id ${
+        lock[0].userId
+      }`
+      logger.error(errorMsg)
+      throw new Error(errorMsg)
+    }
+    const clock = await new Lock({
+      foreignId: id,
+      foreignType: 'bookComponent',
+      userId: ctx.user,
+    }).save()
+    const updatedBookComponent = await BookComponent.findById(id)
+    pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
+      bookComponentLockUpdated: updatedBookComponent,
+    })
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
 }
 
 // TODO: Pending implementation
@@ -374,6 +415,9 @@ const updateContent = async (_, { input }, ctx) => {
   }
   pubsub.publish(BOOK_COMPONENT_CONTENT_UPDATED, {
     bookComponentContentUpdated: updatedBookComponent,
+  })
+  pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
+    bookComponentWorkflowUpdated: updatedBookComponent,
   })
   return updatedBookComponent
 }
@@ -426,6 +470,20 @@ const updateUploading = async (_, { input }, ctx) => {
   })
   return updatedBookComponent
 }
+const updateComponentType = async (_, { input }, ctx) => {
+  const { id, componentType } = input
+  const pubsub = await pubsubManager.getPubsub()
+  const updatedBookComponent = await BookComponent.query().patchAndFetchById(
+    id,
+    {
+      componentType,
+    },
+  )
+  pubsub.publish(BOOK_COMPONENT_TYPE_UPDATED, {
+    bookComponentTypeUpdated: updatedBookComponent,
+  })
+  return updatedBookComponent
+}
 
 module.exports = {
   Query: {
@@ -445,6 +503,7 @@ module.exports = {
     updateContent,
     updateUploading,
     updateTrackChanges,
+    updateComponentType,
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
@@ -455,6 +514,13 @@ module.exports = {
     },
     async bookId(bookComponent, _, ctx) {
       return bookComponent.bookId
+    },
+    async bookTitle(bookComponent, _, ctx) {
+      const book = await Book.findById(bookComponent.bookId)
+      const bookTranslation = await BookTranslation.query()
+        .where('bookId', book.id)
+        .andWhere('languageIso', 'en')
+      return bookTranslation.title
     },
     async divisionId(bookComponent, _, ctx) {
       return bookComponent.divisionId
@@ -480,19 +546,23 @@ module.exports = {
       const hasContent = content.trim().length > 0
       return hasContent
     },
-    // async lock(bookComponent, _, ctx) {
-    //   let locked = null
+    async lock(bookComponent, _, ctx) {
+      let locked = null
 
-    //   const lock = await ctx.models.lock
-    //     .findByForeignId({ foreignId: bookComponent.id })
-    //     .exec()
-
-    //   if (lock) {
-    //     const user = await ctx.models.user.findById({ id: lock.userId }).exec()
-    //     locked = { created: lock.created, username: user.username }
-    //   }
-    //   return locked
-    // },
+      const lock = await Lock.query()
+        .where('foreignId', bookComponent.id)
+        .andWhere('deleted', false)
+      if (lock.length > 0) {
+        const user = await ctx.connectors.User.fetchOne(lock[0].userId, ctx)
+        locked = {
+          created: lock.created,
+          username: user.username,
+          givenName: user.givenName,
+          surname: user.surname,
+        }
+      }
+      return locked
+    },
     async componentTypeOrder(bookComponent, _, ctx) {
       const { componentType } = bookComponent
       const division = await Division.query().where(
@@ -584,6 +654,18 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_COMPONENT_UPLOADING_UPDATED)
+      },
+    },
+    bookComponentLockUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED)
+      },
+    },
+    bookComponentTypeUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_TYPE_UPDATED)
       },
     },
   },

@@ -1,10 +1,47 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import styled from 'styled-components'
 import CodeMirror from 'react-codemirror'
 import 'codemirror/mode/css/css'
 import 'codemirror/lib/codemirror.css'
-import classes from './PagedStyler.local.scss'
+// import classes from './PagedStyler.local.scss'
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: calc(100% - 100px);
+  flex-basis: 100%;
+  padding: 8px;
+`
+const CodeEditorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 650px;
+    width: 650px;
+    height: 100%;
+`
+const EditorToolbar = styled.div`
+  display: flex;
+`
+const Actions = styled.button`
+  background: none;
+  color: #0d78f2;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  margin-right: 20px;
+`
+const EditorArea = styled.div`
+  height: calc(100% - 35px);
+  height: 80vh;
+`
+const PreviewArea = styled.div`
+   flex-grow: 1;
+    height: 100%;
+`
 class PagedStyler extends Component {
   constructor(props) {
     super(props)
@@ -82,41 +119,36 @@ class PagedStyler extends Component {
       return <p>Loading</p>
     }
     return (
-      <div className={classes.container}>
-        <div className={classes.codeEditorContainer}>
-          <div className={classes.buttonsContainer}>
-            <button className={classes.buttonStyler} onClick={this.handleClick}>
-              Sync
-            </button>
-            <button className={classes.buttonStyler} onClick={this.handlePrint}>
-              Print
-            </button>
-            <button
-              className={classes.buttonStyler}
-              onClick={this.handleDownload}
-            >
-              Download HTML
-            </button>
-          </div>
-          <CodeMirror
-            className={classes.editor}
-            onChange={this.handleChange}
-            options={{
-              mode: 'css',
-              lineNumbers: true,
-            }}
-            value={css}
+      <Wrapper>
+        <CodeEditorWrapper>
+          <EditorToolbar>
+            <Actions onClick={this.handleClick}>Sync</Actions>
+            <Actions onClick={this.handlePrint}>Print</Actions>
+            <Actions onClick={this.handleDownload}>Download HTML</Actions>
+          </EditorToolbar>
+          <EditorArea>
+            <CodeMirror
+              // className={classes.editor}
+              onChange={this.handleChange}
+              options={{
+                mode: 'css',
+                lineNumbers: true,
+              }}
+              value={css}
+            />
+          </EditorArea>
+        </CodeEditorWrapper>
+        <PreviewArea>
+          <iframe
+            // className={classes.previewerContainer}
+            frameBorder="0"
+            id="printBook"
+            key={this.state.random}
+            src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
+            title="desktop-payment-page"
           />
-        </div>
-        <iframe
-          className={classes.previewerContainer}
-          frameBorder="0"
-          id="printBook"
-          key={this.state.random}
-          src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
-          title="desktop-payment-page"
-        />
-      </div>
+        </PreviewArea>
+      </Wrapper>
     )
   }
 }

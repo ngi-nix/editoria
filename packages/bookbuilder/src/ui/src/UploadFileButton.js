@@ -87,8 +87,9 @@ const UploadFileButton = ({
   if (uploading) {
     text = 'uploading'
   }
+
   let modal
-  if (isLocked) {
+  if (isLocked()) {
     modal = (
       <UploadWarningModal
         container={modalContainer}
@@ -105,7 +106,7 @@ const UploadFileButton = ({
         accept=".docx"
         id={bookComponentId}
         uploading={uploading}
-        disabled={uploading}
+        disabled={uploading||isLocked()}
         label={text}
         onChange={handleFileUpload}
       />

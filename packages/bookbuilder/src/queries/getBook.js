@@ -27,6 +27,12 @@ const GET_BOOK = gql`
             type
             value
           }
+          lock {
+            username
+            created
+            givenName
+            surname
+          }
           componentType
           uploading
           archived
@@ -40,7 +46,12 @@ const getBookQuery = props => {
   const { bookId: id, render } = props
 
   return (
-    <Query fetchPolicy="cache-and-network" query={GET_BOOK} variables={{ id }}>
+    <Query
+      fetchPolicy="cache-and-network"
+      notifyOnNetworkStatusChange
+      query={GET_BOOK}
+      variables={{ id }}
+    >
       {render}
     </Query>
   )

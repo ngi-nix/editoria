@@ -7,8 +7,15 @@ import styled from 'styled-components'
 
 const StyledButton = styled(ButtonWithIcon)`
   background: black;
+  span{
+
+  font-size: 12px;
+  line-height: 16px;
+  }
   color: ${th('colorBackground')};
   svg {
+    width: 16px;
+    height: 16px;
     fill: ${th('colorBackground')};
   }
 
@@ -46,10 +53,10 @@ const EditingNotification = ({
   show,
   toggle,
 }) => {
-  const { username, timestamp } = lock
+  const { givenName, surname, username, created } = lock
   const isAdmin = false
-
-  const message = `${username} is editing`
+console.log('lock',lock)
+  const message = `${givenName} ${surname} is editing`
   let hoverTitle, unlockModal
 
   const formatDate = timestamp => {
@@ -98,8 +105,8 @@ const EditingNotification = ({
       />
     )
 
-    if (timestamp) {
-      const date = formatDate(timestamp)
+    if (created) {
+      const date = formatDate(created)
       hoverTitle = `${username} has been editing since ${date}`
     }
   }
@@ -111,12 +118,6 @@ const EditingNotification = ({
         title={hoverTitle}
         onClick={toggle}
         disabled={!isAdmin}
-      />
-      <DefaultButton
-        label="preview"
-        onClick={() => {
-          console.log('pass preview property')
-        }}
       />
       {unlockModal}
     </React.Fragment>

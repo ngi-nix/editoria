@@ -32,7 +32,8 @@ const getBookTeamsQuery = props => {
 
   return (
     <Query
-      fetchPolicy="cache-and-network"
+      fetchPolicy="cache-first"
+      notifyOnNetworkStatusChange
       query={GET_BOOK_TEAMS}
       variables={{ bookId }}
     >

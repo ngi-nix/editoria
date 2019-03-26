@@ -172,6 +172,7 @@ class Division extends React.Component {
       label,
       update,
       reorderingAllowed,
+      updateComponentType,
     } = this.props
 
     const bookComponentInstances = map(bookComponents, (bookComponent, i) => {
@@ -208,6 +209,7 @@ class Division extends React.Component {
                   updateBookComponentUploading={updateBookComponentUploading}
                   key={id}
                   lock={lock}
+                  updateComponentType={updateComponentType}
                   no={i}
                   onEndDrag={() => console.log('hello')}
                   hasContent={hasContent}

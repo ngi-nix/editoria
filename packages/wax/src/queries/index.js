@@ -5,3 +5,9 @@ export {
 } from './updateTrackChanges'
 export { default as renameBookComponentMutation } from './renameBookComponent'
 export { default as uploadFileMutation } from './uploadFile'
+export { default as lockBookComponentMutation } from './lockBookComponent'
+export { default as unlockBookComponentMutation } from './unlockBookComponent'
+export {
+  trackChangeSubscription,
+  titleChangeSubscription,
+} from './waxPubsweetSubscriptions'

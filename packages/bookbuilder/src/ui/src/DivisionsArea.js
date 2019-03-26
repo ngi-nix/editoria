@@ -85,7 +85,7 @@ class DivisionsArea extends Component {
     // if (diff.length > 0) {
     // console.log('diff', diff)
     this.setState({
-      bookComponents: nextProps.bookComponents,
+      divisions: nextProps.divisions,
     })
     // }
     // return false
@@ -106,12 +106,9 @@ class DivisionsArea extends Component {
     return resArray
   }
   onDragEnd = result => {
-    const {updateBookComponentOrder} = this.props 
+    const { updateBookComponentOrder } = this.props
     const { source, destination, draggableId } = result
     const { divisions } = this.state
-    console.log('so', result)
-    // console.log('source', source)
-    // console.log('destination', destination)
 
     if (!destination) {
       return
@@ -158,12 +155,12 @@ class DivisionsArea extends Component {
       this.setState({ divisions: tempState })
     }
     updateBookComponentOrder({
-          variables: {
-            targetDivisionId: destination.droppableId,
-            bookComponentId: draggableId,
-            index: destination.index,
-          },
-        })
+      variables: {
+        targetDivisionId: destination.droppableId,
+        bookComponentId: draggableId,
+        index: destination.index,
+      },
+    })
     // if (source.droppableId === destination.droppableId) {
     //     const items = reorder(
     //         this.getList(source.droppableId),
@@ -208,6 +205,7 @@ class DivisionsArea extends Component {
       outerContainer,
       showModal,
       showModalToggle,
+      updateComponentType,
       uploading,
     } = this.props
     const { divisions } = this.state
@@ -232,6 +230,7 @@ class DivisionsArea extends Component {
           updateBookComponentPagination={updateBookComponentPagination}
           updateBookComponentUploading={updateBookComponentUploading}
           updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+          updateComponentType={updateComponentType}
           uploadStatus={uploading}
         />
       )

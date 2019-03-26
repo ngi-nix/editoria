@@ -8,22 +8,24 @@ import {
   getBookTeamsQuery,
   findUserMutation,
   updateTeamMutation,
+  teamMembersChangeSubscription,
 } from '../queries'
-
-import { TEAM_MEMBERS_UPDATED_SUBSCRIPTION } from '../queries/bookBuilderSubscriptions'
 
 const mapper = {
   getBookTeamsQuery,
   findUserMutation,
   updateTeamMutation,
+  teamMembersChangeSubscription,
 }
 
 const mapProps = args => ({
   teams: get(args.getBookTeamsQuery, 'data.getBookTeams'),
   findUser: args.findUserMutation.findUser,
   updateTeam: args.updateTeamMutation.updateBookTeam,
-  subscribeToMore: get(args.getBookTeamsQuery, 'subscribeToMore'),
-  loading: args.getBookTeamsQuery.loading,
+  loading: args.getBookTeamsQuery.networkStatus === 1,
+  refetching:
+    args.getBookTeamsQuery.networkStatus === 4 ||
+    args.getBookTeamsQuery.networkStatus === 2, // possible apollo bug
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -33,35 +35,18 @@ const Connected = props => {
 
   return (
     <Composed bookId={book.id}>
-      {({ teams, loading, findUser, updateTeam, subscribeToMore }) => {
-        if (loading) return null
-
+      {({ teams, loading, refetching, findUser, updateTeam }) => {
         return (
           <TeamManagerModal
             book={book}
+            loading={loading}
+            refetching={refetching}
             container={container}
             findUser={findUser}
             show={show}
             teams={teams}
             toggle={toggle}
             updateTeam={updateTeam}
-            subscribeToMoreTeamMembers={() =>
-              subscribeToMore({
-                document: TEAM_MEMBERS_UPDATED_SUBSCRIPTION,
-                updateQuery: (prev, { subscriptionData }) => {
-                  const { teamMembersUpdated } = subscriptionData.data
-                  const copy = Object.assign({}, prev)
-                  forEach(copy.getBookTeams, team => {
-                    if (team.objectId === teamMembersUpdated.bookId) {
-                      if (teamMembersUpdated.teamId === team.id) {
-                        team.members = teamMembersUpdated.members
-                      }
-                    }
-                  })
-                  return Object.assign({}, prev, copy)
-                },
-              })
-            }
           />
         )
       }}

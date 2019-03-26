@@ -29,6 +29,7 @@ export class WaxPubsweet extends React.Component {
     this.update = this.update.bind(this)
     // this.handlePolling = this.handlePolling.bind(this)
     this.renderWax = this.renderWax.bind(this)
+    this.onUnload = this.onUnload.bind(this)
 
     // this.stackUpdateData = []
     // this.pollingInterval = null
@@ -43,13 +44,13 @@ export class WaxPubsweet extends React.Component {
     }
   }
 
-  componentDidMount() {
-    const { editing } = this.state
-    if (editing !== 'selection') {
-      this.props.subscribeToTrackChangesUpdated()
-      this.props.subscribeToTitleUpdated()
-    }
-  }
+  // componentDidMount() {
+  //   const { editing } = this.state
+  //   if (editing !== 'selection') {
+  //     this.props.subscribeToTrackChangesUpdated()
+  //     this.props.subscribeToTitleUpdated()
+  //   }
+  // }
   // componentWillMount() {
   //   const { getCollections, getFragments, getTeams } = this.props.actions
   //   // const { fragment } = this.props
@@ -61,6 +62,49 @@ export class WaxPubsweet extends React.Component {
   //     })
   //   })
   // }
+  onUnload(event) {
+    // the method that will be used for both add and remove event
+    const { unlockBookComponent, bookComponentId } = this.props
+    // if (bookComponent.id) {
+    console.log('unlock2')
+    unlockBookComponent({
+      variables: {
+        input: {
+          id: bookComponentId,
+        },
+      },
+    })
+  }
+  componentDidMount() {
+    const { lockBookComponent, bookComponent } = this.props
+    window.addEventListener('beforeunload', this.onUnload)
+    console.log('b', this.props)
+  }
+  componentWillMount(nextProps) {
+    const { lockBookComponent, bookComponentId } = this.props
+    // if (bookComponent.id) {
+    lockBookComponent({
+      variables: {
+        input: {
+          id: bookComponentId,
+        },
+      },
+    })
+    // }
+  }
+  componentWillUnmount() {
+    const { unlockBookComponent, bookComponentId } = this.props
+    // if (bookComponent.id) {
+    console.log('unlock')
+    unlockBookComponent({
+      variables: {
+        input: {
+          id: bookComponentId,
+        },
+      },
+    })
+    window.removeEventListener('beforeunload', this.onUnload)
+  }
 
   // lock() {
   //   const { user, match } = this.props
@@ -161,22 +205,22 @@ export class WaxPubsweet extends React.Component {
     // }
   }
 
-  componentWillUnmount() {
-    // // const { editing, lockConflict, pollingIsLive } = this.state
-    // // if (!lockConflict) {
-    // // if (this.shouldLock() && editing === 'full') this.unlock()
-    // // if (this.shouldLock() && editing === 'full') {
-    // // console.log('ha')
-    // clearInterval(this.pollingInterval)
-    // // if (!pollingIsLive && editing !== 'selection') {
-    // //   let dialog = confirm('Polling was not initiated, manual unlock will be performed')
-    // //   // this.unlock()
-    // // } else {
-    // //   clearInterval(this.pollingInterval)
-    // // }
-    // // }
-    // // }
-  }
+  // componentWillUnmount() {
+  // // const { editing, lockConflict, pollingIsLive } = this.state
+  // // if (!lockConflict) {
+  // // if (this.shouldLock() && editing === 'full') this.unlock()
+  // // if (this.shouldLock() && editing === 'full') {
+  // // console.log('ha')
+  // clearInterval(this.pollingInterval)
+  // // if (!pollingIsLive && editing !== 'selection') {
+  // //   let dialog = confirm('Polling was not initiated, manual unlock will be performed')
+  // //   // this.unlock()
+  // // } else {
+  // //   clearInterval(this.pollingInterval)
+  // // }
+  // // }
+  // // }
+  // }
 
   save(content) {
     const { bookComponent, updateBookComponentContent } = this.props
@@ -442,6 +486,7 @@ export class WaxPubsweet extends React.Component {
   render() {
     // const { config, fragment, history, user } = this.props
     const { bookComponent, loading } = this.props
+    if (loading) return 'Loading...'
     // const { layout } = config
     const { editing } = this.state
     console.log('edt', editing)

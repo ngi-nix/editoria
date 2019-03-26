@@ -5,7 +5,7 @@ import { find, map } from 'lodash'
 import config from 'config'
 import { th } from '@pubsweet/ui-toolkit'
 
-import { Menu as UIMenu } from '@pubsweet/ui'
+import { Menu as UIMenu } from './Menu'
 
 const triangle = css`
   background: #3f3f3f;
@@ -224,32 +224,23 @@ const Opener = props => {
 }
 
 const ComponentTypeMenu = ({ onChange, divisionType, componentType }) => {
-  const divisions = config.bookBuilder.divisions
+  const { bookBuilder } = config
+  const { divisions } = bookBuilder
   const division = find(divisions, { name: divisionType })
-
   const options = map(division.allowedComponentTypes, componentType => ({
     label: componentType,
     value: componentType,
   }))
+  const handleChangeComponentType = value => {
+    onChange(value)
+  }
   return (
-    <State initial={{ componentType }} onChange={onChange}>
-      {({ state, setState }) => {
-        const { componentType } = state
-
-        const handleChangeComponentType = value => {
-          setState({ componentType: value })
-        }
-
-        return (
-          <Menu
-            onChange={handleChangeComponentType}
-            options={options}
-            renderOpener={Opener}
-            value={componentType}
-          />
-        )
-      }}
-    </State>
+    <Menu
+      onChange={handleChangeComponentType}
+      options={options}
+      renderOpener={Opener}
+      value={componentType}
+    />
   )
 }
 export default ComponentTypeMenu

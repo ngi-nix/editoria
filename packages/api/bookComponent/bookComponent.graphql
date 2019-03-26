@@ -11,9 +11,11 @@ input PaginationInput {
 }
 
 type Lock {
-  created: Date!
-  username: String!
-  userId: ID!
+  created: Date
+  username: String
+  givenName: String
+  surname: String
+  userId: ID
 }
 
 input LockInput {
@@ -36,10 +38,11 @@ type BookComponent {
   id: ID!
   title: String!
   bookId: ID!
+  bookTitle: String!
   componentTypeOrder: Int!
   hasContent: Boolean!
   divisionId: ID!
-  # lock: Lock
+  lock: Lock
   pagination: Pagination!
   archived: Boolean!
   workflowStages: [WorkFlowItem]
@@ -71,6 +74,7 @@ input UpdateBookComponentInput {
   uploading: Boolean
   pagination: PaginationInput
   workflowStages: [WorkFlowItemInput]
+  componentType: String
   trackChangesEnabled: Boolean
   content: String
 }
@@ -92,6 +96,7 @@ extend type Mutation {
   lockBookComponent(input: UpdateBookComponentInput): BookComponent!
   updateTrackChanges(input: UpdateBookComponentInput): BookComponent!
   updateContent(input: UpdateBookComponentInput): BookComponent!
+  updateComponentType(input: UpdateBookComponentInput): BookComponent!
   updateUploading(input: UpdateBookComponentInput): BookComponent!
 }
 
@@ -101,7 +106,9 @@ extend type Subscription {
   bookComponentWorkflowUpdated: BookComponent!
   bookComponentPaginationUpdated: BookComponent!
   bookComponentTrackChangesUpdated: BookComponent!
+  bookComponentLockUpdated: BookComponent!
   bookComponentTitleUpdated: BookComponent!
   bookComponentContentUpdated: BookComponent!
+  bookComponentTypeUpdated: BookComponent!
   bookComponentUploadingUpdated: BookComponent!
 }
