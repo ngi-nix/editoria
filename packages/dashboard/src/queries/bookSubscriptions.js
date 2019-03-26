@@ -39,10 +39,10 @@ const BOOK_DELETED_SUBSCRIPTION = gql`
 `
 
 const bookCreatedSubscription = props => {
-  const { render, getBookCollectionsQuery } = props
-  const { refetch } = getBookCollectionsQuery
+  const { render, getBookCollectionsQuery, getDashboardRulesQuery } = props
   const triggerRefetch = () => {
-    refetch()
+    getBookCollectionsQuery.refetch()
+    getDashboardRulesQuery.refetch()
   }
   return (
     <Subscription
@@ -102,9 +102,45 @@ const bookDeletedSubscription = props => {
   )
 }
 
+const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
+  subscription TeamMembersUpdated {
+    teamMembersUpdated {
+      bookId
+    }
+  }
+`
+
+// teamId
+//       role
+//       members {
+//         id
+//         username
+//         email
+//         admin
+//       }
+
+const addTeamMemberSubscription = props => {
+  const { render, getDashboardRulesQuery } = props
+
+  const triggerRefetch = () => {
+    debugger;
+    getDashboardRulesQuery.refetch()
+  }
+  debugger;
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={TEAM_MEMBERS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   bookCreatedSubscription,
   bookArchivedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
+  addTeamMemberSubscription,
 }

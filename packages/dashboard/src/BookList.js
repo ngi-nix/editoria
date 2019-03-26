@@ -11,7 +11,15 @@ const Wrapper = styled.div`
 `
 
 const BookList = props => {
-  const { books, container, /* refetching, */ renameBook, remove, archiveBook } = props
+  const {
+    books,
+    bookRules,
+    container,
+    /* refetching, */
+    renameBook,
+    remove,
+    archiveBook,
+  } = props
 
   // if (refetching) return 'Refetching...'
 
@@ -24,6 +32,7 @@ const BookList = props => {
       {books.map(book => (
         <Book
           book={book}
+          bookRule={bookRules.find(bookRule => bookRule.id === book.id)}
           container={container}
           key={book.id}
           remove={remove}

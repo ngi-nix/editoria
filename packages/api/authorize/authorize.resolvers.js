@@ -38,7 +38,7 @@ const executeMultipleAuthorizeRules = async (ctx, value, rules) => {
 }
 
 const getDashBoardRules = async (_, args, ctx) => {
-  const books = await Book.all()
+  const books = await Book.query().where({deleted: false})
 
   const canAddBook = await executeMultipleAuthorizeRules(
     ctx,

@@ -26,7 +26,7 @@ export class Dashboard extends Component {
       deleteBook,
       loading,
       onChangeSort,
-      refetching,
+     // refetching,
       renameBook,
     } = this.props
 
@@ -49,7 +49,7 @@ export class Dashboard extends Component {
             bookRules={rules.bookRules}
             books={collection.books}
             container={this}
-            refetching={refetching}
+            // refetching={refetching}
             remove={deleteBook}
             renameBook={renameBook}
             archiveBook={archiveBook}

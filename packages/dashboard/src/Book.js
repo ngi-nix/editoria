@@ -121,8 +121,17 @@ const TopRowValues = ({ authors }) => {
 }
 
 const Book = props => {
-  const { book, container, history, renameBook, remove, archiveBook } = props
+  const {
+    book,
+    bookRule,
+    container,
+    history,
+    renameBook,
+    remove,
+    archiveBook,
+  } = props
   const { authors, publicationDate, archived } = book
+  const { canRenameBooks, canDeleteBooks } = bookRule
 
   return (
     <State initial={{ isRenaming: false, showModal: false }}>
@@ -204,6 +213,8 @@ const Book = props => {
 
               <BookActions
                 book={book}
+                canRenameBooks={canRenameBooks}
+                canDeleteBooks={canDeleteBooks}
                 isRenaming={isRenaming}
                 onClickRename={onClickRename}
                 onClickSave={onClickSave}

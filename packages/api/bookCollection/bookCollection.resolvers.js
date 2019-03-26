@@ -2,11 +2,7 @@ const pubsweetServer = require('pubsweet-server')
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
-const {
-  Book,
-  BookCollectionTranslation,
-  BookTranslation,
-} = require('editoria-data-model/src').models
+const { BookCollectionTranslation, BookTranslation } = require('editoria-data-model/src').models
 
 const { pubsubManager } = pubsweetServer
 
@@ -56,13 +52,13 @@ module.exports = {
         )
       } else {
         books = await ctx.connectors.Book.fetchAll(
-            {
-              collectionId: bookCollection.id,
-              deleted: false,
-              archived: false,
-            },
-            ctx,
-          )
+          {
+            collectionId: bookCollection.id,
+            deleted: false,
+            archived: false,
+          },
+          ctx,
+        )
       }
 
       const sortable = await Promise.all(

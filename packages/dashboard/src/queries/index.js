@@ -9,4 +9,5 @@ export {
   bookRenamedSubscription,
   bookDeletedSubscription,
   bookArchivedSubscription,
+  addTeamMemberSubscription,
 } from './bookSubscriptions'

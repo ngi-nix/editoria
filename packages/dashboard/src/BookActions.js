@@ -90,36 +90,24 @@ const ActionGroup = styled(UIActionGroup)`
 `
 
 const Edit = props => {
-  const { bookId } = props
+  const { bookId,  } = props
   return <Action to={`/books/${bookId}/book-builder`}>Edit</Action>
 }
 
 const Rename = props => {
-  const { book, isRenaming, onClickRename, onClickSave } = props
+  const { book, isRenaming, onClickRename, onClickSave, canRenameBooks } = props
 
-  if (isRenaming) {
-    return (
-      <Authorize object={book} operation="can rename books">
-        <Action onClick={onClickSave}>Save</Action>
-      </Authorize>
-    )
+  if (isRenaming && canRenameBooks) {
+    return <Action onClick={onClickSave}>Save</Action>
   }
 
-  return (
-    <Authorize object={book} operation="can rename books">
-      <Action onClick={onClickRename}>Rename</Action>
-    </Authorize>
-  )
+  return canRenameBooks && <Action onClick={onClickRename}>Rename</Action>
 }
 
 const Remove = props => {
-  const { book, toggleModal } = props
+  const { book, toggleModal, canDeleteBooks } = props
 
-  return (
-    <Authorize object={book} operation="can delete books">
-      <Action onClick={toggleModal}>Delete</Action>
-    </Authorize>
-  )
+  return canDeleteBooks && <Action onClick={toggleModal}>Delete</Action>
 }
 
 const Archive = props => {
@@ -143,6 +131,8 @@ const Archive = props => {
 const Actions = props => {
   const {
     book,
+    canDeleteBooks,
+    canRenameBooks,
     isRenaming,
     onClickRename,
     onClickSave,
@@ -156,13 +146,14 @@ const Actions = props => {
       {!archived && (
         <Rename
           book={book}
+          canRenameBooks={canRenameBooks}
           isRenaming={isRenaming}
           onClickRename={onClickRename}
           onClickSave={onClickSave}
         />
       )}
       <Archive book={book} archiveBook={archiveBook} />
-      <Remove book={book} toggleModal={toggleModal} />
+      <Remove book={book} toggleModal={toggleModal}  canDeleteBooks={canDeleteBooks} />
     </ActionGroup>
   )
 }

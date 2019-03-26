@@ -34,9 +34,7 @@ const DashboardHeader = props => {
     <HeaderWrapper>
       <Side>
         <Title>{title}</Title>
-        {canAddBooks && (
-          <AddBookButton onClick={toggle} />
-        )}
+        {canAddBooks && <AddBookButton onClick={toggle} />}
       </Side>
 
       <Side>
