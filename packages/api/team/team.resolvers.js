@@ -61,7 +61,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
           global: true,
         },
       })
-      console.log("################################", updatedTeam, userMembers, id)
+
       return updatedTeam
     }
 

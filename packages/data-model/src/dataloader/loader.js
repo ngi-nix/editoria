@@ -18,6 +18,10 @@ class Loader {
     this.cache.set(key, promise)
     return promise
   }
+
+  clear() {
+    this.cache = new Map()
+  }
 }
 
 module.exports = Loader

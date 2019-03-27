@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, findIndex, map } from 'lodash'
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import BookBuilder from './BookBuilder'
@@ -28,6 +28,8 @@ import {
   titleChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  addTeamMemberSubscription,
+  bookComponentWorkflowUpdated,
 } from './queries'
 
 const mapper = {
@@ -53,6 +55,8 @@ const mapper = {
   titleChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  addTeamMemberSubscription,
+  bookComponentWorkflowUpdated,
 }
 
 const mapProps = args => ({

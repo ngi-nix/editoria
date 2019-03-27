@@ -1,6 +1,6 @@
-import gql from 'graphql-tag'
 import React from 'react'
 import { Subscription } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentOrderUpdated {
@@ -39,6 +39,23 @@ const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
+const bookComponentWorkflowUpdated = props => {
+  const { render, getBookBuilderRulesQuery } = props
+
+  const triggerRefetch = () => {
+    getBookBuilderRulesQuery.refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
@@ -68,6 +85,27 @@ const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
+
+const addTeamMemberSubscription = props => {
+  const { render, getBookBuilderRulesQuery, getDashboardRulesQuery } = props
+
+  const triggerRefetch = () => {
+    getBookBuilderRulesQuery.refetch()
+    if (getDashboardRulesQuery) {
+      getDashboardRulesQuery.refetch()
+    }
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={TEAM_MEMBERS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 const PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION = gql`
   subscription ProductionEditorsUpdated {
     productionEditorsUpdated {
@@ -248,4 +286,6 @@ export {
   teamMembersChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  addTeamMemberSubscription,
+  bookComponentWorkflowUpdated,
 }

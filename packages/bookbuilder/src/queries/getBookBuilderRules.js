@@ -6,7 +6,8 @@ const GET_BOOKBUILDER_RULES = gql`
   query GetBookBuilderRules($id: ID!) {
     getBookBuilderRules(id: $id) {
       id
-      canViewAddBookComponent
+      canViewAddComponent
+      canReorderBookComponent
       canViewUploadButton
       canViewMultipleFilesUpload
       canViewTeamManager
@@ -24,7 +25,6 @@ const GET_BOOKBUILDER_RULES = gql`
           canChangeProgressListLeft
         }
       }
-      canReorderBookComponent
     }
   }
 `

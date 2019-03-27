@@ -10,6 +10,7 @@ import {
   findUserMutation,
   updateTeamMutation,
   teamMembersChangeSubscription,
+  addTeamMemberSubscription,
 } from '../queries'
 
 const mapper = {
@@ -18,6 +19,7 @@ const mapper = {
   findUserMutation,
   updateTeamMutation,
   teamMembersChangeSubscription,
+  addTeamMemberSubscription,
 }
 
 const mapProps = args => ({

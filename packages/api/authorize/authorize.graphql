@@ -14,7 +14,7 @@ type bookRule {
 
 type BookBuilderRules {
   id: ID!
-  canViewAddBookComponent: Boolean
+  canViewAddComponent: Boolean
   canViewUploadButton: Boolean
   canViewMultipleFilesUpload: Boolean 
   canViewTeamManager: Boolean

@@ -38,7 +38,9 @@ const executeMultipleAuthorizeRules = async (ctx, value, rules) => {
 }
 
 const getDashBoardRules = async (_, args, ctx) => {
-  const books = await Book.query().where({deleted: false})
+  await ctx.connectors.UserLoader.model.userTeams.clear()
+
+  const books = await Book.query().where({ deleted: false })
 
   const canAddBook = await executeMultipleAuthorizeRules(
     ctx,
@@ -80,6 +82,7 @@ const getDashBoardRules = async (_, args, ctx) => {
 }
 
 const getBookBuilderRules = async (_, args, ctx) => {
+  await ctx.connectors.UserLoader.model.userTeams.clear()
   const book = await Book.find(args.id)
   const bookComponents = await BookComponent.findByField('book_id', args.id)
 
@@ -91,6 +94,7 @@ const getBookBuilderRules = async (_, args, ctx) => {
   )
 
   const data = await executeMultipleAuthorizeRules(ctx, book, bookBuilder)
+
   const result = Object.assign({}, { id: book.id }, data)
 
   result.bookComponentStateRules = await Promise.all(
@@ -121,12 +125,11 @@ const getBookBuilderRules = async (_, args, ctx) => {
     }),
   )
 
-  // console.log(result)
-
   return result
 }
 
 const getWaxRules = async (_, args, ctx) => {
+  await ctx.connectors.UserLoader.model.userTeams.clear()
   const bookComponent = await BookComponent.findOneByField('id', args.id)
 
   const { workflowStages } = await BookComponentState.query().whereIn(

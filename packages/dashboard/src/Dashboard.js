@@ -39,20 +39,20 @@ export class Dashboard extends Component {
       <div className={className}>
         <div className="container col-lg-offset-2 col-lg-8">
           <DashboardHeader
-            onChangeSort={onChangeSort}
             canAddBooks={rules.canAddBooks}
+            onChangeSort={onChangeSort}
             title={collection.title}
             toggle={this.toggleModal}
           />
 
           <BookList
+            archiveBook={archiveBook}
             bookRules={rules.bookRules}
             books={collection.books}
             container={this}
             // refetching={refetching}
             remove={deleteBook}
             renameBook={renameBook}
-            archiveBook={archiveBook}
           />
 
           <AddBookModal

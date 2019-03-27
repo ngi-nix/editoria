@@ -209,6 +209,7 @@ class DivisionsArea extends Component {
     } = this.props
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
+
     const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
       return (
         <Division
