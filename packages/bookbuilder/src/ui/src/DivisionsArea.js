@@ -210,33 +210,31 @@ class DivisionsArea extends Component {
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
 
-    const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
-      return (
-        <Division
-          add={addBookComponent}
-          addBookComponents={addBookComponents}
-          bookComponents={bookComponents}
-          bookId={bookId}
-          deleteBookComponent={deleteBookComponent}
-          divisionId={id}
-          key={id}
-          label={label}
-          history={history}
-          outerContainer={outerContainer}
-          reorderingAllowed={reorderingAllowed}
-          rules={rules}
-          showModal={showModal}
-          showModalToggle={showModalToggle}
-          updateBookComponentContent={updateBookComponentContent}
-          updateBookComponentOrder={updateBookComponentOrder}
-          updateBookComponentPagination={updateBookComponentPagination}
-          updateBookComponentUploading={updateBookComponentUploading}
-          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-          updateComponentType={updateComponentType}
-          uploadStatus={uploading}
-        />
-      )
-    }
+    const renderDivision = (reorderingAllowed, bookComponents, label, id) => (
+      <Division
+        add={addBookComponent}
+        addBookComponents={addBookComponents}
+        bookComponents={bookComponents}
+        bookId={bookId}
+        deleteBookComponent={deleteBookComponent}
+        divisionId={id}
+        history={history}
+        key={id}
+        label={label}
+        outerContainer={outerContainer}
+        reorderingAllowed={reorderingAllowed}
+        rules={rules}
+        showModal={showModal}
+        showModalToggle={showModalToggle}
+        updateBookComponentContent={updateBookComponentContent}
+        updateBookComponentOrder={updateBookComponentOrder}
+        updateBookComponentPagination={updateBookComponentPagination}
+        updateBookComponentUploading={updateBookComponentUploading}
+        updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+        updateComponentType={updateComponentType}
+        uploadStatus={uploading}
+      />
+    )
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <DivisionsContainer>

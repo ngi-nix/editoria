@@ -197,36 +197,36 @@ class Division extends React.Component {
             return (
               <div ref={provided.innerRef} {...provided.draggableProps}>
                 <BookComponent
-                  provided={provided}
                   bookId={bookId}
                   canDrag={reorderingAllowed}
                   componentType={componentType}
                   componentTypeOrder={componentTypeOrder}
                   divisionId={divisionId}
                   divisionType={label}
+                  hasContent={hasContent}
                   history={history}
                   id={id}
                   updateBookComponentContent={updateBookComponentContent}
                   updateBookComponentUploading={updateBookComponentUploading}
                   key={id}
                   lock={lock}
-                  updateComponentType={updateComponentType}
                   no={i}
                   onEndDrag={() => console.log('hello')}
-                  hasContent={hasContent}
                   onMove={() => console.log('hello')}
                   outerContainer={outerContainer}
-                  showModal={showModal}
-                  showModalToggle={showModalToggle}
                   pagination={pagination}
+                  provided={provided}
                   remove={this.onRemove}
                   rules={rules}
+                  showModal={showModal}
+                  showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
-                  update={update}
+                  updateComponentType={updateComponentType}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
                   uploading={uploading}
+                  update={update}
                   workflowStages={workflowStages}
                 />
               </div>
@@ -268,26 +268,22 @@ class Division extends React.Component {
           <DivisionActions>{addButtons}</DivisionActions>
         </HeaderContainer>
         <Droppable droppableId={divisionId}>
-          {(provided, snapshot) => {
-            return (
-              <div
-                ref={provided.innerRef}
-                style={{
-                  opacity: snapshot.isDraggingOver ? 0.5 : 1,
-                  minHeight: '96px',
-                }}
-              >
-                {bookComponents.length > 0 ? (
-                  <BookComponentList>
-                    {bookComponentInstances}
-                  </BookComponentList>
-                ) : (
-                  <EmptyList>There are no items in this division.</EmptyList>
-                )}
-                {provided.placeholder}
-              </div>
-            )
-          }}
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={{
+                opacity: snapshot.isDraggingOver ? 0.5 : 1,
+                minHeight: '96px',
+              }}
+            >
+              {bookComponents.length > 0 ? (
+                <BookComponentList>{bookComponentInstances}</BookComponentList>
+              ) : (
+                <EmptyList>There are no items in this division.</EmptyList>
+              )}
+              {provided.placeholder}
+            </div>
+          )}
         </Droppable>
       </DivisionContainer>
     )

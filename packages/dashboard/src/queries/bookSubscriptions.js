@@ -120,7 +120,6 @@ const addTeamMemberSubscription = props => {
   const { render, getDashboardRulesQuery, getBookCollectionsQuery } = props
 
   const triggerRefetch = () => {
-    debugger;
     getBookCollectionsQuery.refetch()
     getDashboardRulesQuery.refetch()
   }

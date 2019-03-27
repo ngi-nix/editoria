@@ -26,7 +26,7 @@ export class Dashboard extends Component {
       deleteBook,
       loading,
       onChangeSort,
-     // refetching,
+      // refetching,
       renameBook,
     } = this.props
 
