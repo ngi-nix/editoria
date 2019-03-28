@@ -506,13 +506,13 @@ export class WaxPubsweet extends React.Component {
     }
 
     return (
-      <Authorize
-        object={bookComponent}
-        operation="can toggle track changes"
-        unauthorized={this.renderWax(editing)}
-      >
-        {this.renderWax(editing)}
-      </Authorize>
+      // <Authorize
+      //   object={bookComponent}
+      //   operation="can toggle track changes"
+      //   unauthorized={this.renderWax(editing)}
+      // >
+        this.renderWax(editing)
+      // </Authorize>
     )
   }
 }

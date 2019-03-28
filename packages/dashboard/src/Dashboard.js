@@ -1,10 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 // import { State } from 'react-powerplug'
-
+import styled from 'styled-components'
 import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
 import AddBookModal from './AddBookModal'
 
+const Container = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
+  max-width: 76%;
+`
 export class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -32,36 +39,36 @@ export class Dashboard extends Component {
     const { showModal } = this.state
     if (loading) return 'Loading...'
 
-    const className = `bootstrap pubsweet-component pubsweet-component-scroll`
+    return (
+      <Container>
+        {collections.map(collection => (
+          <Fragment>
+            <DashboardHeader
+              onChangeSort={onChangeSort}
+              title={collection.title}
+              toggle={this.toggleModal}
+            />
 
-    return collections.map(collection => (
-      <div className={className}>
-        <div className="container col-lg-offset-2 col-lg-8">
-          <DashboardHeader
-            onChangeSort={onChangeSort}
-            title={collection.title}
-            toggle={this.toggleModal}
-          />
+            <BookList
+              books={collection.books}
+              container={this}
+              refetching={refetching}
+              remove={deleteBook}
+              renameBook={renameBook}
+              archiveBook={archiveBook}
+            />
 
-          <BookList
-            books={collection.books}
-            container={this}
-            refetching={refetching}
-            remove={deleteBook}
-            renameBook={renameBook}
-            archiveBook={archiveBook}
-          />
-
-          <AddBookModal
-            collectionId={collection.id}
-            container={this}
-            create={createBook}
-            show={showModal}
-            toggle={this.toggleModal}
-          />
-        </div>
-      </div>
-    ))
+            <AddBookModal
+              collectionId={collection.id}
+              container={this}
+              create={createBook}
+              show={showModal}
+              toggle={this.toggleModal}
+            />
+          </Fragment>
+        ))}
+      </Container>
+    )
   }
 }
 

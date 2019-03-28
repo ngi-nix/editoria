@@ -21,11 +21,11 @@ const Side = styled.div`
 `
 
 const Title = styled(H1)`
-  display: inline-flex;
-  font-family: 'Vollkorn' !important;
-  margin: 0 !important;
-  padding-top: 5px !important;
+  font-family: 'Vollkorn';
+  padding-top: 6px;
+  padding-bottom: 0;
   text-transform: uppercase;
+  margin: 0;
 `
 
 const DashboardHeader = props => {

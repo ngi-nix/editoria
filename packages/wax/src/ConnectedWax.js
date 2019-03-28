@@ -25,8 +25,8 @@ const mapper = {
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
-  trackChangeSubscription,
-  titleChangeSubscription,
+  // trackChangeSubscription,
+  // titleChangeSubscription,
 }
 
 const mapProps = args => ({
@@ -51,7 +51,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { match, history, config } = props
   const { bookId, bookComponentId } = match.params
-  console.log('props', props)
+  // console.log('props', props)
 
   return (
     <Composed bookComponentId={bookComponentId} bookId={bookId}>

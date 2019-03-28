@@ -3,8 +3,14 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { compose, withProps } from 'recompose'
 import { AppBar, Action } from '@pubsweet/ui'
+import styled from 'styled-components'
 
 // TODO -- break into smaller components
+
+const StyledNavBar = styled(AppBar)`
+  position: sticky;
+  width: 100%;
+`
 class Navigation extends React.Component {
   constructor(props) {
     super(props)
@@ -13,13 +19,12 @@ class Navigation extends React.Component {
     this.inPaged = null
   }
 
-  componentWillMount() {
-    console.log('sdfgsdfgsdfgsdfg')
-    this.shouldAddBookLink()
-  }
+  // componentWillMount() {
+  //   // console.log('sdfgsdfgsdfgsdfg')
+  //   // this.shouldAddBookLink()
+  // }
 
   componentWillUpdate() {
-    console.log('sdfgsdfgsdfgsdfg')
     this.shouldAddBookLink()
   }
 
@@ -64,14 +69,12 @@ class Navigation extends React.Component {
 
     // TODO --  fix object properties underneath
     return (
-      <div>
-        <AppBar
-          brand="Editoria"
-          navLinkComponents={links}
-          onLogoutClick={() => logoutUser(client)}
-          user={currentUser}
-        />
-      </div>
+      <StyledNavBar
+        brand="Editoria"
+        navLinkComponents={links}
+        onLogoutClick={() => logoutUser(client)}
+        user={currentUser}
+      />
     )
   }
 }
