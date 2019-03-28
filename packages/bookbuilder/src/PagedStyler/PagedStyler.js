@@ -4,29 +4,26 @@ import styled from 'styled-components'
 import 'codemirror/mode/css/css'
 import 'codemirror/lib/codemirror.css'
 import { UnControlled as CodeMirror } from 'react-codemirror2'
-// import { highlight, languages } from 'prismjs/components/prism-core'
-// import CodeMirror from 'react-codemirror'
-// import CodeMirror from '@uiw/react-codemirror'
-// import '@uiw/react-codemirror/node_modules/codemirror/theme/eclipse.css'
-// import classes from './PagedStyler.local.scss'
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  height: 100%;
   justify-content: flex-start;
-  height: calc(100% - 100px);
-  flex-basis: 100%;
   padding: 8px;
 `
 const CodeEditorWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 650px;
-  width: 650px;
+  max-width: 50%;
+  width: 50%;
+  flex-basis: 100%;
   height: 100%;
 `
 const EditorToolbar = styled.div`
   display: flex;
+  justify-content: flex-end;
+  height: 5%;
 `
 const Actions = styled.button`
   background: none;
@@ -39,11 +36,23 @@ const Actions = styled.button`
   margin-right: 20px;
 `
 const EditorArea = styled.div`
-  
+  flex-grow: 1;
+  height: 95%;
+  .react-codemirror2 {
+    height: 100%;
+    .CodeMirror {
+      height: 100%;
+    }
+  }
 `
 const PreviewArea = styled.div`
-  flex-grow: 1;
+  max-width: 50%;
+  width: 50%;
   height: 100%;
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
 `
 class PagedStyler extends Component {
   constructor(props) {
@@ -70,9 +79,8 @@ class PagedStyler extends Component {
     })
   }
 
-  handleChange(doc, change) {
-    console.log(doc)
-    // this.setState({ changed: doc })
+  handleChange(editor, data, value) {
+    this.setState({ changed: value })
   }
 
   /* eslint-disable */
@@ -136,6 +144,7 @@ class PagedStyler extends Component {
               onChange={this.handleChange}
               options={{
                 mode: 'css',
+                lineWrapping: true,
                 lineNumbers: true,
                 readOnly: false,
               }}
