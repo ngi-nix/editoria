@@ -84,7 +84,10 @@ const getDashBoardRules = async (_, args, ctx) => {
 const getBookBuilderRules = async (_, args, ctx) => {
   await ctx.connectors.UserLoader.model.userTeams.clear()
   const book = await Book.find(args.id)
-  const bookComponents = await BookComponent.findByField('book_id', args.id)
+  const bookComponents = await BookComponent.query().where({
+    deleted: false,
+    bookId: args.id,
+  })
 
   const bookComponentsIds = bookComponents.map(component => component.id)
 
