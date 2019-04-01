@@ -1,5 +1,5 @@
 import React from 'react'
-import { find, get, findIndex, omit, remove, clone } from 'lodash'
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 
 import Dashboard from './Dashboard'

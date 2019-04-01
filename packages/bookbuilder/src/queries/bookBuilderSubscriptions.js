@@ -78,14 +78,6 @@ const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
-const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
-  subscription ComponentTypeUpdated {
-    bookComponentTypeUpdated {
-      id
-    }
-  }
-`
-
 const addTeamMemberSubscription = props => {
   const { render, getBookBuilderRulesQuery, getDashboardRulesQuery } = props
 
@@ -130,6 +122,14 @@ const orderChangeSubscription = props => {
   )
 }
 
+const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
+  subscription ComponentTypeUpdated {
+    bookComponentTypeUpdated {
+      id
+    }
+  }
+`
+
 const componentTypeChangeSubscription = props => {
   const { render, getBookQuery } = props
   const { refetch } = getBookQuery
@@ -148,10 +148,10 @@ const componentTypeChangeSubscription = props => {
 }
 
 const bookComponentAddedSubscription = props => {
-  const { render, getBookQuery } = props
-  const { refetch } = getBookQuery
+  const { render, getBookQuery, getBookBuilderRulesQuery } = props
   const triggerRefetch = () => {
-    refetch()
+    getBookQuery.refetch()
+    getBookBuilderRulesQuery.refetch()
   }
 
   return (

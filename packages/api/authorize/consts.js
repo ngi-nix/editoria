@@ -6,6 +6,7 @@ module.exports = {
     canEditFull: 'can edit full',
     canEditSelection: 'can edit selection',
     canEditReview: 'can edit preview',
+    canToggleTrackChanges: 'can toggle track changes',
   },
   dashboard: {
     canRenameBooks: 'can rename books',

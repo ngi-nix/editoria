@@ -55,9 +55,10 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     if (updatedTeam.global === true) {
       pubsub.publish(TEAM_MEMBERS_UPDATED, {
         teamMembersUpdated: {
+          bookId: null,
           teamId: id,
-          role: updatedTeam.role,
           members: userMembers,
+          role: updatedTeam.role,
           global: true,
         },
       })

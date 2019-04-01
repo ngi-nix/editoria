@@ -132,9 +132,9 @@ const getWaxRules = async (_, args, ctx) => {
   await ctx.connectors.UserLoader.model.userTeams.clear()
   const bookComponent = await BookComponent.findOneByField('id', args.id)
 
-  const { workflowStages } = await BookComponentState.query().whereIn(
+  const { workflowStages } = await BookComponentState.findOneByField(
     'book_component_id',
-    [bookComponent.id],
+    bookComponent.id,
   )
 
   bookComponent.workflowStages = workflowStages

@@ -8,7 +8,7 @@ import withLink from 'editoria-common/src/withLink'
 const Container = styled.div`
   padding: 0;
   margin-right: ${th('gridUnit')};
-  flex-grow:1;
+  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: hidden;
 `

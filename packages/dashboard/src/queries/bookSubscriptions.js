@@ -104,14 +104,7 @@ const bookDeletedSubscription = props => {
 const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
   subscription TeamMembersUpdated {
     teamMembersUpdated {
-      teamId
-      role
-      members {
-        id
-        username
-        email
-        admin
-      }
+      bookId
     }
   }
 `
