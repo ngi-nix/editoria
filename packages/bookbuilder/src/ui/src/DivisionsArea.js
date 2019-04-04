@@ -206,6 +206,7 @@ class DivisionsArea extends Component {
       showModal,
       showModalToggle,
       updateComponentType,
+      onDeleteBookComponent,
       uploading,
     } = this.props
     const { divisions } = this.state
@@ -217,6 +218,7 @@ class DivisionsArea extends Component {
           bookComponents={bookComponents}
           bookId={bookId}
           deleteBookComponent={deleteBookComponent}
+          onDeleteBookComponent={onDeleteBookComponent}
           divisionId={id}
           key={id}
           label={label}

@@ -113,30 +113,36 @@ const Rename = props => {
 }
 
 const Remove = props => {
-  const { book, toggleModal } = props
-
+  const { book, onDeleteBook } = props
+  const handleClick = () => {
+    onDeleteBook(book.id, book.title)
+  }
   return (
     <Authorize object={book} operation="can delete books">
-      <Action onClick={toggleModal}>Delete</Action>
+      <Action onClick={handleClick}>Delete</Action>
     </Authorize>
   )
 }
 
 const Archive = props => {
-  const { book, archiveBook } = props
+  const { book, archiveBook, onArchiveBook } = props
   const { archived } = book
-  const onArchive = () => {
-    archiveBook({
-      variables: {
-        id: book.id,
-        archive: !archived,
-      },
-    })
+  const handleClick = () => {
+    if (archived) {
+      archiveBook({
+        variables: {
+          id: book.id,
+          archive: !archived,
+        },
+      })
+    } else {
+      onArchiveBook(book.id, book.title, archived)
+    }
   }
   const label = archived ? 'Unarchive' : 'Archive'
   return (
     <Authorize object={book} operation="can archive books">
-      <Action onClick={onArchive}>{label}</Action>
+      <Action onClick={handleClick}>{label}</Action>
     </Authorize>
   )
 }
@@ -146,8 +152,9 @@ const Actions = props => {
     isRenaming,
     onClickRename,
     onClickSave,
-    toggleModal,
     archiveBook,
+    onDeleteBook,
+    onArchiveBook,
   } = props
   const { archived } = book
   return (
@@ -161,8 +168,12 @@ const Actions = props => {
           onClickSave={onClickSave}
         />
       )}
-      <Archive book={book} archiveBook={archiveBook} />
-      <Remove book={book} toggleModal={toggleModal} />
+      <Archive
+        book={book}
+        archiveBook={archiveBook}
+        onArchiveBook={onArchiveBook}
+      />
+      <Remove book={book} onDeleteBook={onDeleteBook} />
     </ActionGroup>
   )
 }

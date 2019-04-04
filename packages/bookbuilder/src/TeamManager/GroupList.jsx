@@ -28,7 +28,7 @@ export class GroupList extends React.Component {
   }
 
   render() {
-    const { teams, findUser, update, book } = this.props
+    const { teams, findUser, update, bookId } = this.props
     const { options } = this
 
     // TODO -- refactor
@@ -42,7 +42,7 @@ export class GroupList extends React.Component {
       return (
         <div key={i}>
           <Group
-            book={book}
+            bookId={bookId}
             options={options[team.role]}
             team={team}
             update={update}

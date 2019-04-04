@@ -6,8 +6,6 @@ import styled from 'styled-components'
 import { State } from 'react-powerplug'
 import { map, forEach } from 'lodash'
 
-import RemoveBookModal from './RemoveBookModal'
-
 import BookTitle from './BookTitle'
 import BookActions from './BookActions'
 
@@ -121,13 +119,21 @@ const TopRowValues = ({ authors }) => {
 }
 
 const Book = props => {
-  const { book, container, history, renameBook, remove, archiveBook } = props
+  const {
+    book,
+    history,
+    renameBook,
+    remove,
+    archiveBook,
+    onDeleteBook,
+    onArchiveBook,
+  } = props
   const { authors, publicationDate, archived } = book
 
   return (
     <State initial={{ isRenaming: false, showModal: false }}>
       {({ state, setState }) => {
-        const { isRenaming, showModal } = state
+        const { isRenaming } = state
 
         // TO DO -- probably shouldn't be here
         const goToBookBuilder = () => {
@@ -157,17 +163,6 @@ const Book = props => {
           setState({ isRenaming: false })
         }
 
-        const removeBook = () => {
-          remove({
-            variables: {
-              id: book.id,
-            },
-          })
-        }
-
-        const toggleModal = () => {
-          setState({ showModal: !showModal })
-        }
         let statusLabel
         if (publicationDate !== null) {
           if (archived) {
@@ -207,19 +202,11 @@ const Book = props => {
                 isRenaming={isRenaming}
                 onClickRename={onClickRename}
                 onClickSave={onClickSave}
-                toggleModal={toggleModal}
+                onDeleteBook={onDeleteBook}
+                onArchiveBook={onArchiveBook}
                 archiveBook={archiveBook}
               />
 
-              {showModal && (
-                <RemoveBookModal
-                  book={book}
-                  container={container}
-                  remove={removeBook}
-                  show={showModal}
-                  toggle={toggleModal}
-                />
-              )}
             </MainRow>
           </Wrapper>
         )

@@ -27,7 +27,7 @@ export class Group extends React.Component {
   }
 
   render() {
-    const { team, findUser, options, update, book } = this.props
+    const { team, findUser, options, update, bookId } = this.props
     const { members } = team
 
     const allowed = true
@@ -42,14 +42,14 @@ export class Group extends React.Component {
         />
 
         <MemberList
-          book={book}
+          bookId={bookId}
           color={options.color}
           members={members}
           team={team}
           update={update}
         />
         <AddMember
-          book={book}
+          bookId={bookId}
           findUser={findUser}
           hideInput={this._closeAddMember}
           show={this.state.isAddMemberOpen}

@@ -10,7 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "react": "^16.2.0",
-    "react-bootstrap": "0.32.1",
+    "react-modal": "^3.8.1",
+    "styled-components":"^4.2.0",
+    "react-powerplug": "^1.0.0",
+    "@pubsweet/ui":"^10.0.4",
+    "@pubsweet/ui-toolkit":"^2.1.4",
     "react-router-dom": "4.2.2"
   },
   "devDependencies": {

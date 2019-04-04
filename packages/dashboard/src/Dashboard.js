@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from 'react'
-// import { State } from 'react-powerplug'
 import styled from 'styled-components'
 import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
-import AddBookModal from './AddBookModal'
 
 const Container = styled.div`
   display: block;
@@ -13,30 +11,20 @@ const Container = styled.div`
   max-width: 76%;
 `
 export class Dashboard extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { showModal: false }
-    this.toggleModal = this.toggleModal.bind(this)
-  }
-
-  toggleModal() {
-    const { showModal } = this.state
-    this.setState({ showModal: !showModal })
-  }
-
   render() {
     const {
       collections,
       archiveBook,
-      createBook,
       deleteBook,
       loading,
       onChangeSort,
       refetching,
       renameBook,
+      onAddBook,
+      onDeleteBook,
+      onArchiveBook,
     } = this.props
 
-    const { showModal } = this.state
     if (loading) return 'Loading...'
 
     return (
@@ -45,25 +33,19 @@ export class Dashboard extends Component {
           <Fragment>
             <DashboardHeader
               onChangeSort={onChangeSort}
+              collectionId={collection.id}
               title={collection.title}
-              toggle={this.toggleModal}
+              onAddBook={onAddBook}
             />
 
             <BookList
               books={collection.books}
-              container={this}
               refetching={refetching}
+              onDeleteBook={onDeleteBook}
+              onArchiveBook={onArchiveBook}
               remove={deleteBook}
               renameBook={renameBook}
               archiveBook={archiveBook}
-            />
-
-            <AddBookModal
-              collectionId={collection.id}
-              container={this}
-              create={createBook}
-              show={showModal}
-              toggle={this.toggleModal}
             />
           </Fragment>
         ))}

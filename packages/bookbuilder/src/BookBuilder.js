@@ -12,7 +12,7 @@ import {
   DivisionsArea,
 } from './ui'
 
-import ConnectedTeamManager from './TeamManager/ConnectedTeamManager'
+// import ConnectedTeamManager from './TeamManager/ConnectedTeamManager'
 
 // import styles from './styles/bookBuilder.local.scss'
 
@@ -30,13 +30,13 @@ export class BookBuilder extends React.Component {
   constructor(props) {
     super(props)
 
-    this.toggleTeamManager = this.toggleTeamManager.bind(this)
+    // this.toggleTeamManager = this.toggleTeamManager.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
 
     this.state = {
       outerContainer: this,
       showModal: false,
-      showTeamManager: false,
+      // showTeamManager: false,
       uploading: {},
     }
   }
@@ -47,26 +47,26 @@ export class BookBuilder extends React.Component {
     })
   }
 
-  toggleTeamManager() {
-    this.setState({ showTeamManager: !this.state.showTeamManager })
-  }
+  // toggleTeamManager() {
+  //   this.setState({ showTeamManager: !this.state.showTeamManager })
+  // }
 
-  renderTeamManagerModal() {
-    const { outerContainer, showTeamManager } = this.state
+  // renderTeamManagerModal() {
+  //   const { outerContainer, showTeamManager } = this.state
 
-    if (!showTeamManager) return null
+  //   if (!showTeamManager) return null
 
-    const { book } = this.props
+  //   const { book } = this.props
 
-    return (
-      <ConnectedTeamManager
-        book={book}
-        container={outerContainer}
-        show={showTeamManager}
-        toggle={this.toggleTeamManager}
-      />
-    )
-  }
+  //   return (
+  //     <ConnectedTeamManager
+  //       book={book}
+  //       container={outerContainer}
+  //       show={showTeamManager}
+  //       toggle={this.toggleTeamManager}
+  //     />
+  //   )
+  // }
 
   render() {
     const {
@@ -81,19 +81,18 @@ export class BookBuilder extends React.Component {
       updateBookComponentUploading,
       updateBookComponentContent,
       updateComponentType,
+      onDeleteBookComponent,
       exportBook,
+      onTeamManager,
       loading,
     } = this.props
     if (loading) return 'Loading...'
     const { divisions, productionEditors } = book
     const { outerContainer } = this.state
-    const teamManagerModal = this.renderTeamManagerModal()
+    // const teamManagerModal = this.renderTeamManagerModal()
     const productionEditorActions = [
       // <Authorize object={book.id} operation="can view teamManager">
-      <TeamManagerButton
-        label="Team Manager"
-        onClick={this.toggleTeamManager}
-      />,
+      <TeamManagerButton label="Team Manager" onClick={()=>onTeamManager(book.id)} />,
 
       /* </Authorize>, */
     ]
@@ -124,35 +123,31 @@ export class BookBuilder extends React.Component {
       />,
     ]
     return (
-      <div className="bootstrap modal pubsweet-component pubsweet-component-scroll">
-        <Container>
-          <ProductionEditorsArea
-            actions={productionEditorActions}
-            productionEditors={productionEditors}
-          />
-          <Header bookTitle={book.title} actions={headerActions} />
-          <DivisionsArea
-            addBookComponent={addBookComponent}
-            addBookComponents={addBookComponents}
-            history={history}
-            bookId={book.id}
-            deleteBookComponent={deleteBookComponent}
-            divisions={divisions}
-            outerContainer={outerContainer}
-            showModal={this.state.showModal}
-            showModalToggle={this.toggleModal}
-            updateBookComponentContent={updateBookComponentContent}
-            updateBookComponentOrder={updateBookComponentOrder}
-            updateBookComponentPagination={updateBookComponentPagination}
-            updateBookComponentUploading={updateBookComponentUploading}
-            updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-            updateComponentType={updateComponentType}
-          />
-        </Container>
-        {/* <Authorize object={book.id} operation="can view teamManager"> */}
-        {teamManagerModal}
-        {/* </Authorize> */}
-      </div>
+      <Container>
+        <ProductionEditorsArea
+          actions={productionEditorActions}
+          productionEditors={productionEditors}
+        />
+        <Header bookTitle={book.title} actions={headerActions} />
+        <DivisionsArea
+          addBookComponent={addBookComponent}
+          addBookComponents={addBookComponents}
+          history={history}
+          bookId={book.id}
+          deleteBookComponent={deleteBookComponent}
+          onDeleteBookComponent={onDeleteBookComponent}
+          divisions={divisions}
+          outerContainer={outerContainer}
+          showModal={this.state.showModal}
+          showModalToggle={this.toggleModal}
+          updateBookComponentContent={updateBookComponentContent}
+          updateBookComponentOrder={updateBookComponentOrder}
+          updateBookComponentPagination={updateBookComponentPagination}
+          updateBookComponentUploading={updateBookComponentUploading}
+          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+          updateComponentType={updateComponentType}
+        />
+      </Container>
     )
   }
 }

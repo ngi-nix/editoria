@@ -163,6 +163,7 @@ class Division extends React.Component {
     const {
       updateBookComponentUploading,
       updateBookComponentContent,
+      onDeleteBookComponent,
       outerContainer,
       divisionId,
       showModal,
@@ -201,6 +202,7 @@ class Division extends React.Component {
                   canDrag={reorderingAllowed}
                   componentType={componentType}
                   componentTypeOrder={componentTypeOrder}
+                  onDeleteBookComponent={onDeleteBookComponent}
                   divisionId={divisionId}
                   divisionType={label}
                   history={history}

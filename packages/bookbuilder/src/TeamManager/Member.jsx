@@ -58,10 +58,10 @@ export class Member extends React.Component {
     )
   }
   render() {
-    const { book, team } = this.props
+    const { bookId, team } = this.props
 
     const authorizationObject = {
-      id: book.id,
+      id: bookId,
       teamType: team.role,
     }
     return (

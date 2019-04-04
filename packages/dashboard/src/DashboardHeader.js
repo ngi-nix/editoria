@@ -29,7 +29,10 @@ const Title = styled(H1)`
 `
 
 const DashboardHeader = props => {
-  const { onChangeSort, title, toggle } = props
+  const { onChangeSort, title, collectionId, onAddBook } = props
+  const handleClick = () => {
+    onAddBook(collectionId)
+  }
 
   return (
     <HeaderWrapper>
@@ -37,7 +40,7 @@ const DashboardHeader = props => {
         <Title>{title}</Title>
 
         <Authorize operation="can add books">
-          <AddBookButton onClick={toggle} />
+          <AddBookButton onClick={handleClick} />
         </Authorize>
       </Side>
 

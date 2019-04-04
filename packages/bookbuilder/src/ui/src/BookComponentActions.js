@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 // import Authorize from 'pubsweet-client/src/helpers/Authorize'
-import DeleteModal from './DeleteModal'
+// import DeleteModal from './DeleteModal'
 import EditingNotification from './EditingNotification'
 import { DefaultButton } from './Button'
 
@@ -16,35 +16,40 @@ const Container = styled.div`
 
 const BookComponentActions = ({
   outerContainer,
-  showModal,
-  showModalToggle,
+  // showModal,
+  // showModalToggle,
   componentType,
   uploading,
   bookComponentId,
+  onDeleteBookComponent,
   bookId,
   lock,
   history,
+  title,
   remove,
   update,
 }) => {
   const isLocked = get(lock, 'username')
-  let deleteModal = null
+  const handleClick = () => {
+    onDeleteBookComponent(bookComponentId, componentType, title)
+  }
+  // let deleteModal = null
   const goToEditor = () => {
     if (isLocked || uploading) return
     history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   }
-  if (showModal) {
-    deleteModal = (
-      <DeleteModal
-        bookComponentId={bookComponentId}
-        componentType={componentType}
-        container={outerContainer}
-        remove={remove}
-        show={showModal}
-        toggle={showModalToggle}
-      />
-    )
-  }
+  // if (showModal) {
+  //   deleteModal = (
+  //     <DeleteModal
+  //       bookComponentId={bookComponentId}
+  //       componentType={componentType}
+  //       container={outerContainer}
+  //       remove={remove}
+  //       show={showModal}
+  //       toggle={showModalToggle}
+  //     />
+  //   )
+  // }
   if (!isLocked) {
     return (
       <Container>
@@ -52,10 +57,9 @@ const BookComponentActions = ({
         {/* <Separetor /> */}
         <DefaultButton
           label="delete"
-          onClick={showModalToggle}
+          onClick={handleClick}
           disabled={uploading}
         />
-        {deleteModal}
       </Container>
     )
   }
@@ -66,8 +70,8 @@ const BookComponentActions = ({
         modalContainer={outerContainer}
         update={update}
         lock={lock}
-        show={showModal}
-        toggle={showModalToggle}
+        // show={showModal}
+        // toggle={showModalToggle}
       />
     </Container>
   )

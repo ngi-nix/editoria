@@ -7,13 +7,13 @@ import styles from '../styles/teamManager.local.scss'
 
 export class TeamManager extends React.Component {
   render() {
-    const { teams, users,findUser, updateTeam, book } = this.props
+    const { teams, users,findUser, updateTeam, bookId } = this.props
 
     return (
       <div className={styles.teamManager}>
         <GroupList
           teams={teams}
-          book={book}
+          bookId={bookId}
           update={updateTeam}
           findUser={findUser}
         />

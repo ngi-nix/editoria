@@ -171,6 +171,7 @@ const BookComponent = ({
   updateBookComponentUploading,
   isDragging,
   lock,
+  onDeleteBookComponent,
   outerContainer,
   showModal,
   showModalToggle,
@@ -251,6 +252,8 @@ const BookComponent = ({
         />
         <BookComponentActions
           outerContainer={outerContainer}
+          onDeleteBookComponent={onDeleteBookComponent}
+          title={title}
           showModal={showModal}
           showModalToggle={showModalToggle}
           uploading={uploading}
