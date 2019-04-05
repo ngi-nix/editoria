@@ -82,7 +82,7 @@ const addTeamMemberSubscription = props => {
   const { render, getBookBuilderRulesQuery, getDashboardRulesQuery } = props
 
   const triggerRefetch = () => {
-    // getBookBuilderRulesQuery.refetch()
+    getBookBuilderRulesQuery.refetch()
     // if (getDashboardRulesQuery) {
     //   getDashboardRulesQuery.refetch()
     // }
@@ -152,7 +152,7 @@ const bookComponentAddedSubscription = props => {
   const triggerRefetch = () => {
     console.log("refetch builder")
     getBookQuery.refetch()
-    // getBookBuilderRulesQuery.refetch()
+    getBookBuilderRulesQuery.refetch()
   }
 
   return (

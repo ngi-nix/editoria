@@ -6,6 +6,7 @@ import { adopt } from 'react-adopt'
 import TeamManagerModal from './TeamManagerModal'
 import {
   getBookTeamsQuery,
+  getBookBuilderRulesQuery,
   getDashboardRulesQuery,
   findUserMutation,
   updateTeamMutation,
@@ -19,6 +20,7 @@ const mapper = {
   findUserMutation,
   updateTeamMutation,
   teamMembersChangeSubscription,
+  getBookBuilderRulesQuery,
   addTeamMemberSubscription,
 }
 
@@ -29,9 +31,12 @@ const mapProps = args => ({
   refetching:
     args.getBookTeamsQuery.networkStatus === 4 ||
     args.getBookTeamsQuery.networkStatus === 2, // possible apollo bug
+  refetchingBookBuilderRules:
+    args.getBookBuilderRulesQuery.networkStatus === 4 ||
+    args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
   loading: args.getBookTeamsQuery.networkStatus === 1,
-  loadingRules: args.getDashboardRulesQuery.loading,
-  rules: get(args.getDashboardRulesQuery, 'data.getDashBoardRules'),
+  loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
+  rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -50,11 +55,10 @@ const Connected = props => {
         refetching,
         updateTeam,
       }) => {
-        if (loading || loadingRules) return null
-
         return (
           <TeamManagerModal
             book={book}
+            loadingRules={loadingRules}
             canViewAddTeamMember={rules.canViewAddTeamMember}
             container={container}
             findUser={findUser}
