@@ -16,7 +16,7 @@ const GET_BOOK = gql`
           divisionId
           title
           bookId
-          hasContent
+          # hasContent
           componentTypeOrder
           pagination {
             left

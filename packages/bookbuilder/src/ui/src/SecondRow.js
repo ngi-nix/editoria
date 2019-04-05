@@ -453,10 +453,7 @@ class SecondRow extends Component {
         )}
         {canViewStateList && (
           <WorkflowList
-            bookComponentStateRules={bookComponentStateRules.find(
-              bookComponentState =>
-                bookComponentState.bookComponentId === bookComponentId,
-            )}
+            bookComponentStateRules={bookComponentStateRules[0]}
             bookId={bookId}
             currentValues={workflowStages}
             update={this.updateStateList}
