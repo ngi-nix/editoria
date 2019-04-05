@@ -78,19 +78,21 @@ module.exports = {
   },
   Division: {
     async bookComponents(divisionId, _, ctx) {
-      const dbDivision = await Division.findById(divisionId)
-      if (dbDivision.bookComponents.length > 0) {
-        const bookComponents = await Promise.all(
-          map(dbDivision.bookComponents, async bookComponentId => {
-            const dbBookComponent = await BookComponent.query()
-              .where('id', bookComponentId)
-              .andWhere('deleted', false)
-            return dbBookComponent[0]
-          }),
-        )
-        return pullAll(bookComponents, [undefined])
-      }
-      return []
+      // const dbDivision = await Division.findById(divisionId)
+      // if (dbDivision.bookComponents.length > 0) {
+      //   const bookComponents = await Promise.all(
+      //     map(dbDivision.bookComponents, async bookComponentId => {
+      //       const dbBookComponent = await BookComponent.query()
+      //         .where('id', bookComponentId)
+      //         .andWhere('deleted', false)
+      //       return dbBookComponent[0]
+      //     }),
+      //   )
+      //   return pullAll(bookComponents, [undefined])
+      // }
+      // return []
+      ctx.connectors.DivisionLoader.model.bookComponents.clear()
+      return ctx.connectors.DivisionLoader.model.bookComponents.load(divisionId)
     },
     async label(divisionId, _, ctx) {
       const dbDivision = await Division.findById(divisionId)

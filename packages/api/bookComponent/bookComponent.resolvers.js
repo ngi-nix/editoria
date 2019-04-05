@@ -83,11 +83,11 @@ const addBookComponent = async (_, args, ctx, info) => {
     logger.info(
       `New book component translation created with id ${translation.id}`,
     )
-    const newBookComponents = []
+    const newBookComponents = division.bookComponents
 
-    forEach(division.bookComponents, bookComponent => {
-      newBookComponents.push(bookComponent)
-    })
+    // forEach(division.bookComponents, bookComponent => {
+    //   newBookComponents.push(bookComponent)
+    // })
     newBookComponents.push(createdBookComponent.id)
 
     const updatedDivision = await Division.query().patchAndFetchById(
@@ -124,6 +124,7 @@ const addBookComponent = async (_, args, ctx, info) => {
     logger.info(
       `New state created for the book component ${bookComponentState}`,
     )
+    console.log('created', createdBookComponent)
     pubsub.publish(BOOK_COMPONENT_ADDED, {
       bookComponentAdded: createdBookComponent,
     })
@@ -557,10 +558,17 @@ module.exports = {
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
-      const bookComponentTranslation = await BookComponentTranslation.query()
-        .where('bookComponentId', bookComponent.id)
-        .andWhere('languageIso', 'en')
-      return bookComponentTranslation[0].title
+      // console.log('bokk', bookComponent)
+      let { title } = bookComponent
+      console.log('dsds', title)
+      if (!title) {
+        const bookComponentTranslation = await BookComponentTranslation.query()
+          .where('bookComponentId', bookComponent.id)
+          .andWhere('languageIso', 'en')
+          console.log('dsdssdfrsdfdfsds', bookComponentTranslation)
+        title = bookComponentTranslation[0].title
+      }
+      return title
     },
     async bookId(bookComponent, _, ctx) {
       return bookComponent.bookId
@@ -614,19 +622,19 @@ module.exports = {
       return locked
     },
     async componentTypeOrder(bookComponent, _, ctx) {
+      // return 1
       const { componentType } = bookComponent
-      const division = await Division.query().where(
-        'id',
+      // const division = await Division.query().where(
+      //   'id',
+      //   bookComponent.divisionId,
+      // )
+      const sortedPerDivision = await ctx.connectors.DivisionLoader.model.bookComponents.load(
         bookComponent.divisionId,
       )
-      const sortedPerDivision = await Promise.all(
-        map(division[0].bookComponents, async id => {
-          const bookComponent = await BookComponent.query()
-            .where('id', id)
-            .andWhere('deleted', false)
-          return bookComponent[0]
-        }),
-      )
+      // console.log('sorted', sortedPerDivision)
+      // const sortedPerDivision = await BookComponent.query()
+      //   .whereIn('id', division[0].bookComponents)
+      //   .andWhere('deleted', false)
       const groupedByType = groupBy(
         pullAll(sortedPerDivision, [undefined]),
         'componentType',
@@ -640,18 +648,22 @@ module.exports = {
       )
     },
     async uploading(bookComponent, _, ctx) {
-      const bookComponentState = await BookComponentState.query().where(
-        'bookComponentId',
+      ctx.connectors.BookComponentStateLoader.model.state.clear()
+      const bookComponentState = await ctx.connectors.BookComponentStateLoader.model.state.load(
         bookComponent.id,
       )
+      // const bookComponentState = await BookComponentState.query().where(
+      //   'bookComponentId',
+      //   bookComponent.id,
+      // )
       return bookComponentState[0].uploading
     },
     async pagination(bookComponent, _, ctx) {
       return bookComponent.pagination
     },
     async workflowStages(bookComponent, _, ctx) {
-      const bookComponentState = await BookComponentState.query().where(
-        'bookComponentId',
+      ctx.connectors.BookComponentStateLoader.model.state.clear()
+      const bookComponentState = await ctx.connectors.BookComponentStateLoader.model.state.load(
         bookComponent.id,
       )
       return bookComponentState[0].workflowStages || null

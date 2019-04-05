@@ -268,7 +268,7 @@ module.exports = {
         ctx,
         { eager },
       )
-      let authors = null
+      let authors = []
       if (teams[0] && teams[0].members.length > 0) {
         authors = map(teams[0].members, teamMember => {
           return teamMember.user
@@ -277,19 +277,37 @@ module.exports = {
       return authors
     },
     async productionEditors(book, _, ctx) {
-      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx)
-      const productionEditorTeam = filter(allTeams, team => {
-        if (team.objectId) {
-          return team.objectId === book.id && team.role === 'productionEditor'
-        }
-        return false
-      })
-      const productionEditors = await Promise.all(
-        map(productionEditorTeam[0].members, async member => {
-          const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
-          return `${user.givenName} ${user.surname}`
-        }),
+      const productionEditorTeams = await ctx.connectors.Team.fetchAll(
+        { objectId: book.id, role: 'productionEditor' },
+        ctx,
+        { eager },
       )
+      // const productionEditorTeam = filter(allTeams, team => {
+      //   if (team.objectId) {
+      //     return team.objectId === book.id && team.role === 'productionEditor'
+      //   }
+      //   return false
+      // })
+      let productionEditors = []
+      if (
+        productionEditorTeams[0] &&
+        productionEditorTeams[0].members.length > 0
+      ) {
+        productionEditors = map(
+          productionEditorTeams[0].members,
+          teamMember => {
+            const { user } = teamMember
+            return `${user.givenName} ${user.surname}`
+          },
+        )
+      }
+      // return authors
+      // const productionEditors = await Promise.all(
+      //   map(productionEditorTeam[0].members, async member => {
+      //     const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
+      //     return `${user.givenName} ${user.surname}`
+      //   }),
+      // )
       return productionEditors
     },
   },
