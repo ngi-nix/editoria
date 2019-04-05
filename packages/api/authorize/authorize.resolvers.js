@@ -48,35 +48,16 @@ const getDashBoardRules = async (_, args, ctx) => {
     { canAddBooks },
   )
 
-  const canViewAddTeamMembers = await executeMultipleAuthorizeRules(
-    ctx,
-    {},
-    { canViewAddTeamMember },
-  )
-
   const bookRules = await Promise.all(
     map(books, async value => {
       const data = await executeMultipleAuthorizeRules(ctx, value, dashboard)
-      const teamRoles = await Promise.all(
-        map(Object.keys(config.get('authsome.teams')), async role => {
-          const data = await executeMultipleAuthorizeRules(
-            ctx,
-            { id: value.id, role },
-            {
-              canRemoveTeamMember,
-            },
-          )
-          return Object.assign({}, { role }, data)
-        }),
-      )
 
-      return Object.assign({}, { id: value.id }, data, { teamRoles })
+      return Object.assign({}, { id: value.id }, data)
     }),
   )
 
   return {
     bookRules,
-    canViewAddTeamMember: canViewAddTeamMembers.canViewAddTeamMember,
     canAddBooks: canAddBook.canAddBooks,
   }
 }
@@ -96,9 +77,34 @@ const getBookBuilderRules = async (_, args, ctx) => {
     bookComponentsIds,
   )
 
+  const canViewAddTeamMembers = await executeMultipleAuthorizeRules(
+    ctx,
+    {},
+    { canViewAddTeamMember },
+  )
+
+  const teamRoles = await Promise.all(
+    map(Object.keys(config.get('authsome.teams')), async role => {
+      const data = await executeMultipleAuthorizeRules(
+        ctx,
+        { id: book.id, role },
+        {
+          canRemoveTeamMember,
+        },
+      )
+      return Object.assign({}, { role }, data)
+    }),
+  )
+
   const data = await executeMultipleAuthorizeRules(ctx, book, bookBuilder)
 
-  const result = Object.assign({}, { id: book.id }, data)
+  const result = Object.assign(
+    {},
+    { id: book.id },
+    { canViewAddTeamMembers },
+    { teamRoles },
+    data,
+  )
 
   result.bookComponentStateRules = await Promise.all(
     map(bookComponentState, async value => {

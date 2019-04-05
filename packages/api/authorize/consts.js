@@ -26,6 +26,6 @@ module.exports = {
   workFlowStages: {
     canChangeProgressList: 'can change progressList',
     canChangeProgressListRight: 'can change progressList right',
-    canChangeProgressListLeft: 'can progresslist left',
+    canChangeProgressListLeft: 'can change progressList left',
   },
 }

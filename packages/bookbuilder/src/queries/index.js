@@ -1,6 +1,5 @@
 export { default as getBookQuery } from './getBook'
 export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
-export { default as getDashboardRulesQuery } from './getDashboardRules'
 export { default as getBookTeamsQuery } from './getBookTeams'
 export { default as createBookComponentMutation } from './createBookComponent'
 export { default as createBookComponentsMutation } from './createBookComponents'

@@ -6,15 +6,10 @@ const GET_DASHBOARD_RULES = gql`
   query GetDashBoardRules {
     getDashBoardRules {
       canAddBooks
-      canViewAddTeamMember
       bookRules {
         id
         canRenameBooks
         canDeleteBooks
-        teamRoles {
-          role
-          canRemoveTeamMember
-        }
       }
     }
   }

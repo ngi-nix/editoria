@@ -44,7 +44,6 @@ export class Group extends React.Component {
         <GroupHeader
           allowed={allowed}
           canViewAddTeamMember={canViewAddTeamMember}
-          rules={rules}
           show={this.state.isAddMemberOpen}
           showInput={this._showAddMember}
           title={options.title}

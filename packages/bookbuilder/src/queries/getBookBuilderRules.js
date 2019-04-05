@@ -15,6 +15,11 @@ const GET_BOOKBUILDER_RULES = gql`
       canViewAlignmentTool
       exportBook
       downloadEPUB
+      canViewAddTeamMember
+      teamRoles {
+        role
+        canRemoveTeamMember
+      }
       bookComponentStateRules {
         id
         bookComponentId

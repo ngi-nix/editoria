@@ -9,7 +9,6 @@ type bookRule {
   id: ID
   canRenameBooks: Boolean
   canDeleteBooks: Boolean
-  teamRoles: [teamRole!]!
 }
 
 type BookBuilderRules {
@@ -17,6 +16,7 @@ type BookBuilderRules {
   canViewAddComponent: Boolean
   canViewUploadButton: Boolean
   canViewMultipleFilesUpload: Boolean 
+  canViewAddTeamMember: Boolean
   canViewTeamManager: Boolean
   canViewStateList: Boolean
   canViewAlignmentTool: Boolean
@@ -24,6 +24,7 @@ type BookBuilderRules {
   downloadEPUB: Boolean
   bookComponentStateRules: [BookComponentStateRule!]!
   canReorderBookComponent: Boolean
+  teamRoles: [teamRole!]!
 }
 
 type WaxRules {
