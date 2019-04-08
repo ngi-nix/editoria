@@ -29,8 +29,11 @@ const mapProps = args => ({
   refetching:
     args.getBookTeamsQuery.networkStatus === 4 ||
     args.getBookTeamsQuery.networkStatus === 2, // possible apollo bug
+  refetchingBookBuilderRules:
+    args.getBookBuilderRulesQuery.networkStatus === 4 ||
+    args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
   loading: args.getBookTeamsQuery.networkStatus === 1,
-  loadingRules: args.getBookBuilderRulesQuery.loading,
+  loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
   rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
 })
 
@@ -49,25 +52,22 @@ const Connected = props => {
         findUser,
         refetching,
         updateTeam,
-      }) => {
-        if (loading || loadingRules) return null
-
-        return (
-          <TeamManagerModal
-            book={book}
-            canViewAddTeamMember={rules.canViewAddTeamMember}
-            container={container}
-            findUser={findUser}
-            loading={loading}
-            refetching={refetching}
-            rules={rules}
-            show={show}
-            teams={teams}
-            toggle={toggle}
-            updateTeam={updateTeam}
-          />
-        )
-      }}
+      }) => (
+        <TeamManagerModal
+          book={book}
+          canViewAddTeamMember={rules.canViewAddTeamMember}
+          container={container}
+          findUser={findUser}
+          loading={loading}
+          loadingRules={loadingRules}
+          refetching={refetching}
+          rules={rules}
+          show={show}
+          teams={teams}
+          toggle={toggle}
+          updateTeam={updateTeam}
+        />
+      )}
     </Composed>
   )
 }

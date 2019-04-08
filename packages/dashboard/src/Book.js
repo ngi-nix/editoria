@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { State } from 'react-powerplug'
-import { map, forEach } from 'lodash'
+import { map } from 'lodash'
 
 import RemoveBookModal from './RemoveBookModal'
 
@@ -249,7 +249,6 @@ Book.propTypes = {
   history: PropTypes.any.isRequired,
   remove: PropTypes.func.isRequired,
   renameBook: PropTypes.func.isRequired,
-  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 export default withRouter(Book)

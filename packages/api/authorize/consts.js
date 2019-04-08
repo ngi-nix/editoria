@@ -18,6 +18,7 @@ module.exports = {
     canViewUploadButton: 'can view uploadButton',
     canViewAlignmentTool: 'can view alignmentTool',
     canViewStateList: 'can view stateList',
+    canViewFragmentEdit: 'can view fragmentEdit',
     canReorderBookComponent: 'can reorder bookComponents',
     canViewMultipleFilesUpload: 'can view multipleFilesUpload',
     exportBook: 'can view export book',

@@ -1,20 +1,20 @@
 const includes = require('lodash/includes')
 const forEach = require('lodash/forEach')
+const get = require('lodash/get')
 const startsWith = require('lodash/startsWith')
 
 const findUser = async (_, { search, exclude }, ctx, info) => {
   const allUsers = await ctx.connectors.User.fetchAll({}, ctx)
   const searchLow = search.toLowerCase()
   const res = []
-  console.log('users', allUsers)
 
   if (searchLow.length <= 3) {
     forEach(allUsers, user => {
       if (user.admin) return
       if (
-        (startsWith(user.username.toLowerCase(), searchLow) ||
-          startsWith(user.surname.toLowerCase(), searchLow) ||
-          startsWith(user.email.toLowerCase(), searchLow)) &&
+        (startsWith(get(user, 'username', '').toLowerCase(), searchLow) ||
+          startsWith(get(user, 'surname', '').toLowerCase(), searchLow) ||
+          startsWith(get(user, 'email', '').toLowerCase(), searchLow)) &&
         !includes(exclude, user.id)
       ) {
         res.push(user)
@@ -24,9 +24,15 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
     forEach(allUsers, user => {
       if (user.admin) return
       if (
-        (user.username.toLowerCase().includes(searchLow) ||
-          user.surname.toLowerCase().includes(searchLow) ||
-          user.email.toLowerCase().includes(searchLow)) &&
+        (get(user, 'username', '')
+          .toLowerCase()
+          .includes(searchLow) ||
+          get(user, 'surname', '')
+            .toLowerCase()
+            .includes(searchLow) ||
+          get(user, 'email', '')
+            .toLowerCase()
+            .includes(searchLow)) &&
         !includes(exclude, user.id)
       ) {
         res.push(user)

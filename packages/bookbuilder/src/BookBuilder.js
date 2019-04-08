@@ -84,10 +84,10 @@ export class BookBuilder extends React.Component {
       rules,
       loading,
       loadingRules,
-      refetchingBookBuilderRules,
+      // refetchingBookBuilderRules,
     } = this.props
     // console.log(rules)
-    if (loading || loadingRules || refetchingBookBuilderRules) return 'Loading...'
+    if (loading || loadingRules) return 'Loading...'
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
     const { outerContainer } = this.state

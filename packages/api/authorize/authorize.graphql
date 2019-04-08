@@ -1,7 +1,6 @@
 
 type DashboardRules {
   canAddBooks: Boolean
-  canViewAddTeamMember: Boolean
   bookRules: [bookRule!]!
 }
 
@@ -20,6 +19,7 @@ type BookBuilderRules {
   canViewTeamManager: Boolean
   canViewStateList: Boolean
   canViewAlignmentTool: Boolean
+  canViewFragmentEdit: Boolean
   exportBook: Boolean
   downloadEPUB: Boolean
   bookComponentStateRules: [BookComponentStateRule!]!

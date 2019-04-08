@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import BookBuilder from './BookBuilder'
 import {
   getBookQuery,
-  // getBookBuilderRulesQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -34,7 +34,7 @@ import {
 
 const mapper = {
   getBookQuery,
-  // getBookBuilderRulesQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -79,14 +79,14 @@ const mapProps = args => ({
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
   loading: args.getBookQuery.networkStatus === 1,
-  loadingRules: false,
-  // rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
+  loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
+  rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
   refetching:
     args.getBookQuery.networkStatus === 4 ||
     args.getBookQuery.networkStatus === 2, // possible apollo bug
-  refetchingBookBuilderRules:false,
-    // args.getBookBuilderRulesQuery.networkStatus === 4 ||
-    // args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
+  refetchingBookBuilderRules:
+    args.getBookBuilderRulesQuery.networkStatus === 4 ||
+    args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -94,358 +94,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { match, history } = props
   const { id: bookId } = match.params
-  const test = {
-    id: '2498cb34-daf5-4f94-9ed2-cb1f07966ee4',
-    canViewAddComponent: true,
-    canReorderBookComponent: true,
-    canViewUploadButton: true,
-    canViewMultipleFilesUpload: true,
-    canViewTeamManager: true,
-    canViewStateList: true,
-    canViewAlignmentTool: true,
-    exportBook: true,
-    downloadEPUB: true,
-    bookComponentStateRules: [
-      {
-        id: 'c7250d1e-a1aa-4f2e-8408-ea382939aeb2',
-        bookComponentId: 'fd83c0fa-ebea-4d77-a676-77cb051746db',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-      {
-        id: '4ba9ee13-30cf-4d88-b83d-5a9609d833f5',
-        bookComponentId: 'c7730922-c883-4bab-8b86-54b7158d7649',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-      {
-        id: 'e8eeb355-38ea-44e4-bc75-d06d95b7fac5',
-        bookComponentId: '52554908-0eee-4cd5-9a45-6c3e14fcc661',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-      {
-        id: '7d284903-3882-4053-a297-90051248a52a',
-        bookComponentId: '6056e0e6-ab5d-4533-90a7-2569a64498a4',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-      {
-        id: '92c54ef5-3f95-45eb-a463-bfe7e6e302c2',
-        bookComponentId: 'db51438f-3175-4d6e-ae32-9a2767446d1d',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-      {
-        id: '512ca90d-e0d1-4be5-8d08-13c12ab49c41',
-        bookComponentId: '5dd1f06d-677c-41a3-b85c-3d253fb1c59b',
-        stage: [
-          {
-            type: 'upload',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'file_prep',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'edit',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'review',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'clean_up',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'page_check',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-          {
-            type: 'final',
-            canChangeProgressList: true,
-            canChangeProgressListRight: true,
-            canChangeProgressListLeft: true,
-            __typename: 'Stages',
-          },
-        ],
-        __typename: 'BookComponentStateRule',
-      },
-    ],
-    __typename: 'BookBuilderRules',
-  }
-
+ 
   return (
     <Composed bookId={bookId}>
       {({
@@ -482,7 +131,7 @@ const Connected = props => {
             ingestWordFiles={ingestWordFiles}
             loading={loading}
             loadingRules={loadingRules}
-            rules={test}
+            rules={rules}
             updateBookComponentContent={updateBookComponentContent}
             updateComponentType={updateComponentType}
             updateBookComponentOrder={updateBookComponentOrder}

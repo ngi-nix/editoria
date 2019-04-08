@@ -101,7 +101,7 @@ const getBookBuilderRules = async (_, args, ctx) => {
   const result = Object.assign(
     {},
     { id: book.id },
-    { canViewAddTeamMembers },
+    { canViewAddTeamMember: canViewAddTeamMembers.canViewAddTeamMember },
     { teamRoles },
     data,
   )

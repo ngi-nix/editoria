@@ -15,6 +15,7 @@ const GET_BOOKBUILDER_RULES = gql`
       canViewAlignmentTool
       exportBook
       downloadEPUB
+      canViewFragmentEdit
       canViewAddTeamMember
       teamRoles {
         role

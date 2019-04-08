@@ -1,4 +1,4 @@
-import { isEmpty, sortBy } from 'lodash'
+import { isEmpty } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -31,13 +31,13 @@ const BookList = props => {
     <Wrapper>
       {books.map(book => (
         <Book
+          archiveBook={archiveBook}
           book={book}
           bookRule={bookRules.find(bookRule => bookRule.id === book.id)}
           container={container}
           key={book.id}
           remove={remove}
           renameBook={renameBook}
-          archiveBook={archiveBook}
         />
       ))}
     </Wrapper>
@@ -54,7 +54,6 @@ BookList.propTypes = {
   container: PropTypes.any.isRequired,
   remove: PropTypes.func.isRequired,
   renameBook: PropTypes.func.isRequired,
-  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 export default BookList
