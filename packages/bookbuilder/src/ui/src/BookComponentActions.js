@@ -15,9 +15,6 @@ const Container = styled.div`
 `
 
 const BookComponentActions = ({
-  outerContainer,
-  // showModal,
-  // showModalToggle,
   componentType,
   uploading,
   bookComponentId,
@@ -26,30 +23,17 @@ const BookComponentActions = ({
   lock,
   history,
   title,
-  remove,
-  update,
+  onAdminUnlock,
 }) => {
   const isLocked = get(lock, 'username')
   const handleClick = () => {
     onDeleteBookComponent(bookComponentId, componentType, title)
   }
-  // let deleteModal = null
+  
   const goToEditor = () => {
     if (isLocked || uploading) return
     history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   }
-  // if (showModal) {
-  //   deleteModal = (
-  //     <DeleteModal
-  //       bookComponentId={bookComponentId}
-  //       componentType={componentType}
-  //       container={outerContainer}
-  //       remove={remove}
-  //       show={showModal}
-  //       toggle={showModalToggle}
-  //     />
-  //   )
-  // }
   if (!isLocked) {
     return (
       <Container>
@@ -67,11 +51,10 @@ const BookComponentActions = ({
     <Container>
       <EditingNotification
         bookComponentId={bookComponentId}
-        modalContainer={outerContainer}
-        update={update}
+        onAdminUnlock={onAdminUnlock}
+        componentType={componentType}
+        title={title}
         lock={lock}
-        // show={showModal}
-        // toggle={showModalToggle}
       />
     </Container>
   )

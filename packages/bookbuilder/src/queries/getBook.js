@@ -31,6 +31,7 @@ const GET_BOOK = gql`
             username
             created
             givenName
+            isAdmin
             surname
           }
           componentType

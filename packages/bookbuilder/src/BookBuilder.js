@@ -82,8 +82,10 @@ export class BookBuilder extends React.Component {
       updateBookComponentContent,
       updateComponentType,
       onDeleteBookComponent,
+      onAdminUnlock,
       exportBook,
       onTeamManager,
+      onError,
       loading,
     } = this.props
     if (loading) return 'Loading...'
@@ -110,16 +112,12 @@ export class BookBuilder extends React.Component {
         book={book}
         history={history}
         htmlToEpub={exportBook}
-        outerContainer={outerContainer}
-        showModal={this.state.showModal}
-        showModalToggle={this.toggleModal}
+        onError={onError}
       />,
       <DownloadEpubButton
         book={book}
         htmlToEpub={exportBook}
-        outerContainer={outerContainer}
-        showModal={this.state.showModal}
-        showModalToggle={this.toggleModal}
+        onError={onError}
       />,
     ]
     return (
@@ -132,6 +130,7 @@ export class BookBuilder extends React.Component {
         <DivisionsArea
           addBookComponent={addBookComponent}
           addBookComponents={addBookComponents}
+          onAdminUnlock={onAdminUnlock}
           history={history}
           bookId={book.id}
           deleteBookComponent={deleteBookComponent}

@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 
 import { th } from '@pubsweet/ui-toolkit'
 
-import ModalHeader from './ModalBody'
+import ModalHeader from './ModalHeader'
 
 ReactModal.setAppElement('#root')
 
@@ -92,7 +92,6 @@ const StyledModal = styled(ReactModalAdapter).attrs({
     opacity: 0;
   }
 `
-const Header = <ModalHeader text="hello" />
 
 const FormModal = props => {
   const { children, className, onRequestClose, headerText, ...rest } = props
@@ -101,10 +100,15 @@ const FormModal = props => {
   return (
     <StyledModal
       className={className}
-      headerComponent={Header}
       onRequestClose={onRequestClose}
+      shouldCloseOnOverlayClick={false}
       {...rest}
     >
+      <ModalHeader
+        text={headerText}
+        onRequestClose={onRequestClose}
+        closeIcon
+      />
       {children}
     </StyledModal>
   )

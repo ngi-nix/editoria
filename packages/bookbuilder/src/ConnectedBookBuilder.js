@@ -17,6 +17,7 @@ import {
   updateBookComponentWorkflowStateMutation,
   updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
+  unlockBookComponentMutation,
   updateBookComponentTypeMutation,
   exportBookMutation,
   orderChangeSubscription,
@@ -34,6 +35,7 @@ const mapper = {
   withModal,
   getBookQuery,
   createBookComponentMutation,
+  unlockBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
@@ -72,12 +74,26 @@ const mapProps = args => ({
   updateBookComponentUploading:
     args.updateBookComponentUploadingMutation.updateUploading,
   updateComponentType: args.updateBookComponentTypeMutation.updateComponentType,
+  unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
   onDeleteBookComponent: (bookComponentId, componentType, title) => {
-    args.withModal.showModal('deleteBookComponent', {
-      deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
-      bookComponentId,
+    const { deleteBookComponentMutation, withModal } = args
+    const { deleteBookComponent } = deleteBookComponentMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = () => {
+      deleteBookComponent({
+        variables: {
+          input: {
+            id: bookComponentId,
+            deleted: true,
+          },
+        },
+      })
+      hideModal()
+    }
+    showModal('deleteBookComponent', {
+      onConfirm,
       componentType,
       title,
     })
@@ -85,6 +101,34 @@ const mapProps = args => ({
   onTeamManager: bookId => {
     args.withModal.showModal('bookTeamManager', {
       bookId,
+    })
+  },
+  onError: error => {
+    const { withModal } = args
+    const { showModal, hideModal } = withModal
+    showModal('warningModal', {
+      onConfirm: hideModal,
+      error,
+    })
+  },
+  onAdminUnlock: (bookComponentId, componentType, title) => {
+    const { unlockBookComponentMutation, withModal } = args
+    const { unlockBookComponent } = unlockBookComponentMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = () => {
+      unlockBookComponent({
+        variables: {
+          input: {
+            id: bookComponentId,
+          },
+        },
+      })
+      hideModal()
+    }
+    showModal('unlockModal', {
+      onConfirm,
+      componentType,
+      title,
     })
   },
 
@@ -112,12 +156,14 @@ const Connected = props => {
         updateBookComponentOrder,
         updateComponentType,
         updateBookComponentWorkflowState,
+        onError,
         updateBookComponentContent,
         updateBookComponentUploading,
         ingestWordFiles,
         onDeleteBookComponent,
         loading,
         refetching,
+        onAdminUnlock,
         exportBook,
       }) => {
         return (
@@ -125,6 +171,8 @@ const Connected = props => {
             addBookComponent={addBookComponent}
             addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
+            onError={onError}
+            onAdminUnlock={onAdminUnlock}
             refetching={refetching}
             book={book}
             history={history}

@@ -3,13 +3,7 @@ import config from 'config'
 import ErrorModal from './ErrorModal'
 import { ButtonWithIcon } from './Button'
 
-const DownloadEpub = ({
-  book,
-  htmlToEpub,
-  showModal,
-  showModalToggle,
-  outerContainer,
-}) => {
+const DownloadEpub = ({ book, htmlToEpub, onError }) => {
   let modal
   let converter
   if (config['pubsweet-client'] && config['pubsweet-client'].converter) {
@@ -32,13 +26,10 @@ const DownloadEpub = ({
       })
       .catch(error => {
         console.error('er', error)
-        showModalToggle()
+        onError(error)
       })
   }
 
-  const toggleModal = () => {
-    showModalToggle()
-  }
   const icon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -50,15 +41,6 @@ const DownloadEpub = ({
       <path d="M0 0h24v24H0z" fill="none" />
     </svg>
   )
-  if (showModal) {
-    modal = (
-      <ErrorModal
-        container={outerContainer}
-        show={showModal}
-        toggle={toggleModal}
-      />
-    )
-  }
 
   return (
     <React.Fragment>

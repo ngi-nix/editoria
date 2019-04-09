@@ -35,3 +35,4 @@ export {
 } from './updateUploading'
 export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as exportBookMutation } from './exportBook'
+export { default as unlockBookComponentMutation } from './unlockBookComponent'

@@ -200,6 +200,7 @@ class DivisionsArea extends Component {
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
+      onAdminUnlock,
       updateBookComponentContent,
       updateBookComponentUploading,
       outerContainer,
@@ -215,6 +216,7 @@ class DivisionsArea extends Component {
         <Division
           add={addBookComponent}
           addBookComponents={addBookComponents}
+          onAdminUnlock={onAdminUnlock}
           bookComponents={bookComponents}
           bookId={bookId}
           deleteBookComponent={deleteBookComponent}

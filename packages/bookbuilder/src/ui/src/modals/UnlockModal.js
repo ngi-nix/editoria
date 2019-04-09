@@ -2,21 +2,22 @@ import React from 'react'
 import styled from 'styled-components'
 import DialogModal from 'editoria-common/src/DialogModal'
 
-const DeleteBookModal = props => {
+const UnlockModal = props => {
   const { isOpen, hideModal, data } = props
-  const { bookTitle, onConfirm } = data
+  const { componentType, title, onConfirm } = data
+ 
   return (
     <DialogModal
       isOpen={isOpen}
-      headerText="Delete Book"
+      headerText={`Unlock ${componentType}`}
       onRequestClose={hideModal}
       onConfirm={onConfirm}
     >
       <div>
-        {`Are you sure you want to delete the book with title ${bookTitle}?`}
+        {`Are you sure you want to unlock this ${componentType} with title ${title}?`}
       </div>
     </DialogModal>
   )
 }
 
-export default DeleteBookModal
+export default UnlockModal

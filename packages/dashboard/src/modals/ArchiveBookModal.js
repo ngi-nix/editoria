@@ -4,25 +4,18 @@ import DialogModal from 'editoria-common/src/DialogModal'
 
 const ArchiveBookModal = props => {
   const { isOpen, hideModal, data } = props
-  const { bookId, bookTitle, archiveBook, archived } = data
-  const handleClick = () => {
-    archiveBook({
-      variables: {
-        id: bookId,
-        archive: !archived,
-      },
-    })
-    hideModal()
-  }
+  const { bookTitle, onConfirm, archived } = data
   return (
     <DialogModal
       isOpen={isOpen}
-      headerText="Archive Book"
+      headerText={archived ? 'Unarchive Book' : 'Archive Book'}
       onRequestClose={hideModal}
-      onConfirm={handleClick}
+      onConfirm={onConfirm}
     >
       <div>
-        {`Are you sure you want to archive the book with title ${bookTitle}?`}
+        {`Are you sure you want to ${
+          archived ? 'unarchive' : 'archive'
+        } the book with title ${bookTitle}?`}
       </div>
     </DialogModal>
   )

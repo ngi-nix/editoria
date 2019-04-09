@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import FormModal from 'editoria-common/src/FormModal'
 import ModalBody from 'editoria-common/src/ModalBody'
 import ModalFooter from 'editoria-common/src/ModalFooter'
+import { Button } from '@pubsweet/ui'
 import { Formik } from 'formik'
 
 const Input = styled.input`
@@ -94,6 +95,8 @@ class AddBookModal extends React.Component {
   }
 
   renderBody() {
+    const { data } = this.props
+    const { onConfirm } = data
     const message = (
       <div style={{ paddingBottom: 4 }}>
         Enter the title of the new book <br />
@@ -112,10 +115,12 @@ class AddBookModal extends React.Component {
             return errors
           }}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2))
-              setSubmitting(false)
-            }, 400)
+            // setTimeout(() => {
+            //   alert(JSON.stringify(values, null, 2))
+            //   setSubmitting(false)
+            // }, 400)
+            onConfirm(values.title)
+            setSubmitting(false)
           }}
         >
           {({
@@ -143,9 +148,9 @@ class AddBookModal extends React.Component {
                 {errors.title && touched.title && errors.title}
               </ModalBody>
               <ModalFooter>
-                <button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting}>
                   Submit
-                </button>
+                </Button>
               </ModalFooter>
             </form>
           )}
@@ -165,15 +170,15 @@ class AddBookModal extends React.Component {
 
   render() {
     const { isOpen, hideModal } = this.props
+    console.log('props', this.props)
     const body = this.renderBody()
 
     return (
       <FormModal
         isOpen={isOpen}
         headerText="Create a new Book"
-        size="samll"
+        size="small"
         onRequestClose={hideModal}
-        onConfirm={this.onCreate}
       >
         {body}
       </FormModal>

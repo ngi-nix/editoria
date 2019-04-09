@@ -125,19 +125,10 @@ const Remove = props => {
 }
 
 const Archive = props => {
-  const { book, archiveBook, onArchiveBook } = props
+  const { book, onArchiveBook } = props
   const { archived } = book
   const handleClick = () => {
-    if (archived) {
-      archiveBook({
-        variables: {
-          id: book.id,
-          archive: !archived,
-        },
-      })
-    } else {
-      onArchiveBook(book.id, book.title, archived)
-    }
+    onArchiveBook(book.id, book.title, archived)
   }
   const label = archived ? 'Unarchive' : 'Archive'
   return (

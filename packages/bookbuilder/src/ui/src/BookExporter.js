@@ -26,13 +26,12 @@ class VivliostyleExporter extends Component {
     super(props)
     this.state = { selectedOption: undefined }
     this.handleHTMLToEpub = this.handleHTMLToEpub.bind(this)
-    this.toggleModal = this.toggleModal.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
 
   handleHTMLToEpub = e => {
     e.preventDefault()
-    const { book, htmlToEpub, showModalToggle, history } = this.props
+    const { book, htmlToEpub, history, onError } = this.props
     const { selectedOption } = this.state
     let converter
 
@@ -66,14 +65,10 @@ class VivliostyleExporter extends Component {
       })
       .catch(error => {
         console.error('er', error)
-        showModalToggle()
+        onError(error)
       })
   }
 
-  toggleModal = () => {
-    const { showModalToggle } = this.props
-    showModalToggle()
-  }
 
   handleChange = currentValue => {
     this.setState({ selectedOption: currentValue })
@@ -81,7 +76,6 @@ class VivliostyleExporter extends Component {
 
   render() {
     const { selectedOption } = this.state
-    const { showModal, outerContainer } = this.props
     const options = [
       { value: 'vivliostyle', label: 'Vivliostyle' },
       { value: 'paged', label: 'PagedJS' },
@@ -129,16 +123,6 @@ class VivliostyleExporter extends Component {
         paddingTop: 0,
         paddingBottom: 0,
       }),
-    }
-
-    if (showModal) {
-      modal = (
-        <ErrorModal
-          container={outerContainer}
-          show={showModal}
-          toggle={this.toggleModal}
-        />
-      )
     }
 
     return (

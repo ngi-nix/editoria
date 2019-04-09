@@ -7,10 +7,9 @@ import styled from 'styled-components'
 
 const StyledButton = styled(ButtonWithIcon)`
   background: black;
-  span{
-
-  font-size: 12px;
-  line-height: 16px;
+  span {
+    font-size: 12px;
+    line-height: 16px;
   }
   color: ${th('colorBackground')};
   svg {
@@ -28,6 +27,7 @@ const StyledButton = styled(ButtonWithIcon)`
 
   &:not(:disabled):hover {
     background-color: black;
+    cursor: pointer;
     color: ${th('colorBackground')};
     svg {
       fill: ${th('colorBackground')};
@@ -35,6 +35,7 @@ const StyledButton = styled(ButtonWithIcon)`
   }
   &:not(:disabled):active {
     background-color: black;
+    cursor: pointer;
     color: ${th('colorBackground')};
     outline: none;
     svg {
@@ -47,17 +48,16 @@ const StyledButton = styled(ButtonWithIcon)`
 `
 const EditingNotification = ({
   bookComponentId,
-  modalContainer,
+  onAdminUnlock,
   lock,
-  update,
-  show,
-  toggle,
+  componentType,
+  title,
 }) => {
-  const { givenName, surname, username, created } = lock
-  const isAdmin = false
-console.log('lock',lock)
-  const message = `${givenName} ${surname} is editing`
-  let hoverTitle, unlockModal
+  const { givenName, surname, username, created, isAdmin } = lock
+  const message = isAdmin
+    ? 'admin is editing'
+    : `${givenName} ${surname} is editing`
+  let hoverTitle
 
   const formatDate = timestamp => {
     const date = new Date(timestamp)
@@ -82,6 +82,11 @@ console.log('lock',lock)
 
     return formatted
   }
+
+  if (created) {
+    const date = formatDate(created)
+    hoverTitle = `${username} has been editing since ${date}`
+  }
   const icon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -94,32 +99,15 @@ console.log('lock',lock)
     </svg>
   )
 
-  if (isAdmin) {
-    unlockModal = (
-      <UnlockModal
-        bookComponentId={bookComponentId}
-        container={modalContainer}
-        show={show}
-        toggle={toggle}
-        update={update}
-      />
-    )
-
-    if (created) {
-      const date = formatDate(created)
-      hoverTitle = `${username} has been editing since ${date}`
-    }
-  }
   return (
     <React.Fragment>
       <StyledButton
         icon={icon}
         label={message}
         title={hoverTitle}
-        onClick={toggle}
+        onClick={() => onAdminUnlock(bookComponentId, componentType, title)}
         disabled={!isAdmin}
       />
-      {unlockModal}
     </React.Fragment>
   )
 }

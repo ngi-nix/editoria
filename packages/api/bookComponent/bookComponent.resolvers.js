@@ -555,10 +555,11 @@ module.exports = {
       if (lock.length > 0) {
         const user = await ctx.connectors.User.fetchOne(lock[0].userId, ctx)
         locked = {
-          created: lock.created,
+          created: lock[0].created,
           username: user.username,
           givenName: user.givenName,
           surname: user.surname,
+          isAdmin: user.admin,
         }
       }
       return locked

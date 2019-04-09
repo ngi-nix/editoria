@@ -13,6 +13,7 @@ input PaginationInput {
 type Lock {
   created: Date
   username: String
+  isAdmin: Boolean
   givenName: String
   surname: String
   userId: ID

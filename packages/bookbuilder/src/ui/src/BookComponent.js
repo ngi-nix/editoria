@@ -180,6 +180,7 @@ const BookComponent = ({
   title,
   workflowStages,
   trackChangesEnabled,
+  onAdminUnlock,
   uploading,
   updatePagination,
   updateWorkflowState,
@@ -253,6 +254,7 @@ const BookComponent = ({
         <BookComponentActions
           outerContainer={outerContainer}
           onDeleteBookComponent={onDeleteBookComponent}
+          onAdminUnlock={onAdminUnlock}
           title={title}
           showModal={showModal}
           showModalToggle={showModalToggle}

@@ -43,11 +43,11 @@ const mapProps = args => {
       args.getBookCollectionsQuery.networkStatus === 4 ||
       args.getBookCollectionsQuery.networkStatus === 2, // possible apollo bug
     renameBook: args.renameBookMutation.renameBook,
-    onAddBook: (collectionId) => {
-      const {createBookMutation, withModal} = args
-      const {createBook} = createBookMutation
-      const {showModal, hideModal} = withModal
-      const onConfirm = (title) => {
+    onAddBook: collectionId => {
+      const { createBookMutation, withModal } = args
+      const { createBook } = createBookMutation
+      const { showModal, hideModal } = withModal
+      const onConfirm = title => {
         createBook({
           variables: {
             input: {
@@ -63,16 +63,37 @@ const mapProps = args => {
       })
     },
     onDeleteBook: (bookId, bookTitle) => {
-      args.withModal.showModal('deleteBook', {
-        deleteBook: args.deleteBookMutation.deleteBook,
-        bookId,
+      const { deleteBookMutation, withModal } = args
+      const { deleteBook } = deleteBookMutation
+      const { showModal, hideModal } = withModal
+      const onConfirm = () => {
+        deleteBook({
+          variables: {
+            id: bookId,
+          },
+        })
+        hideModal()
+      }
+      showModal('deleteBook', {
+        onConfirm,
         bookTitle,
       })
     },
     onArchiveBook: (bookId, bookTitle, archived) => {
-      args.withModal.showModal('archiveBook', {
-        archiveBook: args.archiveBookMutation.archiveBook,
-        bookId,
+      const { archiveBookMutation, withModal } = args
+      const { archiveBook } = archiveBookMutation
+      const { showModal, hideModal } = withModal
+      const onConfirm = () => {
+        archiveBook({
+          variables: {
+            id: bookId,
+            archive: !archived,
+          },
+        })
+        hideModal()
+      }
+      showModal('archiveBook', {
+        onConfirm,
         bookTitle,
         archived,
       })
