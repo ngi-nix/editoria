@@ -14,9 +14,12 @@ const StyledNavBar = styled(AppBar)`
 class Navigation extends React.Component {
   constructor(props) {
     super(props)
+    const { location } = this.props.history
+    const { pathname } = location
+
     this.collectionId = ''
-    this.inEditor = null
-    this.inPaged = null
+    this.inEditor = pathname.match(/bookComponents/g)
+    this.inPaged = pathname.match(/pagedPreviewer\/paged/g)
   }
 
   // componentWillMount() {
