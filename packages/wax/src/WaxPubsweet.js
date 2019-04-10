@@ -155,10 +155,11 @@ export class WaxPubsweet extends React.Component {
   // }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.loading || this.props.waxLoading || this.props.userLoading) {
-      return
-    }
-    if (nextProps.bookComponent !== this.props.bookComponent) {
+    if (
+      (nextProps.bookComponent !== this.props.bookComponent ||
+        nextProps.rules !== this.props.rules) &&
+      nextProps.rules
+    ) {
       if (nextProps.rules.canEditFull) {
         this.setState({ editing: 'full' })
       } else if (nextProps.rules.canEditSelection) {

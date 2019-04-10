@@ -17,7 +17,8 @@ class Navigation extends React.Component {
     const { location } = this.props.history
     const { pathname } = location
 
-    this.collectionId = ''
+    const pathnameSplitted = pathname.split('/')
+    this.collectionId = pathnameSplitted[2] // eslint-disable-line
     this.inEditor = pathname.match(/bookComponents/g)
     this.inPaged = pathname.match(/pagedPreviewer\/paged/g)
   }
