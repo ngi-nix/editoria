@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import config from 'config'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { map, uniqueId, last, indexOf, find } from 'lodash'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 import Arrow from './Arrow'
 import Label from './Label'
 import WorkflowItem from './WorkflowItem'
+
 const Container = styled.div`
   display: flex;
   flex-basis: 65%;
@@ -20,7 +20,14 @@ const Container = styled.div`
     }
   }
 `
-const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
+const WorkflowList = ({
+  bookId,
+  className,
+  currentValues,
+  update,
+  values,
+  bookComponentStateRules: { stage },
+}) => {
   let stageItems
   if (config && config.bookBuilder && config.bookBuilder.stages) {
     stageItems = config.bookBuilder.stages
@@ -58,6 +65,7 @@ const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
       interactive={stageItem.type !== 'upload'}
       isLast={stageItem.type === lastItem}
       item={stageItem}
+      stage={stage}
       type={type}
       update={handleUpdate}
       values={values}
@@ -79,32 +87,28 @@ const WorkflowList = ({ bookId, className, currentValues, update, values }) => {
         previousNotDone = true
       }
     }
+    const selectedStage = stage.find(stg => stg.type === type)
+    if (selectedStage.canChangeProgressList) {
+      return renderStateItem(
+        previousNotDone || false,
+        currentValueIndex,
+        stageItem,
+        handleUpdate,
+        bookId,
+        type,
+        currentValues,
+      )
+    }
 
-    // return (
-      // <Authorize
-      //   object={{ bookId, type, currentValues }}
-      //   operation="can change progressList"
-      //   unauthorized={renderStateItem(
-      //     previousNotDone || true,
-      //     currentValueIndex,
-      //     stageItem,
-      //     handleUpdate,
-      //     bookId,
-      //     type,
-      //     currentValues,
-      //   )}
-      // >
-       return renderStateItem(
-          previousNotDone || false,
-          currentValueIndex,
-          stageItem,
-          handleUpdate,
-          bookId,
-          type,
-          currentValues,
-        )
-      {/* </Authorize> */}
-    // )
+    return renderStateItem(
+      previousNotDone || true,
+      currentValueIndex,
+      stageItem,
+      handleUpdate,
+      bookId,
+      type,
+      currentValues,
+    )
   })
   return <Container>{items}</Container>
 }

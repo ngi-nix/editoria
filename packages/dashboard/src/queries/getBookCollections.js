@@ -31,7 +31,7 @@ const getBookCollectionsQuery = props => {
 
   return (
     <Query
-      fetchPolicy="cache-first"
+      fetchPolicy="cache-and-network"
       notifyOnNetworkStatusChange
       query={GET_BOOK_COLLECTIONS}
     >

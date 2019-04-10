@@ -5,12 +5,12 @@ extend type Query {
 }
 
 type TeamSub {
-  bookId: ID!
+  bookId: ID
   teamId: ID!
-  teamType: String!
+  role: String!
   members: [User]!
+  global: Boolean!
 }
-
 
 extend type Mutation {
   updateTeamMembers(id: String!, input: TeamInput!): Team!

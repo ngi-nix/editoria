@@ -83,11 +83,11 @@ const addBookComponent = async (_, args, ctx, info) => {
     logger.info(
       `New book component translation created with id ${translation.id}`,
     )
-    const newBookComponents = []
+    const newBookComponents = division.bookComponents
 
-    forEach(division.bookComponents, bookComponent => {
-      newBookComponents.push(bookComponent)
-    })
+    // forEach(division.bookComponents, bookComponent => {
+    //   newBookComponents.push(bookComponent)
+    // })
     newBookComponents.push(createdBookComponent.id)
 
     const updatedDivision = await Division.query().patchAndFetchById(
@@ -124,6 +124,7 @@ const addBookComponent = async (_, args, ctx, info) => {
     logger.info(
       `New state created for the book component ${bookComponentState}`,
     )
+    console.log('created', createdBookComponent)
     pubsub.publish(BOOK_COMPONENT_ADDED, {
       bookComponentAdded: createdBookComponent,
     })
@@ -236,6 +237,12 @@ const renameBookComponent = async (_, { input }, ctx) => {
 const deleteBookComponent = async (_, { input }, ctx) => {
   const { id, deleted } = input
   try {
+    const currentAndUpdate = {
+      current: await BookComponent.findById(id),
+      update: { deleted },
+    }
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
     const pubsub = await pubsubManager.getPubsub()
     const deletedBookComponent = await BookComponent.query().patchAndFetchById(
       id,
@@ -299,6 +306,13 @@ const updateWorkflowState = async (_, { input }, ctx) => {
     logger.info(
       `Found book component state with id ${bookComponentState[0].id}`,
     )
+
+    const currentAndUpdate = {
+      current: bookComponentState[0],
+      update: { workflowStages },
+    }
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
     const updatedBookComponentState = await BookComponentState.query().patchAndFetchById(
       bookComponentState[0].id,
       {
@@ -379,6 +393,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
 const updateContent = async (_, { input }, ctx) => {
   const { id, content, workflowStages, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
+
   const bookComponentTranslation = await BookComponentTranslation.query().where(
     'bookComponentId',
     id,
@@ -394,6 +409,13 @@ const updateContent = async (_, { input }, ctx) => {
       'bookComponentId',
       id,
     )
+
+    const currentAndUpdate = {
+      current: bookComponentState[0],
+      update: { workflowStages },
+    }
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
     await BookComponentState.query().patchAndFetchById(
       bookComponentState[0].id,
       {
@@ -406,6 +428,12 @@ const updateContent = async (_, { input }, ctx) => {
       'bookComponentId',
       id,
     )
+    const currentAndUpdate = {
+      current: bookComponentState[0],
+      update: { uploading },
+    }
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
     await BookComponentState.query().patchAndFetchById(
       bookComponentState[0].id,
       {
@@ -425,6 +453,13 @@ const updateContent = async (_, { input }, ctx) => {
 const updatePagination = async (_, { input }, ctx) => {
   const { id, pagination } = input
   const pubsub = await pubsubManager.getPubsub()
+
+  const currentAndUpdate = {
+    current: await BookComponent.findById(id),
+    update: { pagination },
+  }
+  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
   const updatedBookComponent = await BookComponent.query().patchAndFetchById(
     id,
     {
@@ -440,10 +475,18 @@ const updatePagination = async (_, { input }, ctx) => {
 const updateTrackChanges = async (_, { input }, ctx) => {
   const { id, trackChangesEnabled } = input
   const pubsub = await pubsubManager.getPubsub()
+
   const bookComponentState = await BookComponentState.query().where(
     'bookComponentId',
     id,
   )
+
+  const currentAndUpdate = {
+    current: bookComponentState[0],
+    update: { trackChangesEnabled },
+  }
+  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
   await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
     trackChangesEnabled,
   })
@@ -457,10 +500,18 @@ const updateTrackChanges = async (_, { input }, ctx) => {
 const updateUploading = async (_, { input }, ctx) => {
   const { id, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
+
   const bookComponentState = await BookComponentState.query().where(
     'bookComponentId',
     id,
   )
+
+  const currentAndUpdate = {
+    current: bookComponentState[0],
+    update: { uploading },
+  }
+  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
   await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
     uploading,
   })
@@ -507,10 +558,17 @@ module.exports = {
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
-      const bookComponentTranslation = await BookComponentTranslation.query()
-        .where('bookComponentId', bookComponent.id)
-        .andWhere('languageIso', 'en')
-      return bookComponentTranslation[0].title
+      // console.log('bokk', bookComponent)
+      let { title } = bookComponent
+      console.log('dsds', title)
+      if (!title) {
+        const bookComponentTranslation = await BookComponentTranslation.query()
+          .where('bookComponentId', bookComponent.id)
+          .andWhere('languageIso', 'en')
+          console.log('dsdssdfrsdfdfsds', bookComponentTranslation)
+        title = bookComponentTranslation[0].title
+      }
+      return title
     },
     async bookId(bookComponent, _, ctx) {
       return bookComponent.bookId
@@ -565,19 +623,19 @@ module.exports = {
       return locked
     },
     async componentTypeOrder(bookComponent, _, ctx) {
+      // return 1
       const { componentType } = bookComponent
-      const division = await Division.query().where(
-        'id',
+      // const division = await Division.query().where(
+      //   'id',
+      //   bookComponent.divisionId,
+      // )
+      const sortedPerDivision = await ctx.connectors.DivisionLoader.model.bookComponents.load(
         bookComponent.divisionId,
       )
-      const sortedPerDivision = await Promise.all(
-        map(division[0].bookComponents, async id => {
-          const bookComponent = await BookComponent.query()
-            .where('id', id)
-            .andWhere('deleted', false)
-          return bookComponent[0]
-        }),
-      )
+      // console.log('sorted', sortedPerDivision)
+      // const sortedPerDivision = await BookComponent.query()
+      //   .whereIn('id', division[0].bookComponents)
+      //   .andWhere('deleted', false)
       const groupedByType = groupBy(
         pullAll(sortedPerDivision, [undefined]),
         'componentType',
@@ -591,18 +649,22 @@ module.exports = {
       )
     },
     async uploading(bookComponent, _, ctx) {
-      const bookComponentState = await BookComponentState.query().where(
-        'bookComponentId',
+      ctx.connectors.BookComponentStateLoader.model.state.clear()
+      const bookComponentState = await ctx.connectors.BookComponentStateLoader.model.state.load(
         bookComponent.id,
       )
+      // const bookComponentState = await BookComponentState.query().where(
+      //   'bookComponentId',
+      //   bookComponent.id,
+      // )
       return bookComponentState[0].uploading
     },
     async pagination(bookComponent, _, ctx) {
       return bookComponent.pagination
     },
     async workflowStages(bookComponent, _, ctx) {
-      const bookComponentState = await BookComponentState.query().where(
-        'bookComponentId',
+      ctx.connectors.BookComponentStateLoader.model.state.clear()
+      const bookComponentState = await ctx.connectors.BookComponentStateLoader.model.state.load(
         bookComponent.id,
       )
       return bookComponentState[0].workflowStages || null

@@ -37,12 +37,11 @@ const BOOK_DELETED_SUBSCRIPTION = gql`
     }
   }
 `
-
 const bookCreatedSubscription = props => {
-  const { render, getBookCollectionsQuery } = props
-  const { refetch } = getBookCollectionsQuery
+  const { render, getBookCollectionsQuery, getDashboardRulesQuery } = props
   const triggerRefetch = () => {
-    refetch()
+    getBookCollectionsQuery.refetch()
+    getDashboardRulesQuery.refetch()
   }
   return (
     <Subscription
@@ -57,7 +56,6 @@ const bookArchivedSubscription = props => {
   const { render, getBookCollectionsQuery } = props
   const { refetch } = getBookCollectionsQuery
   const triggerRefetch = () => {
-    console.log('hello')
     refetch()
   }
   return (
@@ -102,9 +100,36 @@ const bookDeletedSubscription = props => {
   )
 }
 
+const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
+  subscription TeamMembersUpdated {
+    teamMembersUpdated {
+      bookId
+    }
+  }
+`
+
+const addTeamMemberSubscription = props => {
+  const { render, getDashboardRulesQuery, getBookCollectionsQuery } = props
+
+  const triggerRefetch = () => {
+    getBookCollectionsQuery.refetch()
+    getDashboardRulesQuery.refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={TEAM_MEMBERS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   bookCreatedSubscription,
   bookArchivedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
+  addTeamMemberSubscription,
 }

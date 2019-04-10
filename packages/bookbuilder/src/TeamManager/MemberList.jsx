@@ -12,7 +12,8 @@ export class MemberList extends React.Component {
       color,
       team,
       update,
-      bookId,
+      // bookId,
+      rules,
     } = this.props
     // const remove = team.teamType.name !== 'Production Editor'
 
@@ -21,9 +22,10 @@ export class MemberList extends React.Component {
         color={color}
         key={i}
         // remove={remove}
+        rules={rules}
         team={team}
         update={update}
-        bookId={bookId}
+        // bookId={bookId}
         user={member.user}
         users={[]}
       />

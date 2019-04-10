@@ -1,0 +1,61 @@
+
+type DashboardRules {
+  canAddBooks: Boolean
+  bookRules: [bookRule!]!
+}
+
+type bookRule {
+  id: ID
+  canRenameBooks: Boolean
+  canDeleteBooks: Boolean
+  canArchiveBooks: Boolean
+}
+
+type BookBuilderRules {
+  id: ID!
+  canViewAddComponent: Boolean
+  canViewUploadButton: Boolean
+  canViewMultipleFilesUpload: Boolean 
+  canViewAddTeamMember: Boolean
+  canViewTeamManager: Boolean
+  canViewStateList: Boolean
+  canViewAlignmentTool: Boolean
+  canViewFragmentEdit: Boolean
+  exportBook: Boolean
+  downloadEPUB: Boolean
+  bookComponentStateRules: [BookComponentStateRule!]!
+  canReorderBookComponent: Boolean
+  teamRoles: [teamRole!]!
+}
+
+type WaxRules {
+  canEditFull: Boolean
+  canEditSelection: Boolean
+  canEditReview: Boolean
+}
+
+type teamRole {
+  role: String
+  canRemoveTeamMember: Boolean
+}
+
+type BookComponentStateRule {
+  id: ID
+  bookComponentId: ID
+  stage: [Stages]
+  canViewEditBookComponent:Boolean
+}
+
+
+type Stages {
+  type: String
+  canChangeProgressList: Boolean
+  canChangeProgressListRight: Boolean
+  canChangeProgressListLeft: Boolean
+}
+
+extend type Query {
+  getWaxRules(id: ID!): WaxRules!
+  getDashBoardRules: DashboardRules!
+  getBookBuilderRules(id: ID!): BookBuilderRules!
+}

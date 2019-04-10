@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { map, clone, find, findIndex } from 'lodash'
-import { th } from '@pubsweet/ui-toolkit'
-import { difference } from 'lodash'
 import { DragDropContext } from 'react-beautiful-dnd'
+
 import Division from './Division'
 
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
 const DivisionsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -209,8 +207,10 @@ class DivisionsArea extends Component {
       updateComponentType,
       onDeleteBookComponent,
       uploading,
+      rules,
     } = this.props
     const { divisions } = this.state
+    const { canReorderBookComponent } = rules
     const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
       return (
         <Division
@@ -222,6 +222,7 @@ class DivisionsArea extends Component {
           deleteBookComponent={deleteBookComponent}
           onDeleteBookComponent={onDeleteBookComponent}
           divisionId={id}
+          rules={rules}
           key={id}
           label={label}
           history={history}
@@ -244,15 +245,9 @@ class DivisionsArea extends Component {
         <DivisionsContainer>
           {map(divisions, division => {
             const { bookComponents, label, id } = division
-            return (
-              // <Authorize
-              //   object={bookId}
-              //   operation="can reorder bookComponents"
-              //   unauthorized={this.renderDivision(false, bookComponents, label, id)}
-              // >
-              renderDivision(true, bookComponents, label, id)
-              // </Authorize>
-            )
+            return canReorderBookComponent
+              ? renderDivision(true, bookComponents, label, id)
+              : renderDivision(false, bookComponents, label, id)
           })}
         </DivisionsContainer>
       </DragDropContext>

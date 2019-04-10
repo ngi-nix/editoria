@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, find, findIndex, difference, forEach, map } from 'lodash'
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import BookBuilder from './BookBuilder'
 import withModal from 'editoria-common/src/withModal'
 import {
   getBookQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -29,11 +30,14 @@ import {
   titleChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  addTeamMemberSubscription,
+  bookComponentWorkflowUpdated,
 } from './queries'
 
 const mapper = {
   withModal,
   getBookQuery,
+  getBookBuilderRulesQuery,
   createBookComponentMutation,
   unlockBookComponentMutation,
   createBookComponentsMutation,
@@ -55,6 +59,8 @@ const mapper = {
   titleChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  addTeamMemberSubscription,
+  bookComponentWorkflowUpdated,
 }
 
 const mapProps = args => ({
@@ -133,9 +139,14 @@ const mapProps = args => ({
   },
 
   loading: args.getBookQuery.networkStatus === 1,
+  loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
+  rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
   refetching:
     args.getBookQuery.networkStatus === 4 ||
     args.getBookQuery.networkStatus === 2, // possible apollo bug
+  refetchingBookBuilderRules:
+    args.getBookBuilderRulesQuery.networkStatus === 4 ||
+    args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -143,7 +154,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { match, history } = props
   const { id: bookId } = match.params
-
+ 
   return (
     <Composed bookId={bookId}>
       {({
@@ -164,7 +175,10 @@ const Connected = props => {
         loading,
         refetching,
         onAdminUnlock,
+        loadingRules,
         exportBook,
+        rules,
+        refetchingBookBuilderRules,
       }) => {
         return (
           <BookBuilder
@@ -174,6 +188,7 @@ const Connected = props => {
             onError={onError}
             onAdminUnlock={onAdminUnlock}
             refetching={refetching}
+            refetchingBookBuilderRules={refetchingBookBuilderRules}
             book={book}
             history={history}
             exportBook={exportBook}
@@ -181,6 +196,8 @@ const Connected = props => {
             onDeleteBookComponent={onDeleteBookComponent}
             ingestWordFiles={ingestWordFiles}
             loading={loading}
+            loadingRules={loadingRules}
+            rules={rules}
             updateBookComponentContent={updateBookComponentContent}
             updateComponentType={updateComponentType}
             updateBookComponentOrder={updateBookComponentOrder}

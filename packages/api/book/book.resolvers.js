@@ -36,6 +36,8 @@ const getBook = async (_, { id }, ctx, info) => {
 const createBook = async (_, { input }, ctx) => {
   const { collectionId, title } = input
   try {
+    await ctx.helpers.can(ctx.user, 'create', 'Book')
+
     const pubsub = await pubsubManager.getPubsub()
     const book = await new Book({
       collectionId,
@@ -81,6 +83,8 @@ const createBook = async (_, { input }, ctx) => {
 
 const renameBook = async (_, { id, title }, ctx) => {
   try {
+    await ctx.helpers.can(ctx.user, 'update', await Book.findById(id))
+
     const pubsub = await pubsubManager.getPubsub()
     const bookTranslation = await BookTranslation.query()
       .where('bookId', id)
@@ -110,6 +114,8 @@ const renameBook = async (_, { id, title }, ctx) => {
 const deleteBook = async (_, args, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
+    await ctx.helpers.can(ctx.user, 'update', await Book.findById(args.id))
+
     const deletedBook = await Book.query().patchAndFetchById(args.id, {
       deleted: true,
     })
@@ -262,7 +268,7 @@ module.exports = {
         ctx,
         { eager },
       )
-      let authors = null
+      let authors = []
       if (teams[0] && teams[0].members.length > 0) {
         authors = map(teams[0].members, teamMember => {
           return teamMember.user
@@ -271,19 +277,37 @@ module.exports = {
       return authors
     },
     async productionEditors(book, _, ctx) {
-      const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
-      const productionEditorTeam = filter(allTeams, team => {
-        if (team.objectId) {
-          return team.objectId === book.id && team.role === 'productionEditor'
-        }
-        return false
-      })
-      const productionEditors = await Promise.all(
-        map(productionEditorTeam[0].members, async member => {
-          const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
-          return `${user.givenName} ${user.surname}`
-        }),
+      const productionEditorTeams = await ctx.connectors.Team.fetchAll(
+        { objectId: book.id, role: 'productionEditor' },
+        ctx,
+        { eager },
       )
+      // const productionEditorTeam = filter(allTeams, team => {
+      //   if (team.objectId) {
+      //     return team.objectId === book.id && team.role === 'productionEditor'
+      //   }
+      //   return false
+      // })
+      let productionEditors = []
+      if (
+        productionEditorTeams[0] &&
+        productionEditorTeams[0].members.length > 0
+      ) {
+        productionEditors = map(
+          productionEditorTeams[0].members,
+          teamMember => {
+            const { user } = teamMember
+            return `${user.givenName} ${user.surname}`
+          },
+        )
+      }
+      // return authors
+      // const productionEditors = await Promise.all(
+      //   map(productionEditorTeam[0].members, async member => {
+      //     const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
+      //     return `${user.givenName} ${user.surname}`
+      //   }),
+      // )
       return productionEditors
     },
   },

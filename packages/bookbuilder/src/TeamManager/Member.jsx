@@ -1,7 +1,6 @@
-import { without, findIndex, map } from 'lodash'
+import { findIndex, map } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 import styles from '../styles/teamManager.local.scss'
 
@@ -58,21 +57,14 @@ export class Member extends React.Component {
     )
   }
   render() {
-    const { bookId, team } = this.props
-
-    const authorizationObject = {
-      id: bookId,
-      teamType: team.role,
+    const { team, rules } = this.props
+    const { canRemoveTeamMember } =
+      rules.teamRoles.find(rule => rule.role === team.role) || {}
+    if (canRemoveTeamMember) {
+      return this.renderRemove(true)
     }
-    return (
-      <Authorize
-        object={authorizationObject}
-        operation="can remove team member"
-        unauthorized={this.renderRemove(false)}
-      >
-        {this.renderRemove(true)}
-      </Authorize>
-    )
+
+    return this.renderRemove(false)
   }
 }
 

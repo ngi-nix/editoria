@@ -1,14 +1,14 @@
 import React from 'react'
-import { ButtonWithIcon } from './Button'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
+import { ButtonWithIcon } from './Button'
 
 const StyledButton = styled(ButtonWithIcon)`
   margin: 0 calc(2 * ${th('gridUnit')}) 0 0 !important;
 `
 
 const AddComponentButton = ({ add, label, type }) => {
-  const addComponent = () =>{
+  const addComponent = () => {
     add(type)
   }
   const icon = (

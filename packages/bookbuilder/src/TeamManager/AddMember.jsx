@@ -34,21 +34,21 @@ export class AddMember extends React.Component {
   /* eslint-disable */
   // _search(username) {
   //   const { team, users, findUser } = this.props
-    // findUser({
-    //   variables: {
-    //     search: username,
-    //   },
-    // }).then(res=>console.log(res))
+  // findUser({
+  //   variables: {
+  //     search: username,
+  //   },
+  // }).then(res=>console.log(res))
 
-    // const user = find(users, c => c.username === username)
+  // const user = find(users, c => c.username === username)
 
-    // if (user) {
-    //   team.members = union(team.members, [user.id])
-    //   this._save(team)
-    //   return this._updateMessage(null, username)
-    // }
+  // if (user) {
+  //   team.members = union(team.members, [user.id])
+  //   this._save(team)
+  //   return this._updateMessage(null, username)
+  // }
 
-    // this._updateMessage('error', username)
+  // this._updateMessage('error', username)
   // }
   /* eslint-enable */
 
@@ -102,7 +102,11 @@ export class AddMember extends React.Component {
   handleChange(selectedOption) {
     this.setState({ selectedOption })
     const { team, update } = this.props
-    const updatedMembers = map(team.members, member => member.user)
+    const updatedMembers = map(team.members, member => ({
+      user: {
+        id: member.user.id,
+      },
+    }))
     updatedMembers.push({ user: { id: selectedOption.value } })
 
     update({

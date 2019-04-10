@@ -1,5 +1,4 @@
 import React from 'react'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import styled from 'styled-components'
 
 import {
@@ -86,28 +85,27 @@ export class BookBuilder extends React.Component {
       exportBook,
       onTeamManager,
       onError,
+      rules,
       loading,
+      loadingRules,
+      // refetchingBookBuilderRules,
     } = this.props
-    if (loading) return 'Loading...'
+    // console.log(rules)
+    if (loading || loadingRules) return 'Loading...'
+    const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
-    const { outerContainer } = this.state
-    // const teamManagerModal = this.renderTeamManagerModal()
-    const productionEditorActions = [
-      // <Authorize object={book.id} operation="can view teamManager">
-      <TeamManagerButton label="Team Manager" onClick={()=>onTeamManager(book.id)} />,
 
-      /* </Authorize>, */
-    ]
+    const productionEditorActions = []
+    if (canViewTeamManager) {
+      productionEditorActions.push(
+        <TeamManagerButton
+          label="Team Manager"
+          onClick={() => onTeamManager(book.id)}
+        />,
+      )
+    }
+
     const headerActions = [
-      // <Authorize object={book.id} operation="can view multipleFilesUpload">
-      <UploadFilesButton
-        book={book}
-        create={addBookComponents}
-        divisions={divisions}
-        update={updateBookComponentContent}
-        updateUploadStatus={updateBookComponentUploading}
-      />,
-      // </Authorize>,
       <BookExporter
         book={book}
         history={history}
@@ -120,6 +118,19 @@ export class BookBuilder extends React.Component {
         onError={onError}
       />,
     ]
+
+    if (canViewMultipleFilesUpload) {
+      headerActions.unshift(
+        <UploadFilesButton
+          book={book}
+          create={addBookComponents}
+          divisions={divisions}
+          update={updateBookComponentContent}
+          updateUploadStatus={updateBookComponentUploading}
+        />,
+      )
+    }
+
     return (
       <Container>
         <ProductionEditorsArea
@@ -136,9 +147,7 @@ export class BookBuilder extends React.Component {
           deleteBookComponent={deleteBookComponent}
           onDeleteBookComponent={onDeleteBookComponent}
           divisions={divisions}
-          outerContainer={outerContainer}
-          showModal={this.state.showModal}
-          showModalToggle={this.toggleModal}
+          rules={rules}
           updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

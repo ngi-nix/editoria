@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react'
-import { find, get, findIndex, omit, remove, clone } from 'lodash'
+import React from 'react'
+import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 
 import withModal from 'editoria-common/src/withModal'
@@ -8,18 +8,21 @@ import {
   archiveBookMutation,
   createBookMutation,
   getBookCollectionsQuery,
+  getDashboardRulesQuery,
   renameBookMutation,
   deleteBookMutation,
   bookCreatedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
   bookArchivedSubscription,
+  addTeamMemberSubscription,
 } from './queries'
 
 const mapper = {
   withModal,
   getBookCollectionsQuery,
   archiveBookMutation,
+  getDashboardRulesQuery,
   createBookMutation,
   renameBookMutation,
   deleteBookMutation,
@@ -27,6 +30,7 @@ const mapper = {
   bookRenamedSubscription,
   bookDeletedSubscription,
   bookArchivedSubscription,
+  addTeamMemberSubscription,
 }
 
 const mapProps = args => {
@@ -98,6 +102,8 @@ const mapProps = args => {
         archived,
       })
     },
+    loadingRules: args.getDashboardRulesQuery.networkStatus === 1,
+    rules: get(args.getDashboardRulesQuery, 'data.getDashBoardRules'),
   }
 }
 
@@ -108,19 +114,21 @@ const Connected = () => (
     {({
       archiveBook,
       collections,
-      deleteBook,
+      rules,
+      loadingRules,
       renameBook,
+      deleteBook,
       onChangeSort,
       refetching,
       loading,
       onAddBook,
       onDeleteBook,
       onArchiveBook,
-      ...rest
     }) => {
       return (
         <Dashboard
           archiveBook={archiveBook}
+          loadingRules={loadingRules}
           collections={collections}
           onAddBook={onAddBook}
           onDeleteBook={onDeleteBook}
@@ -130,6 +138,7 @@ const Connected = () => (
           onChangeSort={onChangeSort}
           refetching={refetching}
           renameBook={renameBook}
+          rules={rules}
         />
       )
     }}

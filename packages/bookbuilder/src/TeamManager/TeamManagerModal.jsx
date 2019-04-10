@@ -6,12 +6,21 @@ import TeamManager from './TeamManager'
 
 class TeamManagerModal extends React.Component {
   renderBody() {
-    const { teams, findUser, updateTeam, bookId } = this.props
+    const {
+      teams,
+      findUser,
+      updateTeam,
+      // bookId,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
 
     return (
       <TeamManager
-        bookId={bookId}
+        // bookId={bookId}
+        canViewAddTeamMember={canViewAddTeamMember}
         findUser={findUser}
+        rules={rules}
         teams={teams}
         updateTeam={updateTeam}
       />
@@ -19,8 +28,8 @@ class TeamManagerModal extends React.Component {
   }
 
   render() {
-    const { isOpen, hideModal, loading } = this.props
-    if (loading) return null
+    const { isOpen, hideModal, loading, loadingRules } = this.props
+    if (loading || loadingRules) return null
     const body = this.renderBody()
 
     return (

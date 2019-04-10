@@ -95,51 +95,39 @@ const Edit = props => {
 }
 
 const Rename = props => {
-  const { book, isRenaming, onClickRename, onClickSave } = props
+  const { isRenaming, onClickRename, onClickSave, canRenameBooks } = props
 
-  if (isRenaming) {
-    return (
-      <Authorize object={book} operation="can rename books">
-        <Action onClick={onClickSave}>Save</Action>
-      </Authorize>
-    )
+  if (isRenaming && canRenameBooks) {
+    return <Action onClick={onClickSave}>Save</Action>
   }
 
-  return (
-    <Authorize object={book} operation="can rename books">
-      <Action onClick={onClickRename}>Rename</Action>
-    </Authorize>
-  )
+  return canRenameBooks && <Action onClick={onClickRename}>Rename</Action>
 }
 
 const Remove = props => {
-  const { book, onDeleteBook } = props
+  const { book, onDeleteBook, canDeleteBooks } = props
   const handleClick = () => {
     onDeleteBook(book.id, book.title)
   }
-  return (
-    <Authorize object={book} operation="can delete books">
-      <Action onClick={handleClick}>Delete</Action>
-    </Authorize>
-  )
+
+  return canDeleteBooks && <Action onClick={handleClick}>Delete</Action>
 }
 
 const Archive = props => {
-  const { book, onArchiveBook } = props
+  const { book, onArchiveBook, canArchiveBooks } = props
   const { archived } = book
   const handleClick = () => {
     onArchiveBook(book.id, book.title, archived)
   }
   const label = archived ? 'Unarchive' : 'Archive'
-  return (
-    <Authorize object={book} operation="can archive books">
-      <Action onClick={handleClick}>{label}</Action>
-    </Authorize>
-  )
+  return canArchiveBooks && <Action onClick={handleClick}>{label}</Action>
 }
 const Actions = props => {
   const {
     book,
+    canDeleteBooks,
+    canArchiveBooks,
+    canRenameBooks,
     isRenaming,
     onClickRename,
     onClickSave,
@@ -154,6 +142,7 @@ const Actions = props => {
       {!archived && (
         <Rename
           book={book}
+          canRenameBooks={canRenameBooks}
           isRenaming={isRenaming}
           onClickRename={onClickRename}
           onClickSave={onClickSave}
@@ -162,9 +151,14 @@ const Actions = props => {
       <Archive
         book={book}
         archiveBook={archiveBook}
+        canArchiveBooks={canArchiveBooks}
         onArchiveBook={onArchiveBook}
       />
-      <Remove book={book} onDeleteBook={onDeleteBook} />
+      <Remove
+        book={book}
+        onDeleteBook={onDeleteBook}
+        canDeleteBooks={canDeleteBooks}
+      />
     </ActionGroup>
   )
 }

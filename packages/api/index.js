@@ -1,3 +1,4 @@
+const authorize = require('./authorize')
 const book = require('./book')
 const bookComponent = require('./bookComponent')
 const bookCollection = require('./bookCollection')
@@ -13,6 +14,7 @@ const merge = require('lodash/merge')
 
 module.exports = {
   typeDefs: [
+    authorize.typeDefs,
     book.typeDefs,
     bookComponent.typeDefs,
     bookCollection.typeDefs,
@@ -23,6 +25,7 @@ module.exports = {
   ].join(' '),
   resolvers: merge(
     {},
+    authorize.resolvers,
     book.resolvers,
     bookComponent.resolvers,
     bookCollection.resolvers,

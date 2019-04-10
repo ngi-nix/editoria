@@ -6,8 +6,6 @@ import { ButtonWithoutLabel } from './Button'
 import Label from './Label'
 import Arrow from './Arrow'
 
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
-
 // const StyledButton = styled(ButtonWithoutLabel)`
 //   padding: 0;
 //   visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
@@ -21,11 +19,13 @@ import Arrow from './Arrow'
 //   font-size: 13px;
 //   transition: visibility 0.1s ease-in-out 0.1s;
 // `
+
 const FirstRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 `
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,6 +43,7 @@ const WorkflowItem = ({
   update,
   values,
   bookId,
+  stage,
   type,
   currentValues,
 }) => {
@@ -134,6 +135,21 @@ const WorkflowItem = ({
     )
   }
 
+  const selectedStage = stage.find(stg => stg.type === type)
+  let progressListLeft = ''
+  let progressListRight = ''
+  if (selectedStage.canChangeProgressListLeft) {
+    progressListLeft = renderIndicator(false, 'left')
+  } else {
+    progressListLeft = renderIndicator(true, 'left')
+  }
+
+  if (selectedStage.canChangeProgressListRight) {
+    progressListRight = renderIndicator(false, 'right')
+  } else {
+    progressListRight = renderIndicator(true, 'right')
+  }
+
   return (
     <Container
       // className={classNames(classes.root, {
@@ -145,23 +161,11 @@ const WorkflowItem = ({
     >
       {/* <div className={classes.content}> */}
       <FirstRow>
-        {/* <Authorize
-          object={{ bookId, type, currentValues }}
-          operation="can change progressList left"
-          unauthorized={renderIndicator(true, 'left')}
-        > */}
-          {renderIndicator(false, 'left')}
-        {/* </Authorize> */}
+        {progressListLeft}
         <Label active={values[index] === 0} completed={values[index] === 1}>
           {item.title}
         </Label>
-        {/* <Authorize
-          object={{ bookId, type, currentValues }}
-          operation="can change progressList right"
-          unauthorized={renderIndicator(true, 'right')}
-        > */}
-          {renderIndicator(false, 'right')}
-        {/* </Authorize> */}
+        {progressListRight}
       </FirstRow>
       <WorkflowIndicator state={values[index]} withEnd={isLast} />
     </Container>

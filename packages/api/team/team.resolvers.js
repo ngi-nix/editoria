@@ -44,6 +44,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       unrelate: false,
       eager: 'members.user.teams',
     })
+    console.log('inoput', input)
     logger.info(`Team with id ${id} updated`)
 
     const userMembers = await ctx.connectors.User.fetchSome(
@@ -53,6 +54,16 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
     )
 
     if (updatedTeam.global === true) {
+      pubsub.publish(TEAM_MEMBERS_UPDATED, {
+        teamMembersUpdated: {
+          bookId: null,
+          teamId: id,
+          members: userMembers,
+          role: updatedTeam.role,
+          global: true,
+        },
+      })
+
       return updatedTeam
     }
 
@@ -61,7 +72,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
         productionEditorsUpdated: {
           bookId: updatedTeam.objectId,
           teamId: id,
-          teamType: updatedTeam.role,
+          role: updatedTeam.role,
           members: userMembers,
         },
       })
@@ -70,7 +81,7 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       teamMembersUpdated: {
         bookId: updatedTeam.objectId,
         teamId: id,
-        teamType: updatedTeam.role,
+        role: updatedTeam.role,
         members: userMembers,
       },
     })

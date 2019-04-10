@@ -5,17 +5,25 @@ import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 
 import GlobalTeamsManager from './GlobalTeamsManager'
-import { getUsersTeamsQuery, globalTeamMutation } from './queries'
+import {
+  getUsersTeamsQuery,
+  globalTeamMutation,
+  addTeamMemberSubscription,
+} from './queries'
 
 const mapper = {
   getUsersTeamsQuery,
   globalTeamMutation,
+  addTeamMemberSubscription,
 }
 
 const mapProps = args => ({
   users: get(args.getUsersTeamsQuery, 'data.users'),
   teams: get(args.getUsersTeamsQuery, 'data.getGlobalTeams'),
   loading: args.getUsersTeamsQuery.loading,
+  refetching:
+    args.getUsersTeamsQuery.networkStatus === 4 ||
+    args.getUsersTeamsQuery.networkStatus === 2, // possible apollo bug
   updateGlobalTeam: args.globalTeamMutation.updateGlobalTeam,
 })
 

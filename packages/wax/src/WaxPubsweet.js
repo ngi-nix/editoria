@@ -12,8 +12,6 @@ import {
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'react-apollo'
-// import withAuthsome from 'pubsweet-client/src/helpers/withAuthsome'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 // import Actions from 'pubsweet-client/src/actions'
 import Wax from 'wax-editor-react'
@@ -33,10 +31,11 @@ export class WaxPubsweet extends React.Component {
 
     // this.stackUpdateData = []
     // this.pollingInterval = null
-    let mode = 'full'
+    let mode = this.props.editing
     if (props.history.location.pathname.includes('preview')) {
       mode = 'selection'
     }
+
     this.state = {
       editing: mode,
       // lockConflict: true,
@@ -75,11 +74,14 @@ export class WaxPubsweet extends React.Component {
       },
     })
   }
+  
   componentDidMount() {
+    console.log('did mount')
     const { lockBookComponent, bookComponent } = this.props
     window.addEventListener('beforeunload', this.onUnload)
     console.log('b', this.props)
   }
+
   componentWillMount(nextProps) {
     const { lockBookComponent, bookComponentId } = this.props
     // if (bookComponent.id) {
@@ -90,7 +92,6 @@ export class WaxPubsweet extends React.Component {
         },
       },
     })
-    // }
   }
   componentWillUnmount() {
     const { unlockBookComponent, bookComponentId } = this.props
@@ -162,21 +163,18 @@ export class WaxPubsweet extends React.Component {
   //   return 'selection'
   // }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { authsome } = this.props
-  //   if (nextProps.fragment !== this.props.fragment) {
-  //     authsome
-  //       .can(this.props.user.id, 'can interact with editor', nextProps.fragment)
-  //       .then(res => {
-  //         // For the case of admin as there is no granularity in authsome
-  //         if (res === true) {
-  //           this.setState({ editing: 'full' })
-  //         } else {
-  //           this.setState({ editing: res })
-  //         }
-  //       })
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.bookComponent !== this.props.bookComponent) {
+      if (nextProps.rules.canEditFull) {
+        this.setState({ editing: 'full' })
+      } else if (nextProps.rules.canEditSelection) {
+        this.setState({ editing: 'selection' })
+      } else if (nextProps.rules.canEditReview) {
+        this.setState({ editing: 'review' })
+      }
+    }
+  }
+
   componentWillUpdate(nextProps, nextState) {
     // const { book, history, config } = this.props
     // let { pollingTimer } = config
@@ -313,7 +311,7 @@ export class WaxPubsweet extends React.Component {
         },
       })
     }
-    console.log('title', title)
+
     if (title) {
       return renameBookComponent({
         variables: {
@@ -375,7 +373,7 @@ export class WaxPubsweet extends React.Component {
       trackChanges: {
         toggle: true,
         view: true,
-        color:'#fff',
+        color: '#fff',
         own: {
           accept: true,
           reject: true,
@@ -385,7 +383,7 @@ export class WaxPubsweet extends React.Component {
           reject: true,
         },
       },
-      styling: true,
+      styling: true, // isAuthor
     }
 
     switch (editing) {
@@ -461,6 +459,7 @@ export class WaxPubsweet extends React.Component {
     } else {
       header = <h1>{`${bookComponent.title}`}</h1>
     }
+
     return (
       <div>
         {header}
@@ -486,11 +485,10 @@ export class WaxPubsweet extends React.Component {
 
   render() {
     // const { config, fragment, history, user } = this.props
-    const { bookComponent, loading } = this.props
-    if (loading) return 'Loading...'
+    const { loading, waxLoading } = this.props
+    // if (loading) return 'Loading...'
     // const { layout } = config
     const { editing } = this.state
-    console.log('edt', editing)
 
     // TODO -- these won't change properly on fragment change
     // see trackChanges hack in mapStateToProps
@@ -501,19 +499,12 @@ export class WaxPubsweet extends React.Component {
     // if (get(fragment, 'subCategory') === 'chapter') {
     //   chapterNumber = get(fragment, 'number')
     // }
-    if (loading) {
-      return <p>Loading</p>
-    }
+    // if (loading) {
+    //   return <p>Loading</p>
+    // }
+    if (loading || waxLoading) return 'Loading...'
 
-    return (
-      // <Authorize
-      //   object={bookComponent}
-      //   operation="can toggle track changes"
-      //   unauthorized={this.renderWax(editing)}
-      // >
-        this.renderWax(editing)
-      // </Authorize>
-    )
+    return this.renderWax(editing)
   }
 }
 

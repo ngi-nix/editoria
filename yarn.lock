@@ -1123,7 +1123,7 @@ apollo-cache-control@^0.1.0:
   dependencies:
     graphql-extensions "^0.0.x"
 
-apollo-cache-inmemory@^1.2.4, apollo-cache-inmemory@^1.4.2:
+apollo-cache-inmemory@^1.4.2:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.4.3.tgz#aded4fb8b3de9e2fb2573a6c03591b07ef98ed36"
   integrity sha512-p9KGtEZ9Mlb+FS0UEaxR8WvKOijYV0c+TXlhC/XZ3/ltYvP1zL3b1ozSOLGR9SawN2895Fc7QDV5nzPpihV0rA==
@@ -1141,7 +1141,7 @@ apollo-cache@1.1.26, apollo-cache@^1.1.26:
     apollo-utilities "^1.1.3"
     tslib "^1.9.3"
 
-apollo-client@^2.3.4, apollo-client@^2.4.12:
+apollo-client@^2.4.12:
   version "2.4.13"
   resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.4.13.tgz#09829fcbd68e069de9840d0a10764d7c6a3d0787"
   integrity sha512-7mBdW/CW1qHB8Mj4EFAG3MTtbRc6S8aUUntUdrKfRWV1rZdWa0NovxsgVD/R4HZWZjRQ2UOM4ENsHdM5g1uXOQ==
@@ -1245,7 +1245,7 @@ apollo-upload-server@^4.0.2:
     busboy "^0.2.14"
     object-path "^0.11.4"
 
-apollo-utilities@1.1.3, apollo-utilities@^1.0.1, apollo-utilities@^1.0.27, apollo-utilities@^1.1.2, apollo-utilities@^1.1.3:
+apollo-utilities@1.1.3, apollo-utilities@^1.0.1, apollo-utilities@^1.1.2, apollo-utilities@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.1.3.tgz#a8883c0392f6b46eac0d366204ebf34be9307c87"
   integrity sha512-pF9abhiClX5gfj/WFWZh8DiI33nOLGxRhXH9ZMquaM1V8bhq1WLFPt2QjShWH3kGQVeIGUK+FQefnhe+ZaaAYg==
@@ -4661,11 +4661,6 @@ dedent@^0.7.0:
   resolved "https://registry.yarnpkg.com/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
   integrity sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=
 
-deep-diff@^0.3.5:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
-  integrity sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ=
-
 deep-equal@*, deep-equal@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
@@ -6952,7 +6947,7 @@ graphql-subscriptions@^0.5.8:
   dependencies:
     iterall "^1.2.1"
 
-graphql-tag@^2.10.1, graphql-tag@^2.7.3:
+graphql-tag@^2.10.1:
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.1.tgz#10aa41f1cd8fae5373eaf11f1f67260a3cad5e02"
   integrity sha512-jApXqWBzNXQ8jYa/HLkZJaVw9jgwNqZkywa2zfFn16Iv1Zb7ELNHkJaXHR7Quvd5SIGsy6Ny7SUKATgnu05uEg==
@@ -6968,7 +6963,7 @@ graphql-tools@^4.0.0:
     iterall "^1.1.3"
     uuid "^3.1.0"
 
-graphql@^14.0.2, graphql@^14.1.1:
+graphql@^14.1.1:
   version "14.1.1"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.1.1.tgz#d5d77df4b19ef41538d7215d1e7a28834619fac0"
   integrity sha512-C5zDzLqvfPAgTtP8AUPIt9keDabrdRAqSWjj2OPRKrKxI9Fb65I36s1uCs1UUBFnSWTdO7hyHi7z1ZbwKMKF6Q==
@@ -12350,47 +12345,7 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
-pubsweet-client@^8.0.0:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/pubsweet-client/-/pubsweet-client-8.0.4.tgz#b6c5070baffd503a7fc11d8fcdf1c9f1632fa920"
-  integrity sha512-4wMzE4Y17LyfCTRGlTFhtZrjkpNcTXccXBfx4XM7rhsc4nc3GUK0FZfhC/3xJHCmYWxjWFkaUT7wzXFiZmeqVg==
-  dependencies:
-    "@pubsweet/ui" "^9.1.3"
-    "@pubsweet/ui-toolkit" "^2.0.7"
-    apollo-cache-inmemory "^1.2.4"
-    apollo-client "^2.3.4"
-    apollo-link "^1.2.1"
-    apollo-link-context "^1.0.5"
-    apollo-link-http "^1.5.4"
-    apollo-link-ws "^1.0.8"
-    apollo-upload-client "^8.0.0"
-    apollo-utilities "^1.0.27"
-    authsome "^0.1.0"
-    config "^2.0.1"
-    event-source-polyfill "^0.0.10"
-    global "^4.3.1"
-    graphql "^14.0.2"
-    graphql-tag "^2.7.3"
-    isomorphic-fetch "^2.1.1"
-    lint-staged "^6.0.0"
-    lodash "^4.0.0"
-    prop-types "^15.5.8"
-    react "^16.2.0"
-    react-apollo "^2.1.0"
-    react-redux "^5.0.2"
-    react-router "^4.3.1"
-    react-router-dom "^4.2.2"
-    react-router-redux next
-    redux "^3.6.0"
-    redux-form "^7.0.3"
-    redux-logger "^3.0.1"
-    redux-thunk "^2.2.0"
-    reselect "^3.0.1"
-    styled-components "^4.1.1"
-    styled-normalize "^8.0.4"
-    subscriptions-transport-ws "^0.9.12"
-
-pubsweet-client@^9.0.0:
+pubsweet-client@^9.0.2:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/pubsweet-client/-/pubsweet-client-9.0.2.tgz#c886e6e598ff457dd4323848225b5d812524db1d"
   integrity sha512-OvYxiUnVPE4dNiYRRlDt/v1HojpQBRUWck0H/OYk/RS9voTIq8ibP1WZdD3RudgQqOe2FAdRU5tKHJBTCouzyw==
@@ -12927,7 +12882,7 @@ react-prop-types@^0.4.0:
   dependencies:
     warning "^3.0.0"
 
-react-redux@^5.0.2, react-redux@^5.0.6, react-redux@^5.0.7:
+react-redux@^5.0.2, react-redux@^5.0.7:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.1.1.tgz#88e368682c7fa80e34e055cd7ac56f5936b0f52f"
   integrity sha512-LE7Ned+cv5qe7tMV5BPYkGQ5Lpg8gzgItK07c67yHvJ8t0iaD9kPFPAli/mYkiyJYrs2pJgExR2ZgsGqlrOApg==
@@ -12970,15 +12925,6 @@ react-router-dom@^4.2.2:
     prop-types "^15.6.1"
     react-router "^4.3.1"
     warning "^4.0.1"
-
-react-router-redux@next:
-  version "5.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.9.tgz#825431516e0e6f1fd93b8807f6bd595e23ec3d10"
-  integrity sha512-euSgNIANnRXr4GydIuwA7RZCefrLQzIw5WdXspS8NPYbV+FxrKSS9MKG7U9vb6vsKHONnA4VxrVNWfnMUnUQAw==
-  dependencies:
-    history "^4.7.2"
-    prop-types "^15.6.0"
-    react-router "^4.2.0"
 
 react-router@^4.2.0, react-router@^4.3.1:
   version "4.3.1"
@@ -13347,7 +13293,7 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux-form@^7.0.3, redux-form@^7.4.2:
+redux-form@^7.0.3:
   version "7.4.2"
   resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.4.2.tgz#d6061088fb682eb9fc5fb9749bd8b102f03154b0"
   integrity sha512-QxC36s4Lelx5Cr8dbpxqvl23dwYOydeAX8c6YPmgkz/Dhj053C16S2qoyZN6LO6HJ2oUF00rKsAyE94GwOUhFA==
@@ -13361,19 +13307,7 @@ redux-form@^7.0.3, redux-form@^7.4.2:
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-redux-logger@^3.0.1:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"
-  integrity sha1-91VZZvMJjzyIYExEnPC69XeCdL8=
-  dependencies:
-    deep-diff "^0.3.5"
-
-redux-thunk@^2.2.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
-  integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
-
-redux@^3.6.0, redux@^3.7.2:
+redux@^3.6.0:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   integrity sha512-pNqnf9q1hI5HHZRBkj3bAngGZW/JMCmexDlOxw4XagXY2o1327nHH54LoTjiPJ0gizoqPDRqWyX/00g0hD6w+A==
@@ -16123,26 +16057,26 @@ watchpack@^1.3.1, watchpack@^1.5.0:
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
 
-wax-editor-core@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/wax-editor-core/-/wax-editor-core-1.0.0.tgz#a570f62229f29a4b6572f57aa5572e79814ed867"
-  integrity sha512-dkgyFDe0lZaEX+CQpGoRZPudQKOARkkRIhVTRSd8H+4Gt2V5dfz5MZ2ExwZAuSmRMv/p7HWiYye9bVifTD0CFw==
+wax-editor-core@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/wax-editor-core/-/wax-editor-core-1.1.0.tgz#375949a9c6c7527101d177c96be0596103247ded"
+  integrity sha512-Haqa2D+CU0wNqDfqb0t6osPxFPo9Uv2sPi9max7avLMdnhW6lPhVjc6OSXaY+oy4WRSSifKs/0cZSI5+ceC4CA==
   dependencies:
     codemirror "^5.38.0"
     font-awesome "^4.7.0"
     lodash "^4.17.4"
     substance "git+https://gitlab.coko.foundation/wax/substance-fork#master"
 
-wax-editor-react@^0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/wax-editor-react/-/wax-editor-react-0.2.11.tgz#3f2e92eaa271651c8cc04ee64ce18164417a9b10"
-  integrity sha512-tELVtdWzbJo2Yhh/bYb2d0lkZYa7DyRJLcrTQp+92VGRiQlTdZ5BYnIqYNVAUzRYcMDsudk07ALxlRm03aycSg==
+wax-editor-react@^0.2.16:
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/wax-editor-react/-/wax-editor-react-0.2.16.tgz#dde95bdba5390e1c9de88057414683557405b1a4"
+  integrity sha512-s17PdI3oEAylyzbPypYBZquVI9FC2EHFMnsGUrN1X0B2AJ26DpwI68SKi9FaXjaC3V1Rt0S9aQNg3erRy0xqNw==
   dependencies:
     lodash "^4.17.4"
     react "^16.2.0"
     react-dom "^16.2.0"
     react-router-dom "^4.2.2"
-    wax-editor-core "^1.0.0"
+    wax-editor-core "^1.1.0"
 
 wbuf@^1.1.0, wbuf@^1.7.2:
   version "1.7.3"

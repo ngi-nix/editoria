@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { H1 } from '@pubsweet/ui'
 
 import AddBookButton from './AddBookButton'
@@ -29,7 +28,7 @@ const Title = styled(H1)`
 `
 
 const DashboardHeader = props => {
-  const { onChangeSort, title, collectionId, onAddBook } = props
+  const { onChangeSort, title, collectionId, onAddBook, canAddBooks } = props
   const handleClick = () => {
     onAddBook(collectionId)
   }
@@ -38,10 +37,7 @@ const DashboardHeader = props => {
     <HeaderWrapper>
       <Side>
         <Title>{title}</Title>
-
-        <Authorize operation="can add books">
-          <AddBookButton onClick={handleClick} />
-        </Authorize>
+        {canAddBooks && <AddBookButton onClick={handleClick} />}
       </Side>
 
       <Side>

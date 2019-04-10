@@ -15,6 +15,8 @@ export class Dashboard extends Component {
     const {
       collections,
       archiveBook,
+      rules,
+      loadingRules,
       deleteBook,
       loading,
       onChangeSort,
@@ -25,7 +27,7 @@ export class Dashboard extends Component {
       onArchiveBook,
     } = this.props
 
-    if (loading) return 'Loading...'
+    if (loading || loadingRules) return 'Loading...'
 
     return (
       <Container>
@@ -33,6 +35,7 @@ export class Dashboard extends Component {
           <Fragment>
             <DashboardHeader
               onChangeSort={onChangeSort}
+              canAddBooks={rules.canAddBooks}
               collectionId={collection.id}
               title={collection.title}
               onAddBook={onAddBook}
@@ -40,6 +43,7 @@ export class Dashboard extends Component {
 
             <BookList
               books={collection.books}
+              bookRules={rules.bookRules}
               refetching={refetching}
               onDeleteBook={onDeleteBook}
               onArchiveBook={onArchiveBook}

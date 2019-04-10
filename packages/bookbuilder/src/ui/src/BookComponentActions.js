@@ -29,7 +29,7 @@ const BookComponentActions = ({
   const handleClick = () => {
     onDeleteBookComponent(bookComponentId, componentType, title)
   }
-  
+
   const goToEditor = () => {
     if (isLocked || uploading) return
     history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)

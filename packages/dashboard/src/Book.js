@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { State } from 'react-powerplug'
-import { map, forEach } from 'lodash'
+import { map } from 'lodash'
 
 import BookTitle from './BookTitle'
 import BookActions from './BookActions'
@@ -99,7 +99,7 @@ const icon = (
 const Author = ({ author }) => <TopRowKeyValue key="author" value={author} />
 
 const TopRowValues = ({ authors }) => {
-  if (!authors)
+  if (authors.length === 0)
     return (
       <TopRowValuesWrapper>
         <Author author="Unassigned" />
@@ -121,14 +121,15 @@ const TopRowValues = ({ authors }) => {
 const Book = props => {
   const {
     book,
+    bookRule,
     history,
     renameBook,
-    remove,
     archiveBook,
     onDeleteBook,
     onArchiveBook,
   } = props
   const { authors, publicationDate, archived } = book
+  const { canRenameBooks, canDeleteBooks, canArchiveBooks } = bookRule
 
   return (
     <State initial={{ isRenaming: false, showModal: false }}>
@@ -199,6 +200,9 @@ const Book = props => {
 
               <BookActions
                 book={book}
+                canRenameBooks={canRenameBooks}
+                canDeleteBooks={canDeleteBooks}
+                canArchiveBooks={canArchiveBooks}
                 isRenaming={isRenaming}
                 onClickRename={onClickRename}
                 onClickSave={onClickSave}
@@ -206,7 +210,6 @@ const Book = props => {
                 onArchiveBook={onArchiveBook}
                 archiveBook={archiveBook}
               />
-
             </MainRow>
           </Wrapper>
         )
@@ -225,7 +228,6 @@ Book.propTypes = {
   history: PropTypes.any.isRequired,
   remove: PropTypes.func.isRequired,
   renameBook: PropTypes.func.isRequired,
-  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 export default withRouter(Book)
