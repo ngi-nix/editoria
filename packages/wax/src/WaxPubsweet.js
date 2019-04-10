@@ -31,7 +31,9 @@ export class WaxPubsweet extends React.Component {
 
     // this.stackUpdateData = []
     // this.pollingInterval = null
-    let mode = this.props.editing
+
+    let mode = ''
+
     if (props.history.location.pathname.includes('preview')) {
       mode = 'selection'
     }
@@ -43,13 +45,6 @@ export class WaxPubsweet extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   const { editing } = this.state
-  //   if (editing !== 'selection') {
-  //     this.props.subscribeToTrackChangesUpdated()
-  //     this.props.subscribeToTitleUpdated()
-  //   }
-  // }
   // componentWillMount() {
   //   const { getCollections, getFragments, getTeams } = this.props.actions
   //   // const { fragment } = this.props
@@ -65,7 +60,6 @@ export class WaxPubsweet extends React.Component {
     // the method that will be used for both add and remove event
     const { unlockBookComponent, bookComponentId } = this.props
     // if (bookComponent.id) {
-    console.log('unlock2')
     unlockBookComponent({
       variables: {
         input: {
@@ -74,12 +68,9 @@ export class WaxPubsweet extends React.Component {
       },
     })
   }
-  
+
   componentDidMount() {
-    console.log('did mount')
-    const { lockBookComponent, bookComponent } = this.props
     window.addEventListener('beforeunload', this.onUnload)
-    console.log('b', this.props)
   }
 
   componentWillMount(nextProps) {
@@ -93,10 +84,10 @@ export class WaxPubsweet extends React.Component {
       },
     })
   }
+
   componentWillUnmount() {
     const { unlockBookComponent, bookComponentId } = this.props
     // if (bookComponent.id) {
-    console.log('unlock')
     unlockBookComponent({
       variables: {
         input: {
@@ -164,6 +155,9 @@ export class WaxPubsweet extends React.Component {
   // }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.loading || this.props.waxLoading || this.props.userLoading) {
+      return
+    }
     if (nextProps.bookComponent !== this.props.bookComponent) {
       if (nextProps.rules.canEditFull) {
         this.setState({ editing: 'full' })
@@ -364,7 +358,7 @@ export class WaxPubsweet extends React.Component {
 
   renderWax(editing) {
     const { config, bookComponent, history, user } = this.props
-    const { layout, autoSave, tools } = config
+    const { layout, autoSave, menus } = config
 
     // From editoria config, this is just for testing purposes
 
@@ -472,9 +466,9 @@ export class WaxPubsweet extends React.Component {
           fileUpload={this.fileUpload}
           history={history}
           layout={layout}
+          menus={menus}
           mode={mode}
           onSave={this.save}
-          tools={tools}
           trackChanges={trackChangesEnabled}
           update={this.update}
           user={user}
@@ -485,7 +479,7 @@ export class WaxPubsweet extends React.Component {
 
   render() {
     // const { config, fragment, history, user } = this.props
-    const { loading, waxLoading } = this.props
+    const { loading, waxLoading, userLoading } = this.props
     // if (loading) return 'Loading...'
     // const { layout } = config
     const { editing } = this.state
@@ -502,7 +496,7 @@ export class WaxPubsweet extends React.Component {
     // if (loading) {
     //   return <p>Loading</p>
     // }
-    if (loading || waxLoading) return 'Loading...'
+    if (loading || waxLoading || userLoading) return 'Loading...'
 
     return this.renderWax(editing)
   }

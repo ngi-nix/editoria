@@ -8,6 +8,7 @@ import WaxPubsweet from './WaxPubsweet'
 import {
   getBookComponentQuery,
   getWaxRulesQuery,
+  getCurrentUserQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
@@ -21,6 +22,7 @@ import {
 const mapper = {
   getBookComponentQuery,
   getWaxRulesQuery,
+  getCurrentUserQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
@@ -34,6 +36,7 @@ const mapper = {
 const mapProps = args => ({
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
+  user: get(args.getCurrentUserQuery, 'data.currentUser'),
   subscribeToMore: get(args.getBookComponentQuery, 'subscribeToMore'),
   updateBookComponentContent:
     args.updateBookComponentContentMutation.updateContent,
@@ -43,8 +46,10 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
+  userLoading: args.getCurrentUserQuery.networkStatus === 1,
   refetching:
     args.getBookComponentQuery.networkStatus === 4 ||
     args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
@@ -61,6 +66,7 @@ const Connected = props => {
       {({
         bookComponent,
         rules,
+        user,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
@@ -69,28 +75,21 @@ const Connected = props => {
         renameBookComponent,
         loading,
         waxLoading,
+        userLoading,
       }) => {
-        let editing = ''
-        if (rules.canEditFull) {
-          editing = 'full'
-        } else if (rules.canEditSelection) {
-          editing = 'selection'
-        } else if (rules.canEditReview) {
-          editing = 'review'
-        }
-
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
             bookComponentId={bookComponentId}
             waxLoading={waxLoading}
             config={config}
-            editing={editing}
             history={history}
             loading={loading}
+            userLoading={userLoading}
             lockBookComponent={lockBookComponent}
             renameBookComponent={renameBookComponent}
             rules={rules}
+            user={user}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}

@@ -1,5 +1,6 @@
 export { default as getBookComponentQuery } from './getBookComponent'
 export { default as getWaxRulesQuery } from './getWaxRules'
+export { default as getCurrentUserQuery } from './getCurrentUser'
 
 export { default as updateBookComponentContentMutation } from './updateContent'
 export {
