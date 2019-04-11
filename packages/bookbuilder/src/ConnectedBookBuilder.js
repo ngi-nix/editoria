@@ -152,7 +152,7 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history } = props
+  const { match, history, currentUser } = props
   const { id: bookId } = match.params
  
   return (
@@ -186,6 +186,7 @@ const Connected = props => {
             addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
             onError={onError}
+            currentUser={currentUser}
             onAdminUnlock={onAdminUnlock}
             refetching={refetching}
             refetchingBookBuilderRules={refetchingBookBuilderRules}

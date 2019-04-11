@@ -191,6 +191,7 @@ class DivisionsArea extends Component {
   render() {
     const {
       bookId,
+      currentUser,
       history,
       addBookComponent,
       addBookComponents,
@@ -209,6 +210,7 @@ class DivisionsArea extends Component {
       uploading,
       rules,
     } = this.props
+
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
     const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
@@ -217,6 +219,7 @@ class DivisionsArea extends Component {
           add={addBookComponent}
           addBookComponents={addBookComponents}
           onAdminUnlock={onAdminUnlock}
+          currentUser={currentUser}
           bookComponents={bookComponents}
           bookId={bookId}
           deleteBookComponent={deleteBookComponent}

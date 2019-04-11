@@ -73,6 +73,7 @@ export class BookBuilder extends React.Component {
       history,
       addBookComponent,
       addBookComponents,
+      currentUser,
       deleteBookComponent,
       updateBookComponentPagination,
       updateBookComponentOrder,
@@ -141,6 +142,7 @@ export class BookBuilder extends React.Component {
         <DivisionsArea
           addBookComponent={addBookComponent}
           addBookComponents={addBookComponents}
+          currentUser={currentUser}
           onAdminUnlock={onAdminUnlock}
           history={history}
           bookId={book.id}

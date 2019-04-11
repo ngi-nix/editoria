@@ -161,6 +161,7 @@ const BookComponent = ({
   bookId,
   connectDragSource,
   connectDropTarget,
+  currentUser,
   history,
   componentType,
   componentTypeOrder,
@@ -198,6 +199,7 @@ const BookComponent = ({
       },
     })
   }
+
   const icon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -253,6 +255,7 @@ const BookComponent = ({
           history={history}
         />
         <BookComponentActions
+          currentUser={currentUser}
           outerContainer={outerContainer}
           onDeleteBookComponent={onDeleteBookComponent}
           onAdminUnlock={onAdminUnlock}

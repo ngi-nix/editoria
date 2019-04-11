@@ -161,6 +161,7 @@ class Division extends React.Component {
   render() {
     const {
       bookId,
+      currentUser,
       updateBookComponentUploading,
       updateBookComponentContent,
       onDeleteBookComponent,
@@ -177,6 +178,7 @@ class Division extends React.Component {
       updateComponentType,
       rules,
     } = this.props
+
     const { canViewAddComponent } = rules
     const bookComponentInstances = map(bookComponents, (bookComponent, i) => {
       const {
@@ -201,6 +203,7 @@ class Division extends React.Component {
                 <BookComponent
                   bookId={bookId}
                   onAdminUnlock={onAdminUnlock}
+                  currentUser={currentUser}
                   canDrag={reorderingAllowed}
                   componentType={componentType}
                   componentTypeOrder={componentTypeOrder}

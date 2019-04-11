@@ -16,6 +16,7 @@ const Container = styled.div`
 
 const BookComponentActions = ({
   componentType,
+  currentUser,
   uploading,
   bookComponentId,
   onDeleteBookComponent,
@@ -53,6 +54,7 @@ const BookComponentActions = ({
         bookComponentId={bookComponentId}
         onAdminUnlock={onAdminUnlock}
         componentType={componentType}
+        currentUser={currentUser}
         title={title}
         lock={lock}
       />
