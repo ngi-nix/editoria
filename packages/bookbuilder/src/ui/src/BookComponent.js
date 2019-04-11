@@ -269,6 +269,7 @@ const BookComponent = ({
           lock={lock}
           history={history}
           remove={remove}
+          rules={rules}
           // update={update}
         />
       </FirstRow>

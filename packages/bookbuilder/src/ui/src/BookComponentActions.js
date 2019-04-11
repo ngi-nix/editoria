@@ -25,7 +25,9 @@ const BookComponentActions = ({
   history,
   title,
   onAdminUnlock,
+  rules,
 }) => {
+  const { canViewFragmentEdit } = rules
   const isLocked = get(lock, 'username')
   const handleClick = () => {
     onDeleteBookComponent(bookComponentId, componentType, title)
@@ -38,7 +40,11 @@ const BookComponentActions = ({
   if (!isLocked) {
     return (
       <Container>
-        <DefaultButton label="edit" onClick={goToEditor} disabled={uploading} />
+        <DefaultButton
+          disabled={uploading}
+          label={canViewFragmentEdit ? 'edit' : 'view'}
+          onClick={goToEditor}
+        />
         {/* <Separetor /> */}
         <DefaultButton
           label="delete"
