@@ -181,6 +181,7 @@ const BookComponent = ({
   title,
   workflowStages,
   trackChangesEnabled,
+  onWorkflowUpdate,
   onAdminUnlock,
   uploading,
   updatePagination,
@@ -272,6 +273,7 @@ const BookComponent = ({
 
       <SecondRow
         bookComponentId={id}
+        onWorkflowUpdate={onWorkflowUpdate}
         bookId={bookId}
         componentType={componentType}
         updateBookComponentContent={updateBookComponentContent}

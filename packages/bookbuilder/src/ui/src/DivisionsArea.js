@@ -103,7 +103,14 @@ class DivisionsArea extends Component {
     resArray.splice(to, 0, dragged)
     return resArray
   }
+  onDragStart = result => {
+    console.log('start')
+    const { setState } = this.props
+    setState({ pauseUpdates: true })
+  }
   onDragEnd = result => {
+    const { setState } = this.props
+    setState({ pauseUpdates: false })
     const { updateBookComponentOrder } = this.props
     const { source, destination, draggableId } = result
     const { divisions } = this.state
@@ -195,6 +202,7 @@ class DivisionsArea extends Component {
       addBookComponent,
       addBookComponents,
       deleteBookComponent,
+      onWorkflowUpdate,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
@@ -216,6 +224,7 @@ class DivisionsArea extends Component {
         <Division
           add={addBookComponent}
           addBookComponents={addBookComponents}
+          onWorkflowUpdate={onWorkflowUpdate}
           onAdminUnlock={onAdminUnlock}
           bookComponents={bookComponents}
           bookId={bookId}
@@ -241,7 +250,10 @@ class DivisionsArea extends Component {
       )
     }
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
+      <DragDropContext
+        onDragEnd={this.onDragEnd}
+        onDragStart={this.onDragStart}
+      >
         <DivisionsContainer>
           {map(divisions, division => {
             const { bookComponents, label, id } = division

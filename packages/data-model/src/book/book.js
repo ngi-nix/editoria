@@ -72,7 +72,7 @@ class Book extends Base {
           // minItems: 1,
         },
         referenceId: id,
-        publicationDate: date,
+        publicationDate: string,
         edition: {
           type: 'integer',
           minimum: 1,
@@ -81,6 +81,9 @@ class Book extends Base {
         copyrightStatement: string,
         copyrightYear: year,
         copyrightHolder: string,
+        isbn: string,
+        issn: string,
+        issnL: string,
         license: string,
       },
     }

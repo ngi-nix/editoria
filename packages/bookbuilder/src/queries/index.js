@@ -25,7 +25,8 @@ export {
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
-  bookComponentWorkflowUpdated,
+  bookMetadataSubscription,
+  bookRenamedSubscription,
 } from './bookBuilderSubscriptions'
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'
@@ -39,3 +40,4 @@ export {
 export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as exportBookMutation } from './exportBook'
 export { default as unlockBookComponentMutation } from './unlockBookComponent'
+export { default as updateBookMetadataMutation } from './updateMetadata'

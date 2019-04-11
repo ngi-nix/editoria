@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get } from 'lodash'
+import { get, findIndex, map } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import BookBuilder from './BookBuilder'
 import withModal from 'editoria-common/src/withModal'
+import statefull from './Statefull'
 import {
   getBookQuery,
   getBookBuilderRulesQuery,
@@ -31,10 +32,13 @@ import {
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
-  bookComponentWorkflowUpdated,
+  updateBookMetadataMutation,
+  bookMetadataSubscription,
+  bookRenamedSubscription,
 } from './queries'
 
 const mapper = {
+  statefull,
   withModal,
   getBookQuery,
   getBookBuilderRulesQuery,
@@ -52,6 +56,7 @@ const mapper = {
   exportBookMutation,
   lockChangeSubscription,
   orderChangeSubscription,
+  bookRenamedSubscription,
   bookComponentAddedSubscription,
   bookComponentDeletedSubscription,
   paginationChangeSubscription,
@@ -60,10 +65,13 @@ const mapper = {
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
-  bookComponentWorkflowUpdated,
+  updateBookMetadataMutation,
+  bookMetadataSubscription,
 }
 
 const mapProps = args => ({
+  state: args.statefull.state,
+  setState: args.statefull.setState,
   book: get(args.getBookQuery, 'data.getBook'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
   addBookComponents: args.createBookComponentsMutation.addBookComponents,
@@ -80,6 +88,7 @@ const mapProps = args => ({
   updateBookComponentUploading:
     args.updateBookComponentUploadingMutation.updateUploading,
   updateComponentType: args.updateBookComponentTypeMutation.updateComponentType,
+  updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
@@ -137,7 +146,89 @@ const mapProps = args => ({
       title,
     })
   },
+  onMetadataAdd: book => {
+    const { updateBookMetadataMutation, withModal } = args
+    const { updateMetadata } = updateBookMetadataMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = values => {
+      updateMetadata({
+        variables: {
+          input: {
+            id: book.id,
+            ...values,
+          },
+        },
+      })
+      hideModal()
+    }
+    showModal('metadataModal', {
+      onConfirm,
+      book,
+    })
+  },
+  onWorkflowUpdate: (
+    bookComponentId,
+    workflowStages,
+    nextProgressValues,
+    textKey,
+  ) => {
+    const { updateBookComponentWorkflowStateMutation, withModal } = args
+    const {
+      updateBookComponentWorkflowState,
+    } = updateBookComponentWorkflowStateMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = () => {
+      const { title, type, value } = nextProgressValues
+      const isLast =
+        workflowStages.length - 1 ===
+        findIndex(workflowStages, { label: title, type })
+      const indexOfStage = findIndex(workflowStages, { label: title, type })
 
+      if (value === 1) {
+        workflowStages[indexOfStage].value = value
+        if (!isLast) {
+          workflowStages[indexOfStage + 1].value = 0
+        }
+      }
+
+      if (value === -1) {
+        workflowStages[indexOfStage].value = value
+        const next = indexOfStage + 1
+        if (type !== 'file_prep') {
+          const previous = indexOfStage - 1
+          workflowStages[previous].value = 0
+        }
+        workflowStages[next].value = -1
+      }
+
+      if (value === 0) {
+        workflowStages[indexOfStage].value = value
+        const next = indexOfStage + 1
+        for (let i = next; i < workflowStages.length; i += 1) {
+          workflowStages[i].value = -1
+        }
+      }
+
+      const cleanedWorkflowStages = map(workflowStages, item => ({
+        label: item.label,
+        type: item.type,
+        value: item.value,
+      }))
+      updateBookComponentWorkflowState({
+        variables: {
+          input: {
+            id: bookComponentId,
+            workflowStages: cleanedWorkflowStages,
+          },
+        },
+      })
+      hideModal()
+    }
+    showModal('workflowModal', {
+      onConfirm,
+      textKey,
+    })
+  },
   loading: args.getBookQuery.networkStatus === 1,
   loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
   rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
@@ -154,11 +245,13 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { match, history } = props
   const { id: bookId } = match.params
- 
+
   return (
     <Composed bookId={bookId}>
       {({
         book,
+        state,
+        setState,
         onTeamManager,
         addBookComponent,
         addBookComponents,
@@ -168,6 +261,7 @@ const Connected = props => {
         updateComponentType,
         updateBookComponentWorkflowState,
         onError,
+        onMetadataAdd,
         updateBookComponentContent,
         updateBookComponentUploading,
         ingestWordFiles,
@@ -179,16 +273,21 @@ const Connected = props => {
         exportBook,
         rules,
         refetchingBookBuilderRules,
+        onWorkflowUpdate,
       }) => {
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
+            state={state}
+            setState={setState}
             addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
             onError={onError}
             onAdminUnlock={onAdminUnlock}
+            onMetadataAdd={onMetadataAdd}
             refetching={refetching}
             refetchingBookBuilderRules={refetchingBookBuilderRules}
+            onWorkflowUpdate={onWorkflowUpdate}
             book={book}
             history={history}
             exportBook={exportBook}

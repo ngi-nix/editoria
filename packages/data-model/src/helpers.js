@@ -238,7 +238,8 @@ const schema = {
   */
   date: {
     type: ['string', 'object'],
-    format: 'date-time',
+    // format: 'date-time',
+    format: 'date',
   },
   email: {
     type: 'string',

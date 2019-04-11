@@ -39,23 +39,6 @@ const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
-const bookComponentWorkflowUpdated = props => {
-  const { render, getBookBuilderRulesQuery } = props
-
-  const triggerRefetch = () => {
-    getBookBuilderRulesQuery.refetch()
-  }
-
-  return (
-    <Subscription
-      onSubscriptionData={triggerRefetch}
-      subscription={BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION}
-    >
-      {render}
-    </Subscription>
-  )
-}
-
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
@@ -77,11 +60,37 @@ const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
-
-const addTeamMemberSubscription = props => {
-  const { render, getBookBuilderRulesQuery } = props
+const METADATA_UPDATED_SUBSCRIPTION = gql`
+  subscription BookMetadataUpdated {
+    bookMetadataUpdated {
+      id
+    }
+  }
+`
+const bookMetadataSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
 
   const triggerRefetch = () => {
+    if (pauseUpdates) return
+    getBookQuery.refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={METADATA_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const addTeamMemberSubscription = props => {
+  const { render, getBookBuilderRulesQuery, statefull } = props
+  const { pauseUpdates } = statefull
+
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
     getBookBuilderRulesQuery.refetch()
   }
 
@@ -103,9 +112,11 @@ const PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION = gql`
   }
 `
 const orderChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
   const { refetch } = getBookQuery
+  const { pauseUpdates } = statefull
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -128,9 +139,11 @@ const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
 `
 
 const componentTypeChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -145,9 +158,10 @@ const componentTypeChangeSubscription = props => {
 }
 
 const bookComponentAddedSubscription = props => {
-  const { render, getBookQuery, getBookBuilderRulesQuery } = props
+  const { render, getBookQuery, getBookBuilderRulesQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const triggerRefetch = () => {
-    console.log("refetch builder")
+    if (pauseUpdates) return
     getBookQuery.refetch()
     getBookBuilderRulesQuery.refetch()
   }
@@ -162,9 +176,11 @@ const bookComponentAddedSubscription = props => {
   )
 }
 const bookComponentDeletedSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -178,9 +194,11 @@ const bookComponentDeletedSubscription = props => {
   )
 }
 const paginationChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -194,10 +212,12 @@ const paginationChangeSubscription = props => {
   )
 }
 const workflowChangeSubscription = props => {
-  const { render, getBookQuery } = props
-  const { refetch } = getBookQuery
+  const { render, getBookQuery, getBookBuilderRulesQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const triggerRefetch = () => {
-    refetch()
+    if (pauseUpdates) return
+    getBookBuilderRulesQuery.refetch()
+    getBookQuery.refetch()
   }
 
   return (
@@ -210,9 +230,11 @@ const workflowChangeSubscription = props => {
   )
 }
 const lockChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -226,9 +248,11 @@ const lockChangeSubscription = props => {
   )
 }
 const titleChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -242,9 +266,11 @@ const titleChangeSubscription = props => {
   )
 }
 const teamMembersChangeSubscription = props => {
-  const { render, getBookTeamsQuery } = props
+  const { render, getBookTeamsQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookTeamsQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -258,9 +284,11 @@ const teamMembersChangeSubscription = props => {
   )
 }
 const productionEditorChangeSubscription = props => {
-  const { render, getBookQuery } = props
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -268,6 +296,33 @@ const productionEditorChangeSubscription = props => {
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+const BOOK_RENAMED_SUBSCRIPTION = gql`
+  subscription BookRenamed {
+    bookRenamed {
+      id
+      title
+      collectionId
+    }
+  }
+`
+const bookRenamedSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_RENAMED_SUBSCRIPTION}
     >
       {render}
     </Subscription>
@@ -283,7 +338,8 @@ export {
   titleChangeSubscription,
   teamMembersChangeSubscription,
   productionEditorChangeSubscription,
+  bookRenamedSubscription,
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
-  bookComponentWorkflowUpdated,
+  bookMetadataSubscription,
 }

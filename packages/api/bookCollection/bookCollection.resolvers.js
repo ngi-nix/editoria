@@ -2,7 +2,10 @@ const pubsweetServer = require('pubsweet-server')
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
-const { BookCollectionTranslation, BookTranslation } = require('editoria-data-model/src').models
+const {
+  BookCollectionTranslation,
+  BookTranslation,
+} = require('editoria-data-model/src').models
 
 const { pubsubManager } = pubsweetServer
 
@@ -76,14 +79,14 @@ module.exports = {
           if (teams[0] && teams[0].members.length > 0) {
             auth = teams[0].members[0].user.surname
           }
-          let published = ''
+          let status = 0
           if (book.publicationDate !== null) {
-            published = book.publicationDate
+            status = 1
           }
           return {
             id: book.id,
             title,
-            published,
+            status,
             author: auth,
           }
         }),

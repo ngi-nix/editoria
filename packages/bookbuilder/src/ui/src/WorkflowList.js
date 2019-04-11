@@ -26,8 +26,10 @@ const WorkflowList = ({
   currentValues,
   update,
   values,
-  bookComponentStateRules: { stage },
+  bookComponentStateRules,
 }) => {
+  if (!bookComponentStateRules) return null
+  const { stage } = bookComponentStateRules
   let stageItems
   if (config && config.bookBuilder && config.bookBuilder.stages) {
     stageItems = config.bookBuilder.stages

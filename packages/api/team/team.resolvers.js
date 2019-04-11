@@ -44,7 +44,6 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
       unrelate: false,
       eager: 'members.user.teams',
     })
-    console.log('inoput', input)
     logger.info(`Team with id ${id} updated`)
 
     const userMembers = await ctx.connectors.User.fetchSome(

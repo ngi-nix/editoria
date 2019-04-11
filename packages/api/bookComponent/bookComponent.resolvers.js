@@ -1,4 +1,5 @@
 const findIndex = require('lodash/findIndex')
+const find = require('lodash/find')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 // const map = require('lodash/flatMapDepth')
@@ -124,7 +125,6 @@ const addBookComponent = async (_, args, ctx, info) => {
     logger.info(
       `New state created for the book component ${bookComponentState}`,
     )
-    console.log('created', createdBookComponent)
     pubsub.publish(BOOK_COMPONENT_ADDED, {
       bookComponentAdded: createdBookComponent,
     })
@@ -293,9 +293,12 @@ const archiveBookComponent = async (_, args, ctx) => {
 }
 
 const updateWorkflowState = async (_, { input }, ctx) => {
-  const { id, workflowStages } = input
-  const pubsub = await pubsubManager.getPubsub()
   try {
+    const { id, workflowStages } = input
+    const pubsub = await pubsubManager.getPubsub()
+    const bookBuilder = get(config, 'bookBuilder')
+    const lockTrackChanges = get(bookBuilder, 'lockTrackChangesWhenReviewing')
+
     logger.info(
       `Searching of book component state for the book component with id ${id}`,
     )
@@ -311,12 +314,23 @@ const updateWorkflowState = async (_, { input }, ctx) => {
       current: bookComponentState[0],
       update: { workflowStages },
     }
+
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+    const update = {}
+    if (lockTrackChanges) {
+      const isReviewing = find(workflowStages, { type: 'review' }).value === 0
+      if (isReviewing) {
+        update.trackChangesEnabled = true
+        update.workflowStages = workflowStages
+      } else {
+        update.workflowStages = workflowStages
+      }
+    }
 
     const updatedBookComponentState = await BookComponentState.query().patchAndFetchById(
       bookComponentState[0].id,
       {
-        workflowStages,
+        ...update,
       },
     )
     logger.info(
@@ -560,12 +574,10 @@ module.exports = {
     async title(bookComponent, _, ctx) {
       // console.log('bokk', bookComponent)
       let { title } = bookComponent
-      console.log('dsds', title)
       if (!title) {
         const bookComponentTranslation = await BookComponentTranslation.query()
           .where('bookComponentId', bookComponent.id)
           .andWhere('languageIso', 'en')
-          console.log('dsdssdfrsdfdfsds', bookComponentTranslation)
         title = bookComponentTranslation[0].title
       }
       return title

@@ -22,20 +22,20 @@ class SecondRow extends Component {
     super(props)
 
     this.onClickAlignmentBox = this.onClickAlignmentBox.bind(this)
-    this.changeProgressState = this.changeProgressState.bind(this)
+    // this.changeProgressState = this.changeProgressState.bind(this)
     this.updateStateList = this.updateStateList.bind(this)
-    this.toggleModal = this.toggleModal.bind(this)
+    // this.toggleModal = this.toggleModal.bind(this)
     this.progressValues = [-1, 0, 1]
     this.progressOrder = []
-    this.state = {
-      nextProgressValues: {
-        title: null,
-        type: null,
-        value: null,
-      },
-      modalType: null,
-      showModal: false,
-    }
+    // this.state = {
+    //   nextProgressValues: {
+    //     title: null,
+    //     type: null,
+    //     value: null,
+    //   },
+    //   modalType: null,
+    //   showModal: false,
+    // }
 
     for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
       this.progressOrder.push(config.bookBuilder.stages[i].type)
@@ -43,7 +43,12 @@ class SecondRow extends Component {
   }
 
   updateStateList(title, type, value) {
-    const { bookComponentId, workflowStages, updateWorkflowState } = this.props
+    const {
+      bookComponentId,
+      workflowStages,
+      updateWorkflowState,
+      onWorkflowUpdate,
+    } = this.props
     const isLast =
       workflowStages.length - 1 ===
       findIndex(workflowStages, { label: title, type })
@@ -57,174 +62,206 @@ class SecondRow extends Component {
           find(workflowStages, { type: 'edit' }).value === 0 ||
           find(workflowStages, { type: 'clean_up' }).value === 0
         ) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no',
-            showModal: true,
-          })
-        } else if (find(workflowStages, { type: 'review' }).value === 0) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'author-no',
-            showModal: true,
-          })
-        } else {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no-author-no',
-            showModal: true,
-          })
-        }
-      } else if (type === 'file_prep' && value === 1) {
-        this.setState({
-          nextProgressValues: {
+          const nextProgressValues = {
             title,
             type,
             value,
-          },
-          modalType: 'cp-yes',
-          showModal: true,
-        })
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no',
+          )
+        } else if (find(workflowStages, { type: 'review' }).value === 0) {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'author-no',
+          )
+        } else {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no-author-no',
+          )
+        }
+      } else if (type === 'file_prep' && value === 1) {
+        const nextProgressValues = {
+          title,
+          type,
+          value,
+        }
+        onWorkflowUpdate(
+          bookComponentId,
+          workflowStages,
+          nextProgressValues,
+          'cp-yes',
+        )
       } else if (type === 'edit') {
         if (value === 1) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no-author-yes',
-            showModal: true,
-          })
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no-author-yes',
+          )
         } else if (value === 0) {
           if (find(workflowStages, { type: 'review' }).value === 0) {
-            this.setState({
-              nextProgressValues: {
-                title,
-                type,
-                value,
-              },
-              modalType: 'cp-yes-author-no',
-              showModal: true,
-            })
+            const nextProgressValues = {
+              title,
+              type,
+              value,
+            }
+            onWorkflowUpdate(
+              bookComponentId,
+              workflowStages,
+              nextProgressValues,
+              'cp-yes-author-no',
+            )
           } else {
-            this.setState({
-              nextProgressValues: {
-                title,
-                type,
-                value,
-              },
-              modalType: 'cp-yes',
-              showModal: true,
-            })
+            const nextProgressValues = {
+              title,
+              type,
+              value,
+            }
+            onWorkflowUpdate(
+              bookComponentId,
+              workflowStages,
+              nextProgressValues,
+              'cp-yes',
+            )
           }
         } else if (find(workflowStages, { type: 'review' }).value === 0) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no-author-no',
-            showModal: true,
-          })
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no-author-no',
+          )
         } else {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no',
-            showModal: true,
-          })
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no',
+          )
         }
       } else if (type === 'review') {
         if (value === 0) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no-author-yes',
-            showModal: true,
-          })
-        } else if (value === 1) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-yes-author-no',
-            showModal: true,
-          })
-        } else {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-yes-author-no',
-            showModal: true,
-          })
-        }
-      } else if (type === 'clean_up') {
-        if (value === 0) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-yes',
-            showModal: true,
-          })
-        } else if (value === 1) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no',
-            showModal: true,
-          })
-        } else {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'cp-no-author-yes',
-            showModal: true,
-          })
-        }
-      } else if (type === 'page_check' && value === -1) {
-        this.setState({
-          nextProgressValues: {
+          const nextProgressValues = {
             title,
             type,
             value,
-          },
-          modalType: 'cp-yes',
-          showModal: true,
-        })
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no-author-yes',
+          )
+        } else if (value === 1) {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-yes-author-no',
+          )
+        } else {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-yes-author-no',
+          )
+        }
+      } else if (type === 'clean_up') {
+        if (value === 0) {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-yes',
+          )
+        } else if (value === 1) {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no',
+          )
+        } else {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'cp-no-author-yes',
+          )
+        }
+      } else if (type === 'page_check' && value === -1) {
+        const nextProgressValues = {
+          title,
+          type,
+          value,
+        }
+        onWorkflowUpdate(
+          bookComponentId,
+          workflowStages,
+          nextProgressValues,
+          'cp-yes',
+        )
       } else {
         const indexOfStage = findIndex(workflowStages, { label: title, type })
 
@@ -263,36 +300,42 @@ class SecondRow extends Component {
     ) {
       if (type === 'clean_up') {
         if (value === 0) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'author-no',
-            showModal: true,
-          })
-        } else if (value === 1) {
-          this.setState({
-            nextProgressValues: {
-              title,
-              type,
-              value,
-            },
-            modalType: 'author-yes',
-            showModal: true,
-          })
-        }
-      } else if (type === 'review' && value === 1) {
-        this.setState({
-          nextProgressValues: {
+          const nextProgressValues = {
             title,
             type,
             value,
-          },
-          modalType: 'author-no',
-          showModal: true,
-        })
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'author-no',
+          )
+        } else if (value === 1) {
+          const nextProgressValues = {
+            title,
+            type,
+            value,
+          }
+          onWorkflowUpdate(
+            bookComponentId,
+            workflowStages,
+            nextProgressValues,
+            'author-yes',
+          )
+        }
+      } else if (type === 'review' && value === 1) {
+        const nextProgressValues = {
+          title,
+          type,
+          value,
+        }
+        onWorkflowUpdate(
+          bookComponentId,
+          workflowStages,
+          nextProgressValues,
+          'author-no',
+        )
       } else {
         const indexOfStage = findIndex(workflowStages, { label: title, type })
 
@@ -325,57 +368,57 @@ class SecondRow extends Component {
     }
   }
 
-  changeProgressState() {
-    const { bookComponentId, workflowStages, updateWorkflowState } = this.props
-    const { nextProgressValues } = this.state
-    const { title, type, value } = nextProgressValues
-    const isLast =
-      workflowStages.length - 1 ===
-      findIndex(workflowStages, { label: title, type })
-    const indexOfStage = findIndex(workflowStages, { label: title, type })
+  // changeProgressState() {
+  //   const { bookComponentId, workflowStages, updateWorkflowState } = this.props
+  //   const { nextProgressValues } = this.state
+  //   const { title, type, value } = nextProgressValues
+  //   const isLast =
+  //     workflowStages.length - 1 ===
+  //     findIndex(workflowStages, { label: title, type })
+  //   const indexOfStage = findIndex(workflowStages, { label: title, type })
 
-    if (value === 1) {
-      workflowStages[indexOfStage].value = value
-      if (!isLast) {
-        workflowStages[indexOfStage + 1].value = 0
-      }
-    }
+  //   if (value === 1) {
+  //     workflowStages[indexOfStage].value = value
+  //     if (!isLast) {
+  //       workflowStages[indexOfStage + 1].value = 0
+  //     }
+  //   }
 
-    if (value === -1) {
-      workflowStages[indexOfStage].value = value
-      const next = indexOfStage + 1
-      if (type !== 'file_prep') {
-        const previous = indexOfStage - 1
-        workflowStages[previous].value = 0
-      }
-      workflowStages[next].value = -1
-    }
+  //   if (value === -1) {
+  //     workflowStages[indexOfStage].value = value
+  //     const next = indexOfStage + 1
+  //     if (type !== 'file_prep') {
+  //       const previous = indexOfStage - 1
+  //       workflowStages[previous].value = 0
+  //     }
+  //     workflowStages[next].value = -1
+  //   }
 
-    if (value === 0) {
-      workflowStages[indexOfStage].value = value
-      const next = indexOfStage + 1
-      for (let i = next; i < workflowStages.length; i += 1) {
-        workflowStages[i].value = -1
-      }
-    }
+  //   if (value === 0) {
+  //     workflowStages[indexOfStage].value = value
+  //     const next = indexOfStage + 1
+  //     for (let i = next; i < workflowStages.length; i += 1) {
+  //       workflowStages[i].value = -1
+  //     }
+  //   }
 
-    updateWorkflowState(bookComponentId, workflowStages)
-    this.setState({
-      nextProgressValues: {
-        title: null,
-        type: null,
-        value: null,
-      },
-      modalType: null,
-      showModal: false,
-    })
-  }
+  //   updateWorkflowState(bookComponentId, workflowStages)
+  //   this.setState({
+  //     nextProgressValues: {
+  //       title: null,
+  //       type: null,
+  //       value: null,
+  //     },
+  //     modalType: null,
+  //     showModal: false,
+  //   })
+  // }
 
-  toggleModal() {
-    this.setState({
-      showModal: !this.state.showModal,
-    })
-  }
+  // toggleModal() {
+  //   this.setState({
+  //     showModal: !this.state.showModal,
+  //   })
+  // }
 
   onClickAlignmentBox(id) {
     const { bookComponentId, pagination, updatePagination } = this.props
@@ -387,22 +430,22 @@ class SecondRow extends Component {
     updatePagination(bookComponentId, patch)
   }
 
-  renderModal() {
-    const { bookComponentId, componentType, outerContainer } = this.props
-    const { modalType, showModal } = this.state
+  // renderModal() {
+  //   const { bookComponentId, componentType, outerContainer } = this.props
+  //   const { modalType, showModal } = this.state
 
-    return (
-      <ProgressModal
-        bookComponentId={bookComponentId}
-        changeProgressState={this.changeProgressState}
-        componentType={componentType}
-        container={outerContainer}
-        modalType={modalType}
-        show={showModal}
-        toggle={this.toggleModal}
-      />
-    )
-  }
+  //   return (
+  //     <ProgressModal
+  //       bookComponentId={bookComponentId}
+  //       changeProgressState={this.changeProgressState}
+  //       componentType={componentType}
+  //       container={outerContainer}
+  //       modalType={modalType}
+  //       show={showModal}
+  //       toggle={this.toggleModal}
+  //     />
+  //   )
+  // }
 
   render() {
     const {
@@ -427,7 +470,7 @@ class SecondRow extends Component {
       bookComponentStateRules,
     } = rules
 
-    const warningModal = this.renderModal()
+    // const warningModal = this.renderModal()
     const paginationData = []
     forIn(pagination, (value, key) => {
       if (key !== '__typename') {
@@ -436,7 +479,6 @@ class SecondRow extends Component {
     })
     return (
       <SecondRowContainer>
-        {warningModal}
         {canViewUploadButton && (
           <UploadFileButton
             bookComponentId={bookComponentId}

@@ -7,6 +7,7 @@ import {
   Header,
   UploadFilesButton,
   DownloadEpubButton,
+  MetadataButton,
   BookExporter,
   DivisionsArea,
 } from './ui'
@@ -70,8 +71,10 @@ export class BookBuilder extends React.Component {
   render() {
     const {
       book,
+      state,
       history,
       addBookComponent,
+      onMetadataAdd,
       addBookComponents,
       deleteBookComponent,
       updateBookComponentPagination,
@@ -88,9 +91,11 @@ export class BookBuilder extends React.Component {
       rules,
       loading,
       loadingRules,
-      // refetchingBookBuilderRules,
+      setState,
+      refetchingBookBuilderRules,
+      onWorkflowUpdate,
     } = this.props
-    // console.log(rules)
+    console.log(state)
     if (loading || loadingRules) return 'Loading...'
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
@@ -106,6 +111,7 @@ export class BookBuilder extends React.Component {
     }
 
     const headerActions = [
+      <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
       <BookExporter
         book={book}
         history={history}
@@ -140,7 +146,9 @@ export class BookBuilder extends React.Component {
         <Header bookTitle={book.title} actions={headerActions} />
         <DivisionsArea
           addBookComponent={addBookComponent}
+          onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
+          setState={setState}
           onAdminUnlock={onAdminUnlock}
           history={history}
           bookId={book.id}

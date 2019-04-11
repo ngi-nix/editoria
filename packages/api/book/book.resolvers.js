@@ -1,6 +1,8 @@
 const pubsweetServer = require('pubsweet-server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
+const pickBy = require('lodash/pickBy')
+const identity = require('lodash/identity')
 const filter = require('lodash/filter')
 const config = require('config')
 const logger = require('@pubsweet/logger')
@@ -13,6 +15,7 @@ const {
   BOOK_DELETED,
   BOOK_RENAMED,
   BOOK_ARCHIVED,
+  BOOK_METADATA_UPDATED,
 } = require('./consts')
 const {
   Book,
@@ -231,6 +234,26 @@ const archiveBook = async (_, { id, archive }, ctx) => {
   }
 }
 
+const updateMetadata = async (_, { input }, ctx) => {
+  const clean = pickBy(input, identity)
+  const { id, ...rest } = clean
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    const updatedBook = await Book.query().patchAndFetchById(id, {
+      ...rest,
+    })
+    logger.info(`Book with id ${updatedBook.id} has new metadata`)
+
+    pubsub.publish(BOOK_METADATA_UPDATED, {
+      bookMetadataUpdated: updatedBook,
+    })
+    return updatedBook
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 const exportBook = async (
   _,
   { bookId, destination, converter, previewer, style },
@@ -247,6 +270,7 @@ module.exports = {
     renameBook,
     deleteBook,
     exportBook,
+    updateMetadata,
   },
   Book: {
     async title(book, _, ctx) {
@@ -334,6 +358,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_RENAMED)
+      },
+    },
+    bookMetadataUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_METADATA_UPDATED)
       },
     },
   },

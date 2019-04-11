@@ -26,6 +26,6 @@ create table book (
   copyright_year int,
   edition int,
   license text,
-  publication_date date,
+  publication_date text,
   reference_id uuid
 );

@@ -8,6 +8,15 @@ const GET_BOOK = gql`
       id
       title
       productionEditors
+      publicationDate
+      edition
+      copyrightStatement
+      copyrightYear
+      copyrightHolder
+      isbn
+      issn
+      issnL
+      license
       divisions {
         id
         label

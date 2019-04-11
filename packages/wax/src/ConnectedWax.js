@@ -70,14 +70,14 @@ const Connected = props => {
         loading,
         waxLoading,
       }) => {
-        let editing = ''
-        if (rules.canEditFull) {
+        let editing = 'full'
+        {/* if (rules.canEditFull) {
           editing = 'full'
         } else if (rules.canEditSelection) {
           editing = 'selection'
         } else if (rules.canEditReview) {
           editing = 'review'
-        }
+        } */}
 
         return (
           <WaxPubsweet

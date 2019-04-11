@@ -167,6 +167,7 @@ class Division extends React.Component {
       outerContainer,
       divisionId,
       showModal,
+      onWorkflowUpdate,
       onAdminUnlock,
       showModalToggle,
       history,
@@ -201,6 +202,7 @@ class Division extends React.Component {
                 <BookComponent
                   bookId={bookId}
                   onAdminUnlock={onAdminUnlock}
+                  onWorkflowUpdate={onWorkflowUpdate}
                   canDrag={reorderingAllowed}
                   componentType={componentType}
                   componentTypeOrder={componentTypeOrder}

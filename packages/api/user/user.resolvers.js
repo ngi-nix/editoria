@@ -5,8 +5,6 @@ const startsWith = require('lodash/startsWith')
 
 const findUser = async (_, { search, exclude }, ctx, info) => {
   const allUsers = await ctx.connectors.User.model.all()
-  console.log('ctx', ctx.connectors)
-  console.log('allUser', allUsers)
   const searchLow = search.toLowerCase()
   const res = []
 
@@ -25,6 +23,7 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
   } else if (searchLow.length > 3) {
     forEach(allUsers, user => {
       if (user.admin) return
+      const fullname = `${user.givenName} ${user.surname}`
       if (
         (get(user, 'username', '')
           .toLowerCase()
@@ -34,15 +33,15 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
             .includes(searchLow) ||
           get(user, 'email', '')
             .toLowerCase()
-            .includes(searchLow)) &&
+            .includes(searchLow) ||
+          fullname.toLowerCase().includes(searchLow)) &&
         !includes(exclude, user.id)
       ) {
         res.push(user)
       }
     })
   }
-  
-  console.log('res', res)
+
   return res
 }
 const createEditoriaUser = async (_, { input }, ctx, info) => {

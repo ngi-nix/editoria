@@ -6,6 +6,14 @@ type Book {
   divisions: [Division]!
   authors: [User]
   publicationDate: Date
+  edition: Int
+  copyrightStatement: String
+  copyrightYear: Int
+  copyrightHolder: String
+  isbn: String
+  issn: String
+  issnL: String
+  license: String
   archived: Boolean!
 }
 
@@ -17,18 +25,38 @@ input CreateBookInput {
 extend type Query {
   getBook(id: ID!): Book!
 }
+input MetadataInput {
+  id: ID!
+  publicationDate: Date
+  edition: Int
+  copyrightStatement: String
+  copyrightYear: Int
+  copyrightHolder: String
+  isbn: String
+  issn: String
+  issnL: String
+  license: String
+}
 
 extend type Mutation {
-  archiveBook(id: ID!, archive:Boolean!): Book!
+  archiveBook(id: ID!, archive: Boolean!): Book!
   createBook(input: CreateBookInput!): Book!
   renameBook(id: ID!, title: String!): Book!
   deleteBook(id: ID!): Book!
-  exportBook(bookId: ID!,destination:String!, converter:String, previewer: String, style:String): String!
+  updateMetadata(input: MetadataInput!): Book!
+  exportBook(
+    bookId: ID!
+    destination: String!
+    converter: String
+    previewer: String
+    style: String
+  ): String!
 }
 
-extend type Subscription { 
+extend type Subscription {
   bookArchived: Book!
-  bookCreated: Book! 
+  bookCreated: Book!
   bookDeleted: Book!
   bookRenamed: Book!
+  bookMetadataUpdated: Book!
 }

@@ -129,6 +129,7 @@ const Book = props => {
     onArchiveBook,
   } = props
   const { authors, publicationDate, archived } = book
+  console.log('book', book)
   const { canRenameBooks, canDeleteBooks, canArchiveBooks } = bookRule
 
   return (
@@ -171,11 +172,12 @@ const Book = props => {
           } else {
             statusLabel = 'published'
           }
-        }
-        if (archived) {
-          statusLabel = 'in progress (archived)'
         } else {
-          statusLabel = 'in progress'
+          if (archived) {
+            statusLabel = 'in progress (archived)'
+          } else {
+            statusLabel = 'in progress'
+          }
         }
 
         return (
