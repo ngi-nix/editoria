@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get } from 'lodash'
+import { get, sortBy } from 'lodash'
 import { adopt } from 'react-adopt'
+import config from 'config'
 import { withRouter } from 'react-router-dom'
 import WaxPubsweet from './WaxPubsweet'
 import {
   getBookComponentQuery,
   getWaxRulesQuery,
-  getCurrentUserQuery,
+  getUserTeamsQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
@@ -22,7 +23,7 @@ import {
 const mapper = {
   getBookComponentQuery,
   getWaxRulesQuery,
-  getCurrentUserQuery,
+  getUserTeamsQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
@@ -33,10 +34,18 @@ const mapper = {
   // titleChangeSubscription,
 }
 
+const getUserWithColor = (teams = []) => {
+  const team =
+    sortBy(config.authsome.teams, ['weight']).find(teamConfig =>
+      teams.some(team => team.role === teamConfig.role),
+    ) || {}
+  return team.color
+}
+
 const mapProps = args => ({
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
-  user: get(args.getCurrentUserQuery, 'data.currentUser'),
+  teams: get(args.getUserTeamsQuery, 'data.teams'),
   subscribeToMore: get(args.getBookComponentQuery, 'subscribeToMore'),
   updateBookComponentContent:
     args.updateBookComponentContentMutation.updateContent,
@@ -49,7 +58,7 @@ const mapProps = args => ({
 
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
-  userLoading: args.getCurrentUserQuery.networkStatus === 1,
+  teamsLoading: args.getUserTeamsQuery.networkStatus === 1,
   refetching:
     args.getBookComponentQuery.networkStatus === 4 ||
     args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
@@ -58,15 +67,19 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history, config } = props
+  const { match, history, config, currentUser } = props
   const { bookId, bookComponentId } = match.params
 
   return (
-    <Composed bookComponentId={bookComponentId} bookId={bookId}>
+    <Composed
+      bookComponentId={bookComponentId}
+      bookId={bookId}
+      currentUser={currentUser}
+    >
       {({
         bookComponent,
         rules,
-        user,
+        teams,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
@@ -75,25 +88,29 @@ const Connected = props => {
         renameBookComponent,
         loading,
         waxLoading,
-        userLoading,
+        teamsLoading,
       }) => {
+        const user = Object.assign({}, currentUser, {
+          color: getUserWithColor(teams),
+        })
+        console.log(user.color,"!")
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
             bookComponentId={bookComponentId}
-            waxLoading={waxLoading}
             config={config}
             history={history}
             loading={loading}
-            userLoading={userLoading}
             lockBookComponent={lockBookComponent}
             renameBookComponent={renameBookComponent}
             rules={rules}
-            user={user}
+            teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}
+            user={user}
+            waxLoading={waxLoading}
           />
         )
       }}

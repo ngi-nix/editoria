@@ -454,7 +454,7 @@ export class WaxPubsweet extends React.Component {
     } else {
       header = <h1>{`${bookComponent.title}`}</h1>
     }
-
+    console.log(user)
     return (
       <div>
         {header}
@@ -480,7 +480,7 @@ export class WaxPubsweet extends React.Component {
 
   render() {
     // const { config, fragment, history, user } = this.props
-    const { loading, waxLoading, userLoading } = this.props
+    const { loading, waxLoading, teamsLoading } = this.props
     // if (loading) return 'Loading...'
     // const { layout } = config
     const { editing } = this.state
@@ -497,7 +497,7 @@ export class WaxPubsweet extends React.Component {
     // if (loading) {
     //   return <p>Loading</p>
     // }
-    if (loading || waxLoading || userLoading) return 'Loading...'
+    if (loading || waxLoading || teamsLoading) return 'Loading...'
 
     return this.renderWax(editing)
   }
