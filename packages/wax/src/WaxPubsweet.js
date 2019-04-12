@@ -74,7 +74,7 @@ export class WaxPubsweet extends React.Component {
       },
     })
   }
-  
+
   componentDidMount() {
     console.log('did mount')
     const { lockBookComponent, bookComponent } = this.props
@@ -164,13 +164,16 @@ export class WaxPubsweet extends React.Component {
   // }
 
   componentWillReceiveProps(nextProps) {
+    //if lock from other user then setState({pauseUpdates:true})
     if (nextProps.bookComponent !== this.props.bookComponent) {
-      if (nextProps.rules.canEditFull) {
-        this.setState({ editing: 'full' })
-      } else if (nextProps.rules.canEditSelection) {
-        this.setState({ editing: 'selection' })
-      } else if (nextProps.rules.canEditReview) {
-        this.setState({ editing: 'review' })
+      if (nextProps.rules) {
+        if (nextProps.rules.canEditFull) {
+          this.setState({ editing: 'full' })
+        } else if (nextProps.rules.canEditSelection) {
+          this.setState({ editing: 'selection' })
+        } else if (nextProps.rules.canEditReview) {
+          this.setState({ editing: 'review' })
+        }
       }
     }
   }

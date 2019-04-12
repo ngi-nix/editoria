@@ -23,9 +23,11 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
 `
 
 const trackChangeSubscription = props => {
-  const { render, getBookComponentQuery } = props
+  const { render, getBookComponentQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 
@@ -40,9 +42,11 @@ const trackChangeSubscription = props => {
 }
 
 const titleChangeSubscription = props => {
-  const { render, getBookComponentQuery } = props
+  const { render, getBookComponentQuery, statefull } = props
+  const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
+    if (pauseUpdates) return
     refetch()
   }
 

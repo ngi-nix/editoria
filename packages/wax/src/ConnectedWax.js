@@ -5,6 +5,7 @@ import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import WaxPubsweet from './WaxPubsweet'
+import statefull from './Statefull'
 import {
   getBookComponentQuery,
   getWaxRulesQuery,
@@ -19,6 +20,7 @@ import {
 } from './queries'
 
 const mapper = {
+  statefull,
   getBookComponentQuery,
   getWaxRulesQuery,
   updateBookComponentContentMutation,
@@ -32,6 +34,8 @@ const mapper = {
 }
 
 const mapProps = args => ({
+  state: args.statefull.state,
+  setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
   subscribeToMore: get(args.getBookComponentQuery, 'subscribeToMore'),
@@ -60,6 +64,7 @@ const Connected = props => {
     <Composed bookComponentId={bookComponentId} bookId={bookId}>
       {({
         bookComponent,
+        setState,
         rules,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
@@ -70,7 +75,7 @@ const Connected = props => {
         loading,
         waxLoading,
       }) => {
-        let editing = 'full'
+        let editing = 'disabled'
         {/* if (rules.canEditFull) {
           editing = 'full'
         } else if (rules.canEditSelection) {
@@ -82,6 +87,7 @@ const Connected = props => {
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
+            setState={setState}
             bookComponentId={bookComponentId}
             waxLoading={waxLoading}
             config={config}
