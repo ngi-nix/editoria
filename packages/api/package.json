@@ -1,6 +1,6 @@
 {
   "name": "editoria-api",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "GraphQl API for Editoria",
   "main": "index.js",
   "keywords": [
@@ -11,8 +11,8 @@
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
-    "editoria-data-model": "^0.0.0",
     "cheerio": "^1.0.0-rc.2",
+    "editoria-data-model": "^0.1.0",
     "highlight.js": "^9.13.1",
     "html-epub": "git+https://git@gitlab.coko.foundation/pubsweet/html-epub#updated-libtidy",
     "mkdirp": "^0.5.1",

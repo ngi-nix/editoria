@@ -1,7 +1,7 @@
 {
   "name": "pubsweet-component-wax",
   "description": "PubSweet component for the Wax collaborative document editor",
-  "version": "0.6.16",
+  "version": "0.7.0",
   "main": "index.js",
   "keywords": [
     "wax",
@@ -10,15 +10,15 @@
     "pubsweet-client"
   ],
   "dependencies": {
+    "config": "^1.27.0",
     "lodash": "4.17.4",
     "pubsweet-client": "^9.0.2",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "wax-editor-react": "^0.2.16",
-    "config": "^1.27.0",
     "react-adopt": "^0.6.0",
+    "react-dom": "^16.2.0",
+    "react-powerplug": "^1.0.0",
     "react-router-dom": "4.2.2",
-    "react-powerplug": "^1.0.0"
+    "wax-editor-react": "^0.2.16"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

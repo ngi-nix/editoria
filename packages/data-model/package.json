@@ -1,6 +1,6 @@
 {
   "name": "editoria-data-model",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Data model definitions for Editoria",
   "main": "index.js",
   "keywords": [
@@ -12,10 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@pubsweet/base-model": "^3.0.4",
-    "@pubsweet/model-team": "^2.0.4",
-    "@pubsweet/model-user": "^4.0.4",
     "@pubsweet/db-manager": "^3.0.3",
     "@pubsweet/logger": "^0.2.7",
+    "@pubsweet/model-team": "^2.0.4",
+    "@pubsweet/model-user": "^4.0.4",
     "jest": "^23.6.0",
     "knex": "^0.15.2",
     "pubsweet": "^4.0.4",

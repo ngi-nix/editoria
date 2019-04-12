@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.7.0"></a>
+# [0.7.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.6.16...pubsweet-component-wax@0.7.0) (2019-04-12)
+
+
+### Bug Fixes
+
+* **authsome:** fix subscription for authosme updates ([1ce1fd9](https://gitlab.coko.foundation/editoria/editoria/commit/1ce1fd9))
+* **navigation:** fix navigation back to book ([549e50b](https://gitlab.coko.foundation/editoria/editoria/commit/549e50b))
+* **upgrade:** remove redux dependencies upgrade client ([be4d87b](https://gitlab.coko.foundation/editoria/editoria/commit/be4d87b))
+* **wax:** add user color ([c314de5](https://gitlab.coko.foundation/editoria/editoria/commit/c314de5))
+
+
+### Features
+
+* **authsome:** move authorize to backend ([4e00def](https://gitlab.coko.foundation/editoria/editoria/commit/4e00def))
+* **wax:** add user to wax props ([b4e151e](https://gitlab.coko.foundation/editoria/editoria/commit/b4e151e))
+* **wax:** upgrade wax editor ([34639a4](https://gitlab.coko.foundation/editoria/editoria/commit/34639a4))
+
+
+
+
 <a name="0.6.16"></a>
 ## [0.6.16](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.6.15...pubsweet-component-wax@0.6.16) (2018-11-20)
 
