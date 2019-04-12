@@ -63,7 +63,7 @@ module.exports = (
 
     const p = $('<p/>')
       .attr('class', className)
-      .text($elem.text())
+      .html($elem.html())
 
     $elem.replaceWith(p)
     if (className === 'cst') {
@@ -113,6 +113,14 @@ module.exports = (
   $('epigraph-poetry').each(replaceWithBlockquote('sepo'))
   $('epigraph-prose').each(replaceWithBlockquote('sep'))
   $('bibliography-entry').each(replaceWithParagraph('bibliography-entry'))
+  $('glossary').each(replaceWithParagraph('glossary'))
+  $('author').each(replaceWithParagraph('author'))
+  $('dedication').each(replaceWithParagraph('dedication'))
+  $('half-title').each(replaceWithParagraph('half-title'))
+  $('publisher').each(replaceWithParagraph('publisher'))
+  $('signature').each(replaceWithParagraph('signature'))
+  $('series-editor').each(replaceWithParagraph('series-editor'))
+  $('series-title').each(replaceWithParagraph('series-title'))
   $('comment').each(replaceWithText)
   // $('chapter-number').each(replaceWithParagraph('sc-chapter-number'))
   $('chapter-title').each(replaceWithH1('ct'))
@@ -121,7 +129,7 @@ module.exports = (
   $('ol[styling="qa"]').each(replaceWithList('di'))
   $('ol[styling="unstyled"]').each(replaceWithList('none'))
 
-  $('figure').each(replaceWithFigure(''))
+  // $('figure').each(replaceWithFigure(''))
   $('script').each(replaceWithPre('pre'))
 
   // remove "uploads" from the start of each src attribute
@@ -171,7 +179,7 @@ module.exports = (
 
     for (let i = 0; i < element.children().length; i += 1) {
       const currentElement = $(element.children().get(i))
-      content += `<span class="footnote-line">${currentElement.text()}</span>`
+      content += `<span class="footnote-line">${currentElement.html()}</span>`
     }
 
     const callout = $(`

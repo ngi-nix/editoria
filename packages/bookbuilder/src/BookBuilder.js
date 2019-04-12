@@ -76,6 +76,7 @@ export class BookBuilder extends React.Component {
       addBookComponent,
       onMetadataAdd,
       addBookComponents,
+      currentUser,
       deleteBookComponent,
       updateBookComponentPagination,
       updateBookComponentOrder,
@@ -150,6 +151,7 @@ export class BookBuilder extends React.Component {
           onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
           setState={setState}
+          currentUser={currentUser}
           onAdminUnlock={onAdminUnlock}
           history={history}
           bookId={book.id}

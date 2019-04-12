@@ -48,15 +48,20 @@ const StyledButton = styled(ButtonWithIcon)`
 `
 const EditingNotification = ({
   bookComponentId,
+  currentUser,
   onAdminUnlock,
   lock,
   componentType,
   title,
 }) => {
   const { givenName, surname, username, created, isAdmin } = lock
-  const message = isAdmin
-    ? 'admin is editing'
-    : `${givenName} ${surname} is editing`
+  let message
+  if (isAdmin === null || isAdmin === true) {
+    message = 'admin is editing'
+  } else {
+    message = `${givenName} ${surname} is editing`
+  }
+
   let hoverTitle
 
   const formatDate = timestamp => {
@@ -106,7 +111,7 @@ const EditingNotification = ({
         label={message}
         title={hoverTitle}
         onClick={() => onAdminUnlock(bookComponentId, componentType, title)}
-        disabled={!isAdmin}
+        disabled={!currentUser.admin}
       />
     </React.Fragment>
   )

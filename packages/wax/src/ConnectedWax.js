@@ -1,14 +1,16 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get } from 'lodash'
+import { get, sortBy } from 'lodash'
 import { adopt } from 'react-adopt'
+import config from 'config'
 import { withRouter } from 'react-router-dom'
 import WaxPubsweet from './WaxPubsweet'
 import statefull from './Statefull'
 import {
   getBookComponentQuery,
   getWaxRulesQuery,
+  getUserTeamsQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
@@ -23,6 +25,7 @@ const mapper = {
   statefull,
   getBookComponentQuery,
   getWaxRulesQuery,
+  getUserTeamsQuery,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
@@ -33,12 +36,20 @@ const mapper = {
   // titleChangeSubscription,
 }
 
+const getUserWithColor = (teams = []) => {
+  const team =
+    sortBy(config.authsome.teams, ['weight']).find(teamConfig =>
+      teams.some(team => team.role === teamConfig.role),
+    ) || {}
+  return team.color
+}
+
 const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
-  subscribeToMore: get(args.getBookComponentQuery, 'subscribeToMore'),
+  teams: get(args.getUserTeamsQuery, 'data.teams'),
   updateBookComponentContent:
     args.updateBookComponentContentMutation.updateContent,
   updateBookComponentTrackChanges:
@@ -47,8 +58,10 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
+  teamsLoading: args.getUserTeamsQuery.networkStatus === 1,
   refetching:
     args.getBookComponentQuery.networkStatus === 4 ||
     args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
@@ -57,15 +70,20 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history, config } = props
+  const { match, history, config, currentUser } = props
   const { bookId, bookComponentId } = match.params
 
   return (
-    <Composed bookComponentId={bookComponentId} bookId={bookId}>
+    <Composed
+      bookComponentId={bookComponentId}
+      bookId={bookId}
+      currentUser={currentUser}
+    >
       {({
         bookComponent,
         setState,
         rules,
+        teams,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
@@ -74,33 +92,43 @@ const Connected = props => {
         renameBookComponent,
         loading,
         waxLoading,
+        teamsLoading,
       }) => {
-        let editing = 'disabled'
-        {/* if (rules.canEditFull) {
-          editing = 'full'
-        } else if (rules.canEditSelection) {
-          editing = 'selection'
-        } else if (rules.canEditReview) {
-          editing = 'review'
-        } */}
-
+        const user = Object.assign({}, currentUser, {
+          color: getUserWithColor(teams),
+        })
+        if (loading || waxLoading || teamsLoading) return null
+        let editing
+        if (bookComponent.lock) {
+          editing = 'preview'
+        } else {
+          if (rules.canEditFull) {
+            editing = 'full'
+          } else if (rules.canEditSelection) {
+            editing = 'selection'
+          } else if (rules.canEditReview) {
+            editing = 'review'
+          }
+        }
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
             setState={setState}
-            bookComponentId={bookComponentId}
-            waxLoading={waxLoading}
-            config={config}
             editing={editing}
+            bookComponentId={bookComponentId}
+            config={config}
             history={history}
             loading={loading}
             lockBookComponent={lockBookComponent}
             renameBookComponent={renameBookComponent}
             rules={rules}
+            teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}
+            user={user}
+            waxLoading={waxLoading}
           />
         )
       }}

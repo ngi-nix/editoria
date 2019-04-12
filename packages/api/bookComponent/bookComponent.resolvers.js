@@ -377,26 +377,29 @@ const lockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
+    const bookComponent = await BookComponent.findById(id)
     const lock = await Lock.query()
       .where('foreignId', id)
       .andWhere('deleted', false)
     if (lock.length > 0) {
+      if (lock[0].userId === ctx.user) {
+        return bookComponent
+      }
       const errorMsg = `There is a lock already for this book component for the user with id ${
         lock[0].userId
       }`
       logger.error(errorMsg)
       throw new Error(errorMsg)
     }
-    const clock = await new Lock({
+    await new Lock({
       foreignId: id,
       foreignType: 'bookComponent',
       userId: ctx.user,
     }).save()
-    const updatedBookComponent = await BookComponent.findById(id)
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
-      bookComponentLockUpdated: updatedBookComponent,
+      bookComponentLockUpdated: bookComponent,
     })
-    return updatedBookComponent
+    return bookComponent
   } catch (e) {
     logger.error(e)
     throw new Error(e)
@@ -587,10 +590,18 @@ module.exports = {
     },
     async bookTitle(bookComponent, _, ctx) {
       const book = await Book.findById(bookComponent.bookId)
+      console.log('book', book, bookComponent)
       const bookTranslation = await BookTranslation.query()
         .where('bookId', book.id)
         .andWhere('languageIso', 'en')
-      return bookTranslation.title
+      console.log('booktit', bookTranslation)
+      return bookTranslation[0].title
+    },
+    async divisionType(bookComponent, _, ctx) {
+      console.log('in here')
+      const division = await Division.findById(bookComponent.divisionId)
+      console.log('division', division)
+      return division.label
     },
     async divisionId(bookComponent, _, ctx) {
       return bookComponent.divisionId

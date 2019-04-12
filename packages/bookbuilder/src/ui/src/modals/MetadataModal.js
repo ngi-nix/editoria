@@ -207,7 +207,7 @@ class MetadataModal extends React.Component {
     return (
       <FormModal
         isOpen={isOpen}
-        headerText="Book Metadate"
+        headerText="Book Metadata"
         size="medium"
         onRequestClose={hideModal}
       >

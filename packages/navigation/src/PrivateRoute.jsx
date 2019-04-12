@@ -8,7 +8,7 @@ const PrivateRoute = ({ currentUser, component: Component, ...rest }) => (
   <Route
     render={props => {
       if (currentUser) {
-        return <Component {...props} />
+        return <Component {...props} currentUser={currentUser} />
       }
 
       return (

@@ -39,10 +39,11 @@ type BookComponent {
   id: ID!
   title: String!
   bookId: ID!
-  bookTitle: String!
+  bookTitle: String
   componentTypeOrder: Int!
   hasContent: Boolean!
   divisionId: ID!
+  divisionType: String
   lock: Lock
   pagination: Pagination!
   archived: Boolean!

@@ -14,9 +14,13 @@ const StyledNavBar = styled(AppBar)`
 class Navigation extends React.Component {
   constructor(props) {
     super(props)
-    this.collectionId = ''
-    this.inEditor = null
-    this.inPaged = null
+    const { location } = this.props.history
+    const { pathname } = location
+
+    const pathnameSplitted = pathname.split('/')
+    this.collectionId = pathnameSplitted[2] // eslint-disable-line
+    this.inEditor = pathname.match(/bookComponents/g)
+    this.inPaged = pathname.match(/pagedPreviewer\/paged/g)
   }
 
   // componentWillMount() {

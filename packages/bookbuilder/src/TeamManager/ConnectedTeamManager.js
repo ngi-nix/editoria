@@ -4,6 +4,7 @@ import React from 'react'
 import { get } from 'lodash'
 import { adopt } from 'react-adopt'
 import TeamManagerModal from './TeamManagerModal'
+import statefull from '../Statefull'
 import {
   getBookTeamsQuery,
   getBookBuilderRulesQuery,
@@ -14,6 +15,7 @@ import {
 } from '../queries'
 
 const mapper = {
+  statefull,
   getBookBuilderRulesQuery,
   getBookTeamsQuery,
   findUserMutation,
@@ -23,6 +25,8 @@ const mapper = {
 }
 
 const mapProps = args => ({
+  state: args.statefull.state,
+  setState: args.statefull.setState,
   teams: get(args.getBookTeamsQuery, 'data.getBookTeams'),
   findUser: args.findUserMutation.findUser,
   updateTeam: args.updateTeamMutation.updateBookTeam,

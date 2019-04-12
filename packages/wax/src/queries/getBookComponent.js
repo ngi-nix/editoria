@@ -7,6 +7,8 @@ const GET_BOOK_COMPONENT = gql`
     getBookComponent(id: $id) {
       id
       divisionId
+      divisionType
+      bookTitle
       title
       bookId
       hasContent
@@ -17,6 +19,13 @@ const GET_BOOK_COMPONENT = gql`
         label
         type
         value
+      }
+      lock {
+        username
+        created
+        givenName
+        isAdmin
+        surname
       }
       content
     }
