@@ -77,59 +77,64 @@ class UploadFilesButton extends React.Component {
     event.preventDefault()
 
     const { update } = this.props
-    const { counter } = this.state
     const originalFiles = event.target.files
+    const self = this
 
     const files = sortBy(originalFiles, 'name') // ensure order
     this.setState({ uploading: true, counter: files.length })
     this.makeBookComponents(files).then(res => {
       const { data } = res
       const { addBookComponents } = data
-      forEach(files, file => {
-        const bodyFormData = new FormData()
-        bodyFormData.append('file', file)
-        axios({
-          method: 'post',
-          url: 'http://localhost:3050/api/ink',
-          data: bodyFormData,
-          config: { headers: { 'Content-Type': 'multipart/form-data' } },
-        })
-          .then(response => {
-            const name = file.name.replace(/\.[^/.]+$/, '')
-            const correspondingBookComponent = find(addBookComponents, {
-              title: name,
-            })
-            correspondingBookComponent.workflowStages[0].value = 1
-            correspondingBookComponent.workflowStages[1].value = 0
-            const workflowStages = map(
-              correspondingBookComponent.workflowStages,
-              item => ({
-                label: item.label,
-                type: item.type,
-                value: item.value,
-              }),
-            )
-            update({
-              variables: {
-                input: {
-                  id: correspondingBookComponent.id,
-                  content: response.data.converted,
-                  uploading: false,
-                  workflowStages,
+      Promise.all(
+        map(files, async file => {
+          const bodyFormData = new FormData()
+          bodyFormData.append('file', file)
+          return axios({
+            method: 'post',
+            url: '/api/ink',
+            data: bodyFormData,
+            config: { headers: { 'Content-Type': 'multipart/form-data' } },
+          })
+            .then(async response => {
+              const name = file.name.replace(/\.[^/.]+$/, '')
+              const correspondingBookComponent = find(addBookComponents, {
+                title: name,
+              })
+              correspondingBookComponent.workflowStages[0].value = 1
+              correspondingBookComponent.workflowStages[1].value = 0
+              const workflowStages = map(
+                correspondingBookComponent.workflowStages,
+                item => ({
+                  label: item.label,
+                  type: item.type,
+                  value: item.value,
+                }),
+              )
+              await update({
+                variables: {
+                  input: {
+                    id: correspondingBookComponent.id,
+                    content: response.data.converted,
+                    uploading: false,
+                    workflowStages,
+                  },
                 },
-              },
-            }).then(res => {
-              this.setState({ counter: counter - 1 })
-              if (counter === 0) {
-                this.setState({ uploading: false })
-              }
+              }).then(res => {
+                self.setState({ counter: self.state.counter - 1 })
+              })
             })
-          })
-          .catch(error => {
-            this.setState({ counter: 0, uploading: false })
-            console.log('error', error)
-          })
-      })
+            .catch(error => {
+              console.log('error', error)
+            })
+        }),
+      )
+        .then(() => {
+          self.setState({ uploading: false })
+        })
+        .catch(error => {
+          self.setState({ counter: 0, uploading: false })
+          console.log('error', error)
+        })
     })
   }
 

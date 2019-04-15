@@ -54,7 +54,7 @@ const UploadFileButton = ({
     })
     axios({
       method: 'post',
-      url: 'http://localhost:3050/api/ink',
+      url: '/api/ink',
       data: bodyFormData,
       config: { headers: { 'Content-Type': 'multipart/form-data' } },
     })
