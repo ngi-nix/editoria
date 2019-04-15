@@ -15,7 +15,6 @@ const GET_BOOKBUILDER_RULES = gql`
       canViewAlignmentTool
       exportBook
       downloadEPUB
-      canViewFragmentEdit
       canViewAddTeamMember
       teamRoles {
         role
@@ -24,6 +23,7 @@ const GET_BOOKBUILDER_RULES = gql`
       bookComponentStateRules {
         id
         bookComponentId
+        canViewFragmentEdit
         stage {
           type
           canChangeProgressList

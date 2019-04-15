@@ -20,7 +20,6 @@ type BookBuilderRules {
   canViewTeamManager: Boolean
   canViewStateList: Boolean
   canViewAlignmentTool: Boolean
-  canViewFragmentEdit: Boolean
   exportBook: Boolean
   downloadEPUB: Boolean
   bookComponentStateRules: [BookComponentStateRule!]!
@@ -43,7 +42,7 @@ type BookComponentStateRule {
   id: ID
   bookComponentId: ID
   stage: [Stages]
-  canViewEditBookComponent:Boolean
+  canViewFragmentEdit:Boolean
 }
 
 

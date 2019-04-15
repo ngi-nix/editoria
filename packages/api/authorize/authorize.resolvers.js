@@ -10,6 +10,7 @@ const {
   canAddBooks,
   canRemoveTeamMember,
   canViewAddTeamMember,
+  canViewFragmentEdit,
   editor,
   dashboard,
   bookBuilder,
@@ -126,9 +127,19 @@ const getBookBuilderRules = async (_, args, ctx) => {
         }),
       )
 
+      const canViewFragmentEdits = await executeMultipleAuthorizeRules(
+        ctx,
+        Object.assign({}, { bookId: book.id }, value),
+        { canViewFragmentEdit },
+      )
+
       return Object.assign(
         {},
-        { id: value.id, bookComponentId: value.bookComponentId },
+        {
+          id: value.id,
+          bookComponentId: value.bookComponentId,
+          canViewFragmentEdit: canViewFragmentEdits.canViewFragmentEdit,
+        },
         { stage: data },
       )
     }),

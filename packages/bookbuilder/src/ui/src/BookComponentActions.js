@@ -27,7 +27,11 @@ const BookComponentActions = ({
   onAdminUnlock,
   rules,
 }) => {
-  const { canViewFragmentEdit } = rules
+  const { bookComponentStateRules } = rules
+  const { canViewFragmentEdit } = bookComponentStateRules.find(
+    bookComponentState =>
+      bookComponentState.bookComponentId === bookComponentId,
+  )
   const isLocked = get(lock, 'username')
   const handleClick = () => {
     onDeleteBookComponent(bookComponentId, componentType, title)
