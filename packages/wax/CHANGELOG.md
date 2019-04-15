@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.8.1"></a>
+## [0.8.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.8.0...pubsweet-component-wax@0.8.1) (2019-04-15)
+
+
+### Bug Fixes
+
+* wax export fix, invalid url fixes ([c42a96f](https://gitlab.coko.foundation/editoria/editoria/commit/c42a96f))
+
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.6.16...pubsweet-component-wax@0.8.0) (2019-04-12)
 

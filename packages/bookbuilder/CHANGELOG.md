@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.1"></a>
+## [1.2.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.0...pubsweet-component-bookbuilder@1.2.1) (2019-04-15)
+
+
+### Bug Fixes
+
+* wax export fix, invalid url fixes ([c42a96f](https://gitlab.coko.foundation/editoria/editoria/commit/c42a96f))
+
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.1.5...pubsweet-component-bookbuilder@1.2.0) (2019-04-12)
 
