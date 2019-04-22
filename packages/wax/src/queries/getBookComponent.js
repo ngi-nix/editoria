@@ -21,6 +21,7 @@ const GET_BOOK_COMPONENT = gql`
         value
       }
       lock {
+        userId
         username
         created
         givenName

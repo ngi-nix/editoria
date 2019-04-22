@@ -317,8 +317,9 @@ const updateWorkflowState = async (_, { input }, ctx) => {
 
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
     const update = {}
+    let isReviewing = false
     if (lockTrackChanges) {
-      const isReviewing = find(workflowStages, { type: 'review' }).value === 0
+      isReviewing = find(workflowStages, { type: 'review' }).value === 0
       if (isReviewing) {
         update.trackChangesEnabled = true
         update.workflowStages = workflowStages
@@ -342,6 +343,12 @@ const updateWorkflowState = async (_, { input }, ctx) => {
     pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
       bookComponentWorkflowUpdated: updatedBookComponent,
     })
+
+    if (isReviewing) {
+      pubsub.publish(BOOK_COMPONENT_TRACK_CHANGES_UPDATED, {
+        bookComponentTrackChangesUpdated: updatedBookComponent,
+      })
+    }
     return updatedBookComponent
   } catch (e) {
     logger.error(e)
@@ -362,6 +369,7 @@ const unlockBookComponent = async (_, { input }, ctx) => {
       deleted: true,
     })
     const updatedBookComponent = await BookComponent.findById(id)
+
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
       bookComponentLockUpdated: updatedBookComponent,
     })
@@ -641,6 +649,7 @@ module.exports = {
           givenName: user.givenName,
           surname: user.surname,
           isAdmin: user.admin,
+          userId: lock[0].userId,
         }
       }
       return locked

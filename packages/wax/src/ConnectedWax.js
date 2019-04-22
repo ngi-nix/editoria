@@ -18,7 +18,6 @@ import {
   unlockBookComponentMutation,
   uploadFileMutation,
   trackChangeSubscription,
-  titleChangeSubscription,
 } from './queries'
 
 const mapper = {
@@ -32,8 +31,7 @@ const mapper = {
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
-  // trackChangeSubscription,
-  // titleChangeSubscription,
+  trackChangeSubscription,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -99,17 +97,17 @@ const Connected = props => {
         })
         if (loading || waxLoading || teamsLoading) return null
         let editing
-        if (bookComponent.lock) {
+        const lock = get(bookComponent, 'lock')
+        if (lock && lock.userId !== currentUser.id) {
           editing = 'preview'
-        } else {
-          if (rules.canEditFull) {
-            editing = 'full'
-          } else if (rules.canEditSelection) {
-            editing = 'selection'
-          } else if (rules.canEditReview) {
-            editing = 'review'
-          }
+        } else if (rules.canEditFull) {
+          editing = 'full'
+        } else if (rules.canEditSelection) {
+          editing = 'selection'
+        } else if (rules.canEditReview) {
+          editing = 'review'
         }
+
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
