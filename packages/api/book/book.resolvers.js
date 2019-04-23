@@ -1,6 +1,7 @@
 const pubsweetServer = require('pubsweet-server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
+const pick = require('lodash/pick')
 const pickBy = require('lodash/pickBy')
 const identity = require('lodash/identity')
 const filter = require('lodash/filter')
@@ -58,7 +59,7 @@ const createBook = async (_, { input }, ctx) => {
     const roles = keys(config.authsome.teams)
     await Promise.all(
       map(roles, async role => {
-        await ctx.connectors.Team.create(
+        const newTeam = await ctx.connectors.Team.create(
           {
             name: config.authsome.teams[role].name,
             objectId: book.id,
@@ -74,6 +75,22 @@ const createBook = async (_, { input }, ctx) => {
           },
         )
         logger.info(`Team of type ${role} created for the book ${book.id}`)
+
+        const user = await ctx.connectors.User.fetchOne(ctx.user, ctx)
+        if (!user.admin && role === 'productionEditor') {
+          const userMember = pick(user, [
+            'id',
+            'email',
+            'username',
+            'admin',
+            'type',
+          ])
+          const member = { members: [{ user: [userMember] }] }
+          await ctx.connectors.Team.update(newTeam.id, member, ctx, {
+            unrelate: false,
+            eager: 'members.user.teams',
+          })
+        }
       }),
     )
     pubsub.publish(BOOK_CREATED, { bookCreated: book })
