@@ -1,9 +1,8 @@
-const map = require('lodash/map')
 const indexOf = require('lodash/indexOf')
-const pullAll = require('lodash/pullAll')
 const find = require('lodash/find')
 const utils = require('../helpers/utils')
 const config = require('config')
+const { transaction } = require('objection')
 const {
   BookComponent,
   Division,
@@ -21,55 +20,64 @@ const updateBookComponentOrder = async (
   { targetDivisionId, bookComponentId, index },
   ctx,
 ) => {
-  const bookComponent = await BookComponent.findById(bookComponentId)
-  const sourceDivision = await Division.findById(bookComponent.divisionId)
-  const found = indexOf(sourceDivision.bookComponents, bookComponentId)
-  const book = await Book.findById(sourceDivision.bookId)
-  const pubsub = await pubsubManager.getPubsub()
-  if (sourceDivision.id === targetDivisionId) {
-    const updatedBookComponents = utils.reorderArray(
-      sourceDivision.bookComponents,
-      bookComponentId,
-      index,
-      found,
-    )
-    await Division.query().patchAndFetchById(sourceDivision.id, {
-      bookComponents: updatedBookComponents,
-    })
+  const bookTransaction = await transaction(
+    BookComponent,
+    Division,
+    Book,
+    async (BookComponent, Division, Book) => {
+      const bookComponent = await BookComponent.findById(bookComponentId)
+      const sourceDivision = await Division.findById(bookComponent.divisionId)
+      const found = indexOf(sourceDivision.bookComponents, bookComponentId)
+      const book = await Book.findById(sourceDivision.bookId)
+      const pubsub = await pubsubManager.getPubsub()
+      if (sourceDivision.id === targetDivisionId) {
+        const updatedBookComponents = utils.reorderArray(
+          sourceDivision.bookComponents,
+          bookComponentId,
+          index,
+          found,
+        )
+        await Division.query().patchAndFetchById(sourceDivision.id, {
+          bookComponents: updatedBookComponents,
+        })
 
-    pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
-      bookComponentOrderUpdated: book,
-    })
-  } else {
-    sourceDivision.bookComponents.splice(found, 1)
-    await Division.query().patchAndFetchById(sourceDivision.id, {
-      bookComponents: sourceDivision.bookComponents,
-    })
-    const targetDivision = await Division.findById(targetDivisionId)
-    const updatedTargetDivisionBookComponents = utils.reorderArray(
-      targetDivision.bookComponents,
-      bookComponentId,
-      index,
-    )
-    const updatedDivision = await Division.query().patchAndFetchById(
-      targetDivision.id,
-      {
-        bookComponents: updatedTargetDivisionBookComponents,
-      },
-    )
-    const divisionConfig = find(config.bookBuilder.divisions, {
-      name: updatedDivision.label,
-    })
-    await BookComponent.query().patchAndFetchById(bookComponentId, {
-      divisionId: targetDivision.id,
-      componentType: divisionConfig.defaultComponentType,
-    })
+        pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
+          bookComponentOrderUpdated: book,
+        })
+      } else {
+        sourceDivision.bookComponents.splice(found, 1)
+        await Division.query().patchAndFetchById(sourceDivision.id, {
+          bookComponents: sourceDivision.bookComponents,
+        })
+        const targetDivision = await Division.findById(targetDivisionId)
+        const updatedTargetDivisionBookComponents = utils.reorderArray(
+          targetDivision.bookComponents,
+          bookComponentId,
+          index,
+        )
+        const updatedDivision = await Division.query().patchAndFetchById(
+          targetDivision.id,
+          {
+            bookComponents: updatedTargetDivisionBookComponents,
+          },
+        )
+        const divisionConfig = find(config.bookBuilder.divisions, {
+          name: updatedDivision.label,
+        })
+        await BookComponent.query().patchAndFetchById(bookComponentId, {
+          divisionId: targetDivision.id,
+          componentType: divisionConfig.defaultComponentType,
+        })
 
-    pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
-      bookComponentOrderUpdated: book,
-    })
-  }
-  return Book.findById(bookComponent.bookId)
+        pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
+          bookComponentOrderUpdated: book,
+        })
+      }
+      return Book.findById(bookComponent.bookId)
+    },
+  )
+
+  return bookTransaction
 }
 
 module.exports = {
