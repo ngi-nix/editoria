@@ -56,7 +56,8 @@ const Action = styled(UIAction)`
   text-decoration: none !important;
   text-transform: none;
   transition: 0.2s ease !important;
-    background: none !important;
+  min-width: 51px;
+  background: none !important;
   &:hover,
   &:focus,
   &:active {
@@ -69,7 +70,16 @@ const Action = styled(UIAction)`
 `
 
 const ActionGroup = styled(UIActionGroup)`
-  flex-basis: 10%;
+  flex-basis: ${({ componentType, lock }) => {
+    if (componentType === 'part') {
+      if (!lock) {
+        return '9.5%'
+      }
+      return '9.4%'
+    }
+    return '10%'
+  }};
+  /* componentType === 'part' ? '9.4%' : '10%'}; */
   align-items: center;
   justify-content: center;
   display: flex;
@@ -129,12 +139,12 @@ const BookComponentActions = ({
   }
 
   const goToEditor = () => {
-    if (isLocked || uploading) return
+    if (uploading) return
     history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   }
   if (!isLocked) {
     return (
-      <ActionGroup>
+      <ActionGroup componentType={componentType} lock={lock}>
         <Action disabled={uploading} onClick={goToEditor}>
           {canViewFragmentEdit ? 'Edit' : 'View'}
         </Action>
@@ -147,6 +157,7 @@ const BookComponentActions = ({
   return (
     <Container>
       <EditingNotification
+      goToEditor={goToEditor}
         bookComponentId={bookComponentId}
         onAdminUnlock={onAdminUnlock}
         componentType={componentType}

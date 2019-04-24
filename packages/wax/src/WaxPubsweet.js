@@ -22,6 +22,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  .editor-wrapper {
+    height: 88vh;
+  }
 `
 const BookTitle = styled.div`
   padding-left: calc(3.5 * ${th('gridUnit')});

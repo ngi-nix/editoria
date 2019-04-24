@@ -7,9 +7,10 @@ import withLink from 'editoria-common/src/withLink'
 
 const Container = styled.div`
   padding: 0;
-  padding-top:5px;
-  margin-right: ${th('gridUnit')};
-  flex-basis: ${({lock})=> lock ? '80%':'83%'};
+  padding-top:3px;
+  /* margin-right: ${th('gridUnit')}; */
+  flex-basis: ${({ lock, componentType }) =>
+    lock && componentType !== 'part' ? '83%' : '88%'};
   overflow-x: hidden;
   overflow-y: hidden;
 `
@@ -34,6 +35,8 @@ const Title = styled.span`
     width: 0;
     white-space: nowrap;
     content: '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
       '. . . . . . . . . . . . . . . . . . . . '
       '. . . . . . . . . . . . . . . . . . . . '
       '. . . . . . . . . . . . . . . . . . . . '
@@ -92,7 +95,11 @@ const BookComponentTitle = ({
     )
   }
 
-  return <Container lock={lock}>{bookComponentTitle}</Container>
+  return (
+    <Container lock={lock} componentType={componentType}>
+      {bookComponentTitle}
+    </Container>
+  )
 }
 
 export default BookComponentTitle

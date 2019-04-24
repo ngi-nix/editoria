@@ -231,6 +231,7 @@ const renameBookComponent = async (_, { input }, ctx) => {
   pubsub.publish(BOOK_COMPONENT_TITLE_UPDATED, {
     bookComponentTitleUpdated: updatedBookComponent,
   })
+  console.log('hello rename',updatedBookComponent)
   return updatedBookComponent
 }
 

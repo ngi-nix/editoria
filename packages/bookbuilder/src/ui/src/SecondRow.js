@@ -12,10 +12,11 @@ import ProgressModal from './ProgressModal'
 
 const SecondRowContainer = styled.div`
   display: flex;
-  margin-left: ${({ lock }) => (lock ? '9.9%' : '6.9%')};
+  padding-left: 6.7%;
   flex-basis: 100%;
   align-items: center;
   justify-content: space-between;
+  min-height: 28px;
 `
 
 class SecondRow extends Component {
@@ -457,6 +458,7 @@ class SecondRow extends Component {
       uploading,
       lock,
       showModal,
+      goToEditor,
       showModalToggle,
       updateBookComponentContent,
       updateBookComponentUploading,
@@ -509,6 +511,7 @@ class SecondRow extends Component {
         {canViewAlignmentTool && (
           <AlignmentTool
             data={paginationData}
+            componentType={componentType}
             onClickAlignmentBox={this.onClickAlignmentBox}
           />
         )}

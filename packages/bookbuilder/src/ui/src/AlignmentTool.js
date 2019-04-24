@@ -8,7 +8,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-basis: 10.6%;
+  flex-basis: ${({ componentType }) =>
+    componentType === 'part' ? '9.1%' : '9.4%'};
 `
 const Separator = styled.div`
   background-color: #828282;
@@ -16,7 +17,7 @@ const Separator = styled.div`
   width: 1px;
 `
 
-const AlignmentTool = ({ data, onClickAlignmentBox }) => {
+const AlignmentTool = ({ data, onClickAlignmentBox, componentType }) => {
   const onClick = event => {
     const { currentTarget } = event
     const { id } = currentTarget
@@ -29,7 +30,7 @@ const AlignmentTool = ({ data, onClickAlignmentBox }) => {
   const noBorderLeft = { left: true }
 
   return (
-    <Container>
+    <Container componentType={componentType}>
       <AlignmentBoxWithLabel
         active={leftData.active}
         id="left"

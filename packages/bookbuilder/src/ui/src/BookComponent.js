@@ -21,9 +21,10 @@ import FirstRow from './FirstRow'
 const BookComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: ${({ shouldIndent }) => (shouldIndent ? '2%' : '-7.3%')};
+  padding-left: ${({ shouldIndent }) => (shouldIndent ? '5%' : '0')};
   margin-bottom: calc(3 * ${th('gridUnit')});
   background-color: white;
+  width:100%;
 `
 // const ActionsRight = styled.div`
 //   display: flex;
@@ -33,7 +34,7 @@ const BookComponentContainer = styled.div`
 // `
 const ActionsLeft = styled.div`
   display: flex;
-  flex-basis: ${({lock})=> lock ? '10%':'7%'};
+  flex-basis: 7%;
   align-items: center;
   justify-content: center;
 `
@@ -265,9 +266,9 @@ const BookComponent = ({
             componentType={componentType}
             onChange={onUpdateComponentType}
           />
-          {lock && (
+          {/* {lock && (
             <ButtonWithoutLabel onClick={goToEditor} icon={previewIcon} />
-          )}
+          )} */}
         </ActionsLeft>
         <BookComponentTitle
           title={title}
@@ -285,6 +286,7 @@ const BookComponent = ({
           onDeleteBookComponent={onDeleteBookComponent}
           onAdminUnlock={onAdminUnlock}
           title={title}
+          goToEditor={goToEditor}
           showModal={showModal}
           showModalToggle={showModalToggle}
           uploading={uploading}
@@ -312,6 +314,7 @@ const BookComponent = ({
         pagination={pagination}
         rules={rules}
         uploading={uploading}
+        goToEditor={goToEditor}
         trackChangesEnabled={trackChangesEnabled}
         // update={update}
         updatePagination={updatePagination}

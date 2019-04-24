@@ -19,14 +19,18 @@ import Arrow from './Arrow'
 //   font-size: 13px;
 //   transition: visibility 0.1s ease-in-out 0.1s;
 // `
-
+const LabelArrow = styled.div`
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  padding-right: 4px;
+`
 const FirstRow = styled.div`
   display: flex;
   position: absolute;
   align-items: center;
   justify-content: center;
   top: -22px;
-    width: 140px;
+  width: 140px;
 `
 
 const Container = styled.div`
@@ -113,7 +117,8 @@ const WorkflowItem = ({
       return (
         <Arrow
           // className={classes[side]}
-          icon={iconLeft}
+          // icon={iconLeft}
+          label="<"
           disabled={
             disabled ||
             !interactive ||
@@ -127,7 +132,8 @@ const WorkflowItem = ({
     return (
       <Arrow
         // className={classes[side]}
-        icon={iconRight}
+        // icon={iconRight}
+        label=">"
         disabled={
           disabled ||
           !interactive ||

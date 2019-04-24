@@ -116,6 +116,7 @@ const orderChangeSubscription = props => {
   const { refetch } = getBookQuery
   const { pauseUpdates } = statefull
   const triggerRefetch = () => {
+    console.log('reorder sub')
     if (pauseUpdates) return
     refetch()
   }
@@ -252,6 +253,7 @@ const titleChangeSubscription = props => {
   const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
+    console.log('title sub')
     if (pauseUpdates) return
     refetch()
   }

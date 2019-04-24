@@ -12,7 +12,8 @@ const animation = keyframes`
 `
 
 const StyledUpload = styled(UploadButton)`
-  flex-basis: 15%;
+  flex-basis: ${({ componentType }) =>
+    componentType === 'part' ? '16.6%' : '15.6%'};
   ${({ uploading }) => {
     if (uploading) {
       return css`
@@ -104,6 +105,7 @@ const UploadFileButton = ({
   return (
     <React.Fragment>
       <StyledUpload
+        componentType={componentType}
         accept=".docx"
         id={bookComponentId}
         uploading={uploading}
