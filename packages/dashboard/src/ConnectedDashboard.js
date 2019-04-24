@@ -64,6 +64,7 @@ const mapProps = args => {
       }
       showModal('addBook', {
         onConfirm,
+        hideModal,
       })
     },
     onDeleteBook: (bookId, bookTitle) => {

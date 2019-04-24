@@ -86,6 +86,7 @@ const StyledModal = styled(ReactModalAdapter).attrs({
 
   .ReactModal__Overlay--after-open {
     opacity: 1;
+    z-index: 100000;
   }
 
   .ReactModal__Overlay--before-close {

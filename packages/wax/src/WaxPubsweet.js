@@ -11,12 +11,28 @@ import {
 } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 // import { compose } from 'react-apollo'
 import config from 'config'
 // import Actions from 'pubsweet-client/src/actions'
 import Wax from 'wax-editor-react'
 // import { getFragment } from 'pubsweet-client/src/actions/fragments'
-
+import { th } from '@pubsweet/ui-toolkit'
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+const BookTitle = styled.div`
+  padding-left: calc(3.5 * ${th('gridUnit')});
+  color: ${th('colorText')};
+  /* text-align:center;  */
+  align-items:center;
+  margin-bottom: calc(2 * ${th('gridUnit')});
+  font-size: ${th('fontSizeHeading5')};
+  line-height: ${th('lineHeightHeading5')};
+  font-family: 'Vollkorn';
+`
 export class WaxPubsweet extends React.Component {
   constructor(props) {
     super(props)
@@ -164,7 +180,6 @@ export class WaxPubsweet extends React.Component {
     // const { lockBookComponent } = this.props
     // const { editing } = this.state
     // console.log('nextProps', nextProps)
-
     // console.log('config', config)
     // //if lock from other user then setState({pauseUpdates:true})
     // if (
@@ -444,6 +459,7 @@ export class WaxPubsweet extends React.Component {
     }
 
     const { layout, autoSave, menus } = waxConfig
+    console.log('bookkkkkk', bookComponent)
 
     // From editoria config, this is just for testing purposes
 
@@ -544,13 +560,17 @@ export class WaxPubsweet extends React.Component {
     }
     let header
     if (chapterNumber) {
-      header = <h1>{`Chapter ${chapterNumber}. ${bookComponent.title}`}</h1>
+      header = (
+        <BookTitle>{`${bookComponent.bookTitle} - Chapter ${chapterNumber}. ${
+          bookComponent.title
+        }`}</BookTitle>
+      )
     } else {
-      header = <h1>{`${bookComponent.title}`}</h1>
+      header = <BookTitle>{`${bookComponent.bookTitle} - ${bookComponent.title}`}</BookTitle>
     }
     console.log(user)
     return (
-      <div>
+      <Container>
         {header}
         <Wax
           autoSave={autoSave === undefined ? false : autoSave}
@@ -568,7 +588,7 @@ export class WaxPubsweet extends React.Component {
           update={this.update}
           user={user}
         />
-      </div>
+      </Container>
     )
   }
 

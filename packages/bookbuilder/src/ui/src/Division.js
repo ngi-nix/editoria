@@ -26,7 +26,7 @@ const DivisionHeader = styled.span`
   letter-spacing: 5px;
   line-height: ${th('lineHeightHeading3')};
   margin: 0 calc(2 * ${th('gridUnit')}) 0 0;
-  padding-top: 0.1em;
+  padding-top: 5px;
 `
 const HeaderContainer = styled.div`
   align-items: center;

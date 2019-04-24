@@ -3,13 +3,12 @@ import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
 const Container = styled.div`
-  border: 1px solid ${th('colorText')};
+  border: 1px solid #828282;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 1);
   cursor: pointer;
-  height: 26px;
+  height: 22px;
   width: 17px;
-  background-color: ${({ active }) =>
-    active ? th('colorText') : 'white'};
+  background-color: ${({ active }) => (active ? '#828282' : 'white')};
   &:hover {
     background-color: ${th('colorFurniture')};
   }

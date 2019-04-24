@@ -3,23 +3,23 @@ import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
 const ProductionEditorsContainer = styled.div`
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-flow: row wrap;
   font-family: 'Fira Sans Condensed';
   justify-content: flex-start;
-  margin: 0 auto calc(4 * ${th('gridUnit')});
+  margin: calc(4 * ${th('gridUnit')}) auto calc(4 * ${th('gridUnit')});
 `
 const NamesContainer = styled.div`
   display: flex;
-  flex-flow: column nowrap;
+  /* flex-flow: column nowrap; */
   margin: 0 calc(3 * ${th('gridUnit')}) 0 0;
 `
 const ProductionEditorLabel = styled.div`
   color: ${th('colorText')};
   flex-basis: content;
-  font-size: ${th('fontSizeHeading3')};
-  line-height: ${th('lineHeightHeading3')};
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
 `
 const ProductionEditorNames = styled.div`
   color: ${th('colorText')};

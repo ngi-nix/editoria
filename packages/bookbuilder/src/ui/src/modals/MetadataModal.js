@@ -4,28 +4,119 @@ import styled from 'styled-components'
 import FormModal from 'editoria-common/src/FormModal'
 import ModalBody from 'editoria-common/src/ModalBody'
 import ModalFooter from 'editoria-common/src/ModalFooter'
+import { th, darken, lighten } from '@pubsweet/ui-toolkit'
 import { Button } from '@pubsweet/ui'
 import { Formik } from 'formik'
 
+const Text = styled.div`
+  font-family: 'Fira Sans Condensed';
+  text-align: center;
+  line-height: ${th('lineHeightBase')};
+  width: 100%;
+  font-size: ${th('fontSizeBase')};
+  color: #404040;
+`
+const Label = styled.label`
+  font-family: 'Fira Sans Condensed';
+  line-height: ${th('lineHeightBase')};
+  font-size: ${th('fontSizeBase')};
+  justify-content: flex-end;
+  flex-basis: 30%;
+  text-align: right;
+  margin-right: 18px;
+  color: #757575;
+`
+
+const ConfirmButton = styled.button`
+  align-items: center;
+  cursor: pointer;
+  background: ${th('colorPrimary')};
+  border: none;
+  color: white;
+  display: flex;
+  margin-bottom:8px;
+  padding: calc(${th('gridUnit')}/2) calc(3 * ${th('gridUnit')});
+  /* border-bottom: 1px solid ${th('colorBackground')}; */
+  &:disabled {
+    background:#ccc;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background: ${lighten('colorPrimary', 10)};
+  }
+  &:not(:disabled):active {
+    background: ${darken('colorPrimary', 10)};
+    border: none;
+    outline: none;
+  }
+  &:focus {
+    background: ${darken('colorPrimary', 10)};
+    outline: 0;
+  }
+`
+const CancelButton = styled.button`
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #828282;
+  display: flex;
+  padding: 0;
+  border-bottom: 1px solid ${th('colorBackground')};
+
+  &:not(:disabled):hover {
+    color: ${th('colorPrimary')};
+  }
+  &:not(:disabled):active {
+    border: none;
+    color: ${th('colorPrimary')};
+    outline: none;
+    border-bottom: 1px solid ${th('colorPrimary')};
+  }
+  &:focus {
+    outline: 0;
+  }
+`
+const ButtonLabel = styled.span`
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  font-weight: normal;
+`
+
 const Input = styled.input`
-  font-size: 14px;
+  flex-basis: 70%;
+  font-family: 'Fira Sans Condensed';
+  line-height: ${th('lineHeightBase')};
+  font-size: ${th('fontSizeBase')};
+  border: 0;
+  outline: 0;
+  margin-bottom: calc(${th('gridUnit')});
+  border-bottom: 1px dashed ${th('colorText')};
+
+  &:focus {
+    outline: 0;
+    border-bottom: 1px dashed ${th('colorPrimary')};
+  }
   &:placeholder-shown {
-    font-size: 13px !important;
+    font-size: ${th('fontSizeBase')};
+    line-height: ${th('lineHeightBase')};
   }
 `
 
+const Row = styled.div`
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+`
 const Container = styled.div`
   display: flex;
+
+  margin: 0 auto;
   flex-direction: column;
+  width: 70%;
   font-size: 18px;
   justify-content: space-evenly;
-  > label,
-  input {
-    margin-top: 8px;
-  }
-  > label:first-child {
-    margin-top: 0;
-  }
 `
 
 class MetadataModal extends React.Component {
@@ -36,7 +127,7 @@ class MetadataModal extends React.Component {
   }
 
   renderBody() {
-    const { data } = this.props
+    const { data, hideModal } = this.props
     const { onConfirm, book } = data
     console.log('props', this.props)
     return (
@@ -81,117 +172,140 @@ class MetadataModal extends React.Component {
           }) => (
             <form onSubmit={handleSubmit}>
               <ModalBody>
+                <Text>{book.title}</Text>
+                <br />
                 <Container>
-                  <label htmlFor="edition">Edition</label>
-                  <Input
-                    type="number"
-                    id="edition"
-                    name="edition"
-                    placeholder="eg. 1"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.edition}
-                  />
-                  {errors.edition && touched.edition && errors.edition}
-                  <label htmlFor="copyrightStatement">
-                    Copyright Statement
-                  </label>
-                  <Input
-                    type="text"
-                    id="copyrightStatement"
-                    name="copyrightStatement"
-                    placeholder="eg. Some statement"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.copyrightStatement}
-                  />
-                  {errors.copyrightStatement &&
-                    touched.copyrightStatement &&
-                    errors.copyrightStatement}
-                  <label htmlFor="copyrightYear">Copyright Year</label>
-                  <Input
-                    type="number"
-                    id="copyrightYear"
-                    name="copyrightYear"
-                    placeholder="eg. 2018"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.copyrightYear}
-                  />
-                  {errors.copyrightYear &&
-                    touched.copyrightYear &&
-                    errors.copyrightYear}
-                  <label htmlFor="copyrightHolder">Copyright Holder</label>
-                  <Input
-                    type="text"
-                    id="copyrightHolder"
-                    name="copyrightHolder"
-                    placeholder="eg. University of California"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.copyrightHolder}
-                  />
-                  {errors.copyrightHolder &&
-                    touched.copyrightHolder &&
-                    errors.copyrightHolder}
-                  <label htmlFor="license">License</label>
-                  <Input
-                    type="text"
-                    id="license"
-                    name="license"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.license}
-                  />
-                  {errors.license && touched.license && errors.license}
-                  <label htmlFor="isbn">ISBN</label>
-                  <Input
-                    type="text"
-                    id="isbn"
-                    name="isbn"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.isbn}
-                  />
-                  {errors.isbn && touched.isbn && errors.isbn}
-                  <label htmlFor="issn">ISSN</label>
-                  <Input
-                    type="text"
-                    id="issn"
-                    name="issn"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.issn}
-                  />
-                  {errors.issn && touched.issn && errors.issn}
-                  <label htmlFor="issnL">ISSN-L</label>
-                  <Input
-                    type="text"
-                    id="issnL"
-                    name="issnL"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.isbnL}
-                  />
-                  {errors.issnL && touched.issnL && errors.issnL}
-                  <label htmlFor="publicationDate">Publication Date</label>
-                  <Input
-                    type="date"
-                    id="publicationDate"
-                    name="publicationDate"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.publicationDate}
-                  />
-                  {errors.publicationDate &&
-                    touched.publicationDate &&
-                    errors.publicationDate}
+                  <Row>
+                    <Label htmlFor="edition">Edition</Label>
+                    <Input
+                      type="number"
+                      id="edition"
+                      name="edition"
+                      placeholder="eg. 1"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.edition}
+                    />
+                    {errors.edition && touched.edition && errors.edition}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="copyrightStatement">
+                      Copyright Statement
+                    </Label>
+                    <Input
+                      type="text"
+                      id="copyrightStatement"
+                      name="copyrightStatement"
+                      placeholder="eg. Some statement"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.copyrightStatement}
+                    />
+                    {errors.copyrightStatement &&
+                      touched.copyrightStatement &&
+                      errors.copyrightStatement}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="copyrightYear">Copyright Year</Label>
+                    <Input
+                      type="number"
+                      id="copyrightYear"
+                      name="copyrightYear"
+                      placeholder="eg. 2018"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.copyrightYear}
+                    />
+                    {errors.copyrightYear &&
+                      touched.copyrightYear &&
+                      errors.copyrightYear}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="copyrightHolder">Copyright Holder</Label>
+                    <Input
+                      type="text"
+                      id="copyrightHolder"
+                      name="copyrightHolder"
+                      placeholder="eg. University of California"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.copyrightHolder}
+                    />
+                    {errors.copyrightHolder &&
+                      touched.copyrightHolder &&
+                      errors.copyrightHolder}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="license">License</Label>
+                    <Input
+                      type="text"
+                      id="license"
+                      name="license"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.license}
+                    />
+                    {errors.license && touched.license && errors.license}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="isbn">ISBN</Label>
+                    <Input
+                      type="text"
+                      id="isbn"
+                      name="isbn"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.isbn}
+                    />
+                    {errors.isbn && touched.isbn && errors.isbn}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="issn">ISSN</Label>
+                    <Input
+                      type="text"
+                      id="issn"
+                      name="issn"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.issn}
+                    />
+                    {errors.issn && touched.issn && errors.issn}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="issnL">ISSN-L</Label>
+                    <Input
+                      type="text"
+                      id="issnL"
+                      name="issnL"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.isbnL}
+                    />
+                    {errors.issnL && touched.issnL && errors.issnL}
+                  </Row>
+                  <Row>
+                    <Label htmlFor="publicationDate">Publication Date</Label>
+                    <Input
+                      type="date"
+                      id="publicationDate"
+                      name="publicationDate"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.publicationDate}
+                    />
+                    {errors.publicationDate &&
+                      touched.publicationDate &&
+                      errors.publicationDate}
+                  </Row>
                 </Container>
               </ModalBody>
               <ModalFooter>
-                <Button type="submit" disabled={isSubmitting}>
-                  Submit
-                </Button>
+                <ConfirmButton type="submit" disabled={isSubmitting}>
+                  <ButtonLabel>Save Metadata</ButtonLabel>
+                </ConfirmButton>
+                <CancelButton type="submit" onClick={hideModal}>
+                  <ButtonLabel>Cancel</ButtonLabel>
+                </CancelButton>
               </ModalFooter>
             </form>
           )}

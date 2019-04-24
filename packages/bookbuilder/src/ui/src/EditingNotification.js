@@ -6,40 +6,41 @@ import { th } from '@pubsweet/ui-toolkit'
 import styled from 'styled-components'
 
 const StyledButton = styled(ButtonWithIcon)`
-  background: black;
+  /* background: #828282; */
   span {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 18px;
+    padding:2px;
   }
-  color: ${th('colorBackground')};
+  color: #828282; 
   svg {
     width: 16px;
     height: 16px;
-    fill: ${th('colorBackground')};
+    fill: #828282;
   }
 
   &:disabled {
-    color: ${th('colorBackground')};
+    /* background: #828282; */
     svg {
-      fill: ${th('colorBackground')};
+      /* fill: ${th('colorBackground')}; */
     }
   }
 
   &:not(:disabled):hover {
-    background-color: black;
+    /* background-color: black; */
     cursor: pointer;
-    color: ${th('colorBackground')};
+    /* color: ${th('colorBackground')}; */
     svg {
-      fill: ${th('colorBackground')};
+      /* fill: ${th('colorBackground')}; */
     }
   }
   &:not(:disabled):active {
-    background-color: black;
+    /* background-color: black; */
     cursor: pointer;
-    color: ${th('colorBackground')};
+    /* color: ${th('colorBackground')}; */
     outline: none;
     svg {
-      fill: ${th('colorBackground')};
+      /* fill: ${th('colorBackground')}; */
     }
   }
   &:focus {
@@ -57,9 +58,9 @@ const EditingNotification = ({
   const { givenName, surname, username, created, isAdmin } = lock
   let message
   if (isAdmin === null || isAdmin === true) {
-    message = 'admin is editing'
+    message = 'locked'
   } else {
-    message = `${givenName} ${surname} is editing`
+    message = `locked`
   }
 
   let hoverTitle

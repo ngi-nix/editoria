@@ -125,6 +125,7 @@ class UploadFilesButton extends React.Component {
             })
             .catch(error => {
               console.log('error', error)
+              self.setState({ counter: self.state.counter - 1 })
             })
         }),
       )

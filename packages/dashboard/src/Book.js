@@ -13,7 +13,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 8px 0;
-  padding: 0 0 0 24px;
+  width:100%;
+  /* padding: 0 8px 0 8px; */
 `
 
 const TopRow = styled.div`
@@ -27,7 +28,7 @@ const TopRow = styled.div`
 `
 
 const Status = styled.span`
-  color: ${props => (props.publicationDate !== null ? '#0B65CB' : '#666')};
+  color: ${props => (props.publicationDate !== null ? '#0964CC' : '#828282')};
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
@@ -65,6 +66,8 @@ const TopRowValuesWrapper = styled.div`
 
 const MainRow = styled.div`
   display: flex;
+  align-items: center;
+  flex-basis:100%;
 `
 const ArchivedIndicator = styled.i`
   svg {
@@ -79,9 +82,9 @@ const ArchivedIndicator = styled.i`
 `
 const icon = (
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
+    width="28"
+    height="28"
+    viewBox="0 0 28 28"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -195,7 +198,8 @@ const Book = props => {
               <BookTitle
                 isRenaming={isRenaming}
                 archived={archived}
-                onDoubleClick={goToBookBuilder}
+                bookId={book.id}
+                // onDoubleClick={goToBookBuilder}
                 rename={rename}
                 title={book.title}
               />

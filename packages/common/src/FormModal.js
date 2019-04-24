@@ -32,11 +32,11 @@ const large = css`
   top: 40px;
 `
 const medium = css`
-  height: 650px;
+  height: 530px;
   top: 50%;
   left: 50%;
   margin-left: -470px;
-  margin-top: -370px;
+  margin-top: -295px;
   width: 940px;
 `
 const small = css`
@@ -86,6 +86,7 @@ const StyledModal = styled(ReactModalAdapter).attrs({
 
   .ReactModal__Overlay--after-open {
     opacity: 1;
+    z-index:100000;
   }
 
   .ReactModal__Overlay--before-close {

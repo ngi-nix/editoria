@@ -12,6 +12,7 @@ const animation = keyframes`
 `
 
 const StyledUpload = styled(UploadButton)`
+  flex-basis: 15%;
   ${({ uploading }) => {
     if (uploading) {
       return css`
@@ -106,7 +107,7 @@ const UploadFileButton = ({
         accept=".docx"
         id={bookComponentId}
         uploading={uploading}
-        disabled={uploading||isLocked()}
+        disabled={uploading || isLocked()}
         label={text}
         onChange={handleFileUpload}
       />

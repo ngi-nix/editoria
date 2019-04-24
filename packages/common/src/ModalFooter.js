@@ -6,8 +6,10 @@ import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
 const Wrapper = styled.div`
-  box-shadow: 0 0 1px ${th('colorPrimary')};
-  padding: ${th('gridUnit')} calc(${th('gridUnit')} * 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2);
 `
 
 const Footer = props => {

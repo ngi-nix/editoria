@@ -7,8 +7,9 @@ import withLink from 'editoria-common/src/withLink'
 
 const Container = styled.div`
   padding: 0;
+  padding-top:5px;
   margin-right: ${th('gridUnit')};
-  flex-grow: 1;
+  flex-basis: ${({lock})=> lock ? '80%':'83%'};
   overflow-x: hidden;
   overflow-y: hidden;
 `
@@ -18,8 +19,8 @@ const Title = styled.span`
   font-family: 'Vollkorn';
   word-wrap: break-word;
   overflow-y: hidden;
-  font-size: ${th('fontSizeHeading4')};
-  line-height: ${th('lineHeightHeading4')};
+  font-size: ${th('fontSizeHeading3')};
+  line-height: 35px;
   &:before {
     counter-increment: ${({ showNumber, componentType }) =>
       showNumber ? componentType : ''};
@@ -28,6 +29,8 @@ const Title = styled.span`
   }
   &:after {
     float: left;
+    padding-top: 3px;
+    font-size: ${th('fontSizeBaseSmall')};
     width: 0;
     white-space: nowrap;
     content: '. . . . . . . . . . . . . . . . . . . . '
@@ -89,7 +92,7 @@ const BookComponentTitle = ({
     )
   }
 
-  return <Container>{bookComponentTitle}</Container>
+  return <Container lock={lock}>{bookComponentTitle}</Container>
 }
 
 export default BookComponentTitle

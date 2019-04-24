@@ -21,8 +21,8 @@ import FirstRow from './FirstRow'
 const BookComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: ${({ shouldIndent }) => (shouldIndent ? '32px' : '0')};
-  margin-bottom: calc(2 * ${th('gridUnit')});
+  margin-left: ${({ shouldIndent }) => (shouldIndent ? '2%' : '-7.3%')};
+  margin-bottom: calc(3 * ${th('gridUnit')});
   background-color: white;
 `
 // const ActionsRight = styled.div`
@@ -33,8 +33,8 @@ const BookComponentContainer = styled.div`
 // `
 const ActionsLeft = styled.div`
   display: flex;
-  align-self: flex-start;
-  align-items: flex-start;
+  flex-basis: ${({lock})=> lock ? '10%':'7%'};
+  align-items: center;
   justify-content: center;
 `
 
@@ -252,11 +252,13 @@ const BookComponent = ({
     <BookComponentContainer
       // ref={instance => connectDragSource(connectDropTarget(instance))}
       shouldIndent={
-        componentType === 'chapter' || componentType === 'unnumbered'
+        componentType === 'chapter' ||
+        componentType === 'unnumbered' ||
+        componentType === 'component'
       }
     >
       <FirstRow>
-        <ActionsLeft>
+        <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
           <ComponentTypeMenu
             divisionType={divisionType}

@@ -7,17 +7,29 @@ const Button = styled.button`
   background: none;
   border: none;
   display: flex;
-  color: ${th('colorText')};
+  color: #828282;
+  padding: 0;
   font-family: 'Fira Sans Condensed' !important;
-  padding: calc(${th('gridUnit')} / 2);
+  /* padding: calc(${th('gridUnit')} / 2); */
   svg {
-    fill: ${th('colorText')};
+    
+    svg {
+      path{
+
+      fill: #828282;
+      }
+    }
+    width:28px;
+    height:28px;
   }
 
   &:disabled {
     color: ${th('colorFurniture')};
     svg {
+      path{
+
       fill: ${th('colorFurniture')};
+      }
     }
     cursor: not-allowed !important;
     font-size: ${th('fontSizeBase')} !important;
@@ -27,19 +39,25 @@ const Button = styled.button`
   }
 
   &:not(:disabled):hover {
-    background-color: ${th('colorBackgroundHue')};
+    /* background-color: ${th('colorBackgroundHue')}; */
     color: ${th('colorPrimary')};
     svg {
+      path{
+
       fill: ${th('colorPrimary')};
+      }
     }
   }
   &:not(:disabled):active {
-    background-color: ${th('colorFurniture')};
+    /* background-color: ${th('colorFurniture')}; */
     border: none;
     color: ${th('colorPrimary')};
     outline: none;
     svg {
+      path{
+
       fill: ${th('colorPrimary')};
+      }
     }
   }
   &:focus {
@@ -47,19 +65,20 @@ const Button = styled.button`
   }
 `
 const Icon = styled.span`
-  height: calc(3 * ${th('gridUnit')});
-  margin: 0 ${th('gridUnit')} 0 0;
+  height: calc(3.5 * ${th('gridUnit')});
+  /* margin: 0 ${th('gridUnit')} 0 0; */
   padding: 0;
-  width: calc(3 * ${th('gridUnit')});
+  width: calc(3.5 * ${th('gridUnit')});
 `
 const OnlyIcon = styled.span`
-  height: calc(3 * ${th('gridUnit')});
+  height: calc(3.5 * ${th('gridUnit')});
   padding: 0;
-  width: calc(3 * ${th('gridUnit')});
+  width: calc(3.5 * ${th('gridUnit')});
 `
 const Label = styled.div`
   font-size: ${th('fontSizeBase')};
   line-height: ${th('lineHeightBase')};
+  padding-right: 4px;
 `
 
 const ButtonWithIcon = ({

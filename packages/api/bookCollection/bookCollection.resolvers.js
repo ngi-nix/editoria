@@ -69,7 +69,7 @@ module.exports = {
           const translation = await BookTranslation.query()
             .where('bookId', book.id)
             .andWhere('languageIso', 'en')
-          const { title } = translation[0].trim()
+          const { title } = translation[0]
           const teams = await ctx.connectors.Team.fetchAll(
             { objectId: book.id, role: 'author' },
             ctx,
@@ -85,7 +85,7 @@ module.exports = {
           }
           return {
             id: book.id,
-            title:title.toLowerCase(),
+            title: title.toLowerCase().trim(),
             status,
             author: auth,
           }

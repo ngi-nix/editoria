@@ -11,8 +11,10 @@
   ],
   "dependencies": {
     "config": "^1.27.0",
+    "@pubsweet/ui-toolkit": "^2.1.4",
     "lodash": "4.17.4",
     "pubsweet-client": "^9.0.2",
+    "styled-components":"^4.2.0",
     "react": "^16.2.0",
     "react-adopt": "^0.6.0",
     "react-dom": "^16.2.0",

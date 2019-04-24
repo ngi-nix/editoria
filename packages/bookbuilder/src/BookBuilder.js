@@ -103,14 +103,7 @@ export class BookBuilder extends React.Component {
     const { divisions, productionEditors } = book
 
     const productionEditorActions = []
-    if (canViewTeamManager) {
-      productionEditorActions.push(
-        <TeamManagerButton
-          label="Team Manager"
-          onClick={() => onTeamManager(book.id)}
-        />,
-      )
-    }
+    
 
     const headerActions = [
       <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
@@ -126,6 +119,14 @@ export class BookBuilder extends React.Component {
         onError={onError}
       />,
     ]
+    if (canViewTeamManager) {
+      headerActions.unshift(
+        <TeamManagerButton
+          label="Team Manager"
+          onClick={() => onTeamManager(book.id)}
+        />,
+      )
+    }
 
     if (canViewMultipleFilesUpload) {
       headerActions.unshift(

@@ -10,10 +10,10 @@ const Container = styled.div`
   flex-direction: row;
 `
 const Label = styled.span`
-  color: ${th('colorPrimary')};
+  color: #828282;
   font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeBase')};
-  line-height: ${th('lineHeightBase')};
+  font-size: ${th('fontSizeBaseSmall')};
+  line-height: ${th('lineHeightBaseSmall')};
   font-style: italic;
   margin: ${({ labelPositionRight }) =>
     labelPositionRight ? '0 0 0 10px' : '0 10px 0 0'};

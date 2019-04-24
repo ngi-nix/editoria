@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { State } from 'react-powerplug'
+import { th } from '@pubsweet/ui-toolkit'
 
 import { Menu as UIMenu } from '@pubsweet/ui'
 
@@ -67,6 +68,9 @@ const Menu = styled(UIMenu)`
       cursor: pointer;
       font-family: 'Fira Sans Condensed';
       padding: 4px 4px 4px 12px;
+      font-size: ${th('fontSizeBase')};
+      line-height: ${th('lineHeightBase')};
+      color: #828282;
       position: relative;
 
       &::selection {
@@ -94,7 +98,7 @@ const Menu = styled(UIMenu)`
         transition: 0.2s ease-in-out;
 
         &::before {
-          background: gray;
+          background: #0d78f2;
           opacity: 1;
         }
       }
@@ -105,14 +109,18 @@ const Menu = styled(UIMenu)`
 const OpenerWrapper = styled.div`
   display: flex;
   align-items: center;
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
 
   > span {
     font-family: 'Fira Sans Condensed';
     text-transform: uppercase;
+    color: #828282;
 
     span {
       cursor: pointer;
-      font-weight: 500;
+      color: #3f3f3f;
+      font-weight: bold;
     }
   }
 `

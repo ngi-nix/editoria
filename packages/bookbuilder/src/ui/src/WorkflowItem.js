@@ -22,12 +22,16 @@ import Arrow from './Arrow'
 
 const FirstRow = styled.div`
   display: flex;
+  position: absolute;
   align-items: center;
   justify-content: center;
+  top: -22px;
+    width: 140px;
 `
 
 const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: center;
   align-items: center;

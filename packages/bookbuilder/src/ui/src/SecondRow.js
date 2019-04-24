@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 import config from 'config'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
-import { AlignmentTool } from '@pubsweet/ui'
-// import AlignmentTool from './AlignmentTool'
+// import { AlignmentTool } from '@pubsweet/ui'
+import AlignmentTool from './AlignmentTool'
 import WorkflowList from './WorkflowList'
 import UploadFileButton from './UploadFileButton'
 import ProgressModal from './ProgressModal'
@@ -12,7 +12,8 @@ import ProgressModal from './ProgressModal'
 
 const SecondRowContainer = styled.div`
   display: flex;
-  padding-left: calc(4 * ${th('gridUnit')});
+  margin-left: ${({ lock }) => (lock ? '9.9%' : '6.9%')};
+  flex-basis: 100%;
   align-items: center;
   justify-content: space-between;
 `
@@ -421,6 +422,7 @@ class SecondRow extends Component {
   // }
 
   onClickAlignmentBox(id) {
+    console.log('i', id)
     const { bookComponentId, pagination, updatePagination } = this.props
     const patch = {
       left: pagination.left,
@@ -478,7 +480,7 @@ class SecondRow extends Component {
       }
     })
     return (
-      <SecondRowContainer>
+      <SecondRowContainer lock={lock}>
         {canViewUploadButton && (
           <UploadFileButton
             bookComponentId={bookComponentId}

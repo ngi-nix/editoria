@@ -8,6 +8,13 @@ const Container = styled.div`
   clear: both;
   float: none;
   margin: 0 auto;
+  max-width: 100%;
+`
+const InnerWrapper = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
   max-width: 76%;
 `
 export class Dashboard extends Component {
@@ -40,17 +47,18 @@ export class Dashboard extends Component {
               title={collection.title}
               onAddBook={onAddBook}
             />
-
-            <BookList
-              books={collection.books}
-              bookRules={rules.bookRules}
-              refetching={refetching}
-              onDeleteBook={onDeleteBook}
-              onArchiveBook={onArchiveBook}
-              remove={deleteBook}
-              renameBook={renameBook}
-              archiveBook={archiveBook}
-            />
+            <InnerWrapper>
+              <BookList
+                books={collection.books}
+                bookRules={rules.bookRules}
+                refetching={refetching}
+                onDeleteBook={onDeleteBook}
+                onArchiveBook={onArchiveBook}
+                remove={deleteBook}
+                renameBook={renameBook}
+                archiveBook={archiveBook}
+              />
+            </InnerWrapper>
           </Fragment>
         ))}
       </Container>

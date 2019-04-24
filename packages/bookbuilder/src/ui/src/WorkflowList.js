@@ -10,7 +10,8 @@ import WorkflowItem from './WorkflowItem'
 
 const Container = styled.div`
   display: flex;
-  flex-basis: 65%;
+  align-self: flex-end;
+  flex-basis: 73%;
   &:hover {
     ${Arrow}:not([disabled]) {
       visibility: visible;

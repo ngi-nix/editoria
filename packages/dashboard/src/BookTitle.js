@@ -1,54 +1,90 @@
 import React from 'react'
+import { find, indexOf } from 'lodash'
+import config from 'config'
 import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
+import withLink from 'editoria-common/src/withLink'
 
-const Wrapper = styled.div`
-  background-image: linear-gradient(
-    to right,
-    #666 50%,
-    rgba(255, 255, 255, 0) 0%
-  );
-  background-position: bottom 12px left 0;
-  background-repeat: repeat-x;
-  background-size: 6px 1px;
-  flex-grow: 1;
+const Container = styled.div`
+  padding: 0;
+  flex-grow:0;
+  /* padding-right: calc(${th('gridUnit')} / 2); */
+  flex-basis: 88%;
+  overflow-x: hidden;
+  overflow-y: hidden;
 `
-
-const Text = styled.span`
-  background-color: white;
-  color: #404040 !important;
-  cursor: ${({ archived }) => (archived ? 'inherit' : 'pointer')};
-  font-size: 28px !important;
-  font-style: italic;
-  font-family: 'Vollkorn' !important;
-  line-height: 39px;
-  margin: 0 !important;
-  word-wrap: break-word;
-  user-select: none;
-`
-
 const Input = styled.input`
   border: 0;
-  border-bottom: 1px dashed black;
-  font-family: 'Vollkorn' !important;
-  font-style: italic !important;
-  line-height: 30px;
-  color: #333 !important;
-  font-size: 28px !important;
+  padding: 0;
+  flex-grow:0;
+  /* line-height: 30px; */
+  font-family: 'Vollkorn';
+  color: #3f3f3f;
+  font-size: ${th('fontSizeHeading4')};
+  border-bottom: 1px solid #3f3f3f;
+  line-height: ${th('lineHeightHeading4')};
   outline: 0;
   width: 100%;
+  &:focus {
+    border-bottom: 1px solid #0964cc;
+  }
+`
+const Title = styled.span`
+flex-grow:0;
+  background-color: white;
+  color: #3f3f3f;
+  padding-right: ${th('gridUnit')};
+  font-family: 'Vollkorn';
+  word-wrap: break-word;
+  overflow-y: hidden;
+  font-size: ${th('fontSizeHeading4')};
+  line-height: ${th('lineHeightHeading4')};
+  &:after {
+    float: left;
+    flex-grow:0;
+    padding-top:3px;
+    width: 0;
+    font-size: ${th('fontSizeBaseSmall')};
+    white-space: nowrap;
+    content: '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . ';
+  }
+  a {
+    /* font-size: ${th('fontSizeHeading4')};
+  line-height: ${th('lineHeightHeading4')}; */
+    text-decoration: none;
+    color: #3f3f3f;
+    &:hover {
+      color: #3f3f3f;
+    }
+  }
 `
 
-const BookTitle = props => {
-  const {
-    handleKeyOnInput,
-    isRenaming,
-    rename,
-    title,
-    archived,
-    ...rest
-  } = props
+const BookTitle = ({
+  handleKeyOnInput,
+  isRenaming,
+  rename,
+  title,
+  archived,
+  bookId,
+  ...rest
+}) => {
   let input
-
+  const url = `/books/${bookId}/book-builder`
+  let bookTitle = (
+    <Title {...rest} archived={archived}>
+      {withLink(title, url)}
+    </Title>
+  )
   if (isRenaming) {
     const handleKey = event => {
       if (event.charCode !== 13) return
@@ -56,7 +92,7 @@ const BookTitle = props => {
       rename(input.value)
     }
 
-    return (
+    bookTitle = (
       <Input
         autoFocus
         defaultValue={title}
@@ -68,13 +104,7 @@ const BookTitle = props => {
     )
   }
 
-  return (
-    <Wrapper>
-      <Text {...rest} archived={archived}>
-        {title}
-      </Text>
-    </Wrapper>
-  )
+  return <Container>{bookTitle}</Container>
 }
 
 export default BookTitle

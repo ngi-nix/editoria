@@ -4,15 +4,105 @@ import styled from 'styled-components'
 import FormModal from 'editoria-common/src/FormModal'
 import ModalBody from 'editoria-common/src/ModalBody'
 import ModalFooter from 'editoria-common/src/ModalFooter'
-import { Button } from '@pubsweet/ui'
+// import { Button } from '@pubsweet/ui'
+import { th, darken, lighten } from '@pubsweet/ui-toolkit'
 import { Formik } from 'formik'
 
 const Input = styled.input`
+  width: 100%;
+  line-height: ${th('lineHeightBase')};
+  font-size: ${th('fontSizeBase')};
+  border: 0;
+  outline: 0;
+  text-align: center;
+  margin-bottom: calc(${th('gridUnit')});
+  border-bottom: 1px dashed
+    ${({ errors }) => (errors.title ? th('colorError') : th('colorText'))};
+
+  &:focus {
+    outline: 0;
+    border-bottom: 1px dashed ${th('colorPrimary')};
+  }
   &:placeholder-shown {
-    font-size: 13px !important;
+    font-size: ${th('fontSizeBase')};
+    line-height: ${th('lineHeightBase')};
   }
 `
+const Text = styled.div`
+  font-family: 'Fira Sans Condensed';
+  text-align: center;
+  margin-bottom: calc(3 * ${th('gridUnit')});
+  line-height: ${th('lineHeightBase')};
+  width: 100%;
+  font-size: ${th('fontSizeBase')};
+  color: #404040;
+`
+const Error = styled.div`
+  font-family: 'Fira Sans Condensed';
+  text-align: left;
+  height: ${th('lineHeightBase')};
+  line-height: ${th('lineHeightBase')};
+  width: 100%;
+  font-size: ${th('fontSizeBase')};
+  color: ${th('colorError')};
+`
 
+const ConfirmButton = styled.button`
+  align-items: center;
+  cursor: pointer;
+  background: ${th('colorPrimary')};
+  border: none;
+  color: white;
+  display: flex;
+  margin-bottom:8px;
+  padding: calc(${th('gridUnit')}/2) calc(3 * ${th('gridUnit')});
+  /* border-bottom: 1px solid ${th('colorBackground')}; */
+  &:disabled {
+    background:#ccc;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background: ${lighten('colorPrimary', 10)};
+  }
+  &:not(:disabled):active {
+    background: ${darken('colorPrimary', 10)};
+    border: none;
+    outline: none;
+  }
+  &:focus {
+    background: ${darken('colorPrimary', 10)};
+    outline: 0;
+  }
+`
+const CancelButton = styled.button`
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #828282;
+  display: flex;
+  padding: 0;
+  border-bottom: 1px solid ${th('colorBackground')};
+
+  &:not(:disabled):hover {
+    color: ${th('colorPrimary')};
+  }
+  &:not(:disabled):active {
+    border: none;
+    color: ${th('colorPrimary')};
+    outline: none;
+    border-bottom: 1px solid ${th('colorPrimary')};
+  }
+  &:focus {
+    outline: 0;
+  }
+`
+const Label = styled.span`
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  font-weight: normal;
+`
 class AddBookModal extends React.Component {
   constructor(props) {
     super(props)
@@ -37,71 +127,66 @@ class AddBookModal extends React.Component {
   // TODO -- figure out how to make input ref auto focus work when we move away from bootstrap modals
 
   handleKeyOnInput(event) {
-    console.log('1')
-    const { data } = this.props
-    const { onConfirm } = data
-    const title = event.target.value.trim()
-    console.log('hello', title)
-    if (title.length === 0) {
-      return this.setState({
-        error: true,
-      })
-    } else {
-      this.setState({
-        error: false,
-      })
-    }
-    this.setState({ title })
-    if (event.charCode !== 13) return
-    onConfirm(title)
+    // console.log('1')
+    // const { data } = this.props
+    // const { onConfirm } = data
+    // const title = event.target.value.trim()
+    // console.log('hello', title)
+    // if (title.length === 0) {
+    //   return this.setState({
+    //     error: true,
+    //   })
+    // } else {
+    //   this.setState({
+    //     error: false,
+    //   })
+    // }
+    // this.setState({ title })
+    // if (event.charCode !== 13) return
+    // onConfirm(title)
   }
 
   /* eslint-disable */
   onCreate() {
-    const { data, hideModal } = this.props
-    console.log('asdasdfdsa', this.props)
-    const { collectionId, createBook } = data
-    const input = this.textInput
-    const newTitle = input.value.trim()
-
-    if (newTitle.length === 0) {
-      return this.setState({
-        error: true,
-      })
-    }
-
-    createBook({
-      variables: {
-        input: {
-          collectionId,
-          title: newTitle,
-        },
-      },
-    })
-
-    hideModal()
+    // const { data, hideModal } = this.props
+    // console.log('asdasdfdsa', this.props)
+    // const { collectionId, createBook } = data
+    // const input = this.textInput
+    // const newTitle = input.value.trim()
+    // if (newTitle.length === 0) {
+    //   return this.setState({
+    //     error: true,
+    //   })
+    // }
+    // createBook({
+    //   variables: {
+    //     input: {
+    //       collectionId,
+    //       title: newTitle,
+    //     },
+    //   },
+    // })
+    // hideModal()
   }
   /* eslint-enable */
 
   onInputChange(event) {
-    const { error } = this.state
-    const title = event.target.value.trim()
-    console.log('t', title)
-    if (title.length === 0) {
-      this.setState({ error: true })
-    }
-    if (!error) return
-    this.setState({ error: false })
+    // const { error } = this.state
+    // const title = event.target.value.trim()
+    // console.log('t', title)
+    // if (title.length === 0) {
+    //   this.setState({ error: true })
+    // }
+    // if (!error) return
+    // this.setState({ error: false })
   }
 
   renderBody() {
     const { data } = this.props
-    const { onConfirm } = data
-    const message = (
-      <div style={{ paddingBottom: 4 }}>
-        Enter the title of the new book <br />
-      </div>
-    )
+    const { onConfirm, hideModal } = data
+
+    const confirmLabel = 'Save'
+    const cancelLabel = 'Cancel'
 
     return (
       <div>
@@ -110,7 +195,7 @@ class AddBookModal extends React.Component {
           validate={values => {
             let errors = {}
             if (!values.title) {
-              errors.title = 'Required'
+              errors.title = '* The title of the book should not be empty'
             }
             return errors
           }}
@@ -119,7 +204,8 @@ class AddBookModal extends React.Component {
             //   alert(JSON.stringify(values, null, 2))
             //   setSubmitting(false)
             // }, 400)
-            onConfirm(values.title)
+            const title = values.title
+            onConfirm(title.trim())
             setSubmitting(false)
           }}
         >
@@ -135,37 +221,34 @@ class AddBookModal extends React.Component {
           }) => (
             <form onSubmit={handleSubmit}>
               <ModalBody>
-                {message}
+                <Text>Enter the title of the new book</Text>
                 <Input
-                  autoFocus
                   type="text"
+                  errors={errors}
                   name="title"
                   placeholder="eg. My new title"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.title}
                 />
-                {errors.title && touched.title && errors.title}
+                <Error>{errors.title && touched.title && errors.title}</Error>
               </ModalBody>
               <ModalFooter>
-                <Button type="submit" disabled={isSubmitting}>
-                  Submit
-                </Button>
+                <ConfirmButton
+                  type="submit"
+                  disabled={isSubmitting || errors.title}
+                >
+                  <Label>{confirmLabel.toUpperCase()}</Label>
+                </ConfirmButton>
+                <CancelButton type="submit" onClick={hideModal}>
+                  <Label>{cancelLabel}</Label>
+                </CancelButton>
               </ModalFooter>
             </form>
           )}
         </Formik>
       </div>
     )
-  }
-
-  renderError() {
-    const { error } = this.state
-
-    const el = <div className="error">New book title cannot be empty</div>
-
-    const res = error ? el : null
-    return res
   }
 
   render() {
