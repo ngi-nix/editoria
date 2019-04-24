@@ -13,6 +13,7 @@ class TeamManagerModal extends React.Component {
       // bookId,
       rules,
       canViewAddTeamMember,
+      hideModal,
     } = this.props
 
     return (
@@ -20,6 +21,7 @@ class TeamManagerModal extends React.Component {
         // bookId={bookId}
         canViewAddTeamMember={canViewAddTeamMember}
         findUser={findUser}
+        hideModal={hideModal}
         rules={rules}
         teams={teams}
         updateTeam={updateTeam}

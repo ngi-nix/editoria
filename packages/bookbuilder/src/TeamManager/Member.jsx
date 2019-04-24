@@ -28,14 +28,14 @@ export class Member extends React.Component {
     if (authorized) {
       return (
         <li>
-          <div className={styles.personContainer} style={{ cursor: 'default' }}>
-            <div>
+          <div className={styles.memberContainer}>
+            <div className={styles.personContainer}>
               <span>{`${user.givenName} ${user.surname}`}</span>
             </div>
-          </div>
-          <div className={styles.actionsContainer}>
-            <div className={styles.actionContainer}>
-              <a onClick={this._remove}>Remove</a>
+            <div className={styles.actionsContainer}>
+              <div className={styles.actionContainer}>
+                <a onClick={this._remove}>Remove</a>
+              </div>
             </div>
           </div>
         </li>

@@ -63,7 +63,7 @@ const Connected = props => {
           isOpen={isOpen}
           loading={loading}
           hideModal={hideModal}
-          canViewAddTeamMember={rules.canViewAddTeamMember}
+          canViewAddTeamMember={(rules || {}).canViewAddTeamMember}
           findUser={findUser}
           loadingRules={loadingRules}
           refetching={refetching}

@@ -13,6 +13,16 @@ $blue: #0d78f2;
 
 .teamManager {
   font-family: 'Fira Sans Condensed';
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  height: 100%;
+
+  .groupList {
+    flex: 1;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000;
+  }
 
   .separator {
     clear: both;
@@ -21,11 +31,12 @@ $blue: #0d78f2;
 
   .groupHeader {
     padding-top: 1%;
+    display: flex;
+    align-items: center;
 
     .groupTitle {
-      float: left;
       letter-spacing: 5px;
-      padding: 0 30px 10px 10px;
+      padding: 0 30px 0px 10px;
       text-transform: uppercase;
 
       h1 {
@@ -34,17 +45,15 @@ $blue: #0d78f2;
         font-style: normal;
         font-weight: normal;
         font-family: 'Vollkorn'!important;
-        line-height: 25px;
         margin: 0 !important;
-        position: relative;
-        top: 10px;
       }
     }
 
     .groupBtn {
       cursor: pointer;
       font-size: 16px;
-      margin-top: 7px;
+      display: flex;
+      align-items: center;
 
       .addIcon {
         -webkit-mask: url('./images/icon_add.svg') no-repeat 100% 100%;
@@ -75,7 +84,7 @@ $blue: #0d78f2;
 
   .userInputContainer {
     height: 30px;
-    margin: 25px 30px 10px 30px;
+    margin: 25px 20px 10px 20px;
     position: relative;
 
     .usernameInput {
@@ -140,8 +149,15 @@ $blue: #0d78f2;
   }
 
   .teamMembersContainer {
+
+    list-style: none;
     li {
-      margin-left: 30px;
+      .memberContainer {
+        cursor: 'default';
+        display: flex;
+        align-items: center;
+      }
+
       .personContainer {
         background-image: linear-gradient(to right, $main-grey 50%, rgba(255, 255, 255, 0) 0%);
         background-position: bottom;
@@ -149,6 +165,9 @@ $blue: #0d78f2;
         background-size: 6px 1px;
         position: relative;
         width: 91.2%;
+        align-items: center;
+        display: flex;
+        margin-bottom: 10px;
       }
 
       span {
@@ -158,12 +177,9 @@ $blue: #0d78f2;
         font-size: 22px;
         font-family: 'Vollkorn';
         font-style: italic;
-        line-height: 36px;
-        margin: 0;
-        padding-bottom: 0;
         padding-right: 10px;
         position: relative;
-        top: 13px;
+        top: 7px;
         word-wrap: break-word;
       }
 
@@ -176,9 +192,9 @@ $blue: #0d78f2;
 
         .actionContainer {
           background-color: $white;
-          bottom: -8px;
-          position: absolute;
-          right: 20px;
+          // bottom: -8px;
+          // position: absolute;
+          // right: 20px;
 
           a {
             color: $blue;
@@ -193,6 +209,16 @@ $blue: #0d78f2;
         }
       }
 
+    }
+
+    li:before {
+      display: inline-block;
+      content: "\2022";
+     
+      position: absolute;
+      left: 32px;
+      font-size: 22px;
+      padding-top: 7px;
     }
 
     .blue {
