@@ -62,7 +62,7 @@ export class GroupList extends React.Component {
       )
     })
     /* eslint-enable */
-    return <div>{groups}</div>
+    return <div className={styles.groupList}>{groups}</div>
   }
 }
 

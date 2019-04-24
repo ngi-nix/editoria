@@ -15,12 +15,11 @@ export class GroupHeader extends React.Component {
         </div>
         {(allowed && canViewAddTeamMember) ? (
           <div className={styles.groupBtn} onClick={showInput}>
-            {!show ? <div className={styles.addIcon} /> : null}
+            
+            {!show ? <span className={styles.addIcon} /> : null}
             <a>{!show ? `add ${title}` : 'hide input'}</a>
           </div>
         ) : null}
-
-        <div className={styles.separator} />
       </div>
     )
   }
