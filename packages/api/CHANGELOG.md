@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.2"></a>
+## [0.1.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.1...editoria-api@0.1.2) (2019-04-24)
+
+
+### Bug Fixes
+
+* **authorize:**  can fragment edit rule  foreach bookcomponent ([7a6c4c0](https://gitlab.coko.foundation/editoria/editoria/commit/7a6c4c0))
+* **dashboard:** sorting fix for capital letters ([c09939f](https://gitlab.coko.foundation/editoria/editoria/commit/c09939f))
+* **globalproduction:** add to team prodctionEditor non admin user ([c08e32f](https://gitlab.coko.foundation/editoria/editoria/commit/c08e32f))
+* **reorder:** wrapper queries into one transaction ([10ab3e3](https://gitlab.coko.foundation/editoria/editoria/commit/10ab3e3))
+* **trackchange:** get updates of the workflow and trackchange ([c0b0b3b](https://gitlab.coko.foundation/editoria/editoria/commit/c0b0b3b))
+* more UI fixes ([78e14da](https://gitlab.coko.foundation/editoria/editoria/commit/78e14da))
+
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.0...editoria-api@0.1.1) (2019-04-12)
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.1"></a>
+## [0.2.1](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.2.0...pubsweet-component-editoria-dashboard@0.2.1) (2019-04-24)
+
+
+### Bug Fixes
+
+* UI fixes ([92841d3](https://gitlab.coko.foundation/editoria/editoria-dashboard/commit/92841d3))
+
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.1.4...pubsweet-component-editoria-dashboard@0.2.0) (2019-04-12)
 

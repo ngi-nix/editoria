@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.2"></a>
+## [1.2.2](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.1...pubsweet-component-bookbuilder@1.2.2) (2019-04-24)
+
+
+### Bug Fixes
+
+* **authorize:**  can fragment edit rule  foreach bookcomponent ([7a6c4c0](https://gitlab.coko.foundation/editoria/editoria/commit/7a6c4c0))
+* **authsome:** canViewFragment undefined ([60ca32b](https://gitlab.coko.foundation/editoria/editoria/commit/60ca32b))
+* **style:** teammanager  style ([0fa7d10](https://gitlab.coko.foundation/editoria/editoria/commit/0fa7d10))
+* more UI fixes ([78e14da](https://gitlab.coko.foundation/editoria/editoria/commit/78e14da))
+* UI fixes ([92841d3](https://gitlab.coko.foundation/editoria/editoria/commit/92841d3))
+
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.0...pubsweet-component-bookbuilder@1.2.1) (2019-04-15)
 
