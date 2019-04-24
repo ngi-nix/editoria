@@ -91,6 +91,8 @@ module.exports = {
           }
         }),
       )
+
+
       const order = ascending ? 'asc' : 'desc'
       const sorter = []
       if (sortKey === 'title') {
