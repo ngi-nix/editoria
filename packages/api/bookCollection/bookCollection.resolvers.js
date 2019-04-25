@@ -86,10 +86,7 @@ module.exports = {
             const inTimestamp = new Date(date).getTime()
             const nowDate = new Date()
             const nowTimestamp = nowDate.getTime()
-            console.log('pub', inTimestamp)
-            console.log('now', nowTimestamp)
             if (inTimestamp <= nowTimestamp) {
-              console.log('it is')
               status = 1
             } else {
               status = 0

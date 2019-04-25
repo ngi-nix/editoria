@@ -146,10 +146,10 @@ class MetadataModal extends React.Component {
           }}
           validate={values => {
             let errors = {}
-            // if (!values.title) {
-            //   errors.title = 'Required'
+            // if (values.edition<1) {
+            //   errors.edition = 'Should be greater or equal to 1'
             // }
-            return errors
+            // return errors
           }}
           onSubmit={(values, { setSubmitting }) => {
             // setTimeout(() => {
@@ -181,6 +181,8 @@ class MetadataModal extends React.Component {
                       type="number"
                       id="edition"
                       name="edition"
+                      min={0}
+                      max={100}
                       placeholder="eg. 1"
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -212,6 +214,8 @@ class MetadataModal extends React.Component {
                       id="copyrightYear"
                       name="copyrightYear"
                       placeholder="eg. 2018"
+                      min={1900}
+                      max={10000000}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.copyrightYear}

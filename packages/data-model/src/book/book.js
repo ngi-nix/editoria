@@ -75,7 +75,7 @@ class Book extends Base {
         publicationDate: string,
         edition: {
           type: 'integer',
-          minimum: 1,
+          minimum: 0,
           maximum: 100,
         },
         copyrightStatement: string,

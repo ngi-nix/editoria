@@ -3,7 +3,9 @@ const keys = require('lodash/keys')
 const map = require('lodash/map')
 const pick = require('lodash/pick')
 const pickBy = require('lodash/pickBy')
+const omitBy = require('lodash/omitBy')
 const identity = require('lodash/identity')
+const isNil = require('lodash/isNil')
 const filter = require('lodash/filter')
 const config = require('config')
 const logger = require('@pubsweet/logger')
@@ -252,10 +254,9 @@ const archiveBook = async (_, { id, archive }, ctx) => {
 }
 
 const updateMetadata = async (_, { input }, ctx) => {
-  console.log('input', input)
-  // const clean = pickBy(input, identity)
+  const clean = omitBy(input, isNil)
 
-  const { id, ...rest } = input
+  const { id, ...rest } = clean
   try {
     const pubsub = await pubsubManager.getPubsub()
     const updatedBook = await Book.query().patchAndFetchById(id, {

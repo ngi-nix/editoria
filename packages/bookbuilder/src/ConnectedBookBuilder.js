@@ -151,6 +151,12 @@ const mapProps = args => ({
     const { updateMetadata } = updateBookMetadataMutation
     const { showModal, hideModal } = withModal
     const onConfirm = values => {
+      if (values.edition === '') {
+        values.edition = 0
+      }
+      if (values.copyrightYear === '') {
+        values.copyrightYear = 1900
+      }
       updateMetadata({
         variables: {
           input: {
