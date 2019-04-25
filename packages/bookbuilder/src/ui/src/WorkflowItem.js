@@ -30,7 +30,7 @@ const FirstRow = styled.div`
   align-items: center;
   justify-content: center;
   top: -22px;
-  width: 140px;
+  width: 104px;
 `
 
 const Container = styled.div`
@@ -118,6 +118,7 @@ const WorkflowItem = ({
         <Arrow
           // className={classes[side]}
           // icon={iconLeft}
+          id="arrowLeft"
           label="<"
           disabled={
             disabled ||
@@ -133,6 +134,7 @@ const WorkflowItem = ({
       <Arrow
         // className={classes[side]}
         // icon={iconRight}
+        id="arrowRight"
         label=">"
         disabled={
           disabled ||
@@ -172,12 +174,12 @@ const WorkflowItem = ({
       {/* <div className={classes.content}> */}
       <FirstRow>
         {progressListLeft}
-        <Label active={values[index] === 0} completed={values[index] === 1}>
+        <Label id="workLabel" active={values[index] === 0} completed={values[index] === 1}>
           {item.title}
         </Label>
         {progressListRight}
       </FirstRow>
-      <WorkflowIndicator state={values[index]} withEnd={isLast} />
+      <WorkflowIndicator id={item.type} state={values[index]} withEnd={isLast} />
     </Container>
   )
 }

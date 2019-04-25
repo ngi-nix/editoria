@@ -7,10 +7,12 @@ const mapping = {
   '0': 'started',
   '1': 'completed',
 }
+
 const SVG = styled.svg`
   width: 100%;
   margin: 0;
   padding: 0;
+
   #line {
     stroke: ${({ state }) =>
       mapping[state] !== 'completed' ? '#C4C4C4' : '#4A90E2'};
@@ -39,8 +41,9 @@ const SVG = styled.svg`
   }
 `
 
-const WorkflowIndicator = ({ state, withEnd }) => (
+const WorkflowIndicator = ({ id, state, withEnd }) => (
   <SVG
+  id={id}
     viewBox="0 0 100 10"
     xmlns="http://www.w3.org/2000/svg"
     state={state}

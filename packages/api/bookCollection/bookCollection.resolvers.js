@@ -80,8 +80,20 @@ module.exports = {
             auth = teams[0].members[0].user.surname
           }
           let status = 0
+
           if (book.publicationDate !== null) {
-            status = 1
+            const date = book.publicationDate
+            const inTimestamp = new Date(date).getTime()
+            const nowDate = new Date()
+            const nowTimestamp = nowDate.getTime()
+            console.log('pub', inTimestamp)
+            console.log('now', nowTimestamp)
+            if (inTimestamp <= nowTimestamp) {
+              console.log('it is')
+              status = 1
+            } else {
+              status = 0
+            }
           }
           return {
             id: book.id,
@@ -91,7 +103,6 @@ module.exports = {
           }
         }),
       )
-
 
       const order = ascending ? 'asc' : 'desc'
       const sorter = []

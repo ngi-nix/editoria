@@ -15,6 +15,7 @@ const GET_BOOK_COLLECTIONS = gql`
         id
         title
         publicationDate
+        isPublished
         archived
         authors {
           username

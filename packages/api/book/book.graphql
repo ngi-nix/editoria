@@ -6,6 +6,7 @@ type Book {
   divisions: [Division]!
   authors: [User]
   publicationDate: Date
+  isPublished: Boolean
   edition: Int
   copyrightStatement: String
   copyrightYear: Int

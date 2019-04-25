@@ -28,7 +28,7 @@ const TopRow = styled.div`
 `
 
 const Status = styled.span`
-  color: ${props => (props.publicationDate !== null ? '#0964CC' : '#828282')};
+  color: ${props => (props.isPublished ? '#0964CC' : '#828282')};
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
@@ -131,7 +131,7 @@ const Book = props => {
     onDeleteBook,
     onArchiveBook,
   } = props
-  const { authors, publicationDate, archived } = book
+  const { authors, isPublished, archived } = book
   console.log('book', book)
   const { canRenameBooks, canDeleteBooks, canArchiveBooks } = bookRule
 
@@ -169,7 +169,7 @@ const Book = props => {
         }
 
         let statusLabel
-        if (publicationDate !== null) {
+        if (isPublished) {
           if (archived) {
             statusLabel = 'published (archived)'
           } else {
@@ -186,7 +186,7 @@ const Book = props => {
         return (
           <Wrapper>
             <TopRow archived={archived}>
-              <Status publicationDate={publicationDate}>
+              <Status isPublished={isPublished}>
                 {archived && <ArchivedIndicator>{icon}</ArchivedIndicator>}
                 {statusLabel}
               </Status>

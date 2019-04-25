@@ -7,7 +7,7 @@ const Label = styled.span`
   color: ${({ active }) => (active ? th('colorText') : th('colorFurniture'))};
   visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
   font-size: 14px;
-  margin: 0 calc(1 * ${th('gridUnit')});
+  margin: 0 calc(${th('gridUnit')}/2);
   transition: visibility 0.1s ease-in-out 0.1s;
 `
 

@@ -252,8 +252,10 @@ const archiveBook = async (_, { id, archive }, ctx) => {
 }
 
 const updateMetadata = async (_, { input }, ctx) => {
-  const clean = pickBy(input, identity)
-  const { id, ...rest } = clean
+  console.log('input', input)
+  // const clean = pickBy(input, identity)
+
+  const { id, ...rest } = input
   try {
     const pubsub = await pubsubManager.getPubsub()
     const updatedBook = await Book.query().patchAndFetchById(id, {
@@ -316,6 +318,21 @@ module.exports = {
         })
       }
       return authors
+    },
+    async isPublished(book, args, ctx, info) {
+      let isPublished = false
+      if (book.publicationDate) {
+        const date = book.publicationDate
+        const inTimestamp = new Date(date).getTime()
+        const nowDate = new Date()
+        const nowTimestamp = nowDate.getTime()
+        if (inTimestamp <= nowTimestamp) {
+          isPublished = true
+        } else {
+          isPublished = false
+        }
+      }
+      return isPublished
     },
     async productionEditors(book, _, ctx) {
       const productionEditorTeams = await ctx.connectors.Team.fetchAll(
