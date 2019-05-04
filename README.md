@@ -15,13 +15,13 @@ The current features on our list are the following:
 |---------------|---------------------------------------------------------------------------|---------|-------------|------|
 | EDITORIA      | Editoria Upgrade                                                          | #233      |            |  ✔    |
 | WAX           | Wax Upgrade                                                               | #234        |            |✔      |
-| WAX           | Color code tracked changes by user                                        | #164    |             |      |
+| WAX           | Color code tracked changes by user                                        | #164    |             |    ✔   |
 | EDITORIA      | Configure book builder to omit blue buttons                               | #172    |            |   ✔    |
 | EDITORIA      | Indenting chapters in book builder                                        | #171    |           |     ✔  |
 | EDITORIA      | Error message when uploading incorrect file format                        | #189    |             | ✔     |
 | WAX           | Author Style                                                              | #191    |             |  ✔   |
 | WAX           | Provide a larger text box for inputting figure captions                   | #216    |             |  ✔   |
-| EDITORIA      | enable "read only" chapter mode                                           | #170    |             |      |
+| EDITORIA      | enable "read only" chapter mode                                           | #170    |             |   ✔    |
 | EDITORIA      | Autocomplete for adding book team roles                                   | #186    |             | ✔     |
 | EDITORIA      | Always show chapter name                                                  | #193    |            |   ✔    |
 | EDITORIA      | Book-level (and perhaps chapter-level) metadata                           | #210    |             |   ✔    |
