@@ -15,6 +15,7 @@
     "lodash": "4.17.4",
     "pubsweet-client": "^9.0.2",
     "react": "^16.2.0",
+    "editoria-common": "^0.1.4",
     "react-adopt": "^0.6.0",
     "react-dom": "^16.2.0",
     "react-powerplug": "^1.0.0",

@@ -11,6 +11,13 @@ const BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
+const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
+  subscription BookComponentLockUpdated {
+    bookComponentLockUpdated {
+      id
+    }
+  }
+`
 const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentTitleUpdated {
     bookComponentTitleUpdated {
@@ -59,4 +66,27 @@ const titleChangeSubscription = props => {
     </Subscription>
   )
 }
-export { trackChangeSubscription, titleChangeSubscription }
+
+const lockChangeSubscription = props => {
+  const { render, getBookComponentQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookComponentQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+export {
+  trackChangeSubscription,
+  titleChangeSubscription,
+  lockChangeSubscription,
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { forEach, sortBy, map, find } from 'lodash'
+import { forEach, sortBy, map, find, filter } from 'lodash'
 import axios from 'axios'
 import UploadButton from './UploadButton'
 import styled from 'styled-components'
@@ -76,15 +76,25 @@ class UploadFilesButton extends React.Component {
   onChange(event) {
     event.preventDefault()
 
-    const { update } = this.props
+    const { update, onWarning } = this.props
     const originalFiles = event.target.files
     const self = this
+    for (let i = 0; i < originalFiles.length; i++) {
+      const extension = originalFiles[i].name.split('.')[1]
+      
+      if (extension !== 'docx') {
+        return onWarning(
+          'One or more of the selected files have unsupported extensions. Try to use only files with extension .docx',
+        )
+      }
+    }
 
     const files = sortBy(originalFiles, 'name') // ensure order
     this.setState({ uploading: true, counter: files.length })
     this.makeBookComponents(files).then(res => {
       const { data } = res
       const { addBookComponents } = data
+      
       Promise.all(
         map(files, async file => {
           const bodyFormData = new FormData()
@@ -125,6 +135,22 @@ class UploadFilesButton extends React.Component {
             })
             .catch(error => {
               console.log('error', error)
+              const stuckedBookComponents = filter(addBookComponents, {
+                uploading: true,
+              })
+              console.log('str', stuckedBookComponents)
+              Promise.all(
+                map(stuckedBookComponents, async bookComponent => {
+                  update({
+                    variables: {
+                      input: {
+                        id: bookComponent.id,
+                        uploading: false,
+                      },
+                    },
+                  })
+                }),
+              )
               self.setState({ counter: self.state.counter - 1 })
             })
         }),
@@ -132,7 +158,7 @@ class UploadFilesButton extends React.Component {
         .then(() => {
           self.setState({ uploading: false })
         })
-        .catch(error => {
+        .catch(async error => {
           self.setState({ counter: 0, uploading: false })
           console.log('error', error)
         })

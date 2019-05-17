@@ -454,6 +454,7 @@ class SecondRow extends Component {
     const {
       bookId,
       bookComponentId,
+      onWarning,
       componentType,
       uploading,
       lock,
@@ -489,6 +490,7 @@ class SecondRow extends Component {
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentUploading={updateBookComponentUploading}
             workflowStages={workflowStages}
+            onWarning={onWarning}
             componentType={componentType}
             lock={lock}
             uploading={uploading}

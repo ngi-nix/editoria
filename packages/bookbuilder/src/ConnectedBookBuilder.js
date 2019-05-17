@@ -121,9 +121,17 @@ const mapProps = args => ({
   onError: error => {
     const { withModal } = args
     const { showModal, hideModal } = withModal
-    showModal('warningModal', {
+    showModal('errorModal', {
       onConfirm: hideModal,
       error,
+    })
+  },
+  onWarning: warning => {
+    const { withModal } = args
+    const { showModal, hideModal } = withModal
+    showModal('warningModal', {
+      onConfirm: hideModal,
+      warning,
     })
   },
   onAdminUnlock: (bookComponentId, componentType, title) => {
@@ -267,6 +275,7 @@ const Connected = props => {
         updateComponentType,
         updateBookComponentWorkflowState,
         onError,
+        onWarning,
         onMetadataAdd,
         updateBookComponentContent,
         updateBookComponentUploading,
@@ -289,6 +298,7 @@ const Connected = props => {
             addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
             onError={onError}
+            onWarning={onWarning}
             currentUser={currentUser}
             onAdminUnlock={onAdminUnlock}
             onMetadataAdd={onMetadataAdd}

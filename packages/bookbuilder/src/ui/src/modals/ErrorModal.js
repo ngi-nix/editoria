@@ -10,20 +10,20 @@ const Text = styled.div`
   font-size: ${th('fontSizeBase')};
   color: #404040;
 `
-const WarningModal = props => {
+const ErrorModal = props => {
   const { isOpen, hideModal, data } = props
-  const { onConfirm, warning } = data
+  const { onConfirm, error } = data
 
   return (
     <InfoModal
       isOpen={isOpen}
-      headerText="Warning"
+      headerText="An error occurred!"
       onRequestClose={hideModal}
       onConfirm={onConfirm}
     >
-      <Text>{`${warning}`}</Text>
+      <Text>{`${error}`}</Text>
     </InfoModal>
   )
 }
 
-export default WarningModal
+export default ErrorModal

@@ -161,6 +161,7 @@ const BookComponent = ({
   innerRef,
   provided,
   bookId,
+  onWarning,
   connectDragSource,
   connectDropTarget,
   currentUser,
@@ -304,6 +305,7 @@ const BookComponent = ({
       <SecondRow
         bookComponentId={id}
         onWorkflowUpdate={onWorkflowUpdate}
+        onWarning={onWarning}
         bookId={bookId}
         componentType={componentType}
         updateBookComponentContent={updateBookComponentContent}

@@ -24,7 +24,9 @@ const DownloadEpub = ({ book, htmlToEpub, onError }) => {
       })
       .catch(error => {
         console.error('er', error)
-        onError(error)
+        onError(
+          'It seems like one or more of your book components (chapters, parts, generic components, etc.) does not have content!',
+        )
       })
   }
 

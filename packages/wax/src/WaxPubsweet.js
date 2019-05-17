@@ -30,7 +30,7 @@ const BookTitle = styled.div`
   padding-left: calc(3.5 * ${th('gridUnit')});
   color: ${th('colorText')};
   /* text-align:center;  */
-  align-items:center;
+  align-items: center;
   margin-bottom: calc(2 * ${th('gridUnit')});
   font-size: ${th('fontSizeHeading5')};
   line-height: ${th('lineHeightHeading5')};
@@ -50,17 +50,6 @@ export class WaxPubsweet extends React.Component {
 
     // this.stackUpdateData = []
     // this.pollingInterval = null
-
-    let mode = ''
-
-    if (props.history.location.pathname.includes('preview')) {
-      mode = 'selection'
-    }
-
-    this.state = {
-      // lockConflict: true,
-      // pollingIsLive: false,
-    }
   }
 
   // componentWillMount() {
@@ -95,9 +84,6 @@ export class WaxPubsweet extends React.Component {
 
   componentWillMount(nextProps) {
     const { lockBookComponent, bookComponentId, editing } = this.props
-    // if (bookComponent.id) {
-    console.log('edi', editing)
-    // // if (bookComponent.id) {
     if (editing === 'preview' || editing === 'selection') return
     lockBookComponent({
       variables: {
@@ -179,6 +165,23 @@ export class WaxPubsweet extends React.Component {
   // }
 
   componentWillReceiveProps(nextProps) {
+    const { history, onUnlocked } = this.props
+    const { bookComponent: bookComponentBefore } = this.props
+    const { lock: lockBefore } = bookComponentBefore
+    const { bookComponent: bookComponentAfter } = nextProps
+    const { lock: lockAfter } = bookComponentAfter
+
+    const onConfirm = () => {
+      history.push(`/books/${bookComponentAfter.bookId}/book-builder`)
+    }
+
+    if (lockBefore !== null && lockAfter === null) {
+      onUnlocked(
+        'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+        onConfirm,
+      )
+    }
+
     // const { bookComponentId } = nextProps
     // const { lockBookComponent } = this.props
     // const { editing } = this.state
@@ -262,6 +265,8 @@ export class WaxPubsweet extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // console.log('lock before', this.props)
+    // console.log('lock after', nextProps)
     // const { book, history, config } = this.props
     // let { pollingTimer } = config
     // if (pollingTimer === undefined) {
@@ -569,7 +574,11 @@ export class WaxPubsweet extends React.Component {
         }`}</BookTitle>
       )
     } else {
-      header = <BookTitle>{`${bookComponent.bookTitle} - ${bookComponent.title}`}</BookTitle>
+      header = (
+        <BookTitle>{`${bookComponent.bookTitle} - ${
+          bookComponent.title
+        }`}</BookTitle>
+      )
     }
     console.log(user)
     return (

@@ -89,6 +89,7 @@ export class BookBuilder extends React.Component {
       exportBook,
       onTeamManager,
       onError,
+      onWarning,
       rules,
       loading,
       loadingRules,
@@ -96,7 +97,7 @@ export class BookBuilder extends React.Component {
       refetchingBookBuilderRules,
       onWorkflowUpdate,
     } = this.props
-    console.log(state)
+  
     if (loading || loadingRules) return 'Loading...'
     if (!book) return null
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
@@ -132,6 +133,7 @@ export class BookBuilder extends React.Component {
       headerActions.unshift(
         <UploadFilesButton
           book={book}
+          onWarning={onWarning}
           create={addBookComponents}
           divisions={divisions}
           update={updateBookComponentContent}
@@ -152,6 +154,7 @@ export class BookBuilder extends React.Component {
           onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
           setState={setState}
+          onWarning={onWarning}
           currentUser={currentUser}
           onAdminUnlock={onAdminUnlock}
           history={history}

@@ -104,7 +104,6 @@ class DivisionsArea extends Component {
     return resArray
   }
   onDragStart = result => {
-    console.log('start')
     const { setState } = this.props
     setState({ pauseUpdates: true })
   }
@@ -200,6 +199,7 @@ class DivisionsArea extends Component {
       bookId,
       currentUser,
       history,
+      onWarning,
       addBookComponent,
       addBookComponents,
       deleteBookComponent,
@@ -238,6 +238,7 @@ class DivisionsArea extends Component {
           key={id}
           label={label}
           history={history}
+          onWarning={onWarning}
           outerContainer={outerContainer}
           showModal={showModal}
           showModalToggle={showModalToggle}

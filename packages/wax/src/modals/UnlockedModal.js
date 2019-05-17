@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import InfoModal from 'editoria-common/src/InfoModal'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
 const Text = styled.div`
   font-family: 'Fira Sans Condensed';
   text-align: center;
@@ -16,6 +16,8 @@ const WarningModal = props => {
 
   return (
     <InfoModal
+      shouldCloseOnOverlayClick={false}
+      shouldCloseOnEsc={false}
       isOpen={isOpen}
       headerText="Warning"
       onRequestClose={hideModal}

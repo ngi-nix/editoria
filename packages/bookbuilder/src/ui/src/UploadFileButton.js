@@ -24,6 +24,7 @@ const StyledUpload = styled(UploadButton)`
 `
 const UploadFileButton = ({
   bookComponentId,
+  onWarning,
   updateBookComponentContent,
   updateBookComponentUploading,
   workflowStages,
@@ -43,7 +44,13 @@ const UploadFileButton = ({
     const file = event.target.files[0]
     const filename = file.name
     const title = filename.split('.')[0]
+    const extension = filename.split('.')[1]
 
+    if (extension !== 'docx') {
+      return onWarning(
+        'This file extension is not supported by our system. Try to use only files with extension .docx',
+      )
+    }
     const bodyFormData = new FormData()
     bodyFormData.append('file', file)
     updateBookComponentUploading({
@@ -82,6 +89,14 @@ const UploadFileButton = ({
       })
       .catch(error => {
         console.log('error', error)
+        updateBookComponentUploading({
+          variables: {
+            input: {
+              id: bookComponentId,
+              uploading: false,
+            },
+          },
+        })
       })
   }
 
@@ -90,31 +105,16 @@ const UploadFileButton = ({
     text = 'uploading'
   }
 
-  let modal
-  if (isLocked()) {
-    modal = (
-      <UploadWarningModal
-        container={modalContainer}
-        show={showModal}
-        toggle={showModalToggle}
-        type={componentType}
-      />
-    )
-  }
-
   return (
-    <React.Fragment>
-      <StyledUpload
-        componentType={componentType}
-        accept=".docx"
-        id={bookComponentId}
-        uploading={uploading}
-        disabled={uploading || isLocked()}
-        label={text}
-        onChange={handleFileUpload}
-      />
-      {modal}
-    </React.Fragment>
+    <StyledUpload
+      componentType={componentType}
+      accept=".docx"
+      id={bookComponentId}
+      uploading={uploading}
+      disabled={uploading || isLocked()}
+      label={text}
+      onChange={handleFileUpload}
+    />
   )
 }
 

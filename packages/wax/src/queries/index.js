@@ -13,4 +13,5 @@ export { default as unlockBookComponentMutation } from './unlockBookComponent'
 export {
   trackChangeSubscription,
   titleChangeSubscription,
+  lockChangeSubscription,
 } from './waxPubsweetSubscriptions'

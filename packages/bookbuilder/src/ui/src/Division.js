@@ -167,6 +167,7 @@ class Division extends React.Component {
       onDeleteBookComponent,
       outerContainer,
       divisionId,
+      onWarning,
       showModal,
       onWorkflowUpdate,
       onAdminUnlock,
@@ -232,6 +233,7 @@ class Division extends React.Component {
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
+                  onWarning={onWarning}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
                   uploading={uploading}

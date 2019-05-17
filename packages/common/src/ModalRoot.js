@@ -104,9 +104,6 @@ const ModalRoot = props => {
     ...rest
   } = props
 
-  console.log('props', props)
-
-  console.log('chi', children)
   if (!props.isOpen) return null
   return (
     <StyledModal

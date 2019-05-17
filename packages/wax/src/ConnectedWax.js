@@ -6,6 +6,7 @@ import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
 import WaxPubsweet from './WaxPubsweet'
+import withModal from 'editoria-common/src/withModal'
 import statefull from './Statefull'
 import {
   getBookComponentQuery,
@@ -18,10 +19,12 @@ import {
   unlockBookComponentMutation,
   uploadFileMutation,
   trackChangeSubscription,
+  lockChangeSubscription,
 } from './queries'
 
 const mapper = {
   statefull,
+  withModal,
   getBookComponentQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
@@ -32,6 +35,7 @@ const mapper = {
   uploadFileMutation,
   renameBookComponentMutation,
   trackChangeSubscription,
+  lockChangeSubscription,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -56,7 +60,18 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
-
+  onUnlocked: (warning, handler) => {
+    const { withModal } = args
+    const { showModal, hideModal } = withModal
+    const onClick = () => {
+      handler()
+      hideModal()
+    }
+    showModal('unlockedModal', {
+      onConfirm: onClick,
+      warning,
+    })
+  },
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
   teamsLoading: args.getUserTeamsQuery.networkStatus === 1,
@@ -80,6 +95,7 @@ const Connected = props => {
       {({
         bookComponent,
         setState,
+        onUnlocked,
         rules,
         teams,
         updateBookComponentContent,
@@ -112,6 +128,7 @@ const Connected = props => {
           <WaxPubsweet
             bookComponent={bookComponent}
             setState={setState}
+            onUnlocked={onUnlocked}
             editing={editing}
             bookComponentId={bookComponentId}
             config={config}
