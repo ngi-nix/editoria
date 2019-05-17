@@ -9,12 +9,13 @@ const handleSubmit = (
   values,
   { props, setSubmitting, setErrors, setError, setStatus },
 ) => {
-  const { signupUser } = props
+  const { signupUser, history } = props
   signupUser({
     variables: { input: values },
   })
     .then(res => {
       setStatus('ok')
+      history.push('/login')
     })
     .catch(res => {
       if (res.graphQLErrors) {

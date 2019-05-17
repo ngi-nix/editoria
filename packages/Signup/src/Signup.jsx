@@ -46,6 +46,16 @@ const validateUsername = value => {
   return error
 }
 
+const validateNames = value => {
+  let error
+  if (value === 'null') {
+    error = 'This is not a valid name'
+  } else if (!value) {
+    error = 'Required'
+  }
+  return error
+}
+
 const validatePassword = value => {
   let error
   if (!value) {
@@ -99,8 +109,16 @@ const Signup = ({
         {status && <SuccessText>User created</SuccessText>}
 
         <Form onSubmit={handleSubmit}>
-          <ValidatedFieldFormik component={GivenNameInput} name="givenName" />
-          <ValidatedFieldFormik component={SurnameInput} name="surname" />
+          <ValidatedFieldFormik
+            component={GivenNameInput}
+            name="givenName"
+            validate={validateNames}
+          />
+          <ValidatedFieldFormik
+            component={SurnameInput}
+            name="surname"
+            validate={validateNames}
+          />
           <ValidatedFieldFormik
             component={UsernameInput}
             name="username"
