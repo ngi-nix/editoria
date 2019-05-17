@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.8.4"></a>
+## [0.8.4](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.8.3...pubsweet-component-wax@0.8.4) (2019-05-17)
+
+
+### Bug Fixes
+
+* restriction for file extension for Linux, handling of ink error ([4fb0cc5](https://gitlab.coko.foundation/editoria/editoria/commit/4fb0cc5))
+
+
+
+
 <a name="0.8.3"></a>
 ## [0.8.3](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.8.2...pubsweet-component-wax@0.8.3) (2019-04-24)
 

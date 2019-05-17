@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.1.1"></a>
+## [1.1.1](https://gitlab.coko.foundation/pubsweet/pubsweet/compare/editoria-component-signup@1.1.0...editoria-component-signup@1.1.1) (2019-05-17)
+
+
+### Bug Fixes
+
+* **signup:** required surname and given name, redirect to login ([d7ffeb0](https://gitlab.coko.foundation/pubsweet/pubsweet/commit/d7ffeb0))
+
+
+
+
 <a name="1.1.0"></a>
 # 1.1.0 (2019-04-12)
 

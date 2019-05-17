@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.5"></a>
+## [0.1.5](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.4...editoria-common@0.1.5) (2019-05-17)
+
+
+### Bug Fixes
+
+* restriction for file extension for Linux, handling of ink error ([4fb0cc5](https://gitlab.coko.foundation/editoria/editoria/commit/4fb0cc5))
+
+
+
+
 <a name="0.1.4"></a>
 ## [0.1.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.3...editoria-common@0.1.4) (2019-04-24)
 
