@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-navigation",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The navigation for the Editoria project.",
   "main": "index.js",
   "scripts": {
