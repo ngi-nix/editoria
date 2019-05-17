@@ -58,7 +58,7 @@ class Navigation extends React.Component {
 
     if (currentUser && currentUser.admin) {
       links.push(
-        <Action to="/users">Users</Action>,
+        // <Action to="/users">Users</Action>,
         <Action to="/globalTeams">Global Teams </Action>,
       )
     }
