@@ -1,0 +1,19 @@
+
+extend type Query {
+  getBookTeams(bookId: ID!): [Team]!
+  getGlobalTeams: [Team]!
+}
+
+type TeamSub {
+  bookId: ID
+  teamId: ID!
+  role: String!
+  members: [User]!
+  global: Boolean!
+}
+
+extend type Mutation {
+  updateTeamMembers(id: String!, input: TeamInput!): Team!
+}
+
+extend type Subscription { teamMembersUpdated: TeamSub!, productionEditorsUpdated: TeamSub! }

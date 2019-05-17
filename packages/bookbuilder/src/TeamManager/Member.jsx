@@ -1,7 +1,6 @@
-import { without, find } from 'lodash'
+import { findIndex, map } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
 
 import styles from '../styles/teamManager.local.scss'
 
@@ -13,23 +12,15 @@ export class Member extends React.Component {
   }
 
   _remove() {
-    const { user, team, update, book, updateCollection, users } = this.props
+    const { user, team, update } = this.props
 
-    team.members = without(team.members, user.id)
-    update(team).then(res => {
-      if (res.team.teamType === 'productionEditor') {
-        const productionEditors = []
-        for (let i = 0; i < res.team.members.length; i += 1) {
-          productionEditors.push(find(users, c => c.id === res.team.members[i]))
-        }
-        // if (productionEditors.length < 1) {
-        //   productionEditors = null
-        // }
-        updateCollection({
-          id: book.id,
-          productionEditor: productionEditors,
-        })
-      }
+    const memberIndex = findIndex(team.members, { id: user.id })
+
+    team.members.splice(memberIndex, 1)
+    const withoutMember = map(team.members, member => member.id)
+
+    update({
+      variables: { id: team.id, input: { members: withoutMember } },
     })
   }
   renderRemove(authorized) {
@@ -37,14 +28,14 @@ export class Member extends React.Component {
     if (authorized) {
       return (
         <li>
-          <div className={styles.personContainer} style={{ cursor: 'default' }}>
-            <div>
-              <span>{user.username}</span>
+          <div className={styles.memberContainer}>
+            <div className={styles.personContainer}>
+              <span>{`${user.givenName} ${user.surname}`}</span>
             </div>
-          </div>
-          <div className={styles.actionsContainer}>
-            <div className={styles.actionContainer}>
-              <a onClick={this._remove}>Remove</a>
+            <div className={styles.actionsContainer}>
+              <div className={styles.actionContainer}>
+                <a onClick={this._remove}>Remove</a>
+              </div>
             </div>
           </div>
         </li>
@@ -57,28 +48,23 @@ export class Member extends React.Component {
           style={{ backgroundImage: 'none' }}
         >
           <div>
-            <span>{user.username}</span>
+            <span>{`${user.givenName} ${user.surname} (${
+              user.username
+            })`}</span>
           </div>
         </div>
       </li>
     )
   }
   render() {
-    const { book, team } = this.props
-
-    const authorizationObject = {
-      id: book.id,
-      teamType: team.teamType,
+    const { team, rules } = this.props
+    const { canRemoveTeamMember } =
+      rules.teamRoles.find(rule => rule.role === team.role) || {}
+    if (canRemoveTeamMember) {
+      return this.renderRemove(true)
     }
-    return (
-      <Authorize
-        object={authorizationObject}
-        operation="can remove team member"
-        unauthorized={this.renderRemove(false)}
-      >
-        {this.renderRemove(true)}
-      </Authorize>
-    )
+
+    return this.renderRemove(false)
   }
 }
 
@@ -97,7 +83,7 @@ Member.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
     rev: PropTypes.string,
-    teamType: PropTypes.shape({
+    role: PropTypes.shape({
       name: PropTypes.string,
       permissions: PropTypes.arrayOf(PropTypes.string),
     }),

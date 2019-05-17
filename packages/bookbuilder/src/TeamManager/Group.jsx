@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -19,7 +18,7 @@ export class Group extends React.Component {
   }
 
   _showAddMember() {
-    this.setState({ isAddMemberOpen: true })
+    this.setState({ isAddMemberOpen: !this.state.isAddMemberOpen })
   }
 
   _closeAddMember() {
@@ -27,39 +26,44 @@ export class Group extends React.Component {
   }
 
   render() {
-    const { team, users, options, update, updateCollection, book } = this.props
-    const members = users.filter(user => _.includes(team.members, user.id))
+    const {
+      team,
+      findUser,
+      options,
+      update,
+      // bookId,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
+    const { members } = team
+
     const allowed = true
-    // if (team.teamType === 'productionEditor' && team.members.length >= 1) {
-    //   allowed = false
-    // }
 
     return (
       <div>
         <GroupHeader
           allowed={allowed}
+          canViewAddTeamMember={canViewAddTeamMember}
+          show={this.state.isAddMemberOpen}
           showInput={this._showAddMember}
           title={options.title}
         />
 
+        <MemberList
+          // bookId={bookId}
+          color={options.color}
+          members={members}
+          rules={rules}
+          team={team}
+          update={update}
+        />
         <AddMember
-          book={book}
+          // bookId={bookId}
+          findUser={findUser}
           hideInput={this._closeAddMember}
           show={this.state.isAddMemberOpen}
           team={team}
           update={update}
-          updateCollection={updateCollection}
-          users={users}
-        />
-
-        <MemberList
-          book={book}
-          color={options.color}
-          members={members}
-          team={team}
-          update={update}
-          updateCollection={updateCollection}
-          users={users}
         />
       </div>
     )

@@ -1,0 +1,63 @@
+type Book {
+  id: ID!
+  collectionId: ID!
+  title: String!
+  productionEditors: [String]!
+  divisions: [Division]!
+  authors: [User]
+  publicationDate: Date
+  isPublished: Boolean
+  edition: Int
+  copyrightStatement: String
+  copyrightYear: Int
+  copyrightHolder: String
+  isbn: String
+  issn: String
+  issnL: String
+  license: String
+  archived: Boolean!
+}
+
+input CreateBookInput {
+  collectionId: ID!
+  title: String!
+}
+
+extend type Query {
+  getBook(id: ID!): Book!
+}
+input MetadataInput {
+  id: ID!
+  publicationDate: Date
+  edition: Int
+  copyrightStatement: String
+  copyrightYear: Int
+  copyrightHolder: String
+  isbn: String
+  issn: String
+  issnL: String
+  license: String
+}
+
+extend type Mutation {
+  archiveBook(id: ID!, archive: Boolean!): Book!
+  createBook(input: CreateBookInput!): Book!
+  renameBook(id: ID!, title: String!): Book!
+  deleteBook(id: ID!): Book!
+  updateMetadata(input: MetadataInput!): Book!
+  exportBook(
+    bookId: ID!
+    destination: String!
+    converter: String
+    previewer: String
+    style: String
+  ): String!
+}
+
+extend type Subscription {
+  bookArchived: Book!
+  bookCreated: Book!
+  bookDeleted: Book!
+  bookRenamed: Book!
+  bookMetadataUpdated: Book!
+}

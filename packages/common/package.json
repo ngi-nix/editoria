@@ -1,6 +1,6 @@
 {
   "name": "editoria-common",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "Common react components for the editoria project",
   "main": "index.js",
   "scripts": {
@@ -9,9 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pubsweet/ui": "^10.0.4",
+    "@pubsweet/ui-toolkit": "^2.1.4",
     "react": "^16.2.0",
-    "react-bootstrap": "0.32.1",
-    "react-router-dom": "4.2.2"
+    "react-modal": "^3.8.1",
+    "react-powerplug": "^1.0.0",
+    "react-router-dom": "4.2.2",
+    "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "prop-types": "^15.5.10"

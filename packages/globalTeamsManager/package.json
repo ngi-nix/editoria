@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-global-teams",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,18 +15,17 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "config": "^1.27.0",
-    "editoria-common": "^0.1.2",
+    "editoria-common": "^0.1.5",
     "font-awesome": "4.7.0",
     "formik": "^0.11.11",
     "lodash": "4.17.4",
-    "pubsweet-client": "^2.5.5",
+    "pubsweet-client": "^9.0.2",
     "react": "^16.2.0",
+    "react-adopt": "^0.6.0",
     "react-dom": "^16.2.0",
-    "react-redux": "5.0.4",
     "react-router-dom": "4.2.2",
     "react-select": "^2.1.1",
-    "redux": "3.7.2",
-    "styled-components": "^3.3.0"
+    "styled-components": "^4.1.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

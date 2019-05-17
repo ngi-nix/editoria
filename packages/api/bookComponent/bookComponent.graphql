@@ -1,0 +1,116 @@
+scalar Date
+
+type Pagination {
+  left: Boolean!
+  right: Boolean!
+}
+
+input PaginationInput {
+  left: Boolean!
+  right: Boolean!
+}
+
+type Lock {
+  created: Date
+  username: String
+  isAdmin: Boolean
+  givenName: String
+  surname: String
+  userId: ID
+}
+
+input LockInput {
+  userId: ID!
+}
+
+type WorkFlowItem {
+  label: String!
+  type: String!
+  value: Int!
+}
+
+input WorkFlowItemInput {
+  label: String!
+  type: String!
+  value: Int!
+}
+
+type BookComponent {
+  id: ID!
+  title: String!
+  bookId: ID!
+  bookTitle: String
+  componentTypeOrder: Int!
+  hasContent: Boolean!
+  divisionId: ID!
+  divisionType: String
+  lock: Lock
+  pagination: Pagination!
+  archived: Boolean!
+  workflowStages: [WorkFlowItem]
+  content: String
+  componentType: String!
+  trackChangesEnabled: Boolean!
+  uploading: Boolean!
+}
+
+input BookComponentInput {
+  title: String!
+  bookId: ID!
+  componentType: String!
+  divisionId: ID!
+  uploading: Boolean
+}
+
+input WordFileInput {
+  title: String
+  content: String
+  componentType: String
+}
+
+input UpdateBookComponentInput {
+  id: ID!
+  title: String
+  deleted: Boolean
+  lock: LockInput
+  uploading: Boolean
+  pagination: PaginationInput
+  workflowStages: [WorkFlowItemInput]
+  componentType: String
+  trackChangesEnabled: Boolean
+  content: String
+}
+
+extend type Query {
+  getBookComponent(id: ID!): BookComponent!
+}
+
+extend type Mutation {
+  ingestWordFile(files: [Upload]!): UploadResult!
+  addBookComponent(input: BookComponentInput): BookComponent!
+  addBookComponents(input: [BookComponentInput]): [BookComponent]!
+  renameBookComponent(input: UpdateBookComponentInput): BookComponent!
+  deleteBookComponent(input: UpdateBookComponentInput): BookComponent!
+  archiveBookComponent(input: UpdateBookComponentInput): BookComponent!
+  updateWorkflowState(input: UpdateBookComponentInput): BookComponent!
+  updatePagination(input: UpdateBookComponentInput): BookComponent!
+  unlockBookComponent(input: UpdateBookComponentInput): BookComponent!
+  lockBookComponent(input: UpdateBookComponentInput): BookComponent!
+  updateTrackChanges(input: UpdateBookComponentInput): BookComponent!
+  updateContent(input: UpdateBookComponentInput): BookComponent!
+  updateComponentType(input: UpdateBookComponentInput): BookComponent!
+  updateUploading(input: UpdateBookComponentInput): BookComponent!
+}
+
+extend type Subscription {
+  bookComponentAdded: BookComponent!
+  bookComponentDeleted: BookComponent!
+  bookComponentWorkflowUpdated: BookComponent!
+  bookComponentPaginationUpdated: BookComponent!
+  bookComponentTrackChangesUpdated: BookComponent!
+  bookComponentLockUpdated: BookComponent!
+  bookComponentTitleUpdated: BookComponent!
+  bookComponentContentUpdated: BookComponent!
+  bookComponentTypeUpdated: BookComponent!
+  bookComponentUploadingUpdated: BookComponent!
+}

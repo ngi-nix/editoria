@@ -28,33 +28,41 @@ export class GroupList extends React.Component {
   }
 
   render() {
-    const { teams, users, update, updateCollection, book } = this.props
+    const {
+      teams,
+      findUser,
+      update,
+      // bookId,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
     const { options } = this
 
     // TODO -- refactor
     // do it like this to guarantee order of groups
     const groups = keys(options).map((key, i) => {
       // get team of this name
-      const team = find(teams, team => team.teamType === key)
+      const team = find(teams, team => team.role === key)
 
       if (!team) return null
       /* eslint-disable */
       return (
         <div key={i}>
           <Group
-            book={book}
-            options={options[team.teamType]}
+            // bookId={bookId}
+            options={options[team.role]}
+            rules={rules}
+            canViewAddTeamMember={canViewAddTeamMember}
             team={team}
             update={update}
-            updateCollection={updateCollection}
-            users={users}
+            findUser={findUser}
           />
           <div className={styles.groupSeparator} />
         </div>
       )
     })
     /* eslint-enable */
-    return <div>{groups}</div>
+    return <div className={styles.groupList}>{groups}</div>
   }
 }
 

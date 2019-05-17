@@ -1,10 +1,59 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import CodeMirror from 'react-codemirror'
+import styled from 'styled-components'
 import 'codemirror/mode/css/css'
 import 'codemirror/lib/codemirror.css'
-import classes from './PagedStyler.local.scss'
+import { UnControlled as CodeMirror } from 'react-codemirror2'
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  justify-content: flex-start;
+  padding: 8px;
+`
+const CodeEditorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 50%;
+  width: 50%;
+  flex-basis: 100%;
+  height: 100%;
+`
+const EditorToolbar = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  height: 5%;
+`
+const Actions = styled.button`
+  background: none;
+  color: #0d78f2;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  margin-right: 20px;
+`
+const EditorArea = styled.div`
+  flex-grow: 1;
+  height: 95%;
+  .react-codemirror2 {
+    height: 100%;
+    .CodeMirror {
+      height: 100%;
+    }
+  }
+`
+const PreviewArea = styled.div`
+  max-width: 50%;
+  width: 50%;
+  height: 100%;
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+`
 class PagedStyler extends Component {
   constructor(props) {
     super(props)
@@ -30,8 +79,8 @@ class PagedStyler extends Component {
     })
   }
 
-  handleChange(doc, change) {
-    this.setState({ changed: doc })
+  handleChange(editor, data, value) {
+    this.setState({ changed: value })
   }
 
   /* eslint-disable */
@@ -82,41 +131,38 @@ class PagedStyler extends Component {
       return <p>Loading</p>
     }
     return (
-      <div className={classes.container}>
-        <div className={classes.codeEditorContainer}>
-          <div className={classes.buttonsContainer}>
-            <button className={classes.buttonStyler} onClick={this.handleClick}>
-              Sync
-            </button>
-            <button className={classes.buttonStyler} onClick={this.handlePrint}>
-              Print
-            </button>
-            <button
-              className={classes.buttonStyler}
-              onClick={this.handleDownload}
-            >
-              Download HTML
-            </button>
-          </div>
-          <CodeMirror
-            className={classes.editor}
-            onChange={this.handleChange}
-            options={{
-              mode: 'css',
-              lineNumbers: true,
-            }}
-            value={css}
+      <Wrapper>
+        <CodeEditorWrapper>
+          <EditorToolbar>
+            <Actions onClick={this.handleClick}>Sync</Actions>
+            <Actions onClick={this.handlePrint}>Print</Actions>
+            <Actions onClick={this.handleDownload}>Download HTML</Actions>
+          </EditorToolbar>
+          <EditorArea>
+            <CodeMirror
+              // className={classes.editor}
+              onChange={this.handleChange}
+              options={{
+                mode: 'css',
+                lineWrapping: true,
+                lineNumbers: true,
+                readOnly: false,
+              }}
+              value={css}
+            />
+          </EditorArea>
+        </CodeEditorWrapper>
+        <PreviewArea>
+          <iframe
+            // className={classes.previewerContainer}
+            frameBorder="0"
+            id="printBook"
+            key={this.state.random}
+            src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
+            title="PagedJS"
           />
-        </div>
-        <iframe
-          className={classes.previewerContainer}
-          frameBorder="0"
-          id="printBook"
-          key={this.state.random}
-          src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
-          title="desktop-payment-page"
-        />
-      </div>
+        </PreviewArea>
+      </Wrapper>
     )
   }
 }

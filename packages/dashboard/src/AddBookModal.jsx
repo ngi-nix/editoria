@@ -1,8 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { Formik } from 'formik'
 
-import AbstractModal from 'editoria-common/src/AbstractModal'
-import styles from './dashboard.local.scss'
+const Input = styled.input`
+  &:placeholder-shown {
+    font-size: 13px !important;
+  }
+`
 
 class AddBookModal extends React.Component {
   constructor(props) {
@@ -34,7 +39,7 @@ class AddBookModal extends React.Component {
 
   /* eslint-disable */
   onCreate() {
-    const { create, toggle } = this.props
+    const { collectionId, create, toggle } = this.props
 
     const input = this.textInput
     const newTitle = input.value.trim()
@@ -45,7 +50,15 @@ class AddBookModal extends React.Component {
       })
     }
 
-    create(newTitle)
+    create({
+      variables: {
+        input: {
+          collectionId,
+          title: newTitle,
+        },
+      },
+    })
+
     toggle()
   }
   /* eslint-enable */
@@ -69,9 +82,9 @@ class AddBookModal extends React.Component {
         {message}
         {error}
 
-        <input
+        <Input
           autoFocus // eslint-disable-line
-          className={styles['add-book-input']}
+          // className={styles['add-book-input']}
           name="title"
           onChange={this.onInputChange}
           onKeyPress={this.handleKeyOnInput}
@@ -113,6 +126,7 @@ class AddBookModal extends React.Component {
 }
 
 AddBookModal.propTypes = {
+  collectionId: PropTypes.string.isRequired,
   create: PropTypes.func.isRequired,
   container: PropTypes.any.isRequired,
   show: PropTypes.bool.isRequired,

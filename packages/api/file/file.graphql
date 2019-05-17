@@ -1,0 +1,14 @@
+type File {
+  id: ID!
+  filename: String!
+  source: String!
+}
+
+input NewFileInput {
+  filename: String
+  source: String
+}
+
+extend type Mutation {
+  uploadFile(input: NewFileInput!): File
+}

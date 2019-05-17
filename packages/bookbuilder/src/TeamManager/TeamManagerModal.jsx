@@ -1,38 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import AbstractModal from 'editoria-common/src/AbstractModal'
+import CustomModal from 'editoria-common/src/CustomModal'
 import TeamManager from './TeamManager'
 
 class TeamManagerModal extends React.Component {
   renderBody() {
-    const { teams, users, updateTeam, updateCollection, book } = this.props
+    const {
+      teams,
+      findUser,
+      updateTeam,
+      // bookId,
+      rules,
+      canViewAddTeamMember,
+      hideModal,
+    } = this.props
 
     return (
       <TeamManager
-        book={book}
+        // bookId={bookId}
+        canViewAddTeamMember={canViewAddTeamMember}
+        findUser={findUser}
+        hideModal={hideModal}
+        rules={rules}
         teams={teams}
-        updateCollection={updateCollection}
         updateTeam={updateTeam}
-        users={users}
       />
     )
   }
 
   render() {
-    const { container, show, toggle } = this.props
+    const { isOpen, hideModal, loading, loadingRules } = this.props
+    if (loading || loadingRules) return null
     const body = this.renderBody()
 
     return (
-      <AbstractModal
-        body={body}
-        cancelText="Close"
-        container={container}
-        show={show}
-        size="large"
-        title="Editoria Team Manager"
-        toggle={toggle}
-      />
+      <CustomModal
+        isOpen={isOpen}
+        shouldCloseOnOverlayClick={false}
+        size="medium"
+        headerText="Book's Team Manager"
+        onRequestClose={hideModal}
+      >
+        {body}
+      </CustomModal>
     )
   }
 }
