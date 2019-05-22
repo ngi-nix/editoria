@@ -45,7 +45,7 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
   return res
 }
 const createEditoriaUser = async (_, { input }, ctx, info) => {
-  const allUsers = await ctx.connectors.User.fetchAll({}, ctx)
+  const allUsers = await ctx.connectors.User.model.all()
   const { username, givenName, surname, email } = input
   const errors = []
   forEach(allUsers, user => {
