@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.5"></a>
+## [0.1.5](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.4...editoria-api@0.1.5) (2019-05-22)
+
+
+### Bug Fixes
+
+* **signup:** fix permission rule when new user created ([bea7622](https://gitlab.coko.foundation/editoria/editoria/commit/bea7622))
+
+
+
+
 <a name="0.1.4"></a>
 ## [0.1.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.3...editoria-api@0.1.4) (2019-04-25)
 

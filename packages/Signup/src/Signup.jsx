@@ -66,20 +66,42 @@ const validatePassword = value => {
   return error
 }
 const GivenNameInput = props => (
-  <TextField label="Given Name" {...props} placeholder="Given Name" />
+  <TextField
+    data-test-id="givenName"
+    label="Given Name"
+    {...props}
+    placeholder="Given Name"
+  />
 )
 const SurnameInput = props => (
-  <TextField label="Surname" {...props} placeholder="Surname" />
+  <TextField
+    data-test-id="surname"
+    label="Surname"
+    {...props}
+    placeholder="Surname"
+  />
 )
 const UsernameInput = props => (
-  <TextField label="Username" {...props} placeholder="Username" />
+  <TextField
+    data-test-id="username"
+    label="Username"
+    {...props}
+    placeholder="Username"
+  />
 )
 
 const EmailInput = props => (
-  <TextField label="Email" {...props} placeholder="Email" type="email" />
+  <TextField
+    data-test-id="email"
+    label="Email"
+    {...props}
+    placeholder="Email"
+    type="email"
+  />
 )
 const PasswordInput = props => (
   <TextField
+    data-test-id="password"
     label="Password"
     {...props}
     placeholder="Password"
