@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.1.2"></a>
+## [1.1.2](https://gitlab.coko.foundation/pubsweet/pubsweet/compare/editoria-component-signup@1.1.1...editoria-component-signup@1.1.2) (2019-05-22)
+
+
+### Bug Fixes
+
+* **signup:** fix permission rule when new user created ([bea7622](https://gitlab.coko.foundation/pubsweet/pubsweet/commit/bea7622))
+
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://gitlab.coko.foundation/pubsweet/pubsweet/compare/editoria-component-signup@1.1.0...editoria-component-signup@1.1.1) (2019-05-17)
 
