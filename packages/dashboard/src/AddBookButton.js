@@ -80,7 +80,7 @@ const addBookButtonIcon = (
 
 const label = 'Add Book'
 const AddBookButton = ({ onClick }) => (
-  <Button onClick={onClick}>
+  <Button data-cy="add-book-btn" onClick={onClick}>
     <Icon>{addBookButtonIcon}</Icon>
     <Label>{label.toLocaleUpperCase()}</Label>
   </Button>
