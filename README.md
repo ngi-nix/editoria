@@ -4,7 +4,7 @@ This is the Editoria monorepo.
 
 It consists of the main Editoria application, as well as the different [Pubsweet](https://gitlab.coko.foundation/pubsweet) components and helper libraries that the app is made of.  
 
-This application is being developed by the [Coko Foundation](https://coko.foundation/), for the [University of California Press](http://www.ucpress.edu/).  
+This application is being developed by the [Coko Foundation](https://coko.foundation/) for the Editoria Community.  
 For more information, visit the project's [website](https://editoria.pub/) or our [chat channel](https://mattermost.coko.foundation/coko/channels/editoria).  
 For the editor that Editoria uses, see its related project [Wax](https://gitlab.coko.foundation/wax/wax).  
 
@@ -33,6 +33,9 @@ The current features on our list are the following:
 | EDITORIA      | Allow components to move from body to front- or backmatter and vice versa | #214    |             |   ✔    |
 | EDITORIA      | Add more information to the “Books” dashboard and make it sortable        | #215    |             |  ✔     |
 
+
+## Community Roadmap #2 now open for proposals! 
+Learn more here: https://editoria.pub/2019/05/21/our-second-community-roadmap-proposal-process-kicks-off-today/
 
 ## Get up and running  
 
