@@ -184,7 +184,7 @@ const Book = props => {
         }
 
         return (
-          <Wrapper>
+          <Wrapper data-cy="book">
             <TopRow archived={archived}>
               <Status isPublished={isPublished}>
                 {archived && <ArchivedIndicator>{icon}</ArchivedIndicator>}
