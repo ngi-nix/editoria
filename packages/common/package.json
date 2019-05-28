@@ -9,12 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pubsweet/ui": "^10.0.4",
-    "@pubsweet/ui-toolkit": "^2.1.4",
+    "@pubsweet/ui": "^10.3.0",
+    "@pubsweet/ui-toolkit": "^2.2.0",
     "react": "^16.2.0",
     "react-modal": "^3.8.1",
     "react-powerplug": "^1.0.0",
-    "react-router-dom": "4.2.2",
+    "react-router-dom": "^5.0.0",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {

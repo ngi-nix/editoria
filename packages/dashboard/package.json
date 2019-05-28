@@ -17,11 +17,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pubsweet/ui": "^10.0.2",
+    "@pubsweet/ui": "^10.3.0",
     "editoria-common": "^0.1.5",
     "formik": "^1.5.1",
     "lodash": "4.17.4",
-    "pubsweet-client": "^9.0.2",
+    "pubsweet-client": "^9.2.3",
     "react": "^16.2.0",
     "react-adopt": "^0.6.0",
     "react-modal": "^3.6.1",

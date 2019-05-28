@@ -19,11 +19,11 @@
   "dependencies": {
     "editoria-common": "^0.1.5",
     "lodash": "4.17.4",
-    "pubsweet-client": "^9.0.2",
+    "pubsweet-client": "^9.2.3",
     "react": "^16.2.0",
     "react-adopt": "^0.6.0",
     "react-powerplug": "^1.0.0",
-    "react-router-dom": "4.2.2"
+    "react-router-dom": "^5.0.0"
   },
   "devDependencies": {
     "enzyme": "^2.9.1",
