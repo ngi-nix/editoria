@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-dashboard",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "The application dashboard for the Editoria project.",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "react-adopt": "^0.6.0",
     "react-modal": "^3.6.1",
     "react-powerplug": "^1.0.0",
-    "react-router-dom": "4.2.2",
+    "react-router-dom": "^5.0.0",
     "styled-components": "^4.1.3"
   },
   "devDependencies": {
