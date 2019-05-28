@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.6"></a>
+## [0.1.6](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.5...editoria-common@0.1.6) (2019-05-28)
+
+
+
+
+**Note:** Version bump only for package editoria-common
+
 <a name="0.1.5"></a>
 ## [0.1.5](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.4...editoria-common@0.1.5) (2019-05-17)
 
