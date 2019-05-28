@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://gitlab.coko.foundation/pubsweet/pubsweet/compare/editoria-component-login@1.3.0...editoria-component-login@1.3.1) (2019-05-28)
+
+
+
+
+**Note:** Version bump only for package editoria-component-login
+
 <a name="1.3.0"></a>
 # 1.3.0 (2019-04-12)
 
