@@ -8,34 +8,20 @@ This application is being developed by the [Coko Foundation](https://coko.founda
 For more information, visit the project's [website](https://editoria.pub/) or our [chat channel](https://mattermost.coko.foundation/coko/channels/editoria).  
 For the editor that Editoria uses, see its related project [Wax](https://gitlab.coko.foundation/wax/wax).  
 
-## Community Roadmap # 1
+## Community Roadmap # 2
 The current features on our list are the following:
 
 | PROJECT       | DESCRIPTION                                                               | ISSUE # | IN PROGRESS | DONE |
 |---------------|---------------------------------------------------------------------------|---------|-------------|------|
-| EDITORIA      | Editoria Upgrade                                                          | #233      |            |  ✔    |
-| WAX           | Wax Upgrade                                                               | #234        |            |✔      |
-| WAX           | Color code tracked changes by user                                        | #164    |             |    ✔   |
-| EDITORIA      | Configure book builder to omit blue buttons                               | #172    |            |   ✔    |
-| EDITORIA      | Indenting chapters in book builder                                        | #171    |           |     ✔  |
-| EDITORIA      | Error message when uploading incorrect file format                        | #189    |             | ✔     |
-| WAX           | Author Style                                                              | #191    |             |  ✔   |
-| WAX           | Provide a larger text box for inputting figure captions                   | #216    |             |  ✔   |
-| EDITORIA      | enable "read only" chapter mode                                           | #170    |             |   ✔    |
-| EDITORIA      | Autocomplete for adding book team roles                                   | #186    |             | ✔     |
-| EDITORIA      | Always show chapter name                                                  | #193    |            |   ✔    |
-| EDITORIA      | Book-level (and perhaps chapter-level) metadata                           | #210    |             |   ✔    |
-| EDITORIA      | Configurable archive options for completed / abandoned books              | #226    |             |   ✔    |
-| WAX           | Toolbar button to change case                                             | #203    |             |   ✔  |
-| PUBSWEET CORE | Usernames allowed with special characters                                 | #195    |             |   ✔   |
-| PUBSWEET CORE | Ask for first name and surname on sign up                                 | #197    |             |   ✔    |
-| XSWEET        | Kill automatic numbering in numbered list style                           | #198    |             |  ✔     |
-| EDITORIA      | Allow components to move from body to front- or backmatter and vice versa | #214    |             |   ✔    |
-| EDITORIA      | Add more information to the “Books” dashboard and make it sortable        | #215    |             |  ✔     |
-
-
-## Community Roadmap #2 now open for proposals! 
-Learn more here: https://editoria.pub/2019/05/21/our-second-community-roadmap-proposal-process-kicks-off-today/
+| EDITORIA      | Export Overhaul                                                           | #254 #307 #318 #319 #320 #321|✔            |        |
+| WAX           | Wax Upgrades                                                              | #274 #281 #284 #285          |✔            |        |
+| EDITORIA      | Paged.js enhancements                                                     | #322 #295 #261 #257 #256 #295|✔            |        |
+| EDITORIA      | "Include in TOC" feature                                                  | #323    |✔                                 |        |
+| EDITORIA      | "Save" button in Paged.js integration                                     | #288    |✔                                 |        |
+| XSWEET        | Add Autonumbering to part components                                      | #260    |✔                                 |        |
+| EDITORIA      | Replace INK with PubSweet Job Manager                                     | #255    |✔                                 |        |
+| EDITORIA      | Add profile page per user                                                 | #293    |✔                                 |        |
+| EDITORIA      | Simpler navigation to/from components from within Wax                     | #276    |✔                                 |        |
 
 ## Get up and running  
 
