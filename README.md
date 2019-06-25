@@ -13,15 +13,15 @@ The current features on our list are the following:
 
 | PROJECT       | DESCRIPTION                                                               | ISSUE # | IN PROGRESS | DONE |
 |---------------|---------------------------------------------------------------------------|---------|-------------|------|
-| EDITORIA      | Export Overhaul                                                           | #254 #307 #318 #319 #320 #321|✔            |        |
-| WAX           | Wax Upgrades                                                              | #274 #281 #284 #285          |✔            |        |
-| EDITORIA      | Paged.js enhancements                                                     | #322 #295 #261 #257 #256 #295|✔            |        |
-| EDITORIA      | "Include in TOC" feature                                                  | #323    |✔                                 |        |
-| EDITORIA      | "Save" button in Paged.js integration                                     | #288    |✔                                 |        |
-| XSWEET        | Add Autonumbering to part components                                      | #260    |✔                                 |        |
-| EDITORIA      | Replace INK with PubSweet Job Manager                                     | #255    |✔                                 |        |
-| EDITORIA      | Add profile page per user                                                 | #293    |✔                                 |        |
-| EDITORIA      | Simpler navigation to/from components from within Wax                     | #276    |✔                                 |        |
+| EDITORIA      | Export Overhaul                                                           | #254 #307 #318 #319 #320 #321|             |        |
+| WAX           | Wax Upgrades                                                              | #274 #281 #284 #285          |             |        |
+| EDITORIA      | Paged.js enhancements                                                     | #322 #295 #261 #257 #256 #295|             |        |
+| EDITORIA      | "Include in TOC" feature                                                  | #323    |                                  |        |
+| EDITORIA      | "Save" button in Paged.js integration                                     | #288    |                                  |        |
+| XSWEET        | Add Autonumbering to part components                                      | #260    |                                  |        |
+| EDITORIA      | Replace INK with PubSweet Job Manager                                     | #255    |✔                                  |        |
+| EDITORIA      | Add profile page per user                                                 | #293    |✔                                  |        |
+| EDITORIA      | Simpler navigation to/from components from within Wax                     | #276    |                                  |        |
 
 ## Get up and running  
 
