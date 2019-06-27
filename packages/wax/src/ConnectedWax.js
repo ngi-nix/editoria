@@ -6,12 +6,16 @@ import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
 import withModal from 'editoria-common/src/withModal'
+
 import WaxPubsweet from './WaxPubsweet'
 import statefull from './Statefull'
 import {
   getBookComponentQuery,
+  getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  updateCustomTagMutation,
+  addCustomTagMutation,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   renameBookComponentMutation,
@@ -27,11 +31,14 @@ const mapper = {
   statefull,
   withModal,
   getBookComponentQuery,
+  getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  updateCustomTagMutation,
+  addCustomTagMutation,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
@@ -52,8 +59,11 @@ const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
+  tags: get(args.getCustomTagsQuery, 'data.getCustomTags'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
   teams: get(args.getUserTeamsQuery, 'data.teams'),
+  updateTags: args.updateCustomTagMutation.updateCustomTag,
+  addCustomTags: args.addCustomTagMutation.addCustomTag,
   updateBookComponentContent:
     args.updateBookComponentContentMutation.updateContent,
   updateBookComponentTrackChanges:
@@ -77,6 +87,7 @@ const mapProps = args => ({
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
   teamsLoading: args.getUserTeamsQuery.networkStatus === 1,
+  tagsLoading: args.getCustomTagsQuery.networkStatus === 1,
   refetching:
     args.getBookComponentQuery.networkStatus === 4 ||
     args.getBookComponentQuery.networkStatus === 2, // possible apollo bug
@@ -97,10 +108,13 @@ const Connected = props => {
     >
       {({
         bookComponent,
+        tags,
         setState,
         onUnlocked,
         rules,
         teams,
+        updateTags,
+        addCustomTags,
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
@@ -110,11 +124,13 @@ const Connected = props => {
         loading,
         waxLoading,
         teamsLoading,
+        tagsLoading,
       }) => {
         const user = Object.assign({}, currentUser, {
           color: getUserWithColor(teams),
         })
-        if (loading || waxLoading || teamsLoading) return null
+        if (loading || waxLoading || teamsLoading || tagsLoading) return null
+
         let editing
         const lock = get(bookComponent, 'lock')
         if (lock && lock.userId !== currentUser.id) {
@@ -143,8 +159,11 @@ const Connected = props => {
             renameBookComponent={renameBookComponent}
             rules={rules}
             setState={setState}
+            tags={tags}
             teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
+            updateCustomTags={updateTags}
+            addCustomTags={addCustomTags}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}

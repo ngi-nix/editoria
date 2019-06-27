@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
+// import { getFragment } from 'pubsweet-client/src/actions/fragments'
+import { th } from '@pubsweet/ui-toolkit'
 
 const Container = styled.div`
   display: flex;
@@ -159,8 +161,29 @@ export class WaxPubsweet extends React.Component {
       bookComponent,
       updateBookComponentTrackChanges,
       renameBookComponent,
+      updateCustomTags,
+      addCustomTags,
     } = this.props
-    const { trackChanges, title } = patch
+    const { trackChanges, title, tags } = patch
+
+    if (tags) {
+      const addTags = tags.filter(tag => !tag.id)
+      const updateTags = tags.filter(tag => tag.id)
+      if (addTags.length > 0) {
+        addCustomTags({
+          variables: {
+            input: addTags,
+          },
+        })
+      }
+      if (updateTags.length > 0) {
+        updateCustomTags({
+          variables: {
+            input: updateTags,
+          },
+        })
+      }
+    }
 
     if (trackChanges !== undefined) {
       return updateBookComponentTrackChanges({
@@ -338,6 +361,20 @@ export class WaxPubsweet extends React.Component {
     let chapterNumber
     if (get(bookComponent, 'componentType') === 'chapter') {
       chapterNumber = get(bookComponent, 'componentTypeOrder')
+    }
+    let header
+    if (chapterNumber) {
+      header = (
+        <BookTitle>{`${bookComponent.bookTitle} - Chapter ${chapterNumber}. ${
+          bookComponent.title
+        }`}</BookTitle>
+      )
+    } else {
+      header = (
+        <BookTitle>{`${bookComponent.bookTitle} - ${
+          bookComponent.title
+        }`}</BookTitle>
+      )
     }
 
     return (
