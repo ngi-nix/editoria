@@ -5,6 +5,9 @@ const bookComponent = require('./bookComponent')
 const bookComponentState = require('./bookComponentState')
 const bookComponentTranslation = require('./bookComponentTranslation')
 const bookTranslation = require('./bookTranslation')
+const file = require('./file')
+const fileTranslation = require('./fileTranslation')
+const template = require('./template')
 const division = require('./division')
 const team = require('./team')
 const user = require('./user')
@@ -24,8 +27,11 @@ module.exports = {
   bookComponentTranslation,
   bookTranslation,
   division,
+  file,
+  fileTranslation,
   lock,
   loader,
+  template,
   models: {
     Book: book.model,
     BookCollection: bookCollection.model,
@@ -35,7 +41,10 @@ module.exports = {
     BookComponentTranslation: bookComponentTranslation.model,
     BookTranslation: bookTranslation.model,
     Division: division.model,
+    File: file.model,
+    FileTranslation: fileTranslation.model,
     Team: team.model,
+    Template: template.model,
     User: user.model,
     Lock: lock.model,
     loader,
