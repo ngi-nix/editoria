@@ -10,8 +10,7 @@ const { Model } = require('objection')
 const uuid = require('uuid/v4')
 
 const Base = require('../editoriaBase')
-const { model: Book } = require('../book')
-const { model: Division } = require('../division')
+
 const {
   boolean,
   booleanDefaultFalse,
@@ -31,6 +30,10 @@ class BookComponent extends Base {
   }
 
   static get relationMappings() {
+    const { model: Book } = require('../book')
+    const { model: Division } = require('../division')
+    const { model: BookComponentState } = require('../bookComponentState')
+
     return {
       book: {
         relation: Model.BelongsToOneRelation,
@@ -46,6 +49,14 @@ class BookComponent extends Base {
         join: {
           from: 'BookComponent.divisionId',
           to: 'Division.id',
+        },
+      },
+      bookComponentState: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: BookComponentState,
+        join: {
+          from: 'BookComponent.id',
+          to: 'BookComponentState.bookComponentId',
         },
       },
     }
@@ -105,6 +116,9 @@ class BookComponent extends Base {
 
   getDivision() {
     return this.$relatedQuery('division')
+  }
+  getBookComponentState() {
+    return this.$relatedQuery('bookComponentState')
   }
 }
 
