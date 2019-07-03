@@ -132,22 +132,6 @@ export class WaxPubsweet extends React.Component {
       },
     })
   }
-  // handlePolling() {
-  //   const { polling } = this.props.actions
-  //   const { user, match, history } = this.props
-  //   const { bookId, fragmentId } = match.params
-
-  //   polling(bookId, fragmentId, user)
-  //     .then(res => {
-  //       this.setState({ pollingIsLive: true })
-  //     })
-  //     .catch(err => {
-  //       this.setState({ pollingIsLive: true })
-  //       if (err.message === 'Forbidden') {
-  //         history.push(`/books/${bookId}/book-builder`)
-  //       }
-  //     })
-  // }
 
   // TODO -- Theoretically, we shouldn't lock when the editor is in read only
   // mode. This gets complicated however, as the user will be able to be add
@@ -258,8 +242,6 @@ export class WaxPubsweet extends React.Component {
     }
 
     const { layout, autoSave, menus } = waxConfig
-    console.log('bookkkkkk', bookComponent)
-
     // From editoria config, this is just for testing purposes
 
     let translatedEditing
@@ -382,23 +364,8 @@ export class WaxPubsweet extends React.Component {
   }
 
   render() {
-    // const { config, fragment, history, user } = this.props
     const { loading, waxLoading, teamsLoading, editing } = this.props
-    // if (loading) return 'Loading...'
-    // const { layout } = config
 
-    // TODO -- these won't change properly on fragment change
-    // see trackChanges hack in mapStateToProps
-    // const content = get(fragment, 'source')
-    // const trackChanges = get(fragment, 'trackChanges')
-
-    // let chapterNumber
-    // if (get(fragment, 'subCategory') === 'chapter') {
-    //   chapterNumber = get(fragment, 'number')
-    // }
-    // if (loading) {
-    //   return <p>Loading</p>
-    // }
     if (loading || waxLoading || teamsLoading || isEmpty(config))
       return 'Loading...'
 

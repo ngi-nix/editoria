@@ -265,7 +265,6 @@ const titleChangeSubscription = props => {
   const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
-    console.log('title sub')
     if (pauseUpdates) return
     refetch()
   }
