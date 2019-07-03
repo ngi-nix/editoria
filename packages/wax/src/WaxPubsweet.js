@@ -1,23 +1,11 @@
-import {
-  // each,
-  // filter,
-  // find,
-  get,
-  // includes,
-  // some,
-  // union,
-  // debounce,
-  isEmpty,
-} from 'lodash'
+import { get, isEmpty } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-// import { compose } from 'react-apollo'
 import config from 'config'
-// import Actions from 'pubsweet-client/src/actions'
 import Wax from 'wax-editor-react'
-// import { getFragment } from 'pubsweet-client/src/actions/fragments'
-import { th } from '@pubsweet/ui-toolkit'
+import WaxHeader from './WaxHeader'
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,54 +15,24 @@ const Container = styled.div`
     height: 88vh;
   }
 `
-const BookTitle = styled.div`
-  padding-left: calc(3.5 * ${th('gridUnit')});
-  color: ${th('colorText')};
-  /* text-align:center;  */
-  align-items: center;
-  margin-bottom: calc(2 * ${th('gridUnit')});
-  font-size: ${th('fontSizeHeading5')};
-  line-height: ${th('lineHeightHeading5')};
-  font-family: 'Vollkorn';
-`
+
 export class WaxPubsweet extends React.Component {
   constructor(props) {
     super(props)
 
     this.fileUpload = this.fileUpload.bind(this)
     this.save = this.save.bind(this)
-    // this.unlock = this.unlock.bind(this)
     this.update = this.update.bind(this)
-    // this.handlePolling = this.handlePolling.bind(this)
     this.renderWax = this.renderWax.bind(this)
     this.onUnload = this.onUnload.bind(this)
-
-    // this.stackUpdateData = []
-    // this.pollingInterval = null
+    this.unlock = this.unlock.bind(this)
+    this.lock = this.lock.bind(this)
   }
 
-  // componentWillMount() {
-  //   const { getCollections, getFragments, getTeams } = this.props.actions
-  //   // const { fragment } = this.props
-
-  //   getCollections().then(() => {
-  //     const { book } = this.props
-  //     getTeams().then(() => {
-  //       getFragments(book).then(() => {})
-  //     })
-  //   })
-  // }
-  onUnload(event) {
-    // the method that will be used for both add and remove event
-    const { unlockBookComponent, bookComponentId } = this.props
-    // if (bookComponent.id) {
-    unlockBookComponent({
-      variables: {
-        input: {
-          id: bookComponentId,
-        },
-      },
-    })
+  componentWillMount(nextProps) {
+    const { bookComponentId, editing } = this.props
+    if (editing === 'preview' || editing === 'selection') return
+    this.lock(bookComponentId)
   }
 
   componentDidMount() {
@@ -83,234 +41,61 @@ export class WaxPubsweet extends React.Component {
     window.addEventListener('beforeunload', this.onUnload)
   }
 
-  componentWillMount(nextProps) {
-    const { lockBookComponent, bookComponentId, editing } = this.props
-    if (editing === 'preview' || editing === 'selection') return
-    lockBookComponent({
-      variables: {
-        input: {
-          id: bookComponentId,
-        },
-      },
-    })
+  componentWillReceiveProps(nextProps) {
+    const { history, onUnlocked } = this.props
+    const { bookComponent: bookComponentBefore, bookComponentId } = this.props
+    const { lock: lockBefore } = bookComponentBefore
+    const { bookComponent: bookComponentAfter } = nextProps
+    const { lock: lockAfter, id: nextPropId } = bookComponentAfter
+
+    const onConfirm = () => {
+      history.push(`/books/${bookComponentAfter.bookId}/book-builder`)
+    }
+
+    if (
+      lockBefore !== null &&
+      lockAfter === null &&
+      nextPropId === bookComponentId
+    ) {
+      onUnlocked(
+        'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+        onConfirm,
+      )
+    }
   }
 
   componentWillUnmount() {
-    const { unlockBookComponent, bookComponentId, editing } = this.props
-    // if (bookComponent.id) {
+    const {
+      bookComponent: { id },
+      editing,
+    } = this.props
+
     if (editing === 'preview' || editing === 'selection') return
+    this.unlock(id)
+  }
+
+  unlock(id) {
+    const { unlockBookComponent } = this.props
     unlockBookComponent({
       variables: {
         input: {
-          id: bookComponentId,
+          id,
         },
       },
     })
     window.removeEventListener('beforeunload', this.onUnload)
   }
 
-  // lock() {
-  //   const { user, match } = this.props
-  //   const { fragmentId } = match.params
-  //   console.log('in lock')
-
-  //   const patch = {
-  //     id: fragmentId,
-  //     lock: {
-  //       editor: { username: user.username, userId: user.id },
-  //       timestamp: new Date(),
-  //     },
-  //   }
-
-  //   this.update(patch)
-  // }
-
-  // unlock() {
-  //   const { fragment } = this.props
-
-  //   const patch = {
-  //     id: fragment.id,
-  //     lock: null,
-  //   }
-
-  //   this.update(patch)
-  // }
-
-  // getEditingState() {
-  //   const { fragment, user } = this.props
-
-  //   if (!fragment || !user) return 'full'
-
-  //   const roles = user.roles
-
-  //   // Production editors and admins can always edit
-  //   if (some(['admin', 'production-editor'], role => includes(roles, role))) {
-  //     return 'full'
-  //   }
-
-  //   const { progress } = fragment
-
-  //   // Copy editor can only edit when state workflow is 'Editing'
-  //   const isCopyEditor = includes(roles, 'copy-editor')
-  //   const isEditing = progress.edit === 1
-
-  //   if (isCopyEditor && isEditing) return 'full'
-
-  //   // Author can only edit when state workflow is 'Reviewing'
-  //   const isAuthor = includes(roles, 'author')
-  //   const isReviewing = progress.review === 1
-
-  //   if (isAuthor && isReviewing) return 'full'
-
-  //   return 'selection'
-  // }
-
-  componentWillReceiveProps(nextProps) {
-    const { history, onUnlocked } = this.props
-    const { bookComponent: bookComponentBefore } = this.props
-    const { lock: lockBefore } = bookComponentBefore
-    const { bookComponent: bookComponentAfter } = nextProps
-    const { lock: lockAfter } = bookComponentAfter
-
-    const onConfirm = () => {
-      history.push(`/books/${bookComponentAfter.bookId}/book-builder`)
-    }
-
-    if (lockBefore !== null && lockAfter === null) {
-      onUnlocked(
-        'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
-        onConfirm,
-      )
-    }
-
-    // const { bookComponentId } = nextProps
-    // const { lockBookComponent } = this.props
-    // const { editing } = this.state
-    // console.log('nextProps', nextProps)
-    // console.log('config', config)
-    // //if lock from other user then setState({pauseUpdates:true})
-    // if (
-    //   nextProps.bookComponent &&
-    //   (nextProps.bookComponent !== this.props.bookComponent ||
-    //     nextProps.rules !== this.props.rules) &&
-    //   nextProps.rules
-    // ) {
-    //   if (nextProps.bookComponent.lock) {
-    //     this.setState({
-    //       config: {
-    //         layout: config.wax.layout,
-    //         lockWhenEditing: config.wax.lockWhenEditing,
-    //         theme: config.wax.theme,
-    //         autoSave: config.wax.autoSave,
-    //         menus:
-    //           config.wax[nextProps.bookComponent.divisionType.toLowerCase()][
-    //             nextProps.bookComponent.componentType
-    //           ].menus,
-    //       },
-    //     })
-    //   } else {
-    //     if (nextProps.rules.canEditFull) {
-    //       this.setState({
-    //         config: {
-    //           layout: config.wax.layout,
-    //           lockWhenEditing: config.wax.lockWhenEditing,
-    //           theme: config.wax.theme,
-    //           autoSave: config.wax.autoSave,
-    //           menus:
-    //             config.wax[nextProps.bookComponent.divisionType.toLowerCase()][
-    //               nextProps.bookComponent.componentType
-    //             ].menus,
-    //         },
-    //       })
-    //     } else if (nextProps.rules.canEditSelection) {
-    //       this.setState({
-    //         config: {
-    //           layout: config.wax.layout,
-    //           lockWhenEditing: config.wax.lockWhenEditing,
-    //           theme: config.wax.theme,
-    //           autoSave: config.wax.autoSave,
-    //           menus:
-    //             config.wax[nextProps.bookComponent.divisionType.toLowerCase()][
-    //               nextProps.bookComponent.componentType
-    //             ].menus,
-    //         },
-    //       })
-    //     } else if (nextProps.rules.canEditReview) {
-    //       this.setState({
-    //         config: {
-    //           layout: config.wax.layout,
-    //           lockWhenEditing: config.wax.lockWhenEditing,
-    //           theme: config.wax.theme,
-    //           autoSave: config.wax.autoSave,
-    //           menus:
-    //             config.wax[nextProps.bookComponent.divisionType.toLowerCase()][
-    //               nextProps.bookComponent.componentType
-    //             ].menus,
-    //         },
-    //       })
-    //     }
-    //   }
-    // }
-    // if (!isEmpty(config) && bookComponentId) {
-    //   if (editing === 'preview' || editing === 'selection') return
-    //   console.log('looooock')
-    //   lockBookComponent({
-    //     variables: {
-    //       input: {
-    //         id: bookComponentId,
-    //       },
-    //     },
-    //   })
-    // }
-    // if (bookComponent.id) {
+  lock(id) {
+    const { lockBookComponent } = this.props
+    lockBookComponent({
+      variables: {
+        input: {
+          id,
+        },
+      },
+    })
   }
-
-  componentWillUpdate(nextProps, nextState) {
-    // console.log('lock before', this.props)
-    // console.log('lock after', nextProps)
-    // const { book, history, config } = this.props
-    // let { pollingTimer } = config
-    // if (pollingTimer === undefined) {
-    //   pollingTimer = 1000
-    // }
-    // if (this.state.editing === null && nextState.editing) {
-    //   if (
-    //     this.shouldLock() &&
-    //     (nextState.editing === 'full' ||
-    //       nextState.editing === 'full_without_tc' ||
-    //       nextState.editing === 'review')
-    //   ) {
-    //     this.pollingInterval = setInterval(this.handlePolling, pollingTimer)
-    //     // this.lock()
-    //   }
-    // }
-    // if (
-    //   this.props.fragment &&
-    //   this.props.fragment.lock !== null &&
-    //   nextProps.fragment.lock === null
-    // ) {
-    //   // console.log('old lock', this.props.fragment.lock)
-    //   // console.log('new lock', nextProps.fragment.lock)
-    //   history.push(`/books/${book.id}/book-builder`)
-    // }
-  }
-
-  // componentWillUnmount() {
-  // // const { editing, lockConflict, pollingIsLive } = this.state
-  // // if (!lockConflict) {
-  // // if (this.shouldLock() && editing === 'full') this.unlock()
-  // // if (this.shouldLock() && editing === 'full') {
-  // // console.log('ha')
-  // clearInterval(this.pollingInterval)
-  // // if (!pollingIsLive && editing !== 'selection') {
-  // //   let dialog = confirm('Polling was not initiated, manual unlock will be performed')
-  // //   // this.unlock()
-  // // } else {
-  // //   clearInterval(this.pollingInterval)
-  // // }
-  // // }
-  // // }
-  // }
 
   save(content) {
     const { bookComponent, updateBookComponentContent } = this.props
@@ -454,6 +239,11 @@ export class WaxPubsweet extends React.Component {
     return Promise.resolve()
   }
 
+  onUnload(event) {
+    const { bookComponentId } = this.props
+    this.unlock(bookComponentId)
+  }
+
   renderWax(editing) {
     const { bookComponent, history, user } = this.props
     const waxConfig = {
@@ -567,24 +357,10 @@ export class WaxPubsweet extends React.Component {
     if (get(bookComponent, 'componentType') === 'chapter') {
       chapterNumber = get(bookComponent, 'componentTypeOrder')
     }
-    let header
-    if (chapterNumber) {
-      header = (
-        <BookTitle>{`${bookComponent.bookTitle} - Chapter ${chapterNumber}. ${
-          bookComponent.title
-        }`}</BookTitle>
-      )
-    } else {
-      header = (
-        <BookTitle>{`${bookComponent.bookTitle} - ${
-          bookComponent.title
-        }`}</BookTitle>
-      )
-    }
-    console.log(user)
+
     return (
       <Container>
-        {header}
+        <WaxHeader bookComponent={bookComponent} />
         <Wax
           autoSave={autoSave === undefined ? false : autoSave}
           chapterNumber={chapterNumber}

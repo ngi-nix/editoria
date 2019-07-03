@@ -28,6 +28,16 @@ const GET_BOOK_COMPONENT = gql`
         isAdmin
         surname
       }
+      nextBookComponent {
+        id
+        title
+        bookId
+      }
+      prevBookComponent {
+        id
+        title
+        bookId
+      }
       content
     }
   }

@@ -40,8 +40,8 @@ const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
 `
 
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
-  subscription BookComponentLockUpdated {
-    bookComponentLockUpdated {
+  subscription BookComponentLockUpdated($bookComponentIds: [ID]!) {
+    bookComponentLockUpdated(bookComponentIds: $bookComponentIds) {
       id
     }
   }
@@ -239,10 +239,22 @@ const lockChangeSubscription = props => {
     refetch()
   }
 
+  if (!getBookQuery.data.getBook) {
+    return null
+  }
+  const { divisions } = getBookQuery.data.getBook
+  const subscribeToBookComponents = []
+  divisions.forEach(division => {
+    division.bookComponents.forEach(item => {
+      subscribeToBookComponents.push(item.id)
+    })
+  })
+
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
+      variables={{ bookComponentIds: subscribeToBookComponents }}
     >
       {render}
     </Subscription>

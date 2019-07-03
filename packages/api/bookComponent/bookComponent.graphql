@@ -45,6 +45,8 @@ type BookComponent {
   divisionId: ID!
   divisionType: String
   lock: Lock
+  nextBookComponent: BookComponent
+  prevBookComponent: BookComponent
   pagination: Pagination!
   archived: Boolean!
   workflowStages: [WorkFlowItem]
@@ -108,7 +110,7 @@ extend type Subscription {
   bookComponentWorkflowUpdated: BookComponent!
   bookComponentPaginationUpdated: BookComponent!
   bookComponentTrackChangesUpdated: BookComponent!
-  bookComponentLockUpdated: BookComponent!
+  bookComponentLockUpdated(bookComponentIds: [ID]): BookComponent!
   bookComponentTitleUpdated: BookComponent!
   bookComponentContentUpdated: BookComponent!
   bookComponentTypeUpdated: BookComponent!

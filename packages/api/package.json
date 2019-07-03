@@ -13,6 +13,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "editoria-data-model": "^0.1.2",
+    "apollo-server": "*",
     "highlight.js": "^9.13.1",
     "html-epub": "git+https://git@gitlab.coko.foundation/pubsweet/html-epub#updated-libtidy",
     "mkdirp": "^0.5.1",

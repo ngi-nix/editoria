@@ -5,8 +5,8 @@ import { get, sortBy } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
-import WaxPubsweet from './WaxPubsweet'
 import withModal from 'editoria-common/src/withModal'
+import WaxPubsweet from './WaxPubsweet'
 import statefull from './Statefull'
 import {
   getBookComponentQuery,
@@ -20,6 +20,7 @@ import {
   uploadFileMutation,
   trackChangeSubscription,
   lockChangeSubscription,
+  orderChangeSubscription,
 } from './queries'
 
 const mapper = {
@@ -36,6 +37,7 @@ const mapper = {
   renameBookComponentMutation,
   trackChangeSubscription,
   lockChangeSubscription,
+  orderChangeSubscription,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -127,16 +129,17 @@ const Connected = props => {
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
-            setState={setState}
-            onUnlocked={onUnlocked}
-            editing={editing}
             bookComponentId={bookComponentId}
             config={config}
+            editing={editing}
             history={history}
+            key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
+            onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}
+            setState={setState}
             teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
