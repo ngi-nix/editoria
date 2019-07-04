@@ -31,26 +31,26 @@ const WaxHeader = ({ bookComponent }) => {
   let header
   if (chapterNumber) {
     header = (
-      <BookTitle>{`${bookComponent.bookTitle} - Chapter ${chapterNumber}. ${
-        bookComponent.title
-      }`}</BookTitle>
+      <BookTitle data-testid="current-component">{`${
+        bookComponent.bookTitle
+      } - Chapter ${chapterNumber}. ${bookComponent.title}`}</BookTitle>
     )
   } else {
     header = (
-      <BookTitle>{`${bookComponent.bookTitle} - ${
-        bookComponent.title
-      }`}</BookTitle>
+      <BookTitle data-testid="current-component">{`${
+        bookComponent.bookTitle
+      } - ${bookComponent.title}`}</BookTitle>
     )
   }
   const { nextBookComponent, prevBookComponent } = bookComponent
   return (
     <Header>
-      <div>
+      <div data-testid="previous-component">
         {prevBookComponent &&
           withLink(prevBookComponent.title, createUrl(prevBookComponent))}
       </div>
       {header}
-      <div>
+      <div data-testid="next-component">
         {nextBookComponent &&
           withLink(nextBookComponent.title, createUrl(nextBookComponent))}
       </div>
