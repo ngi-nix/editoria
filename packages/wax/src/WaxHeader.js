@@ -45,15 +45,17 @@ const WaxHeader = ({ bookComponent }) => {
   const { nextBookComponent, prevBookComponent } = bookComponent
   return (
     <Header>
-      <div data-testid="previous-component">
-        {prevBookComponent &&
-          withLink(prevBookComponent.title, createUrl(prevBookComponent))}
-      </div>
+      {prevBookComponent && (
+        <div data-testid="previous-component">
+          withLink(prevBookComponent.title, createUrl(prevBookComponent))
+        </div>
+      )}
       {header}
-      <div data-testid="next-component">
-        {nextBookComponent &&
-          withLink(nextBookComponent.title, createUrl(nextBookComponent))}
-      </div>
+      {nextBookComponent && (
+        <div data-testid="next-component">
+          withLink(nextBookComponent.title, createUrl(nextBookComponent))
+        </div>
+      )}
     </Header>
   )
 }
