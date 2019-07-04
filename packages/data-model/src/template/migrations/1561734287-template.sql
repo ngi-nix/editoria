@@ -11,6 +11,8 @@ create table template (
   --foreign
   book_id uuid references book,
   reference_id uuid,
+  author text,
+  thumbnail_id  uuid references file,
   templateName text not null
   files text[],
 );

@@ -1,7 +1,7 @@
 const { Model } = require('./node_modules/objection')
 
 const Base = require('../editoriaBase')
-const { arrayOfIds, id, stringNotEmpty } = require('../helpers').schema
+const { arrayOfIds, id, stringNotEmpty, string } = require('../helpers').schema
 
 class Template extends Base {
   constructor(properties) {
@@ -20,6 +20,8 @@ class Template extends Base {
       properties: {
         templateName: stringNotEmpty,
         referenceId: id,
+        author: string,
+        thumbnailId: id,
         bookId: id,
         files: arrayOfIds,
       },
@@ -36,6 +38,14 @@ class Template extends Base {
         join: {
           from: 'File.templateId',
           to: 'Template.id',
+        },
+      },
+      thumbnail: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: File,
+        join: {
+          from: 'Template.thumbnailId',
+          to: 'File.id',
         },
       },
     }
