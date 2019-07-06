@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "styleguide": "styleguidist server",
-    "styleguide:build": "styleguidist build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "styleguide:build": "styleguidist build"
   },
   "keywords": [
     "pubsweet-component",

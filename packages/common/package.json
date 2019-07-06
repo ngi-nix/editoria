@@ -3,9 +3,6 @@
   "version": "0.1.6",
   "description": "Common react components for the editoria project",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

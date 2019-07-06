@@ -1,8 +1,8 @@
 const logger = require('@pubsweet/logger')
 const { CustomTag } = require('editoria-data-model/src').models
 
-const getCustomTags = async (_, {}, ctx) => {
-  const customTags = await CustomTag.all()
+const getCustomTags = async (_, input, ctx) => {
+  const customTags = await CustomTag.query().where({ deleted: false })
   if (!customTags) {
     throw new Error(`CustomTags error: Could not fetch Tags`)
   }
@@ -12,14 +12,15 @@ const getCustomTags = async (_, {}, ctx) => {
 
 const addCustomTag = async (_, { input }, ctx) => {
   try {
-    Promise.all(
+    await Promise.all(
       input.map(async tag => {
         const { label, tagType } = tag
         await new CustomTag({ label, tagType }).save()
       }),
     )
 
-    const customTags = await CustomTag.all()
+    const customTags = await CustomTag.query().where({ deleted: false })
+
     return customTags
   } catch (e) {
     logger.error(e)
@@ -29,7 +30,7 @@ const addCustomTag = async (_, { input }, ctx) => {
 
 const updateCustomTag = async (_, { input }, ctx) => {
   try {
-    Promise.all(
+    await Promise.all(
       input.map(async tag => {
         const { id, deleted, tagType, label } = tag
         await CustomTag.query().patchAndFetchById(id, {
@@ -41,7 +42,8 @@ const updateCustomTag = async (_, { input }, ctx) => {
     )
     logger.info(`Custom Tag component with id ${updateCustomTag.id} deleted`)
 
-    const customTags = await CustomTag.all()
+    const customTags = await CustomTag.query().where({ deleted: false })
+
     return customTags
   } catch (e) {
     logger.error(e)

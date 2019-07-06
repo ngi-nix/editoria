@@ -4,11 +4,10 @@ const winston = require('winston')
 module.exports = {
   'pubsweet-server': {
     db: {
-      // database: 'test',
-      port: 5499,
-      user: 'testuser',
-      password: 'testpass',
-      database: global.__testDbName || 'test',
+      port: 5460,
+      user: 'test',
+      password: 'secretpassword',
+      database: global.__testDbName || 'editoria_test',
     },
     enableExperimentalGraphql: true,
     logger: new winston.Logger({
@@ -31,6 +30,12 @@ module.exports = {
         name: 'Contributors',
       },
     },
+  },
+  pubsweet: {
+    components: [
+      '@pubsweet/model-user',
+      'editoria-data-model/src/customTag',
+    ],
   },
   schema: {
     Manuscript: {
