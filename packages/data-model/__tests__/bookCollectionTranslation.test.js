@@ -1,6 +1,3 @@
-const registerComponents = require('./helpers/registerComponents')
-registerComponents(['bookCollection', 'bookCollectionTranslation'])
-
 const { dbCleaner } = require('pubsweet-server/test')
 
 const { BookCollection, BookCollectionTranslation } = require('../src').models

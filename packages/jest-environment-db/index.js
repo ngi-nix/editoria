@@ -1,3 +1,4 @@
+process.env.ALLOW_CONFIG_MUTATIONS = true
 const NodeEnvironment = require('jest-environment-node')
 const pg = require('pg')
 const config = require('config')

@@ -31,10 +31,27 @@ module.exports = {
       },
     },
   },
+  bookBuilder: {
+    divisions: [{ name: 'front' }, { name: 'body' }, { name: 'back' }],
+  },
   pubsweet: {
     components: [
       '@pubsweet/model-user',
+      '@pubsweet/model-team',
+      'editoria-data-model/src/book',
+      'editoria-data-model/src/lock',
+      'editoria-data-model/src/bookCollection',
+      'editoria-data-model/src/bookCollectionTranslation',
+      'editoria-data-model/src/bookComponent',
+      'editoria-data-model/src/bookComponentState',
+      'editoria-data-model/src/bookComponentTranslation',
+      'editoria-data-model/src/bookTranslation',
       'editoria-data-model/src/customTag',
+      'editoria-data-model/src/division',
+      'editoria-data-model/src/team',
+      'editoria-data-model/src/user',
+      'editoria-data-model/src/dataloader',
+      'editoria-api',
     ],
   },
   schema: {

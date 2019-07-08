@@ -1,10 +1,7 @@
-const registerComponents = require('./helpers/registerComponents')
-registerComponents(['book', 'bookCollection', 'division'])
-
 const uuid = require('uuid/v4')
 const { dbCleaner } = require('pubsweet-server/test')
 const config = require('config')
-const set = require('lodash/set')
+// const set = require('lodash/set')
 const unset = require('lodash/unset')
 
 const { Book, BookCollection, Division } = require('../src').models
@@ -16,7 +13,7 @@ describe('Book', () => {
 
   it('can add books', async () => {
     const divisionId = uuid()
-    const publicationDate = new Date()
+    const publicationDate = new Date().toString()
 
     let collectionId
     await new BookCollection().save().then(res => (collectionId = res.id))
@@ -40,16 +37,10 @@ describe('Book', () => {
   })
 
   it('creates divisions on book creation based on the config', async () => {
-    set(config, 'bookBuilder.divisions', [
-      { name: 'front' },
-      { name: 'body' },
-      { name: 'back' },
-    ])
-
     const collection = await new BookCollection().save()
     const book = await new Book({ collectionId: collection.id }).save()
-    const divisions = await Division.query().where('bookId', book.id)
 
+    const divisions = await Division.query().where('bookId', book.id)
     expect(divisions).toHaveLength(3)
     expect(book.divisions).toHaveLength(3)
 
@@ -66,11 +57,10 @@ describe('Book', () => {
       const actualPosition = book.divisions.indexOf(division.id)
       expect(actualPosition).toBe(correctPosition)
     })
-
-    unset(config, 'bookBuilder')
   })
 
   it('creates a default division on book creation if no config is found', async () => {
+    unset(config, 'bookBuilder')
     const collection = await new BookCollection().save()
     const book = await new Book({ collectionId: collection.id }).save()
     const divisions = await Division.query().where('bookId', book.id)
