@@ -272,6 +272,10 @@ const schema = {
     type: 'integer',
     exclusiveMinimum: 0,
   },
+  targetType: {
+    type: 'string',
+    enum: ['epub', 'pagedjs', 'vivliostyle'],
+  },
   language: {
     regexp: {
       pattern: langIsoRegex,
