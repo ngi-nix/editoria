@@ -147,27 +147,27 @@ const Connected = props => {
 
         return (
           <WaxPubsweet
+            addCustomTags={addCustomTags}
             bookComponent={bookComponent}
+            setState={setState}
+            editing={editing}
             bookComponentId={bookComponentId}
             config={config}
-            editing={editing}
             history={history}
             key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
-            onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}
-            setState={setState}
             tags={tags}
             teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
             updateCustomTags={updateTags}
-            addCustomTags={addCustomTags}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             uploadFile={uploadFile}
             user={user}
+            onUnlocked={onUnlocked}
             waxLoading={waxLoading}
           />
         )

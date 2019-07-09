@@ -252,7 +252,7 @@ export class WaxPubsweet extends React.Component {
   }
 
   renderWax(editing) {
-    const { bookComponent, history, user } = this.props
+    const { bookComponent, history, user, tags } = this.props
     const waxConfig = {
       layout: config.wax.layout,
       lockWhenEditing: config.wax.lockWhenEditing,
@@ -385,6 +385,7 @@ export class WaxPubsweet extends React.Component {
           chapterNumber={chapterNumber}
           className="editor-wrapper"
           content={content}
+          customTags={tags}
           editing={translatedEditing}
           fileUpload={this.fileUpload}
           history={history}
