@@ -3,32 +3,35 @@ type Template {
   templateName: String!
   thumbnailSrc: String
   author: String
+  target: String
   files: [File]!
 }
 
-input CreateTemplateInput{
+input CreateTemplateInput {
   templateName: String!
-  thumbnailSrc: String
+  files: [Upload]
+  # thumbnailSrc: String
+  target: String
   author: String
-  files: [File]!
+  # filePaths: [String]!
 }
 
-input UpdateTemplateInput{
+input UpdateTemplateInput {
   id: ID!
   templateName: String
   thumbnailSrc: String
+  target: String
   author: String
-  files: [File]
+  filePaths: [String]
 }
-
 
 extend type Query {
   getTemplates(ascending: Boolean, sortKey: String): [Template]!
-  getTemplate(id:ID!): Template!
+  getTemplate(id: ID!): Template!
 }
 
 extend type Mutation {
   createTemplate(input: CreateTemplateInput): Template!
   updateTemplate(input: UpdateTemplateInput): Template!
-  deleteTemplate(id:ID!): ID!
+  deleteTemplate(id: ID!): ID!
 }

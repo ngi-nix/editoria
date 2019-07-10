@@ -6,6 +6,7 @@ const customTag = require('./customTag')
 const division = require('./division')
 const team = require('./team')
 const user = require('./user')
+const template = require('./template')
 // const bookCollectionTranslation = require('./bookCollectionTranslation')
 // const bookComponentState = require('./bookComponentState')
 // const bookComponentTranslation = require('./bookComponentTranslation')
@@ -24,6 +25,7 @@ module.exports = {
     file.typeDefs,
     team.typeDefs,
     user.typeDefs,
+    template.typeDefs,
   ].join(' '),
   resolvers: merge(
     {},
@@ -35,6 +37,7 @@ module.exports = {
     division.resolvers,
     file.resolvers,
     team.resolvers,
+    template.resolvers,
     user.resolvers,
   ),
   // context: {

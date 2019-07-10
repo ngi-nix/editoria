@@ -121,6 +121,7 @@ class Book extends Base {
   async addDivision(label) {
     return new Division({
       bookId: this.id,
+      bookComponents: [],
       label,
     }).save()
   }

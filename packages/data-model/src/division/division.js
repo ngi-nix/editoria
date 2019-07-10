@@ -41,7 +41,7 @@ class Division extends Base {
 
   static get relationMappings() {
     const { model: Book } = require('../book')
-    const { model: BookComponent } = require('../bookComponent')
+    // const { model: BookComponent } = require('../bookComponent')
 
     return {
       book: {
@@ -52,14 +52,14 @@ class Division extends Base {
           to: 'Book.id',
         },
       },
-      bookComponents: {
-        relation: Model.HasManyRelation,
-        modelClass: BookComponent,
-        join: {
-          from: 'BookComponent.divisionId',
-          to: 'Division.id',
-        },
-      },
+      // bookComponents: {
+      //   relation: Model.HasManyRelation,
+      //   modelClass: BookComponent,
+      //   join: {
+      //     from: 'Division.id',
+      //     to: 'BookComponent.divisionId',
+      //   },
+      // },
     }
   }
 

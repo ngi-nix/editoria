@@ -1,7 +1,13 @@
-const { Model } = require('./node_modules/objection')
+const { Model } = require('objection')
 
 const Base = require('../editoriaBase')
-const { arrayOfIds, id, stringNotEmpty, string, targetType } = require('../helpers').schema
+const {
+  arrayOfIds,
+  id,
+  stringNotEmpty,
+  string,
+  targetType,
+} = require('../helpers').schema
 
 class Template extends Base {
   constructor(properties) {

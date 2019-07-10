@@ -10,8 +10,7 @@ create table template (
 
   reference_id uuid,
   author text,
-  thumbnail_id  uuid references file,
-  templateName text not null
-  target string,
-  files text[],
+  template_name text not null,
+  target text,
+  files text[]
 );

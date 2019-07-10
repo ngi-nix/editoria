@@ -13,7 +13,7 @@ create table book (
   collection_id uuid not null references book_collection,
   /*
     to do
-    we cannot enforce the integrity of division id's, as an array of foreign
+    we ceannot enforc the integrity of division id's, as an array of foreign
     keys is not yet supported in postgres. there seems to be some work on this,
     so we should update when the feature is in postgres.
   */

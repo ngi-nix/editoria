@@ -52,7 +52,10 @@ class Navigation extends React.Component {
 
   render() {
     const { logoutUser, currentUser, client } = this.props
-    const links = [<Action to="/books">Books</Action>]
+    const links = [
+      <Action to="/books">Books</Action>,
+      <Action to="/templates">Templates</Action>,
+    ]
 
     if (currentUser === null) return null
 
