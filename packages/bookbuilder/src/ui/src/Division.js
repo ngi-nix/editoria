@@ -179,6 +179,7 @@ class Division extends React.Component {
       reorderingAllowed,
       updateComponentType,
       updateApplicationParameters,
+      uploadBookComponent,
       rules,
     } = this.props
 
@@ -237,10 +238,12 @@ class Division extends React.Component {
                   updateComponentType={updateComponentType}
                   updateApplicationParameters={updateApplicationParameters}
                   onWarning={onWarning}
+                  update={update}
+                  updateComponentType={updateComponentType}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
+                  uploadBookComponent={uploadBookComponent}
                   uploading={uploading}
-                  update={update}
                   workflowStages={workflowStages}
                 />
               </div>

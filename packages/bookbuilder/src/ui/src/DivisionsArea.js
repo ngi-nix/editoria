@@ -216,6 +216,7 @@ class DivisionsArea extends Component {
       showModal,
       showModalToggle,
       updateComponentType,
+      uploadBookComponent,
       onDeleteBookComponent,
       uploading,
       rules,
@@ -253,6 +254,7 @@ class DivisionsArea extends Component {
           updateBookComponentUploading={updateBookComponentUploading}
           updateBookComponentWorkflowState={updateBookComponentWorkflowState}
           updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
           uploadStatus={uploading}
         />
       )

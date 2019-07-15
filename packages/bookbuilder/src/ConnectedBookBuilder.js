@@ -20,6 +20,7 @@ import {
   updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
   unlockBookComponentMutation,
+  uploadBookComponentMutation,
   updateBookComponentTypeMutation,
   updateApplicationParametersMutation,
   exportBookMutation,
@@ -36,6 +37,7 @@ import {
   updateBookMetadataMutation,
   bookMetadataSubscription,
   bookRenamedSubscription,
+  docxToHTMLJobSubscription,
 } from './queries'
 
 const mapper = {
@@ -69,6 +71,7 @@ const mapper = {
   updateApplicationParametersMutation,
   updateBookComponentTypeMutation,
   exportBookMutation,
+  docxToHTMLJobSubscription,
 }
 
 const mapProps = args => ({
@@ -93,6 +96,7 @@ const mapProps = args => ({
   updateApplicationParameters:
     args.updateApplicationParametersMutation.updateApplicationParameter,
   updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
+  uploadBookComponent: args.uploadBookComponentMutation.uploadBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
@@ -282,6 +286,7 @@ const Connected = props => {
         onError,
         onWarning,
         onMetadataAdd,
+        uploadBookComponent,
         updateBookComponentContent,
         updateBookComponentUploading,
         ingestWordFiles,
@@ -321,6 +326,7 @@ const Connected = props => {
             loadingRules={loadingRules}
             rules={rules}
             updateBookComponentContent={updateBookComponentContent}
+            uploadBookComponent={uploadBookComponent}
             updateComponentType={updateComponentType}
             updateApplicationParameters={updateApplicationParameters}
             updateBookComponentOrder={updateBookComponentOrder}

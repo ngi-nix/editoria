@@ -2,6 +2,15 @@ import React from 'react'
 import { Subscription } from 'react-apollo'
 import gql from 'graphql-tag'
 
+const DOCX_TO_HTML_JOB = gql`
+  subscription DocxToHTMLJob {
+    docxToHTMLJob {
+      status
+      html
+    }
+  }
+`
+
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentOrderUpdated {
     bookComponentOrderUpdated {
@@ -341,6 +350,27 @@ const bookRenamedSubscription = props => {
     </Subscription>
   )
 }
+
+const docxToHTMLJobSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    console.log(getBookQuery, props,"Got Subscriptions Got SubscriptionsGot SubscriptionsGot SubscriptionsGot Subscriptions")
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={DOCX_TO_HTML_JOB}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   orderChangeSubscription,
   bookComponentAddedSubscription,
@@ -355,4 +385,5 @@ export {
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
+  docxToHTMLJobSubscription,
 }

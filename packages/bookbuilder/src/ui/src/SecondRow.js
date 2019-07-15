@@ -452,6 +452,7 @@ class SecondRow extends Component {
       showModalToggle,
       updateBookComponentContent,
       updateBookComponentUploading,
+      uploadBookComponent,
       outerContainer,
       pagination,
       rules,
@@ -478,6 +479,7 @@ class SecondRow extends Component {
             bookComponentId={bookComponentId}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentUploading={updateBookComponentUploading}
+            uploadBookComponent={uploadBookComponent}
             workflowStages={workflowStages}
             onWarning={onWarning}
             componentType={componentType}

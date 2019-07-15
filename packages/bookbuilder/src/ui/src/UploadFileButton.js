@@ -31,6 +31,7 @@ const UploadFileButton = ({
   componentType,
   lock,
   uploading,
+  uploadBookComponent,
   modalContainer,
   showModal,
   showModalToggle,
@@ -53,51 +54,56 @@ const UploadFileButton = ({
     }
     const bodyFormData = new FormData()
     bodyFormData.append('file', file)
-    updateBookComponentUploading({
-      variables: {
-        input: {
-          id: bookComponentId,
-          uploading: true,
-        },
-      },
+    // updateBookComponentUploading({
+    //   variables: {
+    //     input: {
+    //       id: bookComponentId,
+    //       uploading: true,
+    //     },
+    //   },
+    // })
+
+    uploadBookComponent({
+      variables: { file },
     })
-    axios({
-      method: 'post',
-      url: '/api/ink',
-      data: bodyFormData,
-      config: { headers: { 'Content-Type': 'multipart/form-data' } },
-    })
-      .then(response => {
-        workflowStages[0].value = 1
-        workflowStages[1].value = 0
-        const resWorkflowStages = map(workflowStages, item => ({
-          label: item.label,
-          type: item.type,
-          value: item.value,
-        }))
-        updateBookComponentContent({
-          variables: {
-            input: {
-              id: bookComponentId,
-              title,
-              content: response.data.converted,
-              uploading: false,
-              workflowStages: resWorkflowStages,
-            },
-          },
-        })
-      })
-      .catch(error => {
-        console.log('error', error)
-        updateBookComponentUploading({
-          variables: {
-            input: {
-              id: bookComponentId,
-              uploading: false,
-            },
-          },
-        })
-      })
+
+    // axios({
+    //   method: 'post',
+    //   url: '/api/ink',
+    //   data: bodyFormData,
+    //   config: { headers: { 'Content-Type': 'multipart/form-data' } },
+    // })
+    //   .then(response => {
+    //     workflowStages[0].value = 1
+    //     workflowStages[1].value = 0
+    //     const resWorkflowStages = map(workflowStages, item => ({
+    //       label: item.label,
+    //       type: item.type,
+    //       value: item.value,
+    //     }))
+    //     updateBookComponentContent({
+    //       variables: {
+    //         input: {
+    //           id: bookComponentId,
+    //           title,
+    //           content: response.data.converted,
+    //           uploading: false,
+    //           workflowStages: resWorkflowStages,
+    //         },
+    //       },
+    //     })
+    //   })
+    //   .catch(error => {
+    //     console.log('error', error)
+    //     updateBookComponentUploading({
+    //       variables: {
+    //         input: {
+    //           id: bookComponentId,
+    //           uploading: false,
+    //         },
+    //       },
+    //     })
+    //   })
   }
 
   let text = 'upload word'

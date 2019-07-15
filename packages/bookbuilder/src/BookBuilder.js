@@ -85,6 +85,7 @@ export class BookBuilder extends React.Component {
       updateBookComponentUploading,
       updateBookComponentContent,
       updateComponentType,
+      uploadBookComponent,
       onDeleteBookComponent,
       onAdminUnlock,
       exportBook,
@@ -170,6 +171,7 @@ export class BookBuilder extends React.Component {
           updateBookComponentUploading={updateBookComponentUploading}
           updateBookComponentWorkflowState={updateBookComponentWorkflowState}
           updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
         />
       </Container>
     )

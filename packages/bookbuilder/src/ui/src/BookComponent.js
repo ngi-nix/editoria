@@ -187,6 +187,7 @@ const BookComponent = ({
   onWorkflowUpdate,
   onAdminUnlock,
   uploading,
+  uploadBookComponent,
   updatePagination,
   updateWorkflowState,
   updateBookComponentContent,
@@ -337,6 +338,7 @@ const BookComponent = ({
         // update={update}
         updatePagination={updatePagination}
         updateWorkflowState={updateWorkflowState}
+        uploadBookComponent={uploadBookComponent}
         workflowStages={workflowStages}
         showModal={showModal}
         showModalToggle={showModalToggle}
