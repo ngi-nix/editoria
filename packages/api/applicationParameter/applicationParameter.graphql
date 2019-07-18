@@ -1,0 +1,22 @@
+
+type applicationParameter {
+  id: ID
+  context: String
+  area: String
+  config: String
+}
+
+type updateParametersInput {
+  context: String
+  area: String
+  config: String
+}
+
+extend type Query {
+  getApplicationParameters(context: String!, area: String!): [ApplicationParameter!]!
+}
+
+extend type Mutation {
+  updateApplicationParameters(input: updateParametersInput!): ApplicationParameter!
+}
+
