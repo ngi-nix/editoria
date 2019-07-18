@@ -39,6 +39,7 @@ class Book extends Base {
   constructor(properties) {
     super(properties)
     this.type = 'book'
+    console.log('in book c')
   }
 
   static get tableName() {

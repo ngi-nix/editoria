@@ -1,6 +1,7 @@
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
+const clone = require('lodash/clone')
 const path = require('path')
 const fs = require('fs-extra')
 const config = require('config')
@@ -28,8 +29,6 @@ const getTemplate = async (_, { id }, ctx) => Template.query().findById(id)
 
 const createTemplate = async (_, { input }, ctx) => {
   const { templateName, author, files, target } = input
-  const fileIds = []
-  let thumbnailId
 
   const allowedFonts = ['.otf', '.woff', '.woff2']
   const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
@@ -42,6 +41,7 @@ const createTemplate = async (_, { input }, ctx) => {
       templateName,
       author,
       target,
+      files: [],
     }).save()
 
     await Promise.all(
@@ -72,14 +72,12 @@ const createTemplate = async (_, { input }, ctx) => {
         return new Promise((resolve, reject) => {
           stream.on('end', async () => {
             try {
-              console.log('filename', typeof filename)
-              const newFile = await new File({
-                filename: 'hahahaha',
+              await new File({
+                filename,
                 mimetype,
-                src: outPath,
+                source: outPath,
                 templateId: newTemplate.id,
               }).save()
-              fileIds.push(newFile.id)
               resolve()
             } catch (e) {
               throw new Error(e)
@@ -89,9 +87,7 @@ const createTemplate = async (_, { input }, ctx) => {
         })
       }),
     )
-    return Template.query().patchAndFetchById(newTemplate.id, {
-      files: fileIds,
-    })
+    return newTemplate
   } catch (e) {
     throw new Error(e)
   }
@@ -112,8 +108,8 @@ module.exports = {
   },
   Template: {
     async files(template, _, ctx) {
-      // TODO:
-      console.log('template', template)
+      const temp = await Template.findById(template.id)
+      return temp.getFiles()
     },
   },
   Subscription: {},

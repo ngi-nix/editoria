@@ -6,6 +6,9 @@ const CREATE_TEMPLATE = gql`
   mutation CreateTemplate($input: CreateTemplateInput!) {
     createTemplate(input: $input) {
       id
+      files {
+        filename
+      }
     }
   }
 `

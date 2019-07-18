@@ -31,6 +31,14 @@ const large = css`
   right: 40px;
   top: 40px;
 `
+
+const largeNarrow = css`
+  bottom: 40px;
+  left: 20%;
+  right: 20%;
+  top: 40px;
+`
+
 const medium = css`
   height: 530px;
   top: 50%;
@@ -74,6 +82,7 @@ const StyledModal = styled(ReactModalAdapter).attrs({
 
     /* stylelint-disable order/properties-alphabetical-order */
     ${props => props.size === 'large' && large};
+    ${props => props.size === 'largeNarrow' && largeNarrow};
     ${props => props.size === 'small' && small};
     ${props => props.size === 'medium' && medium};
     /* stylelint-enable order/properties-alphabetical-order */

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import styled from 'styled-components'
 
-import { UploadFilesButton } from './ui'
+import { UploadFilesButton, TemplatesHeader, TemplatesGrid } from './ui'
 
 const Container = styled.div`
   display: block;
@@ -21,7 +21,7 @@ export class Template extends Component {
   render() {
     const {
       templates,
-      createTemplate,
+      onCreateTemplate,
       onChangeSort,
       refetching,
       loading,
@@ -31,8 +31,28 @@ export class Template extends Component {
 
     return (
       <Container>
-        <h1>Hello templates</h1>
-        <UploadFilesButton createTemplate={createTemplate} />
+        <Fragment>
+          <TemplatesHeader
+            canAddTemplates
+            onChangeSort={onChangeSort}
+            onCreateTemplate={onCreateTemplate}
+            title="Templates"
+          />
+          <InnerWrapper>
+            <TemplatesGrid templates={templates} />
+            {/* <TemplateList
+                templates={templates}
+                // bookRules={rules.bookRules}
+                // refetching={refetching}
+                // onDeleteBook={onDeleteBook}
+                // onArchiveBook={onArchiveBook}
+                // remove={deleteBook}
+                // renameBook={renameBook}
+                // archiveBook={archiveBook}
+              /> */}
+            {/* <UploadFilesButton createTemplate={createTemplate} /> */}
+          </InnerWrapper>
+        </Fragment>
       </Container>
     )
   }

@@ -5,6 +5,7 @@ const Base = require('../editoriaBase')
 const {
   arrayOfStringsNotEmpty,
   foreignType,
+  string,
   id,
   integerPositive,
   mimetype,
@@ -16,6 +17,7 @@ class File extends Base {
   constructor(properties) {
     super(properties)
     this.type = 'file'
+    console.log('in model c', this)
   }
 
   static get tableName() {
@@ -63,7 +65,7 @@ class File extends Base {
       },
     }
   }
-
+  
   static get schema() {
     return {
       type: 'object',

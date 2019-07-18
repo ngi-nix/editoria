@@ -22,13 +22,12 @@ class Template extends Base {
   static get schema() {
     return {
       type: 'object',
-      required: ['templateName'],
+      required: ['name'],
       properties: {
-        templateName: stringNotEmpty,
+        name: stringNotEmpty,
         referenceId: id,
         author: string,
         thumbnailId: id,
-        files: arrayOfIds,
         target: targetType,
       },
     }

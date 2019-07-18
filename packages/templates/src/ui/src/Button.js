@@ -19,8 +19,8 @@ const Button = styled.button`
       fill: #828282;
       }
     }
-    width:28px;
-    height:28px;
+    width:16px;
+    height:16px;
   }
 
   &:disabled {
@@ -65,10 +65,10 @@ const Button = styled.button`
   }
 `
 const Icon = styled.span`
-  height: calc(3.5 * ${th('gridUnit')});
-  /* margin: 0 ${th('gridUnit')} 0 0; */
+  height: calc(2 * ${th('gridUnit')});
+  margin: 0 ${th('gridUnit')} 0 0;
   padding: 0;
-  width: calc(3.5 * ${th('gridUnit')});
+  width: calc(2 * ${th('gridUnit')});
 `
 const OnlyIcon = styled.span`
   height: calc(3.5 * ${th('gridUnit')});

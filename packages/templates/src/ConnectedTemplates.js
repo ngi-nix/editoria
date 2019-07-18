@@ -20,6 +20,30 @@ const mapProps = args => {
     hideModal: args.withModal.hideModal,
     loading: args.getTemplatesQuery.networkStatus === 1,
     onChangeSort: args.getTemplatesQuery.refetch,
+    onCreateTemplate: () => {
+      const { createTemplateMutation, withModal } = args
+      const { createTemplate } = createTemplateMutation
+      const { showModal, hideModal } = withModal
+      const onConfirm = (files, thumbnail, name, author, target, trimSize) => {
+        createTemplate({
+          variables: {
+            input: {
+              files,
+              name,
+              author,
+              target,
+              trimSize,
+              thumbnail,
+            },
+          },
+        })
+        hideModal()
+      }
+      showModal('createTemplateModal', {
+        onConfirm,
+        hideModal,
+      })
+    },
     refetching:
       args.getTemplatesQuery.networkStatus === 4 ||
       args.getTemplatesQuery.networkStatus === 2, // possible apollo bug
@@ -30,11 +54,11 @@ const Composed = adopt(mapper, mapProps)
 
 const Connected = () => (
   <Composed>
-    {({ templates, createTemplate, onChangeSort, refetching, loading }) => {
+    {({ templates, onCreateTemplate, onChangeSort, refetching, loading }) => {
       return (
         <Templates
           templates={templates}
-          createTemplate={createTemplate}
+          onCreateTemplate={onCreateTemplate}
           onChangeSort={onChangeSort}
           refetching={refetching}
           loading={loading}
