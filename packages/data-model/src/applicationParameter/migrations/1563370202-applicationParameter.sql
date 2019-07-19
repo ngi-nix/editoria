@@ -6,8 +6,8 @@ create table application_parameter (
   updated timestamp with time zone,
 
   --own
-  context text not null
-  area text not null
+  context text not null,
+  area text not null,
   config jsonb
 );
 

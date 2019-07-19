@@ -1,26 +1,27 @@
 // TO DO -- review foreign id and foreign type
 
-const Base = require('../editoriaBase')
-const { stringNotEmpty, object } = require('../helpers').schema
+const BaseModel = require('@pubsweet/base-model')
+const { stringNotEmpty } = require('../helpers').schema
 
-class ApplicationParameter extends Base {
+class ApplicationParameter extends BaseModel {
   constructor(properties) {
     super(properties)
     this.type = 'applicationParameter'
   }
 
   static get tableName() {
-    return 'application_parameters'
+    return 'application_parameter'
   }
 
   static get schema() {
     return {
       type: 'object',
-      required: ['stringNotEmpty'],
       properties: {
         context: stringNotEmpty,
         area: stringNotEmpty,
-        config: object,
+        config: {
+          type: ['object', 'array', 'boolean', 'string'],
+        },
       },
     }
   }
