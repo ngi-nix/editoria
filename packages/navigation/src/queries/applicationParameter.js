@@ -5,8 +5,8 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const APPLICATION_PARAMETER = gql`
-  query ApplicationParameter {
-    getApplicationParameters {
+  query ApplicationParameters($context: String, $area: String) {
+    getApplicationParameters(context: $context, area: $area) {
       id
       context
       area

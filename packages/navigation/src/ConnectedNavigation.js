@@ -20,6 +20,7 @@ const Connected = WrappedComponent => props => (
   <Composed>
     {({ loading, currentUser, config, client }) => {
       if (loading) return 'Loading...'
+
       return (
         <WrappedComponent
           client={client}

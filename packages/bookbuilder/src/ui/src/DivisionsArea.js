@@ -197,6 +197,7 @@ class DivisionsArea extends Component {
   render() {
     const {
       bookId,
+      config,
       currentUser,
       history,
       onWarning,
@@ -226,6 +227,7 @@ class DivisionsArea extends Component {
         <Division
           add={addBookComponent}
           addBookComponents={addBookComponents}
+          config={config}
           onWorkflowUpdate={onWorkflowUpdate}
           onAdminUnlock={onAdminUnlock}
           currentUser={currentUser}

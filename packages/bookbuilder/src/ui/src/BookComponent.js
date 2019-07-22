@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import config from 'config'
 import styled, { keyframes, css } from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 // import { flow } from 'lodash'
@@ -164,6 +163,7 @@ const BookComponent = ({
   onWarning,
   connectDragSource,
   connectDropTarget,
+  config,
   currentUser,
   history,
   componentType,
@@ -263,8 +263,9 @@ const BookComponent = ({
         <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
           <ComponentTypeMenu
-            divisionType={divisionType}
             componentType={componentType}
+            config={config}
+            divisionType={divisionType}
             onChange={onUpdateComponentType}
           />
           {/* {lock && (
@@ -272,9 +273,10 @@ const BookComponent = ({
           )} */}
         </ActionsLeft>
         <BookComponentTitle
-          title={title}
           bookComponentId={id}
           bookId={bookId}
+          config={config}
+          title={title}
           divisionType={divisionType}
           componentType={componentType}
           uploading={uploading}
@@ -304,6 +306,7 @@ const BookComponent = ({
 
       <SecondRow
         bookComponentId={id}
+        config={config}
         onWorkflowUpdate={onWorkflowUpdate}
         onWarning={onWarning}
         bookId={bookId}

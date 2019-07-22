@@ -1,22 +1,24 @@
 
+scalar JSON
+
 type applicationParameter {
   id: ID
   context: String
   area: String
-  config: String
+  config: JSON
 }
 
-type updateParametersInput {
+input updateParametersInput {
   context: String
   area: String
   config: String
 }
 
 extend type Query {
-  getApplicationParameters(context: String!, area: String!): [ApplicationParameter!]!
+  getApplicationParameters(context: String, area: String): [applicationParameter!]!
 }
 
 extend type Mutation {
-  updateApplicationParameters(input: updateParametersInput!): ApplicationParameter!
+  updateApplicationParameters(input: updateParametersInput!): applicationParameter!
 }
 

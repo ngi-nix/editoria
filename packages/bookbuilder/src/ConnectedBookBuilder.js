@@ -257,7 +257,7 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history, currentUser } = props
+  const { match, history, currentUser, config } = props
   const { id: bookId } = match.params
 
   return (
@@ -293,6 +293,7 @@ const Connected = props => {
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
+            config={config}
             state={state}
             setState={setState}
             addBookComponents={addBookComponents}

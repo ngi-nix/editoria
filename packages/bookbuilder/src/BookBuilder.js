@@ -71,7 +71,7 @@ export class BookBuilder extends React.Component {
   render() {
     const {
       book,
-      state,
+      config,
       history,
       addBookComponent,
       onMetadataAdd,
@@ -94,17 +94,15 @@ export class BookBuilder extends React.Component {
       loading,
       loadingRules,
       setState,
-      refetchingBookBuilderRules,
       onWorkflowUpdate,
     } = this.props
-  
+
     if (loading || loadingRules) return 'Loading...'
     if (!book) return null
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 
     const productionEditorActions = []
-    
 
     const headerActions = [
       <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
@@ -151,6 +149,7 @@ export class BookBuilder extends React.Component {
         <Header bookTitle={book.title} actions={headerActions} />
         <DivisionsArea
           addBookComponent={addBookComponent}
+          config={config}
           onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
           setState={setState}

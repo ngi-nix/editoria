@@ -1,8 +1,6 @@
 import React from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import { State } from 'react-powerplug'
 import { find, map } from 'lodash'
-import config from 'config'
 import { th } from '@pubsweet/ui-toolkit'
 
 import { Menu as UIMenu } from './Menu'
@@ -223,10 +221,19 @@ const Opener = props => {
   )
 }
 
-const ComponentTypeMenu = ({ onChange, divisionType, componentType }) => {
-  const { bookBuilder } = config
-  const { divisions } = bookBuilder
+const ComponentTypeMenu = ({
+  onChange,
+  divisionType,
+  componentType,
+  config,
+}) => {
+  const { config: divisions } = find(config, {
+    context: 'bookBuilder',
+    area: 'divisions',
+  })
+
   const division = find(divisions, { name: divisionType })
+
   const options = map(division.allowedComponentTypes, componentType => ({
     label: componentType,
     value: componentType,

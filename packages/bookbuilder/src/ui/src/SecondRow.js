@@ -1,14 +1,10 @@
 import { findIndex, find, forIn } from 'lodash'
 import React, { Component } from 'react'
-import config from 'config'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 // import { AlignmentTool } from '@pubsweet/ui'
 import AlignmentTool from './AlignmentTool'
 import WorkflowList from './WorkflowList'
 import UploadFileButton from './UploadFileButton'
-import ProgressModal from './ProgressModal'
-// import {AlignmentTool} from '@pubsweet/ui'
 
 const SecondRowContainer = styled.div`
   display: flex;
@@ -29,18 +25,13 @@ class SecondRow extends Component {
     // this.toggleModal = this.toggleModal.bind(this)
     this.progressValues = [-1, 0, 1]
     this.progressOrder = []
-    // this.state = {
-    //   nextProgressValues: {
-    //     title: null,
-    //     type: null,
-    //     value: null,
-    //   },
-    //   modalType: null,
-    //   showModal: false,
-    // }
+    const stagesConfig = find(props.config, {
+      context: 'bookBuilder',
+      area: 'stages',
+    })
 
-    for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
-      this.progressOrder.push(config.bookBuilder.stages[i].type)
+    for (let i = 0; i < stagesConfig.length; i += 1) {
+      this.progressOrder.push(stagesConfig[i].type)
     }
   }
 
@@ -50,15 +41,18 @@ class SecondRow extends Component {
       workflowStages,
       updateWorkflowState,
       onWorkflowUpdate,
+      config,
     } = this.props
+
+    const instanceConfig = find(config, {
+      context: 'bookBuilder',
+      area: 'instance',
+    })
+
     const isLast =
       workflowStages.length - 1 ===
       findIndex(workflowStages, { label: title, type })
-    if (
-      config.bookBuilder &&
-      config.bookBuilder.instance &&
-      config.bookBuilder.instance === 'UCP'
-    ) {
+    if (instanceConfig === 'UCP') {
       if (type === 'file_prep' && (value === -1 || value === 0)) {
         if (
           find(workflowStages, { type: 'edit' }).value === 0 ||
@@ -295,11 +289,7 @@ class SecondRow extends Component {
         updateWorkflowState(bookComponentId, workflowStages)
       }
     }
-    if (
-      config.bookBuilder &&
-      config.bookBuilder.instance &&
-      config.bookBuilder.instance === 'BOOKSPRINTS'
-    ) {
+    if (instanceConfig === 'BOOKSPRINTS') {
       if (type === 'clean_up') {
         if (value === 0) {
           const nextProgressValues = {
@@ -454,12 +444,12 @@ class SecondRow extends Component {
     const {
       bookId,
       bookComponentId,
+      config,
       onWarning,
       componentType,
       uploading,
       lock,
       showModal,
-      goToEditor,
       showModalToggle,
       updateBookComponentContent,
       updateBookComponentUploading,
@@ -505,6 +495,7 @@ class SecondRow extends Component {
               stateRule => stateRule.bookComponentId === bookComponentId,
             )}
             bookId={bookId}
+            config={config}
             currentValues={workflowStages}
             update={this.updateStateList}
             values={this.progressValues}

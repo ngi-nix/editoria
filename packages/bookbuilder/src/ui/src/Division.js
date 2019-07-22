@@ -1,5 +1,4 @@
 import { find, map } from 'lodash'
-import config from 'config'
 import React from 'react'
 // import { DragDropContext } from 'react-dnd'
 // import HTML5Backend from 'react-dnd-html5-backend'
@@ -161,6 +160,7 @@ class Division extends React.Component {
   render() {
     const {
       bookId,
+      config,
       currentUser,
       updateBookComponentUploading,
       updateBookComponentContent,
@@ -204,6 +204,7 @@ class Division extends React.Component {
               <div ref={provided.innerRef} {...provided.draggableProps}>
                 <BookComponent
                   bookId={bookId}
+                  config={config}
                   onAdminUnlock={onAdminUnlock}
                   onWorkflowUpdate={onWorkflowUpdate}
                   currentUser={currentUser}
@@ -246,12 +247,18 @@ class Division extends React.Component {
         </Draggable>
       )
     })
-    const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
+
+    const divisionsConfig = find(config, {
+      context: 'bookBuilder',
+      area: 'divisions',
+    })
+
+    const componentConfig = find(divisionsConfig.config, ['name', label])
 
     let addButtons = null
 
     if (canViewAddComponent) {
-      addButtons = map(divisionsConfig.allowedComponentTypes, componentType => (
+      addButtons = map(componentConfig.allowedComponentTypes, componentType => (
         <AddComponentButton
           add={this.onAddClick}
           label={`add ${componentType}`}

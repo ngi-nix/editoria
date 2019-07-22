@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import config from 'config'
-import { map, uniqueId, last, indexOf, find } from 'lodash'
+import { map, last, indexOf, find } from 'lodash'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 import Arrow from './Arrow'
 import Label from './Label'
 import WorkflowItem from './WorkflowItem'
@@ -23,6 +21,7 @@ const Container = styled.div`
 `
 const WorkflowList = ({
   bookId,
+  config,
   className,
   currentValues,
   update,
@@ -31,10 +30,12 @@ const WorkflowList = ({
 }) => {
   if (!bookComponentStateRules) return null
   const { stage } = bookComponentStateRules
-  let stageItems
-  if (config && config.bookBuilder && config.bookBuilder.stages) {
-    stageItems = config.bookBuilder.stages
-  }
+
+  const { config: stageItems } = find(config, {
+    context: 'bookBuilder',
+    area: 'stages',
+  })
+
   const lastItem = last(stageItems).type
   const getCurrentValue = (currentObjects, type) => {
     const currentObject = find(currentObjects, ['type', type])
@@ -47,8 +48,8 @@ const WorkflowList = ({
 
   const progressOrder = []
 
-  for (let i = 0; i < config.bookBuilder.stages.length; i += 1) {
-    progressOrder.push(config.bookBuilder.stages[i].type)
+  for (let i = 0; i < stageItems.length; i += 1) {
+    progressOrder.push(stageItems[i].type)
   }
 
   const renderStateItem = (

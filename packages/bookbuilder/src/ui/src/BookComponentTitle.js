@@ -1,6 +1,5 @@
 import React from 'react'
 import { find, indexOf } from 'lodash'
-import config from 'config'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 import withLink from 'editoria-common/src/withLink'
@@ -59,6 +58,7 @@ const Title = styled.span`
 const BookComponentTitle = ({
   bookComponentId,
   bookId,
+  config,
   uploading,
   lock,
   history,
@@ -72,7 +72,11 @@ const BookComponentTitle = ({
   //   history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   // }
 
-  const { divisions } = config.bookBuilder
+  const { config: divisions } = find(config, {
+    context: 'bookBuilder',
+    area: 'divisions',
+  })
+
   // const { componentType } = bookComponent
   const { showNumberBeforeComponents } = find(divisions, ['name', divisionType])
 

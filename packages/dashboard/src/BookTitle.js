@@ -1,6 +1,5 @@
 import React from 'react'
 import { find, indexOf } from 'lodash'
-import config from 'config'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 import withLink from 'editoria-common/src/withLink'
