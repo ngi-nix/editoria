@@ -53,6 +53,7 @@ class SecondRow extends Component {
       workflowStages.length - 1 ===
       findIndex(workflowStages, { label: title, type })
     if (instanceConfig === 'UCP') {
+      debugger;
       if (type === 'file_prep' && (value === -1 || value === 0)) {
         if (
           find(workflowStages, { type: 'edit' }).value === 0 ||

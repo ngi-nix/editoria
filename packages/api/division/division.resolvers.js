@@ -1,9 +1,9 @@
 const indexOf = require('lodash/indexOf')
 const find = require('lodash/find')
 const utils = require('../helpers/utils')
-const config = require('config')
 const { transaction } = require('objection')
 const {
+  ApplicationParameter,
   BookComponent,
   Division,
   Book,
@@ -25,6 +25,11 @@ const updateBookComponentOrder = async (
     Division,
     Book,
     async (BookComponent, Division, Book) => {
+      const applicationParameters = await ApplicationParameter.query().where({
+        context: 'bookBuilder',
+        area: 'divisions',
+      })
+      const { config: divisions } = applicationParameters[0]
       const bookComponent = await BookComponent.findById(bookComponentId)
       const sourceDivision = await Division.findById(bookComponent.divisionId)
       const found = indexOf(sourceDivision.bookComponents, bookComponentId)
@@ -62,7 +67,7 @@ const updateBookComponentOrder = async (
             bookComponents: updatedTargetDivisionBookComponents,
           },
         )
-        const divisionConfig = find(config.bookBuilder.divisions, {
+        const divisionConfig = find(divisions, {
           name: updatedDivision.label,
         })
         await BookComponent.query().patchAndFetchById(bookComponentId, {

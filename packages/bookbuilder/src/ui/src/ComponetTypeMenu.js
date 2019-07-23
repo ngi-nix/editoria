@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import { find, map } from 'lodash'
+import { find, map, groupBy, forEach } from 'lodash'
 import { th } from '@pubsweet/ui-toolkit'
 
 import { Menu as UIMenu } from './Menu'
@@ -234,13 +234,25 @@ const ComponentTypeMenu = ({
 
   const division = find(divisions, { name: divisionType })
 
-  const options = map(division.allowedComponentTypes, componentType => ({
-    label: componentType,
-    value: componentType,
-  }))
+  const groupedOptions = groupBy(division.allowedComponentTypes, value =>
+    value.predefined ? 'predefined' : 'custom',
+  )
+
+  const options = []
+  forEach(groupedOptions, groupOption => {
+    options.push({
+      text: null,
+      children: map(groupOption, componentType => ({
+        label: componentType.title,
+        value: componentType.value,
+      })),
+    })
+  })
+
   const handleChangeComponentType = value => {
     onChange(value)
   }
+
   return (
     <Menu
       onChange={handleChangeComponentType}

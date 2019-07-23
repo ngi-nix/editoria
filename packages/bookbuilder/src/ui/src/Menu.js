@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th, override } from '@pubsweet/ui-toolkit'
 import { Button } from '@pubsweet/ui'
+import { forEach } from 'lodash'
 
 
 // #region styled components
@@ -246,8 +247,14 @@ class Menu extends React.Component {
   optionLabel = value => {
     const { options } = this.props
 
-    return options.find(option => option.value === value)
-      ? options.find(option => option.value === value).label
+    const flatOption = []
+    forEach(options, value => {
+      if (value.children) flatOption.push(value.children)
+      if (!value.children) flatOption.push(value)
+    })
+
+    return flatOption.find(option => option.value === value)
+      ? flatOption.find(option => option.value === value).label
       : ''
   }
 
@@ -287,17 +294,37 @@ class Menu extends React.Component {
           <OptionsContainer>
             {open && (
               <Options maxHeight={maxHeight} open={open}>
-                {options.map(option => (
-                  <RenderOption
-                    handleKeyPress={this.handleKeyPress}
-                    handleSelect={this.handleSelect}
-                    key={option.value}
-                    label={option.label}
-                    multi={multi}
-                    selected={selected}
-                    value={option.value}
-                  />
-                ))}
+                {options.map(option => {
+                  let groupedHeader = null
+                  let groupedOptions = [option]
+                  if (option.children) {
+                    groupedOptions = option.children
+                    groupedHeader = option.text ? (
+                      <>
+                        <span>{option.text}</span>
+                        <hr />
+                      </>
+                    ) : (
+                      <hr />
+                    )
+                  }
+                  return (
+                    <>
+                      {groupedHeader}
+                      {groupedOptions.map(groupoption => (
+                        <RenderOption
+                          handleKeyPress={this.handleKeyPress}
+                          handleSelect={this.handleSelect}
+                          key={groupoption.value}
+                          label={groupoption.label}
+                          multi={multi}
+                          selected={selected}
+                          value={groupoption.value}
+                        />
+                      ))}
+                    </>
+                  )
+                })}
               </Options>
             )}
           </OptionsContainer>

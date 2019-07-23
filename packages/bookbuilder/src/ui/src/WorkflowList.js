@@ -75,6 +75,7 @@ const WorkflowList = ({
       values={values}
     />
   )
+
   const items = map(stageItems, stageItem => {
     const { type } = stageItem
     const currentValueIndex = indexOf(

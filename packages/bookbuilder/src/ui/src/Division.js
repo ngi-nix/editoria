@@ -261,8 +261,8 @@ class Division extends React.Component {
       addButtons = map(componentConfig.allowedComponentTypes, componentType => (
         <AddComponentButton
           add={this.onAddClick}
-          label={`add ${componentType}`}
-          type={componentType}
+          label={`add ${componentType.title}`}
+          type={componentType.value}
         />
       ))
     }

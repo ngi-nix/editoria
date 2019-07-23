@@ -4,6 +4,7 @@ const {
   Book,
   BookComponent,
   BookComponentState,
+  ApplicationParameter,
 } = require('editoria-data-model/src').models
 
 const {
@@ -64,6 +65,11 @@ const getDashBoardRules = async (_, args, ctx) => {
 }
 
 const getBookBuilderRules = async (_, args, ctx) => {
+  const bookBuilderAppConfig = await ApplicationParameter.query().where({
+    context: 'bookBuilder',
+    area: 'stages',
+  })
+
   await ctx.connectors.UserLoader.model.userTeams.clear()
   const book = await Book.find(args.id)
   const bookComponents = await BookComponent.query().where({
@@ -110,7 +116,7 @@ const getBookBuilderRules = async (_, args, ctx) => {
   result.bookComponentStateRules = await Promise.all(
     map(bookComponentState, async value => {
       const data = await Promise.all(
-        map(config.bookBuilder.stages, async v => {
+        map(bookBuilderAppConfig[0].config, async v => {
           const data = await executeMultipleAuthorizeRules(
             ctx,
             {
