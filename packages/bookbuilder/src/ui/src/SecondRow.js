@@ -25,7 +25,7 @@ class SecondRow extends Component {
     // this.toggleModal = this.toggleModal.bind(this)
     this.progressValues = [-1, 0, 1]
     this.progressOrder = []
-    const stagesConfig = find(props.config, {
+    const { config: stagesConfig } = find(props.config, {
       context: 'bookBuilder',
       area: 'stages',
     })
@@ -44,7 +44,7 @@ class SecondRow extends Component {
       config,
     } = this.props
 
-    const instanceConfig = find(config, {
+    const { config: instanceConfig } = find(config, {
       context: 'bookBuilder',
       area: 'instance',
     })
@@ -53,7 +53,6 @@ class SecondRow extends Component {
       workflowStages.length - 1 ===
       findIndex(workflowStages, { label: title, type })
     if (instanceConfig === 'UCP') {
-      debugger;
       if (type === 'file_prep' && (value === -1 || value === 0)) {
         if (
           find(workflowStages, { type: 'edit' }).value === 0 ||
@@ -414,7 +413,6 @@ class SecondRow extends Component {
   // }
 
   onClickAlignmentBox(id) {
-    console.log('i', id)
     const { bookComponentId, pagination, updatePagination } = this.props
     const patch = {
       left: pagination.left,
