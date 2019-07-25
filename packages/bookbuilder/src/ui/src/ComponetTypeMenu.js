@@ -221,6 +221,15 @@ const Opener = props => {
   )
 }
 
+const Footer = () => {
+  return (
+    <>
+      <hr />
+      1111
+    </>
+  )
+}
+
 const ComponentTypeMenu = ({
   onChange,
   divisionType,
@@ -257,6 +266,7 @@ const ComponentTypeMenu = ({
     <Menu
       onChange={handleChangeComponentType}
       options={options}
+      renderFooter={Footer}
       renderOpener={Opener}
       value={componentType}
     />

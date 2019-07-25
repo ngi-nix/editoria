@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import { map, last, indexOf, find } from 'lodash'
 import styled from 'styled-components'

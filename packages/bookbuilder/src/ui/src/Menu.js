@@ -5,7 +5,6 @@ import { th, override } from '@pubsweet/ui-toolkit'
 import { Button } from '@pubsweet/ui'
 import { forEach } from 'lodash'
 
-
 // #region styled components
 const Root = styled.div``
 
@@ -186,10 +185,10 @@ class Menu extends React.Component {
     }
   }
 
-  toggleMenu = () => {
-    this.setState({
-      open: !this.state.open,
-    })
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({ selected: nextProps.value })
+    }
   }
 
   resetMenu = props => {
@@ -199,10 +198,10 @@ class Menu extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({ selected: nextProps.value })
-    }
+  toggleMenu = () => {
+    this.setState({
+      open: !this.state.open,
+    })
   }
 
   selectOneOfMultiElement = (event, value) => {
@@ -265,6 +264,7 @@ class Menu extends React.Component {
       options,
       inline,
       placeholder,
+      renderFooter: RenderFooterOption,
       renderOption: RenderOption,
       renderOpener: RenderOpener,
       className,
@@ -294,7 +294,7 @@ class Menu extends React.Component {
           <OptionsContainer>
             {open && (
               <Options maxHeight={maxHeight} open={open}>
-                {options.map(option => {
+                {options.map((option, key) => {
                   let groupedHeader = null
                   let groupedOptions = [option]
                   if (option.children) {
@@ -310,7 +310,7 @@ class Menu extends React.Component {
                   }
                   return (
                     <>
-                      {groupedHeader}
+                      {key > 0 && groupedHeader}
                       {groupedOptions.map(groupoption => (
                         <RenderOption
                           handleKeyPress={this.handleKeyPress}
@@ -325,6 +325,7 @@ class Menu extends React.Component {
                     </>
                   )
                 })}
+                <RenderFooterOption />
               </Options>
             )}
           </OptionsContainer>
