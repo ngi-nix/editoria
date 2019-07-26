@@ -4,8 +4,13 @@ import { adopt } from 'react-adopt'
 
 import CurrentUserQuery from './queries/currentUser'
 import ApplicationParameterQuery from './queries/applicationParameter'
+import { updateApplicationParametersSubscription } from './queries/applicationParameterSubscriptions'
 
-const mapper = { CurrentUserQuery, ApplicationParameterQuery }
+const mapper = {
+  CurrentUserQuery,
+  ApplicationParameterQuery,
+  updateApplicationParametersSubscription,
+}
 
 const mapProps = args => ({
   currentUser: get(args.CurrentUserQuery, 'data.currentUser'),

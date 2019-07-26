@@ -4,8 +4,8 @@ import React from 'react'
 import { get, findIndex, map } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
-import BookBuilder from './BookBuilder'
 import withModal from 'editoria-common/src/withModal'
+import BookBuilder from './BookBuilder'
 import statefull from './Statefull'
 import {
   getBookQuery,
@@ -298,10 +298,10 @@ const Connected = props => {
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
+            addBookComponents={addBookComponents}
             applicationParameter={applicationParameter}
             state={state}
             setState={setState}
-            addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
             onError={onError}
             onWarning={onWarning}

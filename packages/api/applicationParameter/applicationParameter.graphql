@@ -22,3 +22,6 @@ extend type Mutation {
   updateApplicationParameters(input: updateParametersInput!): applicationParameter!
 }
 
+extend type Subscription {
+  updateApplicationParameters: [applicationParameter!]!
+}
