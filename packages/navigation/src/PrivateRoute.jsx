@@ -6,7 +6,7 @@ import Connected from './ConnectedNavigation'
 
 const PrivateRoute = ({
   currentUser,
-  config,
+  applicationParameter,
   component: Component,
   ...rest
 }) => (
@@ -14,7 +14,11 @@ const PrivateRoute = ({
     render={props => {
       if (currentUser) {
         return (
-          <Component {...props} config={config} currentUser={currentUser} />
+          <Component
+            {...props}
+            applicationParameter={applicationParameter}
+            currentUser={currentUser}
+          />
         )
       }
 

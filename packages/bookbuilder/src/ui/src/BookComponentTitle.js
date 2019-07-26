@@ -58,7 +58,7 @@ const Title = styled.span`
 const BookComponentTitle = ({
   bookComponentId,
   bookId,
-  config,
+  applicationParameter,
   uploading,
   lock,
   history,
@@ -72,7 +72,7 @@ const BookComponentTitle = ({
   //   history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   // }
 
-  const { config: divisions } = find(config, {
+  const { config: divisions } = find(applicationParameter, {
     context: 'bookBuilder',
     area: 'divisions',
   })

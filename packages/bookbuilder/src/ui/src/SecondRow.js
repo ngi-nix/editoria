@@ -25,7 +25,7 @@ class SecondRow extends Component {
     // this.toggleModal = this.toggleModal.bind(this)
     this.progressValues = [-1, 0, 1]
     this.progressOrder = []
-    const { config: stagesConfig } = find(props.config, {
+    const { config: stagesConfig } = find(props.applicationParameter, {
       context: 'bookBuilder',
       area: 'stages',
     })
@@ -37,14 +37,14 @@ class SecondRow extends Component {
 
   updateStateList(title, type, value) {
     const {
+      applicationParameter,
       bookComponentId,
       workflowStages,
       updateWorkflowState,
       onWorkflowUpdate,
-      config,
     } = this.props
 
-    const { config: instanceConfig } = find(config, {
+    const { config: instanceConfig } = find(applicationParameter, {
       context: 'bookBuilder',
       area: 'instance',
     })
@@ -443,7 +443,7 @@ class SecondRow extends Component {
     const {
       bookId,
       bookComponentId,
-      config,
+      applicationParameter,
       onWarning,
       componentType,
       uploading,
@@ -490,11 +490,11 @@ class SecondRow extends Component {
         )}
         {canViewStateList && (
           <WorkflowList
+            applicationParameter={applicationParameter}
             bookComponentStateRules={bookComponentStateRules.find(
               stateRule => stateRule.bookComponentId === bookComponentId,
             )}
             bookId={bookId}
-            config={config}
             currentValues={workflowStages}
             update={this.updateStateList}
             values={this.progressValues}

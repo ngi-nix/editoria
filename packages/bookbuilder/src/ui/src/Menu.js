@@ -136,7 +136,6 @@ const Options = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-radius: ${th('borderRadius')};
   overflow-y: auto;
-  max-height: ${({ maxHeight }) => `${maxHeight}px`};
   z-index: 100;
 
   ${override('ui.Menu.Options')};

@@ -163,7 +163,7 @@ const BookComponent = ({
   onWarning,
   connectDragSource,
   connectDropTarget,
-  config,
+  applicationParameter,
   currentUser,
   history,
   componentType,
@@ -192,6 +192,7 @@ const BookComponent = ({
   updateWorkflowState,
   updateBookComponentContent,
   updateComponentType,
+  updateApplicationParameters,
 }) => {
   const onUpdateComponentType = value => {
     updateComponentType({
@@ -199,6 +200,18 @@ const BookComponent = ({
         input: {
           id,
           componentType: value,
+        },
+      },
+    })
+  }
+
+  const onAddComponentType = value => {
+    updateApplicationParameters({
+      variables: {
+        input: {
+          context: 'bookBuilder',
+          area: 'divisions',
+          config: value,
         },
       },
     })
@@ -263,8 +276,9 @@ const BookComponent = ({
         <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
           <ComponentTypeMenu
+            addComponentType={onAddComponentType}
+            applicationParameter={applicationParameter}
             componentType={componentType}
-            config={config}
             divisionType={divisionType}
             onChange={onUpdateComponentType}
           />
@@ -273,9 +287,9 @@ const BookComponent = ({
           )} */}
         </ActionsLeft>
         <BookComponentTitle
+          applicationParameter={applicationParameter}
           bookComponentId={id}
           bookId={bookId}
-          config={config}
           title={title}
           divisionType={divisionType}
           componentType={componentType}
@@ -305,8 +319,8 @@ const BookComponent = ({
       </FirstRow>
 
       <SecondRow
+        applicationParameter={applicationParameter}
         bookComponentId={id}
-        config={config}
         onWorkflowUpdate={onWorkflowUpdate}
         onWarning={onWarning}
         bookId={bookId}

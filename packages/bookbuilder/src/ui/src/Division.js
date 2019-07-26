@@ -160,7 +160,7 @@ class Division extends React.Component {
   render() {
     const {
       bookId,
-      config,
+      applicationParameter,
       currentUser,
       updateBookComponentUploading,
       updateBookComponentContent,
@@ -178,6 +178,7 @@ class Division extends React.Component {
       update,
       reorderingAllowed,
       updateComponentType,
+      updateApplicationParameters,
       rules,
     } = this.props
 
@@ -204,7 +205,7 @@ class Division extends React.Component {
               <div ref={provided.innerRef} {...provided.draggableProps}>
                 <BookComponent
                   bookId={bookId}
-                  config={config}
+                  applicationParameter={applicationParameter}
                   onAdminUnlock={onAdminUnlock}
                   onWorkflowUpdate={onWorkflowUpdate}
                   currentUser={currentUser}
@@ -234,6 +235,7 @@ class Division extends React.Component {
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
+                  updateApplicationParameters={updateApplicationParameters}
                   onWarning={onWarning}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
@@ -248,12 +250,12 @@ class Division extends React.Component {
       )
     })
 
-    const divisionsConfig = find(config, {
+    const { config: divisionsConfig } = find(applicationParameter, {
       context: 'bookBuilder',
       area: 'divisions',
     })
 
-    const componentConfig = find(divisionsConfig.config, ['name', label])
+    const componentConfig = find(divisionsConfig, ['name', label])
 
     let addButtons = null
 

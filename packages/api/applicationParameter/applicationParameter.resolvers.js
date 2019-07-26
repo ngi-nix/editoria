@@ -19,23 +19,23 @@ const getApplicationParameters = async (_, args, ctx) => {
 
   return parameters
 }
-// const updateApplicationParameter = async (_, args, ctx) => {
-//   const { context, area, config } = args
+const updateApplicationParameters = async (_, { input }, ctx) => {
+  const { context, area, config } = input
 
-//   const parameter = await ApplicationParameter.query().findOne({
-//     context,
-//     area,
-//   })
+  const parameter = await ApplicationParameter.query().findOne({
+    context,
+    area,
+  })
 
-//   const updatedParameter = await parameter.$query().updateAndFetch({ config })
-//   return updatedParameter
-// }
+  const updatedParameter = await parameter.$query().updateAndFetch({ config })
+  return updatedParameter
+}
 
 module.exports = {
   Query: {
     getApplicationParameters,
   },
-  // Mutation: {
-  //   updateApplicationParameter,
-  // },
+  Mutation: {
+    updateApplicationParameters,
+  },
 }

@@ -197,7 +197,7 @@ class DivisionsArea extends Component {
   render() {
     const {
       bookId,
-      config,
+      applicationParameter,
       currentUser,
       history,
       onWarning,
@@ -205,6 +205,7 @@ class DivisionsArea extends Component {
       addBookComponents,
       deleteBookComponent,
       onWorkflowUpdate,
+      updateApplicationParameters,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
@@ -227,7 +228,7 @@ class DivisionsArea extends Component {
         <Division
           add={addBookComponent}
           addBookComponents={addBookComponents}
-          config={config}
+          applicationParameter={applicationParameter}
           onWorkflowUpdate={onWorkflowUpdate}
           onAdminUnlock={onAdminUnlock}
           currentUser={currentUser}
@@ -245,6 +246,7 @@ class DivisionsArea extends Component {
           showModal={showModal}
           showModalToggle={showModalToggle}
           reorderingAllowed={reorderingAllowed}
+          updateApplicationParameters={updateApplicationParameters}
           updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

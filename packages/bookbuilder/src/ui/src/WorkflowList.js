@@ -20,7 +20,7 @@ const Container = styled.div`
 `
 const WorkflowList = ({
   bookId,
-  config,
+  applicationParameter,
   className,
   currentValues,
   update,
@@ -30,7 +30,7 @@ const WorkflowList = ({
   if (!bookComponentStateRules) return null
   const { stage } = bookComponentStateRules
 
-  const { config: stageItems } = find(config, {
+  const { config: stageItems } = find(applicationParameter, {
     context: 'bookBuilder',
     area: 'stages',
   })

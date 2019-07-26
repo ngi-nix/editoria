@@ -71,13 +71,14 @@ export class BookBuilder extends React.Component {
   render() {
     const {
       book,
-      config,
+      applicationParameter,
       history,
       addBookComponent,
       onMetadataAdd,
       addBookComponents,
       currentUser,
       deleteBookComponent,
+      updateApplicationParameters,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
@@ -149,7 +150,7 @@ export class BookBuilder extends React.Component {
         <Header bookTitle={book.title} actions={headerActions} />
         <DivisionsArea
           addBookComponent={addBookComponent}
-          config={config}
+          applicationParameter={applicationParameter}
           onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
           setState={setState}
@@ -162,6 +163,7 @@ export class BookBuilder extends React.Component {
           onDeleteBookComponent={onDeleteBookComponent}
           divisions={divisions}
           rules={rules}
+          updateApplicationParameters={updateApplicationParameters}
           updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

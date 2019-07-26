@@ -9,7 +9,10 @@ const mapper = { CurrentUserQuery, ApplicationParameterQuery }
 
 const mapProps = args => ({
   currentUser: get(args.CurrentUserQuery, 'data.currentUser'),
-  config: get(args.ApplicationParameterQuery, 'data.getApplicationParameters'),
+  applicationParameter: get(
+    args.ApplicationParameterQuery,
+    'data.getApplicationParameters',
+  ),
   loading: args.CurrentUserQuery.loading,
   client: args.CurrentUserQuery.client,
 })
@@ -18,13 +21,13 @@ const Composed = adopt(mapper, mapProps)
 
 const Connected = WrappedComponent => props => (
   <Composed>
-    {({ loading, currentUser, config, client }) => {
+    {({ loading, currentUser, applicationParameter, client }) => {
       if (loading) return 'Loading...'
 
       return (
         <WrappedComponent
+          applicationParameter={applicationParameter}
           client={client}
-          config={config}
           currentUser={currentUser}
           loading={loading}
           {...props}

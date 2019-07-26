@@ -34,6 +34,11 @@ export { default as ingestWordFilesMutation } from './ingestWordFile'
 export {
   default as updateBookComponentTypeMutation,
 } from './updateComponentType'
+
+export {
+  default as updateApplicationParametersMutation,
+} from './updateApplicationParameters'
+
 export {
   default as updateBookComponentUploadingMutation,
 } from './updateUploading'
