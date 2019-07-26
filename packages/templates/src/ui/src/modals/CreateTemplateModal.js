@@ -1,17 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
+import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { keys, findKey, without, pick, findIndex } from 'lodash'
+import { Formik } from 'formik'
 import FormModal from 'editoria-common/src/FormModal'
 import ModalBody from 'editoria-common/src/ModalBody'
 import ModalFooter from 'editoria-common/src/ModalFooter'
-import { UploadFilesButton } from '../../../ui'
-// import { Button } from '@pubsweet/ui'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
-import { Formik } from 'formik'
+import Select from 'react-select'
+import {
+  UploadFilesButton,
+  ButtonWithoutLabel,
+  DefaultButton,
+  UploadThumbnail,
+} from '../../../ui'
 
 const StyledModal = styled(ModalBody)`
+  align-items: flex-start;
   display: flex;
   height: 82%;
-  align-items: flex-start;
   justify-content: center;
 `
 const Input = styled.input`
@@ -22,9 +28,14 @@ const Input = styled.input`
   border: 0;
   padding: 0;
   outline: 0;
-  /* text-align: center; */
   border-bottom: 1px dashed
-    ${({ errors }) => (errors.name ? th('colorError') : th('colorText'))};
+    ${({ errors, errorId, touched }) => {
+      console.log('asdfasdf', errorId)
+      console.log('asdfasdf', errors)
+      return errors[errorId] && touched[errorId]
+        ? th('colorError')
+        : th('colorText')
+    }};
 
   &:focus {
     outline: 0;
@@ -37,10 +48,9 @@ const Input = styled.input`
 `
 const Text = styled.div`
   font-family: 'Fira Sans Condensed';
-  text-align: right;
   margin-right: calc(3 * ${th('gridUnit')});
   line-height: ${th('lineHeightBase')};
-  width: 24%;
+  min-width: 55px;
   font-size: ${th('fontSizeBase')};
   color: #404040;
 `
@@ -115,98 +125,221 @@ const Container = styled.div`
   display: flex;
   align-items: flex-start;
   height: 97%;
-  justify-content: center;
+  justify-content: space-between;
   flex-basis: 80%;
 `
 const Side1 = styled.div`
-  flex-basis: 25%;
-  height: 100%;
   display: flex;
-  padding: calc(2 * ${th('gridUnit')});
-  align-items: center;
-  justify-content: center;
+  flex-basis: 8%;
+  height: 100%;
 `
 const Side2 = styled.div`
-  flex-basis: 75%;
   display: flex;
+  flex-basis: 65%;
   flex-direction: column;
   height: 100%;
-  /* align-items: center; */
-  justify-content: center;
 `
 const FormFieldContainer = styled.div`
   display: flex;
-  flex-grow:1;
-  /* margin-bottom: calc(1 * ${th('gridUnit')});/ */
   flex-direction: column;
+  flex-grow: 1;
 `
 const FormField = styled.div`
   display: flex;
   margin-bottom: calc(1 * ${th('gridUnit')});
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* flex-basis: 100%; */
 `
 
 const StyledForm = styled.form`
   height: 94%;
 `
-const ImagePlaceholder = styled.div`
-  height: 266px;
-  width: 188px;
-  background: grey;
+
+const ThumbnailContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 
-const Header = styled.h3`
-  font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeHeading3')};
-  line-height: ${th('lineHeightHeading3')};
-  font-weight: normal;
-  margin: 0 0 calc(2 * ${th('gridUnit')}) 0;
-  padding: 0;
-  text-align: center;
+const deleteIcon = (
+  <svg
+    fill="none"
+    height="16"
+    viewBox="0 0 16 16"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g id="delete">
+      <path
+        d="M5.60005 12C6.04005 12 6.40005 11.64 6.40005 11.2V8C6.40005 7.56 6.04005 7.2 5.60005 7.2C5.16005 7.2 4.80005 7.56 4.80005 8V11.2C4.80005 11.64 5.16005 12 5.60005 12Z"
+        fill="#828282"
+      />
+      <path
+        d="M10.4 12C10.84 12 11.2 11.64 11.2 11.2V8C11.2 7.56 10.84 7.2 10.4 7.2C9.96 7.2 9.6 7.56 9.6 8V11.2C9.6 11.64 9.96 12 10.4 12Z"
+        fill="#828282"
+      />
+      <path
+        clipRule="evenodd"
+        d="M15.2 3.2C15.64 3.2 16 3.56 16 4C16 4.44 15.64 4.8 15.2 4.8H14.4V13.6C14.4 14.9232 13.3232 16 12 16H4C2.6768 16 1.6 14.9232 1.6 13.6V4.8H0.8C0.36 4.8 0 4.44 0 4C0 3.56 0.36 3.2 0.8 3.2H4.8V1.8624C4.8 0.8352 5.6968 0 6.8 0H9.2C10.3032 0 11.2 0.8352 11.2 1.8624V3.2H15.2ZM12 14.4C12.4416 14.4 12.8 14.0408 12.8 13.6V4.8H3.19995V13.6C3.19995 14.0408 3.55835 14.4 3.99995 14.4H12ZM6.3999 1.86241C6.3999 1.73841 6.5711 1.60001 6.7999 1.60001H9.1999C9.4287 1.60001 9.5999 1.73841 9.5999 1.86241V3.20001H6.3999V1.86241Z"
+        fill="#828282"
+        fillRule="evenodd"
+      />
+    </g>
+  </svg>
+)
+
+const Filename = styled(Text)`
+  flex-grow: 1;
+`
+
+const Image = styled.img`
+  height: 266px;
+  width: 188px;
 `
 class CreateTemplateModal extends React.Component {
   constructor(props) {
     super(props)
 
-    // this.handleKeyOnInput = this.handleKeyOnInput.bind(this)
-    // this.onInputChange = this.onInputChange.bind(this)
-    // this.onCreate = this.onCreate.bind(this)
     this.updateFileList = this.updateFileList.bind(this)
+    this.updateThumbnail = this.updateThumbnail.bind(this)
+    this.removeFile = this.removeFile.bind(this)
+    this.removeThumbnail = this.removeThumbnail.bind(this)
 
-    this.state = { error: false, name: '', thumbnail: {}, files: {} }
+    this.state = {
+      error: false,
+      name: '',
+      thumbnailPreview: undefined,
+      files: [],
+      mode: 'create',
+      target: undefined,
+    }
   }
 
-  updateFileList(files) {
+  updateFileList(fileList, setFieldValue, setFieldTouched) {
+    const { files } = this.state
+    const selectedFiles = files
+    for (let i = 0; i < fileList.length; i += 1) {
+      selectedFiles.push(fileList.item(i))
+    }
+    this.setState({ files: selectedFiles })
+    setFieldValue('files', fileList)
+    setFieldTouched('files', true)
+  }
+
+  handleSelect(selected) {
+    this.setState({ target: selected })
+  }
+
+  updateThumbnail(thumbnail, setFieldValue) {
+    const reader = new FileReader()
+    reader.readAsDataURL(thumbnail)
+
+    reader.onloadend = function(e) {
+      this.setState({
+        thumbnailPreview: reader.result,
+        thumbnail,
+      })
+      setFieldValue('thumbnail', thumbnail  )
+    }.bind(this)
+  }
+
+  removeFile(filename, setFieldValue, setFieldTouched) {
+    const { files } = this.state
+    const fileIndex = findIndex(files, { name: filename })
+    files.splice(fileIndex, 1)
+    setFieldValue('files', files)
     this.setState({ files })
+    setFieldTouched('files', true)
+  }
+
+  removeThumbnail(e) {
+    e.preventDefault()
+    this.setState({
+      thumbnailPreview: undefined,
+      thumbnail: undefined,
+    })
+  }
+
+  renderFiles(setFieldValue, setFieldTouched) {
+    const { files } = this.state
+
+    if (!files || files.length === 0) {
+      return (
+        <FormField>
+          <Filename>No files selected</Filename>
+        </FormField>
+      )
+    }
+    return files.map(file => (
+      <FormField>
+        <Filename>{file.name}</Filename>
+        <ButtonWithoutLabel
+          icon={deleteIcon}
+          onClick={e => {
+            e.preventDefault()
+            this.removeFile(file.name, setFieldValue, setFieldTouched)
+          }}
+        />
+      </FormField>
+    ))
   }
 
   renderBody() {
     const { data } = this.props
     const { onConfirm, hideModal } = data
+    const { thumbnailPreview } = this.state
 
     const confirmLabel = 'Add'
     const cancelLabel = 'Cancel'
+    const selectOptions = [
+      { label: 'EPUB', value: 'epub' },
+      { label: 'PagedJS', value: 'pagedjs' },
+      { label: 'VivlioStyle', value: 'vivliostyle' },
+    ]
 
     return (
       <Formik
-        initialValues={{ name: '' }}
+        initialValues={{
+          name: undefined,
+          files: [],
+          thumbnail: undefined,
+          target: undefined,
+          author: undefined,
+          trimSize: undefined,
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          const { name, author, trimSize, files, thumbnail, target } = values
+          console.log('values', values)
+          const data = {
+            name,
+            author,
+            trimSize,
+            files,
+            thumbnail,
+            target: target ? target.value : undefined,
+          }
+          console.log('data', data)
+          onConfirm(data).then(() => {
+            setSubmitting(false)
+            hideModal()
+          })
+        }}
         validate={values => {
-          let errors = {}
+          const errors = {}
           if (!values.name) {
             errors.name = '* The name of the template should not be empty'
           }
+          if (values.files.length > 0) {
+            let stylesheetCounter = 0
+            const { files } = values
+            for (let i = 0; i < files.length; i += 1) {
+              if (files[i].type === 'text/css') {
+                stylesheetCounter += 1
+              }
+            }
+            if (stylesheetCounter > 1) {
+              errors.files =
+                '* Only one stylesheet can be uploaded per Template'
+            }
+          }
           return errors
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          // setTimeout(() => {
-          //   alert(JSON.stringify(values, null, 2))
-          //   setSubmitting(false)
-          // }, 400)
-          const name = values.name
-          onConfirm(name.trim())
-          setSubmitting(false)
         }}
       >
         {({
@@ -217,105 +350,125 @@ class CreateTemplateModal extends React.Component {
           handleBlur,
           handleSubmit,
           isSubmitting,
-          /* and other goodies */
+          setFieldValue,
+          setFieldTouched,
+          isValid,
         }) => (
           <StyledForm onSubmit={handleSubmit}>
             <StyledModal>
               <Container>
                 <Side1>
-                  <ImagePlaceholder />
+                  {!thumbnailPreview && (
+                    <UploadThumbnail
+                      setFieldValue={setFieldValue}
+                      updateThumbnail={this.updateThumbnail}
+                      withIcon
+                    />
+                  )}
+
+                  {thumbnailPreview && (
+                    <ThumbnailContainer>
+                      <Image
+                        alt="Template's thumbnail"
+                        src={thumbnailPreview}
+                      />
+                      <UploadThumbnail
+                        setFieldValue={setFieldValue}
+                        updateThumbnail={this.updateThumbnail}
+                      />
+                      <DefaultButton
+                        label="Delete Thumbnail"
+                        onClick={this.removeThumbnail}
+                        setFieldValue={setFieldValue}
+                      />
+                    </ThumbnailContainer>
+                  )}
                 </Side1>
                 <Side2>
-                  <Header>Information</Header>
                   <FormField>
-                    <Text>Name</Text>
+                    <Text>Name *</Text>
                     <FormFieldContainer>
                       <Input
-                        type="text"
+                        errorId="name"
                         errors={errors}
+                        touched={touched}
                         name="name"
-                        placeholder="eg. Booksprints"
-                        onChange={handleChange}
                         onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="eg. Booksprints"
+                        type="text"
                         value={values.name}
                       />
-                      <Error>
-                        {errors.name && touched.name && errors.name}
-                      </Error>
+                      <Error>{touched.name ? errors.name : ''}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
                     <Text>Author</Text>
                     <FormFieldContainer>
                       <Input
-                        type="text"
+                        errorId="author"
                         errors={errors}
+                        touched={touched}
                         name="author"
-                        placeholder="eg. John Smith"
-                        onChange={handleChange}
                         onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="eg. John Smith"
+                        type="text"
                         value={values.author}
                       />
-                      <Error>
-                        {errors.author && touched.author && errors.author}
-                      </Error>
+                      <Error>{errors.author}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
                     <Text>Trim Size</Text>
                     <FormFieldContainer>
                       <Input
-                        type="text"
+                        errorId="trimSize"
+                        touched={touched}
                         errors={errors}
                         name="trimSize"
-                        placeholder="eg. 181 x 111 mm"
-                        onChange={handleChange}
                         onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="eg. 181 x 111 mm"
+                        type="text"
                         value={values.trimSize}
                       />
-                      <Error>
-                        {errors.trimSize && touched.trimSize && errors.trimSize}
-                      </Error>
+                      <Error>{errors.trimSize}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
                     <Text>Target</Text>
                     <FormFieldContainer>
-                      <Input
-                        type="text"
-                        errors={errors}
-                        name="target"
-                        placeholder="eg. Select"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.target}
+                      <Select
+                        onChange={selected => {
+                          this.handleSelect(selected)
+                          setFieldValue('target', selected)
+                        }}
+                        options={selectOptions}
+                        selected={this.state.selected}
                       />
-                      <Error>
-                        {errors.target && touched.target && errors.target}
-                      </Error>
+                      <Error>{errors.target}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
                     <Text>Files</Text>
 
-                    <UploadFilesButton updateFilesList={this.updateFileList} />
+                    <UploadFilesButton
+                      setFieldTouched={setFieldTouched}
+                      setFieldValue={setFieldValue}
+                      updateFilesList={this.updateFileList}
+                    />
                   </FormField>
-                  <FormField>
-                    {this.state.files.map(file=>{
-                      
-                    })}
-                  </FormField>
+                  <Error>{errors.files}</Error>
+                  {this.renderFiles(setFieldValue, setFieldTouched)}
                 </Side2>
               </Container>
             </StyledModal>
             <ModalFooter>
-              <ConfirmButton
-                type="submit"
-                disabled={isSubmitting || errors.name}
-              >
+              <ConfirmButton disabled={isSubmitting || !isValid} type="submit">
                 <Label>{confirmLabel.toUpperCase()}</Label>
               </ConfirmButton>
-              <CancelButton type="submit" onClick={hideModal}>
+              <CancelButton onClick={hideModal} type="submit">
                 <Label>{cancelLabel}</Label>
               </CancelButton>
             </ModalFooter>
@@ -327,16 +480,14 @@ class CreateTemplateModal extends React.Component {
 
   render() {
     const { isOpen, hideModal } = this.props
-    console.log('props', this.props)
-    console.log('state', this.state)
     const body = this.renderBody()
 
     return (
       <FormModal
-        isOpen={isOpen}
         headerText="Create a new Template"
-        size="largeNarrow"
+        isOpen={isOpen}
         onRequestClose={hideModal}
+        size="largeNarrow"
       >
         {body}
       </FormModal>

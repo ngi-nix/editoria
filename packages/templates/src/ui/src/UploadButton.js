@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ButtonWithIcon } from './Button'
+import { ButtonWithIcon, ButtonWithoutLabel, DefaultButton } from './Button'
 import { th } from '@pubsweet/ui-toolkit'
 
 const Input = styled.input`
@@ -21,22 +21,40 @@ const UploadButton = ({
     event.preventDefault()
     document.getElementById(`${id}-upload-btn`).click()
   }
-  
+
   return (
     <React.Fragment>
-      <ButtonWithIcon
-        className={className}
-        icon={icon}
-        label={label}
-        onClick={onClick}
-        disabled={disabled}
-      />
+      {label && icon && (
+        <ButtonWithIcon
+          className={className}
+          disabled={disabled}
+          icon={icon}
+          label={label}
+          onClick={onClick}
+        />
+      )}
+      {label && !icon && (
+        <DefaultButton
+          className={className}
+          disabled={disabled}
+          label={label}
+          onClick={onClick}
+        />
+      )}
+      {!label && (
+        <ButtonWithoutLabel
+          className={className}
+          disabled={disabled}
+          icon={icon}
+          onClick={onClick}
+        />
+      )}
       <Input
         accept={accept}
         id={`${id}-upload-btn`}
         multiple={multiple}
-        type="file"
         onChange={onChange}
+        type="file"
       />
     </React.Fragment>
   )

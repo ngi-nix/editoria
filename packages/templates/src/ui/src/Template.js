@@ -80,20 +80,28 @@ const Info = styled.div`
 const Template = props => {
   const {
     author,
+    id,
     files,
     targetType,
-    templateName,
+    name,
     thumbnailSrc,
     trimSize,
+    onDeleteTemplate,
   } = props
   return (
     <Container>
-      <Image></Image>
-      <Info>Info</Info>
+      <Image />
+      <Info>{name}</Info>
       <Overlay>
         <ButtonsContainer>
           <StyledButton>Update</StyledButton>
-          <StyledButton>Delete</StyledButton>
+          <StyledButton
+            onClick={() => {
+              onDeleteTemplate(id, name)
+            }}
+          >
+            Delete
+          </StyledButton>
         </ButtonsContainer>
       </Overlay>
     </Container>

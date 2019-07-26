@@ -33,10 +33,10 @@ const large = css`
 `
 
 const largeNarrow = css`
-  bottom: 40px;
+  bottom: 10%;
   left: 20%;
   right: 20%;
-  top: 40px;
+  top: 10%;
 `
 
 const medium = css`

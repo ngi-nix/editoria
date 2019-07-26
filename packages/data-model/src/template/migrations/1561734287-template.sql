@@ -11,5 +11,6 @@ create table template (
   reference_id uuid,
   author text,
   name text not null,
-  target text
+  target text,
+  trim_size text
 );

@@ -1,28 +1,30 @@
 type Template {
   id: ID!
-  templateName: String!
-  thumbnailSrc: String
+  name: String!
+  thumbnail: File
   author: String
+  trimSize: String
   target: String
   files: [File]!
 }
 
 input CreateTemplateInput {
-  templateName: String!
-  files: [Upload]
-  # thumbnailSrc: String
-  target: String
+  name: String!
+  thumbnail: Upload
   author: String
-  # filePaths: [String]!
+  trimSize: String
+  target: String
+  files: [Upload]!
 }
 
 input UpdateTemplateInput {
   id: ID!
-  templateName: String
-  thumbnailSrc: String
-  target: String
+  name: String!
+  thumbnail: Upload
   author: String
-  filePaths: [String]
+  trimSize: String
+  target: String
+  files: [Upload]!
 }
 
 extend type Query {
@@ -35,3 +37,10 @@ extend type Mutation {
   updateTemplate(input: UpdateTemplateInput): Template!
   deleteTemplate(id: ID!): ID!
 }
+
+extend type Subscription {
+  templateCreated: Template!
+  templateDeleted: Template!
+  templateUpdated: Template!
+}
+

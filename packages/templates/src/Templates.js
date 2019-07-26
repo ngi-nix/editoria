@@ -22,7 +22,9 @@ export class Template extends Component {
     const {
       templates,
       onCreateTemplate,
+      onDeleteTemplate,
       onChangeSort,
+      createTemplate,
       refetching,
       loading,
     } = this.props
@@ -39,7 +41,7 @@ export class Template extends Component {
             title="Templates"
           />
           <InnerWrapper>
-            <TemplatesGrid templates={templates} />
+            <TemplatesGrid templates={templates} onDeleteTemplate={onDeleteTemplate} />
             {/* <TemplateList
                 templates={templates}
                 // bookRules={rules.bookRules}

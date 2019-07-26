@@ -5,11 +5,11 @@ import gql from 'graphql-tag'
 const GET_TEMPLATES = gql`
   query GetTemplates(
     $ascending: Boolean = true
-    $sortKey: String = "templateName"
+    $sortKey: String = "name"
   ) {
     getTemplates(ascending: $ascending, sortKey: $sortKey) {
       id
-      templateName
+      name
     }
   }
 `

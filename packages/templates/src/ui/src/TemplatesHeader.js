@@ -74,7 +74,6 @@ const TemplatesHeader = props => {
 
 TemplatesHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  toggle: PropTypes.func.isRequired,
 }
 
 export default TemplatesHeader

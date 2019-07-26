@@ -14,15 +14,17 @@ class UploadFilesButton extends React.Component {
   onChange(event) {
     event.preventDefault()
 
-    const { updateFilesList } = this.props
+    const { updateFilesList, setFieldValue, setFieldTouched, createTemplate } = this.props
     const originalFiles = event.target.files
     console.log('orig', originalFiles)
-    updateFilesList(originalFiles)
+    // setFieldValue('files', originalFiles)
+    updateFilesList(originalFiles, setFieldValue, setFieldTouched)
+    // setFieldTouched('files', true)
     // createTemplate({
     //   variables: {
     //     input: {
     //       files: originalFiles,
-    //       templateName: 'Test temp',
+    //       name: 'Test temp',
     //       author: 'Alex G',
     //       target: 'epub',
     //     },
@@ -57,8 +59,8 @@ class UploadFilesButton extends React.Component {
     return (
       <UploadButton
         accept=".css, .otf, .woff, .woff2"
-        id="files"
         icon={icon}
+        id="files"
         label="add files"
         multiple
         onChange={this.onChange}

@@ -27,19 +27,12 @@ const Base = require('../editoriaBase')
 const { model: BookCollection } = require('../bookCollection')
 const { model: Division } = require('../division')
 
-const {
-  booleanDefaultFalse,
-  date,
-  id,
-  string,
-  year,
-} = require('../helpers').schema
+const { booleanDefaultFalse, id, string, year } = require('../helpers').schema
 
 class Book extends Base {
   constructor(properties) {
     super(properties)
     this.type = 'book'
-    console.log('in book c')
   }
 
   static get tableName() {

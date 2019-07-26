@@ -7,18 +7,19 @@ import { Template } from '../../ui'
 const GridContainer = styled.div`
   align-items: center;
   justify-content: space-between;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
   display: flex;
   flex-basis: 100%;
 `
 
 const TemplatesGrid = props => {
-  const { templates } = props
+  const { templates, onDeleteTemplate } = props
   return (
     <GridContainer>
       {templates.map(template => {
         const {
-          templateName,
+          name,
+          id,
           author,
           targetType,
           thumbnailSrc,
@@ -27,10 +28,13 @@ const TemplatesGrid = props => {
         } = template
         return (
           <Template
+            onDeleteTemplate={onDeleteTemplate}
+            key={id}
+            id={id}
             author={author}
             files={files}
             targetType={targetType}
-            templateName={templateName}
+            name={name}
             thumbnailSrc={thumbnailSrc}
             trimSize={trimSize}
           />
