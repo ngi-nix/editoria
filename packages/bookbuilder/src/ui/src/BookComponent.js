@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import styled, { keyframes, css } from 'styled-components'
+import React from 'react'
+import styled, { keyframes } from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 // import { flow } from 'lodash'
 // import { DragSource, DropTarget } from 'react-dnd'
 import BookComponentTitle from './BookComponentTitle'
 import BookComponentActions from './BookComponentActions'
 import ComponentTypeMenu from './ComponetTypeMenu'
-import { ButtonWithoutLabel } from './Button'
 import SecondRow from './SecondRow'
 import FirstRow from './FirstRow'
 // import {
@@ -23,7 +22,7 @@ const BookComponentContainer = styled.div`
   padding-left: ${({ shouldIndent }) => (shouldIndent ? '5%' : '0')};
   margin-bottom: calc(3 * ${th('gridUnit')});
   background-color: white;
-  width:100%;
+  width: 100%;
 `
 // const ActionsRight = styled.div`
 //   display: flex;

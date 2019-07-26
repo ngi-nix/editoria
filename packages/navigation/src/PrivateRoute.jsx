@@ -15,9 +15,9 @@ const PrivateRoute = ({
       if (currentUser) {
         return (
           <Component
-            {...props}
             applicationParameter={applicationParameter}
             currentUser={currentUser}
+            {...props}
           />
         )
       }

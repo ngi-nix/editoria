@@ -266,7 +266,7 @@ const Footer = (handleSave, divisions, divisionType) => () => {
     return JSON.stringify(divisions)
   }
 
-  const disabled = text.replace(/\s/g, '')
+  const disabled = text ? text.replace(/\s/g, '') : false
 
   return (
     <>

@@ -260,13 +260,15 @@ class Division extends React.Component {
     let addButtons = null
 
     if (canViewAddComponent) {
-      addButtons = map(componentConfig.allowedComponentTypes, componentType => (
-        <AddComponentButton
-          add={this.onAddClick}
-          label={`add ${componentType.title}`}
-          type={componentType.value}
-        />
-      ))
+      addButtons = map(componentConfig.allowedComponentTypes, componentType =>
+        componentType.predefined ? (
+          <AddComponentButton
+            add={this.onAddClick}
+            label={`add ${componentType.title}`}
+            type={componentType.value}
+          />
+        ) : null,
+      )
     }
 
     // const list = (
