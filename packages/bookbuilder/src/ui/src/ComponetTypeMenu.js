@@ -243,7 +243,9 @@ const Opener = props => {
 
   return (
     <OpenerWrapper>
-      <SettingsIcon onClick={toggleMenu}>{settingsIcon}</SettingsIcon>
+      <SettingsIcon data-test-id="component-types" onClick={toggleMenu}>
+        {settingsIcon}
+      </SettingsIcon>
     </OpenerWrapper>
   )
 }

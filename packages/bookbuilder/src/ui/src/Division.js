@@ -204,8 +204,8 @@ class Division extends React.Component {
             return (
               <div ref={provided.innerRef} {...provided.draggableProps}>
                 <BookComponent
-                  bookId={bookId}
                   applicationParameter={applicationParameter}
+                  bookId={bookId}
                   onAdminUnlock={onAdminUnlock}
                   onWorkflowUpdate={onWorkflowUpdate}
                   currentUser={currentUser}
@@ -284,7 +284,7 @@ class Division extends React.Component {
     // const displayed = bookComponents.length > 0 ? list : emptyList
 
     return (
-      <DivisionContainer>
+      <DivisionContainer data-test-id={`${label}-division`}>
         <HeaderContainer>
           <DivisionHeader>{label.toUpperCase()}</DivisionHeader>
           <DivisionActions>{addButtons}</DivisionActions>
