@@ -129,10 +129,6 @@ const Connected = props => {
           editing = 'review'
         }
 
-        // if (lock && lock.userId === currentUser.id) {
-        //   editing = 'preview'
-        // }
-
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
