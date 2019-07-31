@@ -382,10 +382,11 @@ const unlockBookComponent = async (_, { input }, ctx) => {
     const locks = await Lock.query()
       .where('foreignId', id)
       .andWhere('deleted', false)
-
-    await Lock.query().patchAndFetchById(locks[0].id, {
-      deleted: true,
-    })
+    if (locks.length > 0) {
+      await Lock.query().patchAndFetchById(locks[0].id, {
+        deleted: true,
+      })
+    }
     const updatedBookComponent = await BookComponent.findById(id)
 
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {

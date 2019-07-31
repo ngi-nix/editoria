@@ -29,15 +29,15 @@ const mapper = {
   getBookComponentQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  trackChangeSubscription,
+  lockChangeSubscription,
+  orderChangeSubscription,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
-  trackChangeSubscription,
-  lockChangeSubscription,
-  orderChangeSubscription,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -93,6 +93,7 @@ const Connected = props => {
       bookComponentId={bookComponentId}
       bookId={bookId}
       currentUser={currentUser}
+      key={bookComponentId}
     >
       {({
         bookComponent,
@@ -118,6 +119,8 @@ const Connected = props => {
         const lock = get(bookComponent, 'lock')
         if (lock && lock.userId !== currentUser.id) {
           editing = 'preview'
+        } else if (rules.canEditPreview) {
+          editing = 'preview'
         } else if (rules.canEditFull) {
           editing = 'full'
         } else if (rules.canEditSelection) {
@@ -125,6 +128,10 @@ const Connected = props => {
         } else if (rules.canEditReview) {
           editing = 'review'
         }
+
+        // if (lock && lock.userId === currentUser.id) {
+        //   editing = 'preview'
+        // }
 
         return (
           <WaxPubsweet

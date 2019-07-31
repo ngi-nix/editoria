@@ -47,13 +47,13 @@ const WaxHeader = ({ bookComponent }) => {
     <Header>
       {prevBookComponent && (
         <div data-testid="previous-component">
-          withLink(prevBookComponent.title, createUrl(prevBookComponent))
+          {withLink(prevBookComponent.title, createUrl(prevBookComponent))}
         </div>
       )}
       {header}
       {nextBookComponent && (
         <div data-testid="next-component">
-          withLink(nextBookComponent.title, createUrl(nextBookComponent))
+          {withLink(nextBookComponent.title, createUrl(nextBookComponent))}
         </div>
       )}
     </Header>
