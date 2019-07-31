@@ -38,6 +38,6 @@ const AddComponentButton = ({ add, label, type }) => {
       </g>
     </svg>
   )
-  return <StyledButton onClick={addComponent} label={label} icon={icon} />
+  return <StyledButton icon={icon} label={label} onClick={addComponent} />
 }
 export default AddComponentButton

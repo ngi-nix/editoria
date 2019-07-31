@@ -280,8 +280,8 @@ const Footer = (handleSave, divisions, divisionType) => () => {
           <>
             <Input
               autoFocus
-              defaultValue={text}
               id="addComponentType"
+              defaultValue={text}
               name="addComponentType"
               onChange={event => setText(event.target.value)}
             />

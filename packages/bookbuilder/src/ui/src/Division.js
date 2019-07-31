@@ -264,13 +264,13 @@ class Division extends React.Component {
         componentType.predefined ? (
           <AddComponentButton
             add={this.onAddClick}
+            divisionName={componentConfig.name}
             label={`add ${componentType.title}`}
             type={componentType.value}
           />
         ) : null,
       )
     }
-
     // const list = (
     //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
     // )
