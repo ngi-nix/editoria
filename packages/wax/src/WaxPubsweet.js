@@ -5,8 +5,7 @@ import styled from 'styled-components'
 import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
-// import { getFragment } from 'pubsweet-client/src/actions/fragments'
-import { th } from '@pubsweet/ui-toolkit'
+
 
 const Container = styled.div`
   display: flex;
@@ -17,7 +16,6 @@ const Container = styled.div`
     height: 88vh;
   }
 `
-
 export class WaxPubsweet extends React.Component {
   constructor(props) {
     super(props)
@@ -362,20 +360,7 @@ export class WaxPubsweet extends React.Component {
     if (get(bookComponent, 'componentType') === 'chapter') {
       chapterNumber = get(bookComponent, 'componentTypeOrder')
     }
-    let header
-    if (chapterNumber) {
-      header = (
-        <BookTitle>{`${bookComponent.bookTitle} - Chapter ${chapterNumber}. ${
-          bookComponent.title
-        }`}</BookTitle>
-      )
-    } else {
-      header = (
-        <BookTitle>{`${bookComponent.bookTitle} - ${
-          bookComponent.title
-        }`}</BookTitle>
-      )
-    }
+    
 
     return (
       <Container>
