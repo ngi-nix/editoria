@@ -9,14 +9,13 @@ const keys = require('lodash/keys')
 const map = require('lodash/map')
 const forEach = require('lodash/forEach')
 const clone = require('lodash/clone')
-const get = require('lodash/get')
 const assign = require('lodash/assign')
-const config = require('config')
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
 const { withFilter } = require('graphql-subscriptions')
 
 const {
+  ApplicationParameter,
   BookComponentState,
   BookComponent,
   BookComponentTranslation,
@@ -70,8 +69,14 @@ const ingestWordFile = async (_, { files }, ctx) => {
 
 const addBookComponent = async (_, args, ctx, info) => {
   const { divisionId, bookId, componentType, title, uploading } = args.input
-  const bookBuilder = get(config, 'bookBuilder')
-  const workflowStages = get(bookBuilder, 'stages')
+
+  const applicationParameters = await ApplicationParameter.query().where({
+    context: 'bookBuilder',
+    area: 'stages',
+  })
+
+  const { config: workflowStages } = applicationParameters[0]
+
   let bookComponentWorkflowStages
 
   try {
@@ -153,8 +158,13 @@ const addBookComponent = async (_, args, ctx, info) => {
 }
 
 const addBookComponents = async (_, { input }, ctx, info) => {
-  const bookBuilder = get(config, 'bookBuilder')
-  const workflowStages = get(bookBuilder, 'stages')
+  const applicationParameters = await ApplicationParameter.query().where({
+    context: 'bookBuilder',
+    area: 'stages',
+  })
+
+  const { config: workflowStages } = applicationParameters[0]
+
   let bookComponentWorkflowStages
 
   try {
@@ -314,8 +324,12 @@ const updateWorkflowState = async (_, { input }, ctx) => {
   try {
     const { id, workflowStages } = input
     const pubsub = await pubsubManager.getPubsub()
-    const bookBuilder = get(config, 'bookBuilder')
-    const lockTrackChanges = get(bookBuilder, 'lockTrackChangesWhenReviewing')
+    const applicationParameters = await ApplicationParameter.query().where({
+      context: 'bookBuilder',
+      area: 'lockTrackChangesWhenReviewing',
+    })
+
+    const { config: lockTrackChanges } = applicationParameters[0]
 
     logger.info(
       `Searching of book component state for the book component with id ${id}`,

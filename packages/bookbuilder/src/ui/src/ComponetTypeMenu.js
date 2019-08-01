@@ -1,11 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import { State } from 'react-powerplug'
-import { find, map } from 'lodash'
-import config from 'config'
+import { find, map, groupBy, forEach } from 'lodash'
 import { th } from '@pubsweet/ui-toolkit'
-
+import { Action } from '@pubsweet/ui'
+import { DefaultButton } from './Button'
 import { Menu as UIMenu } from './Menu'
+
+const AddTypeButton = styled(DefaultButton)`
+  padding: 10px;
+  transition: visibility 0.1s ease-in-out 0.1s;
+`
+
+const Input = styled.input`
+  border: 0;
+  margin: 10px;
+  /* line-height: 30px; */
+  font-family: 'Vollkorn';
+  color: #3f3f3f;
+  width: 100%;
+  font-size: ${th('fontSizeHeading4')};
+  border-bottom: 1px solid #3f3f3f;
+  line-height: ${th('lineHeightHeading4')};
+  outline: 0;
+  &:focus {
+    border-bottom: 1px solid #0964cc;
+  }
+`
 
 const triangle = css`
   background: #3f3f3f;
@@ -17,6 +37,7 @@ const triangle = css`
   width: 15px;
   z-index: 200;
 `
+
 const rotate = keyframes`
 from { transform: rotate(0deg);}
     to {  transform: rotate(360deg); } 
@@ -131,14 +152,13 @@ const triangleOption = css`
 
 const Menu = styled(UIMenu)`
   display: inline-flex;
-
   div[role='listbox'] {
     background: white;
 
     > div:nth-child(2) {
       left: 50%;
       transform: translate(-50%, 0);
-      width: 120px;
+      width: 200px;
       z-index: 100;
     }
 
@@ -150,7 +170,7 @@ const Menu = styled(UIMenu)`
       overflow-y: unset;
       position: relative;
       text-transform: uppercase;
-      width: 120px;
+      width: 200px;
 
       &::before {
         ${triangleUp}
@@ -213,31 +233,109 @@ const OpenerWrapper = styled.div`
   }
 `
 
+const AddMenu = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
 const Opener = props => {
   const { toggleMenu } = props
 
   return (
     <OpenerWrapper>
-      <SettingsIcon onClick={toggleMenu}>{settingsIcon}</SettingsIcon>
+      <SettingsIcon data-test-id="component-types" onClick={toggleMenu}>
+        {settingsIcon}
+      </SettingsIcon>
     </OpenerWrapper>
   )
 }
 
-const ComponentTypeMenu = ({ onChange, divisionType, componentType }) => {
-  const { bookBuilder } = config
-  const { divisions } = bookBuilder
+const Footer = (handleSave, divisions, divisionType) => () => {
+  const [text, setText] = useState(null)
+
+  const createJsonConfig = text => {
+    divisions.map(division => {
+      if (division.name === divisionType) {
+        division.allowedComponentTypes.push({
+          value: text.replace(/\s+/g, '_').toLowerCase(),
+          title: text,
+          predefined: false,
+        })
+      }
+      return division
+    })
+
+    return JSON.stringify(divisions)
+  }
+
+  const disabled = text ? text.replace(/\s/g, '') : false
+
+  return (
+    <>
+      <hr />
+      <AddMenu>
+        {text === null ? (
+          <AddTypeButton label="Add a new type" onClick={() => setText('')} />
+        ) : (
+          <>
+            <Input
+              autoFocus
+              id="addComponentType"
+              defaultValue={text}
+              name="addComponentType"
+              onChange={event => setText(event.target.value)}
+            />
+            <Action
+              disabled={disabled === ''}
+              onClick={() => handleSave(createJsonConfig(text))}
+            >
+              Save
+            </Action>
+          </>
+        )}
+      </AddMenu>
+    </>
+  )
+}
+
+const ComponentTypeMenu = ({
+  onChange,
+  addComponentType,
+  divisionType,
+  componentType,
+  applicationParameter,
+}) => {
+  const { config: divisions } = find(applicationParameter, {
+    context: 'bookBuilder',
+    area: 'divisions',
+  })
+
   const division = find(divisions, { name: divisionType })
-  const options = map(division.allowedComponentTypes, componentType => ({
-    label: componentType,
-    value: componentType,
-  }))
+
+  const groupedOptions = groupBy(division.allowedComponentTypes, value =>
+    value.predefined ? 'predefined' : 'custom',
+  )
+
+  const options = []
+  forEach(groupedOptions, groupOption => {
+    options.push({
+      text: null,
+      children: map(groupOption, componentType => ({
+        label: componentType.title,
+        value: componentType.value,
+      })),
+    })
+  })
+
   const handleChangeComponentType = value => {
     onChange(value)
   }
+
   return (
     <Menu
       onChange={handleChangeComponentType}
       options={options}
+      renderFooter={Footer(addComponentType, divisions, divisionType)}
       renderOpener={Opener}
       value={componentType}
     />

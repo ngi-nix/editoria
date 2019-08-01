@@ -4,8 +4,8 @@ import React from 'react'
 import { get, findIndex, map } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
-import BookBuilder from './BookBuilder'
 import withModal from 'editoria-common/src/withModal'
+import BookBuilder from './BookBuilder'
 import statefull from './Statefull'
 import {
   getBookQuery,
@@ -21,6 +21,7 @@ import {
   updateBookComponentUploadingMutation,
   unlockBookComponentMutation,
   updateBookComponentTypeMutation,
+  updateApplicationParametersMutation,
   exportBookMutation,
   orderChangeSubscription,
   bookComponentAddedSubscription,
@@ -52,6 +53,7 @@ const mapper = {
   updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
   ingestWordFilesMutation,
+  updateApplicationParametersMutation,
   updateBookComponentTypeMutation,
   exportBookMutation,
   lockChangeSubscription,
@@ -88,6 +90,8 @@ const mapProps = args => ({
   updateBookComponentUploading:
     args.updateBookComponentUploadingMutation.updateUploading,
   updateComponentType: args.updateBookComponentTypeMutation.updateComponentType,
+  updateApplicationParameters:
+    args.updateApplicationParametersMutation.updateApplicationParameter,
   updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
@@ -257,7 +261,7 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history, currentUser } = props
+  const { match, history, currentUser, applicationParameter } = props
   const { id: bookId } = match.params
 
   return (
@@ -273,6 +277,7 @@ const Connected = props => {
         updateBookComponentPagination,
         updateBookComponentOrder,
         updateComponentType,
+        updateApplicationParameters,
         updateBookComponentWorkflowState,
         onError,
         onWarning,
@@ -293,9 +298,10 @@ const Connected = props => {
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
+            addBookComponents={addBookComponents}
+            applicationParameter={applicationParameter}
             state={state}
             setState={setState}
-            addBookComponents={addBookComponents}
             onTeamManager={onTeamManager}
             onError={onError}
             onWarning={onWarning}
@@ -316,6 +322,7 @@ const Connected = props => {
             rules={rules}
             updateBookComponentContent={updateBookComponentContent}
             updateComponentType={updateComponentType}
+            updateApplicationParameters={updateApplicationParameters}
             updateBookComponentOrder={updateBookComponentOrder}
             updateBookComponentPagination={updateBookComponentPagination}
             updateBookComponentUploading={updateBookComponentUploading}

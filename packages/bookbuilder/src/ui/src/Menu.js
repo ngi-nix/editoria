@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th, override } from '@pubsweet/ui-toolkit'
 import { Button } from '@pubsweet/ui'
-
+import { forEach } from 'lodash'
 
 // #region styled components
 const Root = styled.div``
@@ -136,7 +136,6 @@ const Options = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-radius: ${th('borderRadius')};
   overflow-y: auto;
-  max-height: ${({ maxHeight }) => `${maxHeight}px`};
   z-index: 100;
 
   ${override('ui.Menu.Options')};
@@ -185,10 +184,10 @@ class Menu extends React.Component {
     }
   }
 
-  toggleMenu = () => {
-    this.setState({
-      open: !this.state.open,
-    })
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({ selected: nextProps.value })
+    }
   }
 
   resetMenu = props => {
@@ -198,10 +197,10 @@ class Menu extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({ selected: nextProps.value })
-    }
+  toggleMenu = () => {
+    this.setState({
+      open: !this.state.open,
+    })
   }
 
   selectOneOfMultiElement = (event, value) => {
@@ -246,8 +245,14 @@ class Menu extends React.Component {
   optionLabel = value => {
     const { options } = this.props
 
-    return options.find(option => option.value === value)
-      ? options.find(option => option.value === value).label
+    const flatOption = []
+    forEach(options, value => {
+      if (value.children) flatOption.push(value.children)
+      if (!value.children) flatOption.push(value)
+    })
+
+    return flatOption.find(option => option.value === value)
+      ? flatOption.find(option => option.value === value).label
       : ''
   }
 
@@ -258,6 +263,7 @@ class Menu extends React.Component {
       options,
       inline,
       placeholder,
+      renderFooter: RenderFooterOption,
       renderOption: RenderOption,
       renderOpener: RenderOpener,
       className,
@@ -287,17 +293,38 @@ class Menu extends React.Component {
           <OptionsContainer>
             {open && (
               <Options maxHeight={maxHeight} open={open}>
-                {options.map(option => (
-                  <RenderOption
-                    handleKeyPress={this.handleKeyPress}
-                    handleSelect={this.handleSelect}
-                    key={option.value}
-                    label={option.label}
-                    multi={multi}
-                    selected={selected}
-                    value={option.value}
-                  />
-                ))}
+                {options.map((option, key) => {
+                  let groupedHeader = null
+                  let groupedOptions = [option]
+                  if (option.children) {
+                    groupedOptions = option.children
+                    groupedHeader = option.text ? (
+                      <>
+                        <span>{option.text}</span>
+                        <hr />
+                      </>
+                    ) : (
+                      <hr />
+                    )
+                  }
+                  return (
+                    <>
+                      {key > 0 && groupedHeader}
+                      {groupedOptions.map(groupoption => (
+                        <RenderOption
+                          handleKeyPress={this.handleKeyPress}
+                          handleSelect={this.handleSelect}
+                          key={groupoption.value}
+                          label={groupoption.label}
+                          multi={multi}
+                          selected={selected}
+                          value={groupoption.value}
+                        />
+                      ))}
+                    </>
+                  )
+                })}
+                <RenderFooterOption />
               </Options>
             )}
           </OptionsContainer>

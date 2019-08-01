@@ -1,5 +1,4 @@
 import { find, map } from 'lodash'
-import config from 'config'
 import React from 'react'
 // import { DragDropContext } from 'react-dnd'
 // import HTML5Backend from 'react-dnd-html5-backend'
@@ -161,6 +160,7 @@ class Division extends React.Component {
   render() {
     const {
       bookId,
+      applicationParameter,
       currentUser,
       updateBookComponentUploading,
       updateBookComponentContent,
@@ -178,6 +178,7 @@ class Division extends React.Component {
       update,
       reorderingAllowed,
       updateComponentType,
+      updateApplicationParameters,
       rules,
     } = this.props
 
@@ -203,6 +204,7 @@ class Division extends React.Component {
             return (
               <div ref={provided.innerRef} {...provided.draggableProps}>
                 <BookComponent
+                  applicationParameter={applicationParameter}
                   bookId={bookId}
                   onAdminUnlock={onAdminUnlock}
                   onWorkflowUpdate={onWorkflowUpdate}
@@ -233,6 +235,7 @@ class Division extends React.Component {
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
+                  updateApplicationParameters={updateApplicationParameters}
                   onWarning={onWarning}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
@@ -246,20 +249,28 @@ class Division extends React.Component {
         </Draggable>
       )
     })
-    const divisionsConfig = find(config.bookBuilder.divisions, ['name', label])
+
+    const { config: divisionsConfig } = find(applicationParameter, {
+      context: 'bookBuilder',
+      area: 'divisions',
+    })
+
+    const componentConfig = find(divisionsConfig, ['name', label])
 
     let addButtons = null
 
     if (canViewAddComponent) {
-      addButtons = map(divisionsConfig.allowedComponentTypes, componentType => (
-        <AddComponentButton
-          add={this.onAddClick}
-          label={`add ${componentType}`}
-          type={componentType}
-        />
-      ))
+      addButtons = map(componentConfig.allowedComponentTypes, componentType =>
+        componentType.predefined ? (
+          <AddComponentButton
+            add={this.onAddClick}
+            divisionName={componentConfig.name}
+            label={`add ${componentType.title}`}
+            type={componentType.value}
+          />
+        ) : null,
+      )
     }
-
     // const list = (
     //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
     // )
@@ -273,7 +284,7 @@ class Division extends React.Component {
     // const displayed = bookComponents.length > 0 ? list : emptyList
 
     return (
-      <DivisionContainer>
+      <DivisionContainer data-test-id={`${label}-division`}>
         <HeaderContainer>
           <DivisionHeader>{label.toUpperCase()}</DivisionHeader>
           <DivisionActions>{addButtons}</DivisionActions>

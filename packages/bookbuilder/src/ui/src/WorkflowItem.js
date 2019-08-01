@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 import WorkflowIndicator from './WorkflowIndicator'
-import { ButtonWithoutLabel } from './Button'
 import Label from './Label'
 import Arrow from './Arrow'
 
@@ -19,11 +17,11 @@ import Arrow from './Arrow'
 //   font-size: 13px;
 //   transition: visibility 0.1s ease-in-out 0.1s;
 // `
-const LabelArrow = styled.div`
-  font-size: ${th('fontSizeBase')};
-  line-height: ${th('lineHeightBase')};
-  padding-right: 4px;
-`
+// const LabelArrow = styled.div`
+//   font-size: ${th('fontSizeBase')};
+//   line-height: ${th('lineHeightBase')};
+//   padding-right: 4px;
+// `
 const FirstRow = styled.div`
   display: flex;
   position: absolute;

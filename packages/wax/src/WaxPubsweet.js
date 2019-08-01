@@ -259,7 +259,7 @@ export class WaxPubsweet extends React.Component {
       menus:
         config.wax[bookComponent.divisionType.toLowerCase()][
           bookComponent.componentType
-        ].menus,
+        ] || ['component'].menus,
     }
 
     const { layout, autoSave, menus } = waxConfig

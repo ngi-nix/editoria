@@ -19,13 +19,12 @@
 
 const { Model } = require('objection')
 const uuid = require('uuid/v4')
-const get = require('lodash/get')
-
-const config = require('config')
+const find = require('lodash/find')
 
 const Base = require('../editoriaBase')
 const { model: BookCollection } = require('../bookCollection')
 const { model: Division } = require('../division')
+const { model: ApplicationParameter } = require('../applicationParameter')
 
 const { booleanDefaultFalse, id, string, year } = require('../helpers').schema
 
@@ -91,7 +90,11 @@ class Book extends Base {
       If no divisions in config, make a single default 'body' division.
       Otherwise create the ones declared in the config.
     */
-    const divisions = get(config, 'bookBuilder.divisions')
+    const applicationParameters = await ApplicationParameter.query()
+    const { config: divisions } = find(applicationParameters, {
+      context: 'bookBuilder',
+      area: 'divisions',
+    })
 
     if (!divisions) {
       const division = await this.addDivision('body')

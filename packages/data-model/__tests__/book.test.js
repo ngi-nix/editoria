@@ -1,10 +1,41 @@
 const uuid = require('uuid/v4')
 const { dbCleaner } = require('pubsweet-server/test')
-const config = require('config')
-// const set = require('lodash/set')
-const unset = require('lodash/unset')
 
-const { Book, BookCollection, Division } = require('../src').models
+const {
+  Book,
+  BookCollection,
+  Division,
+  ApplicationParameter,
+} = require('../src').models
+
+const divisionConfig = [
+  {
+    name: 'Frontmatter',
+    showNumberBeforeComponents: [],
+    allowedComponentTypes: [
+      { value: 'component', title: 'Component', predefined: true },
+    ],
+    defaultComponentType: 'component',
+  },
+  {
+    name: 'Body',
+    showNumberBeforeComponents: ['chapter'],
+    allowedComponentTypes: [
+      { value: 'chapter', title: 'Chapter', predefined: true },
+      { value: 'part', title: 'Part', predefined: true },
+      { value: 'unnumbered', title: 'Unnumbered', predefined: true },
+    ],
+    defaultComponentType: 'chapter',
+  },
+  {
+    name: 'Backmatter',
+    showNumberBeforeComponents: [],
+    allowedComponentTypes: [
+      { value: 'component', title: 'Component', predefined: true },
+    ],
+    defaultComponentType: 'component',
+  },
+]
 
 describe('Book', () => {
   beforeEach(async () => {
@@ -37,6 +68,12 @@ describe('Book', () => {
   })
 
   it('creates divisions on book creation based on the config', async () => {
+    await new ApplicationParameter({
+      context: 'bookBuilder',
+      area: 'divisions',
+      config: JSON.stringify(divisionConfig),
+    }).save()
+
     const collection = await new BookCollection().save()
     const book = await new Book({ collectionId: collection.id }).save()
 
@@ -57,10 +94,11 @@ describe('Book', () => {
       const actualPosition = book.divisions.indexOf(division.id)
       expect(actualPosition).toBe(correctPosition)
     })
+
+    await ApplicationParameter.query().del()
   })
 
   it('creates a default division on book creation if no config is found', async () => {
-    unset(config, 'bookBuilder')
     const collection = await new BookCollection().save()
     const book = await new Book({ collectionId: collection.id }).save()
     const divisions = await Division.query().where('bookId', book.id)

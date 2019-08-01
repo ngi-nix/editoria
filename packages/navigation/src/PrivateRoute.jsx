@@ -4,11 +4,22 @@ import { Route, Redirect, withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import Connected from './ConnectedNavigation'
 
-const PrivateRoute = ({ currentUser, component: Component, ...rest }) => (
+const PrivateRoute = ({
+  currentUser,
+  applicationParameter,
+  component: Component,
+  ...rest
+}) => (
   <Route
     render={props => {
       if (currentUser) {
-        return <Component {...props} currentUser={currentUser} />
+        return (
+          <Component
+            applicationParameter={applicationParameter}
+            currentUser={currentUser}
+            {...props}
+          />
+        )
       }
 
       return (

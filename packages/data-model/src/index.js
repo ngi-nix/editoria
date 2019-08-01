@@ -1,3 +1,4 @@
+const applicationParameter = require('./applicationParameter')
 const book = require('./book')
 const bookCollection = require('./bookCollection')
 const bookCollectionTranslation = require('./bookCollectionTranslation')
@@ -22,6 +23,7 @@ module.exports = {
   customTag,
   team,
   user,
+  applicationParameter,
   bookCollection,
   bookCollectionTranslation,
   bookComponent,
@@ -35,6 +37,7 @@ module.exports = {
   loader,
   template,
   models: {
+    ApplicationParameter: applicationParameter.model,
     Book: book.model,
     BookCollection: bookCollection.model,
     BookCollectionTranslation: bookCollectionTranslation.model,

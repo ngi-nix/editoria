@@ -1,13 +1,11 @@
-import React, { Component } from 'react'
-import config from 'config'
-import styled, { keyframes, css } from 'styled-components'
+import React from 'react'
+import styled, { keyframes } from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 // import { flow } from 'lodash'
 // import { DragSource, DropTarget } from 'react-dnd'
 import BookComponentTitle from './BookComponentTitle'
 import BookComponentActions from './BookComponentActions'
 import ComponentTypeMenu from './ComponetTypeMenu'
-import { ButtonWithoutLabel } from './Button'
 import SecondRow from './SecondRow'
 import FirstRow from './FirstRow'
 // import {
@@ -24,7 +22,7 @@ const BookComponentContainer = styled.div`
   padding-left: ${({ shouldIndent }) => (shouldIndent ? '5%' : '0')};
   margin-bottom: calc(3 * ${th('gridUnit')});
   background-color: white;
-  width:100%;
+  width: 100%;
 `
 // const ActionsRight = styled.div`
 //   display: flex;
@@ -164,6 +162,7 @@ const BookComponent = ({
   onWarning,
   connectDragSource,
   connectDropTarget,
+  applicationParameter,
   currentUser,
   history,
   componentType,
@@ -192,6 +191,7 @@ const BookComponent = ({
   updateWorkflowState,
   updateBookComponentContent,
   updateComponentType,
+  updateApplicationParameters,
 }) => {
   const onUpdateComponentType = value => {
     updateComponentType({
@@ -199,6 +199,18 @@ const BookComponent = ({
         input: {
           id,
           componentType: value,
+        },
+      },
+    })
+  }
+
+  const onAddComponentType = value => {
+    updateApplicationParameters({
+      variables: {
+        input: {
+          context: 'bookBuilder',
+          area: 'divisions',
+          config: value,
         },
       },
     })
@@ -263,8 +275,10 @@ const BookComponent = ({
         <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
           <ComponentTypeMenu
-            divisionType={divisionType}
+            addComponentType={onAddComponentType}
+            applicationParameter={applicationParameter}
             componentType={componentType}
+            divisionType={divisionType}
             onChange={onUpdateComponentType}
           />
           {/* {lock && (
@@ -272,9 +286,10 @@ const BookComponent = ({
           )} */}
         </ActionsLeft>
         <BookComponentTitle
-          title={title}
+          applicationParameter={applicationParameter}
           bookComponentId={id}
           bookId={bookId}
+          title={title}
           divisionType={divisionType}
           componentType={componentType}
           uploading={uploading}
@@ -303,6 +318,7 @@ const BookComponent = ({
       </FirstRow>
 
       <SecondRow
+        applicationParameter={applicationParameter}
         bookComponentId={id}
         onWorkflowUpdate={onWorkflowUpdate}
         onWarning={onWarning}

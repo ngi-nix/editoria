@@ -71,13 +71,14 @@ export class BookBuilder extends React.Component {
   render() {
     const {
       book,
-      state,
+      applicationParameter,
       history,
       addBookComponent,
       onMetadataAdd,
       addBookComponents,
       currentUser,
       deleteBookComponent,
+      updateApplicationParameters,
       updateBookComponentPagination,
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
@@ -94,17 +95,15 @@ export class BookBuilder extends React.Component {
       loading,
       loadingRules,
       setState,
-      refetchingBookBuilderRules,
       onWorkflowUpdate,
     } = this.props
-  
+
     if (loading || loadingRules) return 'Loading...'
     if (!book) return null
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 
     const productionEditorActions = []
-    
 
     const headerActions = [
       <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
@@ -151,6 +150,7 @@ export class BookBuilder extends React.Component {
         <Header bookTitle={book.title} actions={headerActions} />
         <DivisionsArea
           addBookComponent={addBookComponent}
+          applicationParameter={applicationParameter}
           onWorkflowUpdate={onWorkflowUpdate}
           addBookComponents={addBookComponents}
           setState={setState}
@@ -163,6 +163,7 @@ export class BookBuilder extends React.Component {
           onDeleteBookComponent={onDeleteBookComponent}
           divisions={divisions}
           rules={rules}
+          updateApplicationParameters={updateApplicationParameters}
           updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}
