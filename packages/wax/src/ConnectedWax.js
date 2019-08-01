@@ -5,8 +5,8 @@ import { get, sortBy } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
-import WaxPubsweet from './WaxPubsweet'
 import withModal from 'editoria-common/src/withModal'
+import WaxPubsweet from './WaxPubsweet'
 import statefull from './Statefull'
 import {
   getBookComponentQuery,
@@ -20,6 +20,7 @@ import {
   uploadFileMutation,
   trackChangeSubscription,
   lockChangeSubscription,
+  orderChangeSubscription,
 } from './queries'
 
 const mapper = {
@@ -28,14 +29,15 @@ const mapper = {
   getBookComponentQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  trackChangeSubscription,
+  lockChangeSubscription,
+  orderChangeSubscription,
   updateBookComponentContentMutation,
   updateBookComponentTrackChangesMutation,
   lockBookComponentMutation,
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
-  trackChangeSubscription,
-  lockChangeSubscription,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -91,6 +93,7 @@ const Connected = props => {
       bookComponentId={bookComponentId}
       bookId={bookId}
       currentUser={currentUser}
+      key={bookComponentId}
     >
       {({
         bookComponent,
@@ -116,6 +119,8 @@ const Connected = props => {
         const lock = get(bookComponent, 'lock')
         if (lock && lock.userId !== currentUser.id) {
           editing = 'preview'
+        } else if (rules.canEditPreview) {
+          editing = 'preview'
         } else if (rules.canEditFull) {
           editing = 'full'
         } else if (rules.canEditSelection) {
@@ -127,16 +132,17 @@ const Connected = props => {
         return (
           <WaxPubsweet
             bookComponent={bookComponent}
-            setState={setState}
-            onUnlocked={onUnlocked}
-            editing={editing}
             bookComponentId={bookComponentId}
             config={config}
+            editing={editing}
             history={history}
+            key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
+            onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}
+            setState={setState}
             teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}

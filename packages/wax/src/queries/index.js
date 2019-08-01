@@ -14,4 +14,5 @@ export {
   trackChangeSubscription,
   titleChangeSubscription,
   lockChangeSubscription,
+  orderChangeSubscription,
 } from './waxPubsweetSubscriptions'

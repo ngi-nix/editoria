@@ -1,5 +1,7 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
+const concat = require('lodash/concat')
+const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 // const map = require('lodash/flatMapDepth')
@@ -12,6 +14,7 @@ const assign = require('lodash/assign')
 const config = require('config')
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
+const { withFilter } = require('graphql-subscriptions')
 
 const {
   BookComponentState,
@@ -37,6 +40,20 @@ const {
 } = require('./consts')
 
 const { pubsubManager } = pubsweetServer
+
+const getOrderedBookComponents = async bookComponent => {
+  const divisions = await Division.findByField(
+    'bookId',
+    bookComponent.bookId,
+  ).orderByRaw(
+    `label='${'Frontmatter'}' desc, label='${'Body'}' desc, label='${'Backmatter'}' desc`,
+  )
+  const orderedComponent = flattenDeep(
+    concat([...map(divisions, division => division.bookComponents)]),
+  )
+
+  return orderedComponent
+}
 
 const getBookComponent = async (_, { id }, ctx) => {
   const bookComponent = await BookComponent.findById(id)
@@ -231,7 +248,7 @@ const renameBookComponent = async (_, { input }, ctx) => {
   pubsub.publish(BOOK_COMPONENT_TITLE_UPDATED, {
     bookComponentTitleUpdated: updatedBookComponent,
   })
-  console.log('hello rename',updatedBookComponent)
+
   return updatedBookComponent
 }
 
@@ -365,10 +382,11 @@ const unlockBookComponent = async (_, { input }, ctx) => {
     const locks = await Lock.query()
       .where('foreignId', id)
       .andWhere('deleted', false)
-
-    await Lock.query().patchAndFetchById(locks[0].id, {
-      deleted: true,
-    })
+    if (locks.length > 0) {
+      await Lock.query().patchAndFetchById(locks[0].id, {
+        deleted: true,
+      })
+    }
     const updatedBookComponent = await BookComponent.findById(id)
 
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
@@ -599,17 +617,44 @@ module.exports = {
     },
     async bookTitle(bookComponent, _, ctx) {
       const book = await Book.findById(bookComponent.bookId)
-      console.log('book', book, bookComponent)
+      //  console.log('book', book, bookComponent)
       const bookTranslation = await BookTranslation.query()
         .where('bookId', book.id)
         .andWhere('languageIso', 'en')
-      console.log('booktit', bookTranslation)
+      //  console.log('booktit', bookTranslation)
       return bookTranslation[0].title
     },
+    async nextBookComponent(bookComponent, _, ctx) {
+      const orderedComponent = await getOrderedBookComponents(bookComponent)
+      const current = orderedComponent.findIndex(
+        comp => comp === bookComponent.id,
+      )
+      try {
+        const next = orderedComponent[current + 1]
+        const nextBookComponent = await BookComponent.findById(next)
+        return nextBookComponent
+      } catch (e) {
+        return null
+      }
+    },
+    async prevBookComponent(bookComponent, _, ctx) {
+      const orderedComponent = await getOrderedBookComponents(bookComponent)
+      const current = orderedComponent.findIndex(
+        comp => comp === bookComponent.id,
+      )
+
+      try {
+        const prev = orderedComponent[current - 1]
+        const prevBookComponent = await BookComponent.findById(prev)
+        return prevBookComponent
+      } catch (e) {
+        return null
+      }
+    },
     async divisionType(bookComponent, _, ctx) {
-      console.log('in here')
+      // console.log('in here')
       const division = await Division.findById(bookComponent.divisionId)
-      console.log('division', division)
+      // console.log('division', division)
       return division.label
     },
     async divisionId(bookComponent, _, ctx) {
@@ -753,9 +798,15 @@ module.exports = {
       },
     },
     bookComponentLockUpdated: {
-      subscribe: async () => {
+      async subscribe(rootValue, args, context) {
         const pubsub = await pubsubManager.getPubsub()
-        return pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED)
+        return withFilter(
+          () => pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED),
+          (payload, variables) =>
+            variables.bookComponentIds.includes(
+              payload.bookComponentLockUpdated.id,
+            ),
+        )(rootValue, args, context)
       },
     },
     bookComponentTypeUpdated: {

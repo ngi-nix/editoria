@@ -12,12 +12,21 @@ const BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION = gql`
 `
 
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
-  subscription BookComponentLockUpdated {
-    bookComponentLockUpdated {
+  subscription BookComponentLockUpdated($bookComponentIds: [ID]!) {
+    bookComponentLockUpdated(bookComponentIds: $bookComponentIds) {
       id
     }
   }
 `
+
+const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
+  subscription BookComponentOrderUpdated {
+    bookComponentOrderUpdated {
+      id
+    }
+  }
+`
+
 const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentTitleUpdated {
     bookComponentTitleUpdated {
@@ -42,6 +51,25 @@ const trackChangeSubscription = props => {
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
+const orderChangeSubscription = props => {
+  const { render, getBookComponentQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookComponentQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION}
     >
       {render}
     </Subscription>
@@ -75,11 +103,16 @@ const lockChangeSubscription = props => {
     if (pauseUpdates) return
     refetch()
   }
+  if (!getBookComponentQuery.data.getBookComponent) {
+    return null
+  }
+  const { id } = getBookComponentQuery.data.getBookComponent
 
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
+      variables={{ bookComponentIds: [id] }}
     >
       {render}
     </Subscription>
@@ -89,4 +122,5 @@ export {
   trackChangeSubscription,
   titleChangeSubscription,
   lockChangeSubscription,
+  orderChangeSubscription,
 }
