@@ -1,7 +1,7 @@
-const { Model } = require('./node_modules/objection')
-
+const { Model } = require('objection')
+const remove = require('lodash/remove')
 const Base = require('../editoriaBase')
-const { arrayOfIds, id, stringNotEmpty, string, targetType } = require('../helpers').schema
+const { id, stringNotEmpty, string, targetType } = require('../helpers').schema
 
 class Template extends Base {
   constructor(properties) {
@@ -16,14 +16,14 @@ class Template extends Base {
   static get schema() {
     return {
       type: 'object',
-      required: ['templateName'],
+      required: ['name'],
       properties: {
-        templateName: stringNotEmpty,
+        name: stringNotEmpty,
         referenceId: id,
-        author: string,
         thumbnailId: id,
-        files: arrayOfIds,
+        author: string,
         target: targetType,
+        trimSize: string,
       },
     }
   }
@@ -51,11 +51,21 @@ class Template extends Base {
     }
   }
 
-  getFiles() {
-    return this.$relatedQuery('files')
+  async getFiles() {
+    const { thumbnailId } = this
+    const associatedFiles = await this.$relatedQuery('files')
+    if (thumbnailId) {
+      remove(associatedFiles, file => file.id === thumbnailId)
+    }
+    remove(associatedFiles, file => file.deleted === true)
+    return associatedFiles
   }
-  getThumbnail() {
-    return this.$relatedQuery('thumbnail')
+  async getThumbnail() {
+    const { thumbnailId } = this
+    if (thumbnailId) {
+      return this.$relatedQuery('thumbnail')
+    }
+    return null
   }
 }
 

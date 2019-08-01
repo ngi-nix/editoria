@@ -265,7 +265,7 @@ const schema = {
     ],
   },
   id: {
-    type: 'string',
+    type: ['string', 'null'],
     format: 'uuid',
   },
   integerPositive: {
@@ -286,7 +286,7 @@ const schema = {
   },
   mimetype: {
     type: 'string',
-    pattern: /^(application|audio|font|image|model|multipart|text|video)\/[a-z0-9]+([-+.][a-z0-9]+)*$/,
+      pattern: "^(application|audio|font|image|model|multipart|text|video)\/[a-z0-9]+([-+.][a-z0-9]+)*$",
     // if you want to know why this is default, look at
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
     default: 'application/octet-stream',
@@ -295,7 +295,7 @@ const schema = {
     type: 'object',
   },
   string: {
-    type: 'string',
+    type: ['string', 'null'],
   },
   stringNotEmpty: {
     type: 'string',
@@ -303,7 +303,7 @@ const schema = {
   },
   uri: {
     type: 'string',
-    format: 'uri',
+    format: 'uri-reference',
   },
   year: {
     // type: 'string',

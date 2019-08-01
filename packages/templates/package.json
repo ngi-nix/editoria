@@ -1,0 +1,44 @@
+{
+  "name": "pubsweet-component-editoria-templates",
+  "version": "0.1.0",
+  "description": "The application dashboard for the Editoria project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pubsweet-component",
+    "pubsweet-client"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.coko.foundation/editoria/editoria-templates"
+  },
+  "author": "Alexandros Georgantas",
+  "license": "ISC",
+  "dependencies": {
+    "@pubsweet/ui": "^10.3.0",
+    "editoria-common": "^0.1.6",
+    "formik": "^1.5.1",
+    "lodash": "4.17.4",
+    "pubsweet-client": "^9.2.3",
+    "react": "^16.2.0",
+    "react-adopt": "^0.6.0",
+    "react-modal": "^3.6.1",
+    "react-powerplug": "^1.0.0",
+    "react-router-dom": "^5.0.0",
+    "styled-components": "^4.1.3",
+    "react-select":"^3.0.4"
+  },
+  "devDependencies": {
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^1.5.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^20.0.4",
+    "prop-types": "^15.5.10",
+    "react-addons-test-utils": "^15.6.0",
+    "react-test-renderer": "^15.6.1",
+    "sinon": "^2.3.8",
+    "sinon-as-promised": "^4.0.3"
+  }
+}

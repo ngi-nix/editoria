@@ -10,13 +10,13 @@ create table file (
 
   --foreign
   book_id uuid references book,
-  book_component_id uuid references bookComponent
+  book_component_id uuid references book_component,
   template_id uuid references template,
-  reference_id uuid not null,
+  reference_id uuid,
   size int,
   foreign_type text,
   mimetype text,
   source text,
   tags text[],
-  filename text not null
+  name text not null
 );

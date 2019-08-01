@@ -27,13 +27,7 @@ const Base = require('../editoriaBase')
 const { model: BookCollection } = require('../bookCollection')
 const { model: Division } = require('../division')
 
-const {
-  booleanDefaultFalse,
-  date,
-  id,
-  string,
-  year,
-} = require('../helpers').schema
+const { booleanDefaultFalse, id, string, year } = require('../helpers').schema
 
 class Book extends Base {
   constructor(properties) {
@@ -121,6 +115,7 @@ class Book extends Base {
   async addDivision(label) {
     return new Division({
       bookId: this.id,
+      bookComponents: [],
       label,
     }).save()
   }

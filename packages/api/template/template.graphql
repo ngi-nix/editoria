@@ -1,0 +1,48 @@
+type Template {
+  id: ID!
+  name: String!
+  thumbnail: File
+  author: String
+  trimSize: String
+  target: String
+  files: [File]!
+}
+
+input CreateTemplateInput {
+  name: String!
+  thumbnail: Upload
+  author: String
+  trimSize: String
+  target: String
+  files: [Upload]!
+}
+
+input UpdateTemplateInput {
+  id: ID!
+  name: String!
+  thumbnail: Upload
+  deleteThumbnail: String
+  author: String
+  trimSize: String
+  target: String
+  files: [Upload]!
+  deleteFiles: [String]!
+}
+
+extend type Query {
+  getTemplates(ascending: Boolean, sortKey: String): [Template]!
+  getTemplate(id: ID!): Template!
+}
+
+extend type Mutation {
+  createTemplate(input: CreateTemplateInput): Template!
+  updateTemplate(input: UpdateTemplateInput): Template!
+  deleteTemplate(id: ID!): ID!
+}
+
+extend type Subscription {
+  templateCreated: Template!
+  templateDeleted: Template!
+  templateUpdated: Template!
+}
+

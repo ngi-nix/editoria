@@ -67,9 +67,9 @@ class File extends Base {
   static get schema() {
     return {
       type: 'object',
-      required: ['filename', 'source'],
+      required: ['name', 'source'],
       properties: {
-        filename: stringNotEmpty,
+        name: stringNotEmpty,
         bookId: id,
         bookComponentId: id,
         templateId: id,
