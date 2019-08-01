@@ -20,21 +20,10 @@ class UploadThumbnail extends React.Component {
   onChange(event) {
     event.preventDefault()
 
-    const { updateThumbnail, setFieldValue } = this.props
+    const { updateThumbnail, setFieldValue, setFieldTouched } = this.props
     const originalFiles = event.target.files
     console.log('orig', originalFiles)
-    // setFieldValue('thumbnail', originalFiles[0])
-    updateThumbnail(originalFiles[0], setFieldValue)
-    // createTemplate({
-    //   variables: {
-    //     input: {
-    //       files: originalFiles,
-    //       templateName: 'Test temp',
-    //       author: 'Alex G',
-    //       target: 'epub',
-    //     },
-    //   },
-    // })
+    updateThumbnail(originalFiles[0], setFieldValue, setFieldTouched)
   }
 
   renderButton() {

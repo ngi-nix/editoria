@@ -61,9 +61,11 @@ class Template extends Base {
     return associatedFiles
   }
   async getThumbnail() {
-    const associatedThumbnails = await this.$relatedQuery('thumbnail')
-    remove(associatedThumbnails, file => file.deleted === true)
-    return associatedThumbnails[0]
+    const { thumbnailId } = this
+    if (thumbnailId) {
+      return this.$relatedQuery('thumbnail')
+    }
+    return null
   }
 }
 

@@ -2,12 +2,9 @@ import React from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
-const GET_TEMPLATES = gql`
-  query GetTemplates(
-    $ascending: Boolean = true
-    $sortKey: String = "name"
-  ) {
-    getTemplates(ascending: $ascending, sortKey: $sortKey) {
+const GET_TEMPLATE = gql`
+  query GetTemplate($id: ID!) {
+    getTemplate(id: $id) {
       id
       name
       thumbnail {
@@ -19,23 +16,30 @@ const GET_TEMPLATES = gql`
       author
       trimSize
       target
+      files {
+        name
+        mimetype
+        id
+        source
+      }
     }
   }
 `
 
-const getTemplatesQuery = props => {
-  const { render } = props
+const getTemplateQuery = props => {
+  const { templateId: id, render } = props
 
   return (
     <Query
       fetchPolicy="cache-and-network"
       notifyOnNetworkStatusChange
-      query={GET_TEMPLATES}
+      query={GET_TEMPLATE}
+      variables={{ id }}
     >
       {render}
     </Query>
   )
 }
 
-export { GET_TEMPLATES }
-export default getTemplatesQuery
+export { GET_TEMPLATE }
+export default getTemplateQuery

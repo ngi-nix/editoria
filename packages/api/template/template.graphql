@@ -21,10 +21,12 @@ input UpdateTemplateInput {
   id: ID!
   name: String!
   thumbnail: Upload
+  deleteThumbnail: String
   author: String
   trimSize: String
   target: String
   files: [Upload]!
+  deleteFiles: [String]!
 }
 
 extend type Query {

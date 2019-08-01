@@ -18,5 +18,5 @@ create table file (
   mimetype text,
   source text,
   tags text[],
-  filename text not null
+  name text not null
 );

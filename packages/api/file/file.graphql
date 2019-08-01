@@ -1,12 +1,21 @@
 type File {
   id: ID!
-  filename: String!
+  name: String!
   source: String!
+  mimetype: String!
 }
 
 input NewFileInput {
-  filename: String
+  name: String
   source: String
+  mimetype: String
+}
+
+input UpdateFileInput {
+  id: ID!
+  name: String
+  source: String
+  mimetype: String
 }
 
 extend type Mutation {

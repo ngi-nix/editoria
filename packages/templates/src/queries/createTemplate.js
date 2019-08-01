@@ -7,7 +7,7 @@ const CREATE_TEMPLATE = gql`
     createTemplate(input: $input) {
       id
       files {
-        filename
+        name
       }
     }
   }

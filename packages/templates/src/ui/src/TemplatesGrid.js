@@ -13,29 +13,21 @@ const GridContainer = styled.div`
 `
 
 const TemplatesGrid = props => {
-  const { templates, onDeleteTemplate } = props
+  const { templates, onDeleteTemplate, onUpdateTemplate } = props
   return (
     <GridContainer>
       {templates.map(template => {
-        const {
-          name,
-          id,
-          author,
-          targetType,
-          thumbnailSrc,
-          files,
-          trimSize,
-        } = template
+        const { name, id, author, target, thumbnail, trimSize } = template
         return (
           <Template
             onDeleteTemplate={onDeleteTemplate}
+            onUpdateTemplate={onUpdateTemplate}
             key={id}
             id={id}
             author={author}
-            files={files}
-            targetType={targetType}
+            target={target}
             name={name}
-            thumbnailSrc={thumbnailSrc}
+            thumbnail={thumbnail}
             trimSize={trimSize}
           />
         )

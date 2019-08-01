@@ -33,7 +33,11 @@ const getTemplates = async (_, { ascending, sortKey }, ctx) => {
   const result = map(sorted, item => find(templates, { id: item.id }))
   return result
 }
-const getTemplate = async (_, { id }, ctx) => Template.findById(id)
+const getTemplate = async (_, { id }, ctx) => {
+  const template = await Template.findById(id)
+  console.log('template', template)
+  return template
+}
 
 const createTemplate = async (_, { input }, ctx) => {
   const { name, author, files, target, trimSize, thumbnail } = input
@@ -93,7 +97,7 @@ const createTemplate = async (_, { input }, ctx) => {
               try {
                 logger.info('File uploaded to server')
                 const newFile = await new File({
-                  filename,
+                  name: filename,
                   mimetype,
                   source: outPath,
                   templateId: newTemplate.id,
@@ -150,7 +154,7 @@ const createTemplate = async (_, { input }, ctx) => {
           try {
             logger.info('Thumbnail uploaded to the server')
             const newThumbnail = await new File({
-              filename,
+              name: filename,
               mimetype,
               source: outPath,
               templateId: newTemplate.id,
@@ -183,7 +187,205 @@ const createTemplate = async (_, { input }, ctx) => {
 }
 
 // TODO:
-const updateTemplate = async (_, {}, ctx) => {}
+const updateTemplate = async (_, { input }, ctx) => {
+  console.log('input', input)
+  const {
+    id,
+    name,
+    author,
+    files,
+    target,
+    trimSize,
+    thumbnail,
+    deleteFiles,
+    deleteThumbnail,
+  } = input
+
+  // const allowedFonts = ['.otf', '.woff', '.woff2']
+  const allowedThumbnails = ['.png', '.jpg', '.jpeg']
+  const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
+  const regexFiles = new RegExp(
+    '([a-zA-Z0-9s_\\.-:])+(' + allowedFiles.join('|') + ')$',
+  )
+
+  const regexThumbnails = new RegExp(
+    '([a-zA-Z0-9s_\\.-:])+(' + allowedThumbnails.join('|') + ')$',
+  )
+
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    if (files.length > 0) {
+      logger.info(
+        `There is/are ${
+          files.length
+        } new file/s to be uploaded for the template`,
+      )
+      await Promise.all(
+        map(files, async file => {
+          const { createReadStream, filename, mimetype, encoding } = await file
+          if (!regexFiles.test(filename))
+            throw new Error('File extension is not allowed')
+          const outPath = path.join(uploadsPath, 'templates', id, filename)
+
+          await fs.ensureDir(uploadsPath)
+          await fs.ensureDir(`${uploadsPath}/templates`)
+          await fs.ensureDir(`${uploadsPath}/templates/${id}`)
+          logger.info(`The path the the files will be stored is ${outPath}`)
+          const outStream = fs.createWriteStream(outPath)
+          const stream = createReadStream()
+          stream.pipe(
+            outStream,
+            { encoding },
+          )
+          outStream.on('error', () => {
+            throw new Error('Unable to write file')
+          })
+          return new Promise((resolve, reject) => {
+            stream.on('end', async () => {
+              try {
+                logger.info('File uploaded to server')
+                const newFile = await new File({
+                  name: filename,
+                  mimetype,
+                  source: outPath,
+                  templateId: id,
+                }).save()
+                logger.info(
+                  `File representation created on the db with file id ${
+                    newFile.id
+                  }`,
+                )
+                resolve()
+              } catch (e) {
+                throw new Error(e)
+              }
+            })
+            stream.on('error', reject)
+          })
+        }),
+      )
+    }
+
+    if (deleteThumbnail) {
+      logger.info(
+        `Existing thumbnail with id ${deleteThumbnail} will be patched and set to deleted true`,
+      )
+      const deletedThumbnail = await File.query().patchAndFetchById(
+        deleteThumbnail,
+        { deleted: true },
+      )
+      logger.info(`File with id ${deletedThumbnail.id} was patched`)
+      const thumbnailPath = path.join(
+        uploadsPath,
+        'templates',
+        id,
+        deletedThumbnail.name,
+      )
+      await fs.remove(thumbnailPath)
+      logger.info(
+        `File with name ${deletedThumbnail.name} removed from the server`,
+      )
+      await Template.query()
+        .patch({ thumbnailId: null })
+        .findById(id)
+      logger.info('Template thumbnailId property updated')
+    }
+
+    if (thumbnail) {
+      logger.info(
+        'There is a new thumbnail file to be uploaded for the template',
+      )
+      await new Promise(async (resolve, reject) => {
+        const {
+          createReadStream,
+          filename,
+          mimetype,
+          encoding,
+        } = await thumbnail
+
+        if (!regexThumbnails.test(filename))
+          throw new Error('File extension is not allowed')
+        const outPath = path.join(uploadsPath, 'templates', id, filename)
+
+        await fs.ensureDir(uploadsPath)
+        await fs.ensureDir(`${uploadsPath}/templates`)
+        await fs.ensureDir(`${uploadsPath}/templates/${id}`)
+        const outStream = fs.createWriteStream(outPath)
+        const stream = createReadStream()
+
+        stream.pipe(
+          outStream,
+          { encoding },
+        )
+        outStream.on('error', () => {
+          throw new Error('Unable to write file')
+        })
+
+        stream.on('end', async () => {
+          try {
+            logger.info('Thumbnail uploaded to the server')
+            const newThumbnail = await new File({
+              name: filename,
+              mimetype,
+              source: outPath,
+              templateId: id,
+            }).save()
+            logger.info(
+              `Thumbnail representation created on the db with file id ${
+                newThumbnail.id
+              }`,
+            )
+            await Template.query()
+              .patch({ thumbnailId: newThumbnail.id })
+              .findById(id)
+            logger.info('Template thumbnailId property updated')
+            resolve()
+          } catch (e) {
+            throw new Error(e)
+          }
+        })
+        stream.on('error', reject)
+      })
+    }
+
+    if (deleteFiles) {
+      logger.info(
+        `Existing file/s with id/s ${deleteFiles} will be patched and set to deleted true`,
+      )
+      await Promise.all(
+        map(deleteFiles, async fileId => {
+          const deletedFile = await File.query().patchAndFetchById(fileId, {
+            deleted: true,
+          })
+          logger.info(`File with id ${deletedFile.id} was patched`)
+          const thumbnailPath = path.join(
+            uploadsPath,
+            'templates',
+            id,
+            deletedFile.name,
+          )
+          await fs.remove(thumbnailPath)
+          logger.info(
+            `File with name ${deletedFile.name} removed from the server`,
+          )
+        }),
+      )
+    }
+    const updatedTemplate = await Template.query().patchAndFetchById(id, {
+      name,
+      author,
+      trimSize,
+      target,
+    })
+    pubsub.publish(TEMPLATE_UPDATED, {
+      templateUpdated: updatedTemplate,
+    })
+    logger.info('Template updated msg broadcasted')
+    return updatedTemplate
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 
 const deleteTemplate = async (_, { id }, ctx) => {
   try {
@@ -195,7 +397,22 @@ const deleteTemplate = async (_, { id }, ctx) => {
       `Template with id ${toBeDeleted.id} patched with deleted set to true`,
     )
     const files = await toBeDeleted.getFiles()
+    const thumbnail = await toBeDeleted.getThumbnail()
     const templatePath = path.join(uploadsPath, 'templates', toBeDeleted.id)
+
+    if (thumbnail) {
+      const deletedThumbnail = await File.query().patchAndFetchById(
+        thumbnail.id,
+        {
+          deleted: true,
+        },
+      )
+      logger.info(
+        `Thumbnail with id ${
+          deletedThumbnail.id
+        } patched with deleted set to true`,
+      )
+    }
 
     logger.info(
       `${
@@ -241,10 +458,16 @@ module.exports = {
   },
   Template: {
     async files(template, _, ctx) {
-      return template.getFiles()
+      console.log('template1', template)
+      const files = await template.getFiles()
+      console.log('files', files)
+      return files
     },
     async thumbnail(template, _, ctx) {
-      return template.getThumbnail()
+      console.log('template2', template)
+      const thumbnail = await template.getThumbnail()
+      console.log('thum', thumbnail)
+      return thumbnail
     },
   },
   Subscription: {

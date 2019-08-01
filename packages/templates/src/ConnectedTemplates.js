@@ -7,6 +7,7 @@ import Templates from './Templates'
 import {
   getTemplatesQuery,
   createTemplateMutation,
+  updateTemplateMutation,
   deleteTemplateMutation,
   templateCreatedSubscription,
   templateUpdatedSubscription,
@@ -16,17 +17,19 @@ import {
 const mapper = {
   withModal,
   getTemplatesQuery,
-  createTemplateMutation,
-  deleteTemplateMutation,
   templateCreatedSubscription,
   templateUpdatedSubscription,
   templateDeletedSubscription,
+  createTemplateMutation,
+  updateTemplateMutation,
+  deleteTemplateMutation,
 }
 
 const mapProps = args => {
   return {
     templates: get(args.getTemplatesQuery, 'data.getTemplates'),
     createTemplate: args.createTemplateMutation.createTemplate,
+    updateTemplate: args.updateTemplateMutation.updateTemplate,
     deleteTemplateMutation: args.deleteTemplateMutation.deleteTemplate,
     showModal: args.withModal.showModal,
     hideModal: args.withModal.hideModal,
@@ -43,7 +46,7 @@ const mapProps = args => {
         author,
         target,
         trimSize,
-      }) =>
+      }) => {
         createTemplate({
           variables: {
             input: {
@@ -55,11 +58,56 @@ const mapProps = args => {
               thumbnail,
             },
           },
+        }).then(() => {
+          hideModal()
         })
+      }
 
       showModal('createTemplateModal', {
         onConfirm,
         hideModal,
+        headerText: 'Create New Template',
+        mode: 'create',
+      })
+    },
+    onUpdateTemplate: templateId => {
+      const { updateTemplateMutation, withModal } = args
+      const { updateTemplate } = updateTemplateMutation
+      const { showModal, hideModal } = withModal
+      const onConfirm = ({
+        files,
+        deleteFiles,
+        thumbnail,
+        deleteThumbnail,
+        name,
+        author,
+        target,
+        trimSize,
+      }) => {
+        updateTemplate({
+          variables: {
+            input: {
+              id: templateId,
+              files,
+              deleteThumbnail,
+              deleteFiles,
+              name,
+              author,
+              target,
+              trimSize,
+              thumbnail,
+            },
+          },
+        }).then(() => {
+          hideModal()
+        })
+      }
+      showModal('updateTemplateModal', {
+        onConfirm,
+        hideModal,
+        mode: 'update',
+        templateId,
+        headerText: 'Update Template',
       })
     },
     onDeleteTemplate: (templateId, templateName) => {
@@ -92,6 +140,7 @@ const Connected = () => (
     {({
       templates,
       onCreateTemplate,
+      onUpdateTemplate,
       onDeleteTemplate,
       onChangeSort,
       refetching,
@@ -102,6 +151,7 @@ const Connected = () => (
         <Templates
           templates={templates}
           onCreateTemplate={onCreateTemplate}
+          onUpdateTemplate={onUpdateTemplate}
           onDeleteTemplate={onDeleteTemplate}
           onChangeSort={onChangeSort}
           refetching={refetching}

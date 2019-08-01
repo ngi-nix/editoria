@@ -14,22 +14,10 @@ class UploadFilesButton extends React.Component {
   onChange(event) {
     event.preventDefault()
 
-    const { updateFilesList, setFieldValue, setFieldTouched, createTemplate } = this.props
+    const { updateFilesList, setFieldValue, setFieldTouched } = this.props
     const originalFiles = event.target.files
     console.log('orig', originalFiles)
-    // setFieldValue('files', originalFiles)
     updateFilesList(originalFiles, setFieldValue, setFieldTouched)
-    // setFieldTouched('files', true)
-    // createTemplate({
-    //   variables: {
-    //     input: {
-    //       files: originalFiles,
-    //       name: 'Test temp',
-    //       author: 'Alex G',
-    //       target: 'epub',
-    //     },
-    //   },
-    // })
   }
 
   render() {

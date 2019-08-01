@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { th, darken, lighten } from '@pubsweet/ui-toolkit'
-import { keys, findKey, without, pick, findIndex } from 'lodash'
+import { filter, findIndex, find, cloneDeep } from 'lodash'
 import { Formik } from 'formik'
 import FormModal from 'editoria-common/src/FormModal'
 import ModalBody from 'editoria-common/src/ModalBody'
@@ -12,7 +12,13 @@ import {
   ButtonWithoutLabel,
   DefaultButton,
   UploadThumbnail,
-} from '../../../ui'
+} from '../..'
+
+const selectOptions = [
+  { label: 'EPUB', value: 'epub' },
+  { label: 'PagedJS', value: 'pagedjs' },
+  { label: 'VivlioStyle', value: 'vivliostyle' },
+]
 
 const StyledModal = styled(ModalBody)`
   align-items: flex-start;
@@ -193,33 +199,53 @@ const Image = styled.img`
   height: 266px;
   width: 188px;
 `
-class CreateTemplateModal extends React.Component {
+class TemplateModal extends React.Component {
   constructor(props) {
     super(props)
-
+    console.log('props in tem', props)
+    const { data, template } = props
+    const { mode } = data
     this.updateFileList = this.updateFileList.bind(this)
     this.updateThumbnail = this.updateThumbnail.bind(this)
     this.removeFile = this.removeFile.bind(this)
     this.removeThumbnail = this.removeThumbnail.bind(this)
-
-    this.state = {
-      error: false,
-      name: '',
-      thumbnailPreview: undefined,
-      files: [],
-      mode: 'create',
-      target: undefined,
+    if (mode === 'create') {
+      this.state = {
+        error: false,
+        name: undefined,
+        thumbnailPreview: undefined,
+        files: [],
+        mode,
+        target: undefined,
+      }
+    } else {
+      const { name, files, thumbnail, target, author, trimSize } = template
+      this.state = {
+        error: false,
+        deleteThumbnail: undefined,
+        deleteFiles: [],
+        name,
+        author,
+        trimSize,
+        thumbnail,
+        thumbnailPreview: thumbnail ? thumbnail.source : undefined,
+        files,
+        mode,
+        target: target ? find(selectOptions, { value: target }) : undefined,
+      }
     }
   }
 
   updateFileList(fileList, setFieldValue, setFieldTouched) {
     const { files } = this.state
-    const selectedFiles = files
+    const tempFiles = cloneDeep(files)
+    const selectedFiles = tempFiles
     for (let i = 0; i < fileList.length; i += 1) {
       selectedFiles.push(fileList.item(i))
     }
+    console.log('selectedFIles', selectedFiles)
     this.setState({ files: selectedFiles })
-    setFieldValue('files', fileList)
+    setFieldValue('files', selectedFiles)
     setFieldTouched('files', true)
   }
 
@@ -227,34 +253,79 @@ class CreateTemplateModal extends React.Component {
     this.setState({ target: selected })
   }
 
-  updateThumbnail(thumbnail, setFieldValue) {
+  updateThumbnail(file, setFieldValue, setFieldTouched) {
+    const { thumbnail, mode } = this.state
     const reader = new FileReader()
-    reader.readAsDataURL(thumbnail)
-
+    reader.readAsDataURL(file)
+    console.log('thumb', thumbnail)
     reader.onloadend = function(e) {
-      this.setState({
-        thumbnailPreview: reader.result,
-        thumbnail,
-      })
-      setFieldValue('thumbnail', thumbnail  )
+      let newState
+      if (mode === 'update') {
+        newState = {
+          thumbnailPreview: reader.result,
+          deleteThumbnail: thumbnail ? thumbnail.id : undefined,
+          thumbnail: file,
+        }
+      } else {
+        newState = { thumbnailPreview: reader.result, thumbnail: file }
+      }
+      this.setState(newState)
+      setFieldValue('thumbnail', file)
+      setFieldTouched('thumbnail', true)
     }.bind(this)
   }
 
   removeFile(filename, setFieldValue, setFieldTouched) {
-    const { files } = this.state
-    const fileIndex = findIndex(files, { name: filename })
-    files.splice(fileIndex, 1)
+    const { files, mode, deleteFiles } = this.state
+    let newState
+    const tempFiles = cloneDeep(files)
+    const tempDeleted = cloneDeep(deleteFiles)
+    console.log('filename', filename)
+    console.log('files', files)
+
+    const fileIndex = findIndex(tempFiles, { name: filename })
+    console.log('index', fileIndex)
+    if (mode === 'update' && tempFiles[fileIndex].id) {
+      console.log('id', tempFiles[fileIndex].id)
+      const { id } = tempFiles[fileIndex]
+      tempDeleted.push(id)
+      files.splice(fileIndex, 1)
+      console.log('files', files)
+      newState = {
+        deleteFiles: tempDeleted,
+        files,
+      }
+    } else {
+      files.splice(fileIndex, 1)
+      newState = {
+        files,
+      }
+    }
+    console.log('newState', newState)
+
     setFieldValue('files', files)
-    this.setState({ files })
+    this.setState(newState)
     setFieldTouched('files', true)
   }
 
-  removeThumbnail(e) {
-    e.preventDefault()
-    this.setState({
-      thumbnailPreview: undefined,
-      thumbnail: undefined,
-    })
+  removeThumbnail(setFieldValue, setFieldTouched) {
+    const { thumbnail, mode } = this.state
+    let newState
+    setFieldValue('thumbnail', null)
+    if (mode === 'update') {
+      newState = {
+        deleteThumbnail: thumbnail.id,
+        thumbnailPreview: undefined,
+        thumbnail: undefined,
+      }
+    } else {
+      newState = {
+        thumbnailPreview: undefined,
+        thumbnail: undefined,
+      }
+    }
+    this.setState(newState)
+    setFieldTouched('thumbnail', true)
   }
 
   renderFiles(setFieldValue, setFieldTouched) {
@@ -267,8 +338,8 @@ class CreateTemplateModal extends React.Component {
         </FormField>
       )
     }
-    return files.map(file => (
-      <FormField>
+    return files.map((file, index) => (
+      <FormField key={`${file.name}-${index}`}>
         <Filename>{file.name}</Filename>
         <ButtonWithoutLabel
           icon={deleteIcon}
@@ -283,54 +354,88 @@ class CreateTemplateModal extends React.Component {
 
   renderBody() {
     const { data } = this.props
-    const { onConfirm, hideModal } = data
-    const { thumbnailPreview } = this.state
+    const { onConfirm, hideModal, mode } = data
+    const {
+      thumbnailPreview,
+      thumbnail,
+      trimSize,
+      author,
+      name,
+      files,
+      target,
+    } = this.state
 
-    const confirmLabel = 'Add'
+    const confirmLabel = mode === 'create' ? 'Add' : 'Update'
     const cancelLabel = 'Cancel'
-    const selectOptions = [
-      { label: 'EPUB', value: 'epub' },
-      { label: 'PagedJS', value: 'pagedjs' },
-      { label: 'VivlioStyle', value: 'vivliostyle' },
-    ]
 
+    let initialValues
+    if (mode === 'create') {
+      initialValues = {
+        name: undefined,
+        files: [],
+        thumbnail: undefined,
+        target: undefined,
+        author: undefined,
+        trimSize: undefined,
+      }
+    } else {
+      initialValues = {
+        name,
+        files,
+        thumbnail,
+        target,
+        author,
+        trimSize,
+      }
+    }
+    console.log('templatr', initialValues)
     return (
       <Formik
-        initialValues={{
-          name: undefined,
-          files: [],
-          thumbnail: undefined,
-          target: undefined,
-          author: undefined,
-          trimSize: undefined,
-        }}
+        initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           const { name, author, trimSize, files, thumbnail, target } = values
+          const { deleteFiles, deleteThumbnail, mode } = this.state
           console.log('values', values)
-          const data = {
-            name,
-            author,
-            trimSize,
-            files,
-            thumbnail,
-            target: target ? target.value : undefined,
+          let data
+          if (mode === 'create') {
+            data = {
+              name,
+              author,
+              trimSize,
+              files,
+              thumbnail,
+              target: target ? target.value : undefined,
+            }
+          } else {
+            data = {
+              name,
+              author,
+              deleteFiles,
+              deleteThumbnail,
+              trimSize,
+              files: filter(files, file => !file.id),
+              thumbnail: thumbnail && thumbnail.id ? null : thumbnail,
+              target: target ? target.value : undefined,
+            }
           }
           console.log('data', data)
-          onConfirm(data).then(() => {
-            setSubmitting(false)
-            hideModal()
-          })
+          onConfirm(data)
+          setSubmitting(false)
         }}
         validate={values => {
           const errors = {}
+          const { files } = this.state
           if (!values.name) {
             errors.name = '* The name of the template should not be empty'
           }
           if (values.files.length > 0) {
             let stylesheetCounter = 0
-            const { files } = values
+            // const { files } = values
             for (let i = 0; i < files.length; i += 1) {
-              if (files[i].type === 'text/css') {
+              if (
+                files[i].type === 'text/css' ||
+                files[i].mimetype === 'text/css'
+              ) {
                 stylesheetCounter += 1
               }
             }
@@ -361,6 +466,7 @@ class CreateTemplateModal extends React.Component {
                   {!thumbnailPreview && (
                     <UploadThumbnail
                       setFieldValue={setFieldValue}
+                      setFieldTouched={setFieldTouched}
                       updateThumbnail={this.updateThumbnail}
                       withIcon
                     />
@@ -374,12 +480,15 @@ class CreateTemplateModal extends React.Component {
                       />
                       <UploadThumbnail
                         setFieldValue={setFieldValue}
+                        setFieldTouched={setFieldTouched}
                         updateThumbnail={this.updateThumbnail}
                       />
                       <DefaultButton
                         label="Delete Thumbnail"
-                        onClick={this.removeThumbnail}
-                        setFieldValue={setFieldValue}
+                        onClick={e => {
+                          e.preventDefault()
+                          this.removeThumbnail(setFieldValue, setFieldTouched)
+                        }}
                       />
                     </ThumbnailContainer>
                   )}
@@ -445,7 +554,7 @@ class CreateTemplateModal extends React.Component {
                           setFieldValue('target', selected)
                         }}
                         options={selectOptions}
-                        selected={this.state.selected}
+                        value={this.state.target}
                       />
                       <Error>{errors.target}</Error>
                     </FormFieldContainer>
@@ -479,12 +588,13 @@ class CreateTemplateModal extends React.Component {
   }
 
   render() {
-    const { isOpen, hideModal } = this.props
+    const { isOpen, hideModal, data } = this.props
+    const { headerText } = data
     const body = this.renderBody()
-
+    console.log('hello render')
     return (
       <FormModal
-        headerText="Create a new Template"
+        headerText={headerText}
         isOpen={isOpen}
         onRequestClose={hideModal}
         size="largeNarrow"
@@ -495,4 +605,4 @@ class CreateTemplateModal extends React.Component {
   }
 }
 
-export default CreateTemplateModal
+export default TemplateModal

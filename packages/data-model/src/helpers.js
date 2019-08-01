@@ -265,7 +265,7 @@ const schema = {
     ],
   },
   id: {
-    type: 'string',
+    type: ['string', 'null'],
     format: 'uuid',
   },
   integerPositive: {
@@ -295,7 +295,7 @@ const schema = {
     type: 'object',
   },
   string: {
-    type: 'string',
+    type: ['string', 'null'],
   },
   stringNotEmpty: {
     type: 'string',
