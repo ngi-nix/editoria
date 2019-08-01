@@ -15,9 +15,18 @@ const BookTitle = styled.div`
   font-family: 'Vollkorn';
 `
 
+const WithLinkDecoration = styled.div`
+  a {
+    text-decoration: none;
+  }
+`
+
 const Header = styled.div`
   display: flex;
   justify-content: space-around;
+  > div {
+    width: 33%;
+  }
 `
 
 const createUrl = bookComponent =>
@@ -45,17 +54,21 @@ const WaxHeader = ({ bookComponent }) => {
   const { nextBookComponent, prevBookComponent } = bookComponent
   return (
     <Header>
-      {prevBookComponent && (
-        <div data-testid="previous-component">
-          {withLink(prevBookComponent.title, createUrl(prevBookComponent))}
-        </div>
-      )}
+      <div>
+        {prevBookComponent && (
+          <WithLinkDecoration data-testid="previous-component">
+            {withLink(prevBookComponent.title, createUrl(prevBookComponent))}
+          </WithLinkDecoration>
+        )}
+      </div>
       {header}
-      {nextBookComponent && (
-        <div data-testid="next-component">
-          {withLink(nextBookComponent.title, createUrl(nextBookComponent))}
-        </div>
-      )}
+      <div>
+        {nextBookComponent && (
+          <WithLinkDecoration data-testid="next-component">
+            {withLink(nextBookComponent.title, createUrl(nextBookComponent))}
+          </WithLinkDecoration>
+        )}
+      </div>
     </Header>
   )
 }
