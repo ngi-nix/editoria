@@ -99,8 +99,9 @@ const Container = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   position: relative;
+  margin-right: calc(1.5 * ${th('gridUnit')});
   display: flex;
-  flex-basis: 33%;
+  flex-basis: 32.6%;
   height: 282px;
   /* min-width:390px; */
   margin-bottom: calc(3 * ${th('gridUnit')});

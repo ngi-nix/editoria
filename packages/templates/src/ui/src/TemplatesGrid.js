@@ -6,10 +6,13 @@ import { Template } from '../../ui'
 
 const GridContainer = styled.div`
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
   display: flex;
   flex-basis: 100%;
+  div:nth-child(3n + 3) {
+    margin-right: 0;
+  }
 `
 
 const TemplatesGrid = props => {

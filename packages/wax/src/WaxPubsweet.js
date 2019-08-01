@@ -6,7 +6,6 @@ import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
 
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -251,15 +250,17 @@ export class WaxPubsweet extends React.Component {
 
   renderWax(editing) {
     const { bookComponent, history, user, tags } = this.props
+
     const waxConfig = {
       layout: config.wax.layout,
       lockWhenEditing: config.wax.lockWhenEditing,
       theme: config.wax.theme,
       autoSave: config.wax.autoSave,
-      menus:
+      menus: (
         config.wax[bookComponent.divisionType.toLowerCase()][
           bookComponent.componentType
-        ] || ['component'].menus,
+        ] || config.wax[bookComponent.divisionType.toLowerCase()].default
+      ).menus,
     }
 
     const { layout, autoSave, menus } = waxConfig
@@ -360,7 +361,6 @@ export class WaxPubsweet extends React.Component {
     if (get(bookComponent, 'componentType') === 'chapter') {
       chapterNumber = get(bookComponent, 'componentTypeOrder')
     }
-    
 
     return (
       <Container>
