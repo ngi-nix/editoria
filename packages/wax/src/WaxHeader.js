@@ -18,14 +18,20 @@ const BookTitle = styled.div`
 const WithLinkDecoration = styled.div`
   a {
     text-decoration: none;
+    color: black;
+    :hover {
+      border-bottom: 1px solid black;
+    }
   }
 `
 
 const Header = styled.div`
   display: flex;
+  align-items:center;
   justify-content: space-around;
   > div {
-    width: 33%;
+    text-align:center;
+    width: 30%;
   }
 `
 
@@ -57,7 +63,10 @@ const WaxHeader = ({ bookComponent }) => {
       <div>
         {prevBookComponent && (
           <WithLinkDecoration data-testid="previous-component">
-            {withLink(prevBookComponent.title, createUrl(prevBookComponent))}
+            {withLink(
+              `${prevBookComponent.title}`,
+              createUrl(prevBookComponent),
+            )}
           </WithLinkDecoration>
         )}
       </div>
@@ -65,7 +74,10 @@ const WaxHeader = ({ bookComponent }) => {
       <div>
         {nextBookComponent && (
           <WithLinkDecoration data-testid="next-component">
-            {withLink(nextBookComponent.title, createUrl(nextBookComponent))}
+            {withLink(
+              `${nextBookComponent.title}`,
+              createUrl(nextBookComponent),
+            )}
           </WithLinkDecoration>
         )}
       </div>

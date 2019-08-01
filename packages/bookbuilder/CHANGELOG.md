@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.6...pubsweet-component-bookbuilder@1.3.0) (2019-08-01)
+
+
+### Bug Fixes
+
+* **applicationmanager:** add data-test-id for testing purposes ([5562b9a](https://gitlab.coko.foundation/editoria/editoria/commit/5562b9a))
+* **applicationmanager:** broke state of bookcomponent ([3cc4f83](https://gitlab.coko.foundation/editoria/editoria/commit/3cc4f83))
+* **applicationmanager:** fix models retrieve confgi form db ([41f9a92](https://gitlab.coko.foundation/editoria/editoria/commit/41f9a92))
+* **applicationmanager:** fix models retrieve confgi form db ([e441cb1](https://gitlab.coko.foundation/editoria/editoria/commit/e441cb1))
+* **applicationmanager:** set default componentType for missing wax config ([8f9932c](https://gitlab.coko.foundation/editoria/editoria/commit/8f9932c))
+* **applicationparameters:** rename config to applicationmanager props everywhere ([47b3538](https://gitlab.coko.foundation/editoria/editoria/commit/47b3538))
+* **dynamiccomponenttypes:** add data-test-id for tests ([fd52e45](https://gitlab.coko.foundation/editoria/editoria/commit/fd52e45))
+* **test:** make test work for editoria ([8868af9](https://gitlab.coko.foundation/editoria/editoria/commit/8868af9))
+* **waxPubsweet:** fix subscritpions ([ef11796](https://gitlab.coko.foundation/editoria/editoria/commit/ef11796))
+
+
+### Features
+
+* **applicationmanager:** get live updates subscriptions ([632e471](https://gitlab.coko.foundation/editoria/editoria/commit/632e471))
+* **applicationparameters:** get config from db create graphql query ([3a34792](https://gitlab.coko.foundation/editoria/editoria/commit/3a34792))
+* **header:** easier navigation between bookcomponents ([9e675af](https://gitlab.coko.foundation/editoria/editoria/commit/9e675af))
+
+
+
+
 <a name="1.2.6"></a>
 ## [1.2.6](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.5...pubsweet-component-bookbuilder@1.2.6) (2019-05-28)
 

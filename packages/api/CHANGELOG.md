@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.6...editoria-api@0.2.0) (2019-08-01)
+
+
+### Bug Fixes
+
+* **applicationmanager:** fix models retrieve confgi form db ([e441cb1](https://gitlab.coko.foundation/editoria/editoria/commit/e441cb1))
+* **applicationparameters:** rename config to applicationmanager props everywhere ([47b3538](https://gitlab.coko.foundation/editoria/editoria/commit/47b3538))
+* **navigation:** fix navigation of editor link ([c569dc2](https://gitlab.coko.foundation/editoria/editoria/commit/c569dc2))
+* **test:** make test work for editoria ([8868af9](https://gitlab.coko.foundation/editoria/editoria/commit/8868af9))
+
+
+### Features
+
+* **applicationmanager:** get live updates subscriptions ([632e471](https://gitlab.coko.foundation/editoria/editoria/commit/632e471))
+* **applicationparameters:** get config from db create graphql query ([3a34792](https://gitlab.coko.foundation/editoria/editoria/commit/3a34792))
+* **dynamicomponenttype:** add graphql schema query mutations table ([4e4081d](https://gitlab.coko.foundation/editoria/editoria/commit/4e4081d))
+* **header:** easier navigation between bookcomponents ([9e675af](https://gitlab.coko.foundation/editoria/editoria/commit/9e675af))
+* **tags:** add resolvers, graphql schema ([88bb4ca](https://gitlab.coko.foundation/editoria/editoria/commit/88bb4ca))
+* **template manager:** init template manager ([cd51950](https://gitlab.coko.foundation/editoria/editoria/commit/cd51950))
+
+
+
+
 <a name="0.1.6"></a>
 ## [0.1.6](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.5...editoria-api@0.1.6) (2019-05-28)
 
