@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.1.2...editoria-data-model@0.2.0) (2019-08-01)
+
+
+### Bug Fixes
+
+* **applicationmanager:** fix models retrieve confgi form db ([e441cb1](https://gitlab.coko.foundation/editoria/editoria/commit/e441cb1))
+* **data model:** additions in template and file clean up ([ba558f1](https://gitlab.coko.foundation/editoria/editoria/commit/ba558f1))
+* **datamodel:** target property added ([52cef1e](https://gitlab.coko.foundation/editoria/editoria/commit/52cef1e))
+* **test:** make test work for editoria ([8868af9](https://gitlab.coko.foundation/editoria/editoria/commit/8868af9))
+* **test:** make them run after pubsweet upgrade ([1c50b43](https://gitlab.coko.foundation/editoria/editoria/commit/1c50b43))
+
+
+### Features
+
+* **applicationmanage:** create query ([02c84dd](https://gitlab.coko.foundation/editoria/editoria/commit/02c84dd))
+* **data model:** support of files, files trnsaltions and templates ([283e762](https://gitlab.coko.foundation/editoria/editoria/commit/283e762))
+* **data-model:** include in TOC, running headers support in DM ([e1ae06a](https://gitlab.coko.foundation/editoria/editoria/commit/e1ae06a))
+* **dynamicomponenttype:** add graphql schema query mutations table ([4e4081d](https://gitlab.coko.foundation/editoria/editoria/commit/4e4081d))
+* **tags:** add resolvers, graphql schema ([88bb4ca](https://gitlab.coko.foundation/editoria/editoria/commit/88bb4ca))
+
+
+
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.1.1...editoria-data-model@0.1.2) (2019-05-28)
 

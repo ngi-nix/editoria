@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.9.1...pubsweet-component-wax@0.10.0) (2019-08-01)
+
+
+### Bug Fixes
+
+* **app:** fixes for the beta release ([2ee72a4](https://gitlab.coko.foundation/editoria/editoria/commit/2ee72a4))
+* **applicationmanager:** set default componentType for missing wax config ([8f9932c](https://gitlab.coko.foundation/editoria/editoria/commit/8f9932c))
+* **customtags:** connect to editoria ([5f165a5](https://gitlab.coko.foundation/editoria/editoria/commit/5f165a5))
+* **header:** add header to editor ([44f3521](https://gitlab.coko.foundation/editoria/editoria/commit/44f3521))
+* **headertest:** fix header for test ([5a607d7](https://gitlab.coko.foundation/editoria/editoria/commit/5a607d7))
+* **navigation:** clear uneened code ([54e4085](https://gitlab.coko.foundation/editoria/editoria/commit/54e4085))
+* **navigation:** fix navigation of editor link ([c569dc2](https://gitlab.coko.foundation/editoria/editoria/commit/c569dc2))
+* **navigation:** same width to all div ([97d8754](https://gitlab.coko.foundation/editoria/editoria/commit/97d8754))
+* **wax:** height fo wax ([0ce2bfd](https://gitlab.coko.foundation/editoria/editoria/commit/0ce2bfd))
+* **waxPubsweet:** fix subscritpions ([ef11796](https://gitlab.coko.foundation/editoria/editoria/commit/ef11796))
+
+
+### Features
+
+* **header:** easier navigation between bookcomponents ([9e675af](https://gitlab.coko.foundation/editoria/editoria/commit/9e675af))
+* **tags:** add resolvers, graphql schema ([88bb4ca](https://gitlab.coko.foundation/editoria/editoria/commit/88bb4ca))
+
+
+
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.9.0...pubsweet-component-wax@0.9.1) (2019-05-28)
 

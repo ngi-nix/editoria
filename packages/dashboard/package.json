@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-dashboard",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "The application dashboard for the Editoria project.",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@pubsweet/ui": "^10.3.0",
-    "editoria-common": "^0.1.6",
+    "editoria-common": "^0.1.7",
     "formik": "^1.5.1",
     "lodash": "4.17.4",
     "pubsweet-client": "^9.2.3",

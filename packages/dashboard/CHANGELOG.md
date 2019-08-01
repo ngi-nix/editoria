@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.2.6...pubsweet-component-editoria-dashboard@0.3.0) (2019-08-01)
+
+
+### Bug Fixes
+
+* **test:** make test work for editoria ([8868af9](https://gitlab.coko.foundation/editoria/editoria-dashboard/commit/8868af9))
+
+
+### Features
+
+* **applicationparameters:** get config from db create graphql query ([3a34792](https://gitlab.coko.foundation/editoria/editoria-dashboard/commit/3a34792))
+
+
+
+
 <a name="0.2.6"></a>
 ## [0.2.6](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.2.5...pubsweet-component-editoria-dashboard@0.2.6) (2019-05-28)
 
