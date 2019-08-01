@@ -8,6 +8,9 @@
     "pubsweet-component",
     "graphql"
   ],
+  "scripts": {
+    "test": "jest"
+  },
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {

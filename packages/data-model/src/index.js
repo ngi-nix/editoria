@@ -8,6 +8,7 @@ const bookTranslation = require('./bookTranslation')
 const file = require('./file')
 const fileTranslation = require('./fileTranslation')
 const template = require('./template')
+const customTag = require('./customTag')
 const division = require('./division')
 const team = require('./team')
 const user = require('./user')
@@ -18,6 +19,7 @@ const loader = models.reduce((r, c) => Object.assign(r, c), {})
 
 module.exports = {
   book,
+  customTag,
   team,
   user,
   bookCollection,
@@ -40,6 +42,7 @@ module.exports = {
     BookComponentState: bookComponentState.model,
     BookComponentTranslation: bookComponentTranslation.model,
     BookTranslation: bookTranslation.model,
+    CustomTag: customTag.model,
     Division: division.model,
     File: file.model,
     FileTranslation: fileTranslation.model,

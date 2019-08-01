@@ -1,12 +1,10 @@
+process.env.ALLOW_CONFIG_MUTATIONS = true
 const NodeEnvironment = require('jest-environment-node')
 const pg = require('pg')
-
-// require('../editoria-authsome/test/helpers/jest-setup')
-require('../data-model/__tests__/config/jestSetup')
-
 const config = require('config')
 
 const dbConfig = config['pubsweet-server'] && config['pubsweet-server'].db
+
 Object.assign(dbConfig, {
   connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 1000,
@@ -14,7 +12,6 @@ Object.assign(dbConfig, {
 
 class DatabaseTestEnvironment extends NodeEnvironment {
   async setup() {
-    // console.log(config)
     await super.setup()
     this.db = new pg.Client(dbConfig)
     // console.log(this.db)

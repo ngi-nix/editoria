@@ -1,10 +1,12 @@
-const { User } = require('pubsweet-server')
+const {
+  editoriaDataModel: {
+    models: { User },
+  },
+} = require('editoria-data-model')
 
-const registerComponents = require('./helpers/registerComponents')
-registerComponents(['bookCollection', 'lock'])
-
+const { BookCollection, Lock } = require('editoria-data-model/src').models
 const { dbCleaner } = require('pubsweet-server/test')
-const { BookCollection, Lock } = require('../src').models
+
 let collection, user
 
 describe('Lock', () => {

@@ -2,6 +2,7 @@ const authorize = require('./authorize')
 const book = require('./book')
 const bookComponent = require('./bookComponent')
 const bookCollection = require('./bookCollection')
+const customTag = require('./customTag')
 const division = require('./division')
 const team = require('./team')
 const user = require('./user')
@@ -18,6 +19,7 @@ module.exports = {
     book.typeDefs,
     bookComponent.typeDefs,
     bookCollection.typeDefs,
+    customTag.typeDefs,
     division.typeDefs,
     file.typeDefs,
     team.typeDefs,
@@ -29,6 +31,7 @@ module.exports = {
     book.resolvers,
     bookComponent.resolvers,
     bookCollection.resolvers,
+    customTag.resolvers,
     division.resolvers,
     file.resolvers,
     team.resolvers,

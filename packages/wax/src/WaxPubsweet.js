@@ -6,6 +6,7 @@ import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,7 +16,6 @@ const Container = styled.div`
     height: 88vh;
   }
 `
-
 export class WaxPubsweet extends React.Component {
   constructor(props) {
     super(props)
@@ -159,8 +159,29 @@ export class WaxPubsweet extends React.Component {
       bookComponent,
       updateBookComponentTrackChanges,
       renameBookComponent,
+      updateCustomTags,
+      addCustomTags,
     } = this.props
-    const { trackChanges, title } = patch
+    const { trackChanges, title, tags } = patch
+
+    if (tags) {
+      const addTags = tags.filter(tag => !tag.id)
+      const updateTags = tags.filter(tag => tag.id)
+      if (addTags.length > 0) {
+        addCustomTags({
+          variables: {
+            input: addTags,
+          },
+        })
+      }
+      if (updateTags.length > 0) {
+        updateCustomTags({
+          variables: {
+            input: updateTags,
+          },
+        })
+      }
+    }
 
     if (trackChanges !== undefined) {
       return updateBookComponentTrackChanges({
@@ -229,7 +250,7 @@ export class WaxPubsweet extends React.Component {
   }
 
   renderWax(editing) {
-    const { bookComponent, history, user } = this.props
+    const { bookComponent, history, user, tags } = this.props
     const waxConfig = {
       layout: config.wax.layout,
       lockWhenEditing: config.wax.lockWhenEditing,
@@ -339,6 +360,7 @@ export class WaxPubsweet extends React.Component {
     if (get(bookComponent, 'componentType') === 'chapter') {
       chapterNumber = get(bookComponent, 'componentTypeOrder')
     }
+    
 
     return (
       <Container>
@@ -348,6 +370,7 @@ export class WaxPubsweet extends React.Component {
           chapterNumber={chapterNumber}
           className="editor-wrapper"
           content={content}
+          customTags={tags}
           editing={translatedEditing}
           fileUpload={this.fileUpload}
           history={history}

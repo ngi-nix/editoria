@@ -1,12 +1,3 @@
-const registerComponents = require('./helpers/registerComponents')
-registerComponents([
-  'book',
-  'bookCollection',
-  'bookComponent',
-  'bookComponentTranslation',
-  'division',
-])
-
 const uuid = require('uuid/v4')
 const { dbCleaner } = require('pubsweet-server/test')
 
