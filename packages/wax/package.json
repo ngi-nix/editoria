@@ -21,7 +21,7 @@
     "react-powerplug": "^1.0.0",
     "react-router-dom": "^5.0.0",
     "styled-components": "^4.2.0",
-    "wax-editor-react": "^0.2.19"
+    "wax-editor-react": "^0.2.21"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -53,6 +53,7 @@ const UploadButton = ({
         accept={accept}
         id={`${id}-upload-btn`}
         multiple={multiple}
+        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
         onChange={onChange}
         type="file"
       />

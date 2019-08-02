@@ -261,7 +261,7 @@ class Division extends React.Component {
 
     if (canViewAddComponent) {
       addButtons = map(componentConfig.allowedComponentTypes, componentType =>
-        componentType.predefined ? (
+        componentType.visibleInHeader ? (
           <AddComponentButton
             add={this.onAddClick}
             divisionName={componentConfig.name}

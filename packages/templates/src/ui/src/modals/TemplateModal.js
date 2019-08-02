@@ -280,17 +280,14 @@ class TemplateModal extends React.Component {
     let newState
     const tempFiles = cloneDeep(files)
     const tempDeleted = cloneDeep(deleteFiles)
-    console.log('filename', filename)
-    console.log('files', files)
-
     const fileIndex = findIndex(tempFiles, { name: filename })
-    console.log('index', fileIndex)
+    
     if (mode === 'update' && tempFiles[fileIndex].id) {
-      console.log('id', tempFiles[fileIndex].id)
+    
       const { id } = tempFiles[fileIndex]
       tempDeleted.push(id)
       files.splice(fileIndex, 1)
-      console.log('files', files)
+    
       newState = {
         deleteFiles: tempDeleted,
         files,
@@ -301,7 +298,7 @@ class TemplateModal extends React.Component {
         files,
       }
     }
-    console.log('newState', newState)
+    
 
     setFieldValue('files', files)
     this.setState(newState)
@@ -388,14 +385,14 @@ class TemplateModal extends React.Component {
         trimSize,
       }
     }
-    console.log('templatr', initialValues)
+    
     return (
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           const { name, author, trimSize, files, thumbnail, target } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
-          console.log('values', values)
+          
           let data
           if (mode === 'create') {
             data = {
@@ -418,7 +415,7 @@ class TemplateModal extends React.Component {
               target: target ? target.value : undefined,
             }
           }
-          console.log('data', data)
+          
           onConfirm(data)
           setSubmitting(false)
         }}
@@ -501,6 +498,7 @@ class TemplateModal extends React.Component {
                         errorId="name"
                         errors={errors}
                         touched={touched}
+                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -518,6 +516,7 @@ class TemplateModal extends React.Component {
                         errorId="author"
                         errors={errors}
                         touched={touched}
+                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
                         name="author"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -534,6 +533,7 @@ class TemplateModal extends React.Component {
                       <Input
                         errorId="trimSize"
                         touched={touched}
+                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
                         errors={errors}
                         name="trimSize"
                         onBlur={handleBlur}
@@ -591,7 +591,7 @@ class TemplateModal extends React.Component {
     const { isOpen, hideModal, data } = this.props
     const { headerText } = data
     const body = this.renderBody()
-    console.log('hello render')
+    
     return (
       <FormModal
         headerText={headerText}

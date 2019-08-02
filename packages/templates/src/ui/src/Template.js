@@ -4,11 +4,14 @@ import { th } from '@pubsweet/ui-toolkit'
 
 const ButtonsContainer = styled.div`
   display: flex;
+  visibility: hidden;
   flex-direction: column;
-  width:50%;
-  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  padding-top: calc(2 * ${th('gridUnit')});
+  /* align-items: flex-start;
   justify-content: flex-start;
-  margin-top: 20px;
+  margin-top: 20px; */
 `
 
 const randomColor = () => {
@@ -43,56 +46,71 @@ const StyledButton = styled.button`
     outline: 0;
   }
 `
-const PlaceholderContainer = styled.div`
+// const PlaceholderContainer = styled.div`
+//   height: 100%;
+//   width: 188px;
+//   svg {
+//     #color {
+//       fill: ${({ color }) => color};
+//     }
+//   }
+// `
+
+// const thumbnailPlaceholder = (
+//   <svg
+//     width="188"
+//     height="282 "
+//     viewBox="0 0 188 282"
+//     fill="none"
+//     xmlns="http://www.w3.org/2000/svg"
+//   >
+//     <rect id="back" width="188" height="266" fill="url(#pattern0)" />
+//     <rect id="color" width="188" height="282" fill="black" fillOpacity="0.3" />
+//     <defs>
+//       <pattern
+//         id="pattern0"
+//         patternContentUnits="objectBoundingBox"
+//         width="1"
+//         height="1"
+//       >
+//         <use transform="translate(-0.635627 -0.594882) scale(0.00182688 0.00129118)" />
+//       </pattern>
+//       <image id="image0" width="3902" height="2195" />
+//     </defs>
+//   </svg>
+// )
+
+// const Overlay = styled.div`
+//   background: transparent;
+//   z-index: 2;
+
+//   /* transition: 0.5s ease; */
+//   opacity: 0;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   height: 100%;
+//   width: 100%;
+// `
+
+// const Image = styled.img`
+//   height: 100%;
+//   width: 188px;
+// `
+
+const ImageContainer = styled.div`
   height: 100%;
   width: 188px;
-  svg {
-    #color {
-      fill: ${({ color }) => color};
-    }
-  }
-`
-
-const thumbnailPlaceholder = (
-  <svg
-    width="188"
-    height="282 "
-    viewBox="0 0 188 282"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect id="back" width="188" height="266" fill="url(#pattern0)" />
-    <rect id="color" width="188" height="282" fill="black" fillOpacity="0.3" />
-    <defs>
-      <pattern
-        id="pattern0"
-        patternContentUnits="objectBoundingBox"
-        width="1"
-        height="1"
-      >
-        <use transform="translate(-0.635627 -0.594882) scale(0.00182688 0.00129118)" />
-      </pattern>
-      <image id="image0" width="3902" height="2195" />
-    </defs>
-  </svg>
-)
-
-const Overlay = styled.div`
-  background: transparent;
-  z-index: 2;
-
-  /* transition: 0.5s ease; */
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-`
-
-const Image = styled.img`
-  height: 100%;
-  width: 188px;
+  background-size: contain;
+  margin-right: calc(3 * ${th('gridUnit')});
+  background-repeat:no-repeat;
+  ${({ thumbnail, color }) =>
+    thumbnail
+      ? `background-image: url(${thumbnail.source})`
+      : `background: ${color}`}
+      /* background-blend-mode: multiply; */
+  /* background: ${({ thumbnail, color }) =>
+    thumbnail ? `url(${thumbnail.source})` : color}; */
 `
 
 const Container = styled.div`
@@ -101,28 +119,25 @@ const Container = styled.div`
   position: relative;
   margin-right: calc(1.5 * ${th('gridUnit')});
   display: flex;
-  flex-basis: 32.6%;
+  flex-basis: 32.3%;
   height: 282px;
   /* min-width:390px; */
   margin-bottom: calc(3 * ${th('gridUnit')});
   &:hover {
-    transition: 0.5s ease;
-
-    color: white;
+    ${ButtonsContainer} {
+      visibility: visible;
+      /* background: #0964cc; */
+    }
+    ${ImageContainer} {
+      box-shadow: inset 0 0 0 1000px rgba(9,    100,    204, 0.7);
+      /* filter: grayscale(); */
+      /* opacity: 0.5; */
+    }
     background: #0964cc;
-    ${Overlay} {
-      opacity: 1;
-    }
-    ${Image} {
-      background: #0964cc;
-      opacity: 0.4;
-    }
+    color: white;
   }
 `
-const ImageContainer = styled.div`
-  height: 100%;
-  margin-right: calc(3 * ${th('gridUnit')});
-`
+
 
 const InfoContainer = styled.div`
   display: flex;
@@ -160,14 +175,30 @@ const Template = props => {
   } = props
   return (
     <Container>
-      <ImageContainer>
-        {thumbnail ? (
+      <ImageContainer thumbnail={thumbnail} color={randomColor()}>
+        <ButtonsContainer>
+          <StyledButton
+            onClick={() => {
+              onUpdateTemplate(id)
+            }}
+          >
+            Update
+          </StyledButton>
+          <StyledButton
+            onClick={() => {
+              onDeleteTemplate(id, name)
+            }}
+          >
+            Delete
+          </StyledButton>
+        </ButtonsContainer>
+        {/* {thumbnail ? (
           <Image src={thumbnail.source} />
         ) : (
           <PlaceholderContainer key={id} color={randomColor()}>
             {thumbnailPlaceholder}
           </PlaceholderContainer>
-        )}
+        )} */}
       </ImageContainer>
       <InfoContainer>
         <Row>
@@ -187,7 +218,7 @@ const Template = props => {
           <Text>{target || '-'}</Text>
         </Row>
       </InfoContainer>
-      <Overlay>
+      {/* <Overlay>
         <ButtonsContainer>
           <StyledButton
             onClick={() => {
@@ -204,7 +235,7 @@ const Template = props => {
             Delete
           </StyledButton>
         </ButtonsContainer>
-      </Overlay>
+      </Overlay> */}
     </Container>
   )
 }
