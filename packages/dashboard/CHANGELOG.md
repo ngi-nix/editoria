@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.1"></a>
+## [0.3.1](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.3.0...pubsweet-component-editoria-dashboard@0.3.1) (2019-08-02)
+
+
+### Bug Fixes
+
+* **subscription:** move subscription before mutations at dashboard and bookbuilder ([cdf0df9](https://gitlab.coko.foundation/editoria/editoria-dashboard/commit/cdf0df9))
+
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.2.6...pubsweet-component-editoria-dashboard@0.3.0) (2019-08-01)
 

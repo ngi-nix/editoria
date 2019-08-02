@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.3.0...pubsweet-component-bookbuilder@1.3.1) (2019-08-02)
+
+
+### Bug Fixes
+
+* **menu:** remove overlay close and close component by toggleMenu ([9dc625e](https://gitlab.coko.foundation/editoria/editoria/commit/9dc625e))
+* **subscription:** move subscription before mutations at dashboard and bookbuilder ([cdf0df9](https://gitlab.coko.foundation/editoria/editoria/commit/cdf0df9))
+* **template manager:** various fixes ([f7e79d4](https://gitlab.coko.foundation/editoria/editoria/commit/f7e79d4))
+
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.2.6...pubsweet-component-bookbuilder@1.3.0) (2019-08-01)
 
