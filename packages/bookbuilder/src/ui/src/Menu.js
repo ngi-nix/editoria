@@ -8,18 +8,6 @@ import { forEach } from 'lodash'
 // #region styled components
 const Root = styled.div``
 
-const CloseOverlay = styled.div`
-  background-color: transparent;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  top: 0;
-  right: 0;
-  z-index: 10;
-
-  ${override('ui.Menu.CloseOverlay')};
-`
-
 const Label = styled.label`
   font-size: ${th('fontSizeBaseSmall')};
   line-height: ${th('lineHeightBaseSmall')};
@@ -182,12 +170,9 @@ class Menu extends React.Component {
       selected: props.value,
       selectOneOfMultiElement: undefined,
     }
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({ selected: nextProps.value })
-    }
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   resetMenu = props => {
@@ -201,6 +186,10 @@ class Menu extends React.Component {
     this.setState({
       open: !this.state.open,
     })
+
+    if (this.state.open === false) {
+      document.addEventListener('mousedown', this.handleClickOutside)
+    }
   }
 
   selectOneOfMultiElement = (event, value) => {
@@ -219,6 +208,13 @@ class Menu extends React.Component {
     if (this.props.onChange) this.props.onChange(selected)
   }
 
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.toggleMenu()
+      document.removeEventListener('mousedown', this.handleClickOutside)
+    }
+  }
+
   handleSelect = ({ selected, open }) => {
     const { multi } = this.props
     let values
@@ -230,9 +226,9 @@ class Menu extends React.Component {
     }
 
     this.setState({
-      open,
       selected: values,
     })
+    this.toggleMenu()
     if (this.props.onChange) this.props.onChange(values)
   }
 
@@ -256,6 +252,19 @@ class Menu extends React.Component {
       : ''
   }
 
+  /**
+   * Set the wrapper ref
+   */
+  setWrapperRef(node) {
+    this.wrapperRef = node
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({ selected: nextProps.value })
+    }
+  }
+
   render() {
     const {
       maxHeight = 250,
@@ -276,9 +285,13 @@ class Menu extends React.Component {
     if (reset === true) this.resetMenu(this.props)
 
     return (
-      <Root className={className} inline={inline} open={open}>
+      <Root
+        className={className}
+        inline={inline}
+        open={open}
+        ref={this.setWrapperRef}
+      >
         {label && <Label>{label}</Label>}
-        {open && <CloseOverlay onClick={this.toggleMenu} />}
         <Main>
           <RenderOpener
             open={open}
