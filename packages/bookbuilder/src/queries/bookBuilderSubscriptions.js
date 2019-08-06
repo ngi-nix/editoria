@@ -3,8 +3,9 @@ import { Subscription } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const DOCX_TO_HTML_JOB = gql`
-  subscription DocxToHTMLJob {
-    docxToHTMLJob {
+  subscription DocxToHTMLJob($jobId: String!) {
+    docxToHTMLJob(jobId: $jobId) {
+      id
       status
       html
     }
@@ -352,19 +353,26 @@ const bookRenamedSubscription = props => {
 }
 
 const docxToHTMLJobSubscription = props => {
-  const { render, getBookQuery, statefull } = props
+  const { render, uploadBookComponentMutation, statefull } = props
   const { pauseUpdates } = statefull
-  const { refetch } = getBookQuery
-  const triggerRefetch = () => {
+
+  const triggerRefetch = props => {
     if (pauseUpdates) return
-    console.log(getBookQuery, props,"Got Subscriptions Got SubscriptionsGot SubscriptionsGot SubscriptionsGot Subscriptions")
-    refetch()
+    //refetch()
   }
+
+  const { id } = (
+    ((uploadBookComponentMutation || {}).uploadBookComponentResult || {})
+      .data || {}
+  ).createDocxToHTMLJob || { id: false }
+
+  if (!id) return render()
 
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={DOCX_TO_HTML_JOB}
+      variables={{ jobId: id }}
     >
       {render}
     </Subscription>

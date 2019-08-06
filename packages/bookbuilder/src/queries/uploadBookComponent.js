@@ -3,10 +3,10 @@ import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const UPLOAD_BOOK_COMPONENT = gql`
-  mutation CreateDocxToHTMLJob($file: Upload!, $fileSize: Int) {
-    createDocxToHTMLJob(file: $file, fileSize: $fileSize) {
+  mutation CreateDocxToHTMLJob($file: Upload!) {
+    createDocxToHTMLJob(file: $file) {
       status
-      html
+      id
     }
   }
 `
