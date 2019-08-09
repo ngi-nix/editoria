@@ -582,6 +582,28 @@ const updateComponentType = async (_, { input }, ctx) => {
   return updatedBookComponent
 }
 
+const toggleIncludeInTOC = async (_, { input }, ctx) => {
+  try {
+    const { id } = input
+    const pubsub = await pubsubManager.getPubsub()
+    const currentSate = await BookComponentState.query().where(
+      'bookComponentId',
+      id,
+    )
+    await BookComponentState.query()
+      .patch({ includeInTOC: !currentSate.includeInTOC })
+      .findById(currentSate.id)
+    const updatedBookComponent = await BookComponent.findById(id)
+    pubsub.publish(BOOK_COMPONENT_TYPE_UPDATED, {
+      bookComponentTypeUpdated: updatedBookComponent,
+    })
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   Query: {
     getBookComponent,
@@ -600,6 +622,7 @@ module.exports = {
     updateUploading,
     updateTrackChanges,
     updateComponentType,
+    toggleIncludeInTOC,
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
@@ -747,6 +770,11 @@ module.exports = {
         bookComponent.id,
       )
       return bookComponentState[0].workflowStages || null
+    },
+
+    async includeInTOC(bookComponent, _, ctx) {
+      const state = await bookComponent.getBookComponentState()
+      return state.includeInTOC
     },
   },
   Subscription: {

@@ -25,6 +25,7 @@ const GET_BOOK = gql`
           divisionId
           title
           bookId
+          includeInTOC
           # hasContent
           componentTypeOrder
           pagination {

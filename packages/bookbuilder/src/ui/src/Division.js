@@ -189,6 +189,7 @@ class Division extends React.Component {
         bookId,
         lock,
         divisionId,
+        includeInTOC,
         componentTypeOrder,
         hasContent,
         title,
@@ -229,13 +230,14 @@ class Division extends React.Component {
                   remove={this.onRemove}
                   rules={rules}
                   showModal={showModal}
+                  includeInTOC={includeInTOC}
+                  showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
                   updateApplicationParameters={updateApplicationParameters}
                   onWarning={onWarning}
                   update={update}
-                  updateComponentType={updateComponentType}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
                   uploadBookComponent={uploadBookComponent}
@@ -300,8 +302,8 @@ class Division extends React.Component {
               {bookComponents.length > 0 ? (
                 <BookComponentList>{bookComponentInstances}</BookComponentList>
               ) : (
-                  <EmptyList>There are no items in this division.</EmptyList>
-                )}
+                <EmptyList>There are no items in this division.</EmptyList>
+              )}
               {provided.placeholder}
             </div>
           )}
