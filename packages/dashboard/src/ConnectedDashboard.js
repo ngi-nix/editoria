@@ -23,14 +23,14 @@ const mapper = {
   getBookCollectionsQuery,
   archiveBookMutation,
   getDashboardRulesQuery,
-  createBookMutation,
-  renameBookMutation,
-  deleteBookMutation,
   bookCreatedSubscription,
   bookRenamedSubscription,
   bookDeletedSubscription,
   bookArchivedSubscription,
   addTeamMemberSubscription,
+  createBookMutation,
+  renameBookMutation,
+  deleteBookMutation,
 }
 
 const mapProps = args => {
