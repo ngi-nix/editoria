@@ -34,7 +34,7 @@ The vanilla flavor includes all the features implemented by the development team
 
 ## I want to try it  
 
-In order to try the application, you should navigate and clone one of its' flavors and follow the rules of getting up and running
+In order to try the application, you should navigate and clone one of its' flavors and follow the getting up and running instructions
 
 
 
