@@ -168,6 +168,7 @@ class Division extends React.Component {
       divisionId,
       onWarning,
       showModal,
+      toggleIncludeInTOC,
       onWorkflowUpdate,
       onAdminUnlock,
       history,
@@ -208,6 +209,7 @@ class Division extends React.Component {
                   bookId={bookId}
                   onAdminUnlock={onAdminUnlock}
                   onWorkflowUpdate={onWorkflowUpdate}
+                  toggleIncludeInTOC={toggleIncludeInTOC}
                   currentUser={currentUser}
                   canDrag={reorderingAllowed}
                   componentType={componentType}
@@ -222,8 +224,6 @@ class Division extends React.Component {
                   key={id}
                   lock={lock}
                   no={i}
-                  onEndDrag={() => console.log('hello')}
-                  onMove={() => console.log('hello')}
                   outerContainer={outerContainer}
                   pagination={pagination}
                   provided={provided}

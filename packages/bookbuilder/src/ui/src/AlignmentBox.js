@@ -18,7 +18,7 @@ const Container = styled.div`
   border-left: ${({ noBorder }) => (noBorder.left ? 0 : '')};
 `
 const AlignmentBox = ({ active, id, noBorder, onClick }) => {
-  console.log('act', active)
+  
   return (
     <Container
       active={active}

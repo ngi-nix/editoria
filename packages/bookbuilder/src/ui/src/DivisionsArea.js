@@ -206,6 +206,7 @@ class DivisionsArea extends Component {
       updateBookComponentWorkflowState,
       onAdminUnlock,
       updateBookComponentUploading,
+      toggleIncludeInTOC,
       outerContainer,
       showModal,
       updateComponentType,
@@ -214,10 +215,11 @@ class DivisionsArea extends Component {
       uploading,
       rules,
     } = this.props
-
+    
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
     const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
+      
       return (
         <Division
           add={addBookComponent}
@@ -226,6 +228,7 @@ class DivisionsArea extends Component {
           bookId={bookId}
           currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
+          toggleIncludeInTOC={toggleIncludeInTOC}
           divisionId={id}
           history={history}
           key={id}

@@ -77,6 +77,7 @@ export class BookBuilder extends React.Component {
       onMetadataAdd,
       currentUser,
       deleteBookComponent,
+      toggleIncludeInTOC,
       updateApplicationParameters,
       updateBookComponentPagination,
       updateBookComponentOrder,
@@ -159,6 +160,7 @@ export class BookBuilder extends React.Component {
           onWorkflowUpdate={onWorkflowUpdate}
           rules={rules}
           setState={setState}
+          toggleIncludeInTOC={toggleIncludeInTOC}
           updateApplicationParameters={updateApplicationParameters}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

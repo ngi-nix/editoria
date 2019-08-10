@@ -28,6 +28,15 @@ const StyledButton = styled(ButtonWithoutLabel)`
         includeInTOC ? 'visible' : 'hidden'};
     }
   }
+
+  &:hover {
+    #Line {
+      stroke: ${({ includeInTOC }) => (includeInTOC ? th('colorPrimary') : '')};
+    }
+    #Line_2 {
+      stroke: ${({ includeInTOC }) => (includeInTOC ? 'white' : '')};
+    }
+  }
 `
 const BookComponentContainer = styled.div`
   display: flex;
@@ -195,6 +204,7 @@ const BookComponent = ({
   remove,
   rules,
   title,
+  toggleIncludeInTOC,
   workflowStages,
   trackChangesEnabled,
   onWorkflowUpdate,
@@ -212,6 +222,16 @@ const BookComponent = ({
         input: {
           id,
           componentType: value,
+        },
+      },
+    })
+  }
+
+  const onToggleIncludeInTOC = id => {
+    toggleIncludeInTOC({
+      variables: {
+        input: {
+          id,
         },
       },
     })
@@ -334,7 +354,14 @@ const BookComponent = ({
             <ButtonWithoutLabel onClick={goToEditor} icon={previewIcon} />
           )} */}
         </ActionsLeft>
-        <StyledButton icon={tocIcon} includeInTOC={includeInTOC} />
+        <StyledButton
+          icon={tocIcon}
+          includeInTOC={includeInTOC}
+          onClick={e => {
+            e.preventDefault()
+            onToggleIncludeInTOC(id)
+          }}
+        />
         <BookComponentTitle
           applicationParameter={applicationParameter}
           bookComponentId={id}
@@ -362,7 +389,7 @@ const BookComponent = ({
           history={history}
           remove={remove}
           rules={rules}
-        // update={update}
+          // update={update}
         />
       </FirstRow>
 

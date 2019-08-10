@@ -36,8 +36,6 @@ const Input = styled.input`
   outline: 0;
   border-bottom: 1px dashed
     ${({ errors, errorId, touched }) => {
-      console.log('asdfasdf', errorId)
-      console.log('asdfasdf', errors)
       return errors[errorId] && touched[errorId]
         ? th('colorError')
         : th('colorText')
@@ -202,7 +200,7 @@ const Image = styled.img`
 class TemplateModal extends React.Component {
   constructor(props) {
     super(props)
-    console.log('props in tem', props)
+
     const { data, template } = props
     const { mode } = data
     this.updateFileList = this.updateFileList.bind(this)
@@ -243,7 +241,7 @@ class TemplateModal extends React.Component {
     for (let i = 0; i < fileList.length; i += 1) {
       selectedFiles.push(fileList.item(i))
     }
-    console.log('selectedFIles', selectedFiles)
+
     this.setState({ files: selectedFiles })
     setFieldValue('files', selectedFiles)
     setFieldTouched('files', true)
@@ -257,7 +255,7 @@ class TemplateModal extends React.Component {
     const { thumbnail, mode } = this.state
     const reader = new FileReader()
     reader.readAsDataURL(file)
-    console.log('thumb', thumbnail)
+
     reader.onloadend = function(e) {
       let newState
       if (mode === 'update') {
@@ -281,13 +279,12 @@ class TemplateModal extends React.Component {
     const tempFiles = cloneDeep(files)
     const tempDeleted = cloneDeep(deleteFiles)
     const fileIndex = findIndex(tempFiles, { name: filename })
-    
+
     if (mode === 'update' && tempFiles[fileIndex].id) {
-    
       const { id } = tempFiles[fileIndex]
       tempDeleted.push(id)
       files.splice(fileIndex, 1)
-    
+
       newState = {
         deleteFiles: tempDeleted,
         files,
@@ -298,7 +295,6 @@ class TemplateModal extends React.Component {
         files,
       }
     }
-    
 
     setFieldValue('files', files)
     this.setState(newState)
@@ -385,14 +381,14 @@ class TemplateModal extends React.Component {
         trimSize,
       }
     }
-    
+
     return (
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           const { name, author, trimSize, files, thumbnail, target } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
-          
+
           let data
           if (mode === 'create') {
             data = {
@@ -415,7 +411,7 @@ class TemplateModal extends React.Component {
               target: target ? target.value : undefined,
             }
           }
-          
+
           onConfirm(data)
           setSubmitting(false)
         }}
@@ -498,7 +494,9 @@ class TemplateModal extends React.Component {
                         errorId="name"
                         errors={errors}
                         touched={touched}
-                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -516,7 +514,9 @@ class TemplateModal extends React.Component {
                         errorId="author"
                         errors={errors}
                         touched={touched}
-                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         name="author"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -533,7 +533,9 @@ class TemplateModal extends React.Component {
                       <Input
                         errorId="trimSize"
                         touched={touched}
-                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         errors={errors}
                         name="trimSize"
                         onBlur={handleBlur}
@@ -591,7 +593,7 @@ class TemplateModal extends React.Component {
     const { isOpen, hideModal, data } = this.props
     const { headerText } = data
     const body = this.renderBody()
-    
+
     return (
       <FormModal
         headerText={headerText}

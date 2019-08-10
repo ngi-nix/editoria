@@ -3,6 +3,7 @@ export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
 export { default as getBookTeamsQuery } from './getBookTeams'
 export { default as createBookComponentMutation } from './createBookComponent'
 export { default as deleteBookComponentMutation } from './deleteBookComponent'
+export { default as toggleIncludeInTOCMutation } from './toggleIncludeInTOC'
 export {
   default as updateBookComponentPaginationMutation,
 } from './updatePagination'
@@ -27,6 +28,7 @@ export {
   bookMetadataSubscription,
   bookRenamedSubscription,
   docxToHTMLJobSubscription,
+  bookComponentIncludeInTOCSubscription,
 } from './bookBuilderSubscriptions'
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'

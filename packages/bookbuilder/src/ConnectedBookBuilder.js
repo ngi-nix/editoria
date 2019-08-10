@@ -34,6 +34,8 @@ import {
   updateBookMetadataMutation,
   bookMetadataSubscription,
   bookRenamedSubscription,
+  toggleIncludeInTOCMutation,
+  bookComponentIncludeInTOCSubscription,
 } from './queries'
 
 const mapper = {
@@ -51,6 +53,7 @@ const mapper = {
   titleChangeSubscription,
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
+  bookComponentIncludeInTOCSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
   ingestWordFilesMutation,
@@ -58,6 +61,7 @@ const mapper = {
   createBookComponentMutation,
   unlockBookComponentMutation,
   deleteBookComponentMutation,
+  toggleIncludeInTOCMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
@@ -73,6 +77,7 @@ const mapProps = args => ({
   book: get(args.getBookQuery, 'data.getBook'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
+  toggleIncludeInTOC: args.toggleIncludeInTOCMutation.toggleIncludeInTOC,
   updateBookComponentPagination:
     args.updateBookComponentPaginationMutation.updateBookComponentPagination,
   updateBookComponentOrder:
@@ -267,6 +272,7 @@ const Connected = props => {
         onTeamManager,
         addBookComponent,
         deleteBookComponent,
+        toggleIncludeInTOC,
         updateBookComponentPagination,
         updateBookComponentOrder,
         updateComponentType,
@@ -311,6 +317,7 @@ const Connected = props => {
           rules={rules}
           setState={setState}
           state={state}
+          toggleIncludeInTOC={toggleIncludeInTOC}
           updateApplicationParameters={updateApplicationParameters}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

@@ -253,7 +253,7 @@ class AddBookModal extends React.Component {
 
   render() {
     const { isOpen, hideModal } = this.props
-    console.log('props', this.props)
+    
     const body = this.renderBody()
 
     return (

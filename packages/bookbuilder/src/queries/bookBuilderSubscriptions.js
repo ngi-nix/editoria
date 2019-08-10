@@ -137,7 +137,13 @@ const COMPONENT_TYPE_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
-
+const INCLUDE_IN_TOC_UPDATED_SUBSCRIPTION = gql`
+  subscription IncludeInTOCUpdated {
+    bookComponentTOCToggled {
+      id
+    }
+  }
+`
 const componentTypeChangeSubscription = props => {
   const { render, getBookQuery, statefull } = props
   const { pauseUpdates } = statefull
@@ -151,6 +157,25 @@ const componentTypeChangeSubscription = props => {
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={COMPONENT_TYPE_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
+const bookComponentIncludeInTOCSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={INCLUDE_IN_TOC_UPDATED_SUBSCRIPTION}
     >
       {render}
     </Subscription>
@@ -381,4 +406,5 @@ export {
   addTeamMemberSubscription,
   bookMetadataSubscription,
   docxToHTMLJobSubscription,
+  bookComponentIncludeInTOCSubscription,
 }

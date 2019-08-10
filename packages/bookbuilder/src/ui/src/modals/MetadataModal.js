@@ -129,7 +129,7 @@ class MetadataModal extends React.Component {
   renderBody() {
     const { data, hideModal } = this.props
     const { onConfirm, book } = data
-    console.log('props', this.props)
+    
     return (
       <div>
         <Formik

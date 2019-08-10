@@ -39,6 +39,7 @@ const {
   BOOK_COMPONENT_UPLOADING_UPDATED,
   BOOK_COMPONENT_LOCK_UPDATED,
   BOOK_COMPONENT_TYPE_UPDATED,
+  BOOK_COMPONENT_TOC_UPDATED,
 } = require('./consts')
 
 const {
@@ -376,7 +377,7 @@ const updateWorkflowState = async (_, { input }, ctx) => {
   }
 }
 
-// TODO: Pending implementation
+
 const unlockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
@@ -401,7 +402,7 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   }
 }
 
-// TODO: Pending implementation
+
 const lockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
@@ -435,7 +436,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
   }
 }
 
-// TODO: Pending implementation
+
 const updateContent = async (_, { input }, ctx) => {
   const { id, content, title, workflowStages, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
@@ -585,17 +586,19 @@ const updateComponentType = async (_, { input }, ctx) => {
 const toggleIncludeInTOC = async (_, { input }, ctx) => {
   try {
     const { id } = input
+
     const pubsub = await pubsubManager.getPubsub()
     const currentSate = await BookComponentState.query().where(
       'bookComponentId',
       id,
     )
-    await BookComponentState.query()
-      .patch({ includeInTOC: !currentSate.includeInTOC })
-      .findById(currentSate.id)
+    const up = await BookComponentState.query()
+      .patch({ includeInToc: !currentSate[0].includeInToc })
+      .findById(currentSate[0].id)
+
     const updatedBookComponent = await BookComponent.findById(id)
-    pubsub.publish(BOOK_COMPONENT_TYPE_UPDATED, {
-      bookComponentTypeUpdated: updatedBookComponent,
+    pubsub.publish(BOOK_COMPONENT_TOC_UPDATED, {
+      bookComponentTOCToggled: updatedBookComponent,
     })
     return updatedBookComponent
   } catch (e) {
@@ -626,7 +629,6 @@ module.exports = {
   },
   BookComponent: {
     async title(bookComponent, _, ctx) {
-      // console.log('bokk', bookComponent)
       let { title } = bookComponent
       if (!title) {
         const bookComponentTranslation = await BookComponentTranslation.query()
@@ -641,11 +643,10 @@ module.exports = {
     },
     async bookTitle(bookComponent, _, ctx) {
       const book = await Book.findById(bookComponent.bookId)
-      //  console.log('book', book, bookComponent)
       const bookTranslation = await BookTranslation.query()
         .where('bookId', book.id)
         .andWhere('languageIso', 'en')
-      //  console.log('booktit', bookTranslation)
+
       return bookTranslation[0].title
     },
     async nextBookComponent(bookComponent, _, ctx) {
@@ -774,7 +775,7 @@ module.exports = {
 
     async includeInTOC(bookComponent, _, ctx) {
       const state = await bookComponent.getBookComponentState()
-      return state.includeInTOC
+      return state.includeInToc
     },
   },
   Subscription: {
@@ -842,6 +843,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_COMPONENT_TYPE_UPDATED)
+      },
+    },
+    bookComponentTOCToggled: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_TOC_UPDATED)
       },
     },
   },
