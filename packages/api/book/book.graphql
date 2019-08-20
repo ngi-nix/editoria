@@ -45,6 +45,7 @@ extend type Mutation {
   renameBook(id: ID!, title: String!): Book!
   deleteBook(id: ID!): Book!
   updateMetadata(input: MetadataInput!): Book!
+  switchRunningHeaders(id: ID!): Book!
   exportBook(
     bookId: ID!
     destination: String!
@@ -60,4 +61,5 @@ extend type Subscription {
   bookDeleted: Book!
   bookRenamed: Book!
   bookMetadataUpdated: Book!
+  bookRunningHeadersSwitched: Book!
 }

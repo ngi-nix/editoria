@@ -213,6 +213,8 @@ const addBookComponent = async (_, args, ctx, info) => {
           bookComponentId: createdBookComponent.id,
           trackChangesEnabled: false,
           uploading: uploading || false,
+          runningHeadersRight: title,
+          runningHeadersLeft: title,
         },
         bookComponentWorkflowStages,
       ),
@@ -242,7 +244,14 @@ const renameBookComponent = async (_, { input }, ctx) => {
     .patch({ title })
     .where('id', bookComponentTranslation[0].id)
     .andWhere('languageIso', 'en')
-
+  const bookComponentState = await BookComponentState.query().where(
+    'bookComponentId',
+    id,
+  )
+  await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
+    runningHeadersRight: title,
+    runningHeadersLeft: title,
+  })
   const updatedBookComponent = await BookComponent.findById(id)
   pubsub.publish(BOOK_COMPONENT_TITLE_UPDATED, {
     bookComponentTitleUpdated: updatedBookComponent,
@@ -250,6 +259,8 @@ const renameBookComponent = async (_, { input }, ctx) => {
 
   return updatedBookComponent
 }
+
+
 
 const deleteBookComponent = async (_, { input }, ctx) => {
   const { id, deleted } = input
