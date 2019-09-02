@@ -449,7 +449,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
 
 // TODO: Pending implementation
 const updateContent = async (_, { input }, ctx) => {
-  const { id, content, workflowStages, uploading } = input
+  const { id, content, title, workflowStages, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
 
   const bookComponentTranslation = await BookComponentTranslation.query().where(
@@ -457,7 +457,7 @@ const updateContent = async (_, { input }, ctx) => {
     id,
   )
   await BookComponentTranslation.query()
-    .patch({ content })
+    .patch({ content, title })
     .where('id', bookComponentTranslation[0].id)
     .andWhere('languageIso', 'en')
 

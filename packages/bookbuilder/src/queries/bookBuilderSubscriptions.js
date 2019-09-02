@@ -2,16 +2,6 @@ import React from 'react'
 import { Subscription } from 'react-apollo'
 import gql from 'graphql-tag'
 
-const DOCX_TO_HTML_JOB = gql`
-  subscription DocxToHTMLJob($jobId: String!) {
-    docxToHTMLJob(jobId: $jobId) {
-      id
-      status
-      html
-    }
-  }
-`
-
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentOrderUpdated {
     bookComponentOrderUpdated {
@@ -126,7 +116,6 @@ const orderChangeSubscription = props => {
   const { refetch } = getBookQuery
   const { pauseUpdates } = statefull
   const triggerRefetch = () => {
-    console.log('reorder sub')
     if (pauseUpdates) return
     refetch()
   }
@@ -353,13 +342,7 @@ const bookRenamedSubscription = props => {
 }
 
 const docxToHTMLJobSubscription = props => {
-  const { render, uploadBookComponentMutation, statefull } = props
-  const { pauseUpdates } = statefull
-
-  const triggerRefetch = props => {
-    if (pauseUpdates) return
-    //refetch()
-  }
+  const { render, uploadBookComponentMutation } = props
 
   const { id } = (
     ((uploadBookComponentMutation || {}).uploadBookComponentResult || {})
@@ -367,6 +350,12 @@ const docxToHTMLJobSubscription = props => {
   ).createDocxToHTMLJob || { id: false }
 
   if (!id) return render()
+
+  console.log(props, uploadBookComponentMutation.uploadBookComponent, "Got Mutation FUnction")
+
+  const triggerRefetch = data => {
+    console.log(data)
+  }
 
   return (
     <Subscription

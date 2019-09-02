@@ -10,7 +10,6 @@ import statefull from './Statefull'
 import {
   getBookQuery,
   getBookBuilderRulesQuery,
-  getDocxToHTMLJobQuery,
   createBookComponentMutation,
   createBookComponentsMutation,
   deleteBookComponentMutation,
@@ -38,7 +37,7 @@ import {
   updateBookMetadataMutation,
   bookMetadataSubscription,
   bookRenamedSubscription,
-  docxToHTMLJobSubscription,
+  // docxToHTMLJobSubscription,
 } from './queries'
 
 const mapper = {
@@ -59,8 +58,7 @@ const mapper = {
   addTeamMemberSubscription,
   bookMetadataSubscription,
   uploadBookComponentMutation,
-  docxToHTMLJobSubscription,
-  getDocxToHTMLJobQuery,
+  // docxToHTMLJobSubscription,
   updateBookMetadataMutation,
   createBookComponentMutation,
   unlockBookComponentMutation,
@@ -81,7 +79,7 @@ const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   book: get(args.getBookQuery, 'data.getBook'),
-  docxHtml: get(args.getDocxToHTMLJobQuery, 'data.docxToHTMLJob'),
+  docxHtml: get(args.docxToHTMLJobSubscription, 'data.docxToHTMLJob'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
   addBookComponents: args.createBookComponentsMutation.addBookComponents,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
@@ -100,7 +98,7 @@ const mapProps = args => ({
   updateApplicationParameters:
     args.updateApplicationParametersMutation.updateApplicationParameter,
   updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
-  uploadBookComponent: args.uploadBookComponentMutation.uploadBookComponent,
+  uploadBookComponent: args.uploadBookComponentMutation,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
@@ -256,18 +254,11 @@ const mapProps = args => ({
     })
   },
   loading: args.getBookQuery.networkStatus === 1,
-  loadingGetDocx: args.getDocxToHTMLJobQuery
-    ? args.getDocxToHTMLJobQuery.networkStatus === 1
-    : true,
   loadingRules: args.getBookBuilderRulesQuery.networkStatus === 1,
   rules: get(args.getBookBuilderRulesQuery, 'data.getBookBuilderRules'),
   refetching:
     args.getBookQuery.networkStatus === 4 ||
     args.getBookQuery.networkStatus === 2, // possible apollo bug
-  refetchingGetDocx: args.getDocxToHTMLJobQuery
-    ? args.getDocxToHTMLJobQuery.networkStatus === 4 ||
-      args.getDocxToHTMLJobQuery.networkStatus === 2
-    : true, // possible apollo bug
   refetchingBookBuilderRules:
     args.getBookBuilderRulesQuery.networkStatus === 4 ||
     args.getBookBuilderRulesQuery.networkStatus === 2, // possible apollo bug
@@ -283,7 +274,7 @@ const Connected = props => {
     <Composed bookId={bookId}>
       {({
         book,
-        docxToHTMLJob,
+        docxHtml,
         state,
         setState,
         onTeamManager,
@@ -312,7 +303,7 @@ const Connected = props => {
         refetchingBookBuilderRules,
         onWorkflowUpdate,
       }) => {
-        console.log(docxToHTMLJob, 'Connected BookBuilder')
+        console.log(docxHtml, "CONNECTED BOOKIBUILDER")
         return (
           <BookBuilder
             addBookComponent={addBookComponent}

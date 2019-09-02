@@ -17,7 +17,10 @@ const uploadBookComponentMutation = props => {
   return (
     <Mutation mutation={UPLOAD_BOOK_COMPONENT}>
       {(uploadBookComponent, uploadBookComponentResult) =>
-        render({ uploadBookComponent, uploadBookComponentResult })
+        render({
+          uploadBookComponent,
+          uploadBookComponentResult,
+        })
       }
     </Mutation>
   )

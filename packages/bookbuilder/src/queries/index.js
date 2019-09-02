@@ -1,7 +1,6 @@
 export { default as getBookQuery } from './getBook'
 export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
 export { default as getBookTeamsQuery } from './getBookTeams'
-export { default as getDocxToHTMLJobQuery } from './getDocxToHTMLJob'
 export { default as createBookComponentMutation } from './createBookComponent'
 export { default as createBookComponentsMutation } from './createBookComponents'
 export { default as deleteBookComponentMutation } from './deleteBookComponent'
