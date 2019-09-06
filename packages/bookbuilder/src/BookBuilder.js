@@ -75,7 +75,6 @@ export class BookBuilder extends React.Component {
       history,
       addBookComponent,
       onMetadataAdd,
-      addBookComponents,
       currentUser,
       deleteBookComponent,
       updateApplicationParameters,
@@ -83,7 +82,6 @@ export class BookBuilder extends React.Component {
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
       updateBookComponentUploading,
-      updateBookComponentContent,
       updateComponentType,
       uploadBookComponent,
       onDeleteBookComponent,
@@ -134,10 +132,8 @@ export class BookBuilder extends React.Component {
         <UploadFilesButton
           book={book}
           onWarning={onWarning}
-          create={addBookComponents}
-          divisions={divisions}
-          update={updateBookComponentContent}
-          updateUploadStatus={updateBookComponentUploading}
+          uploadBookComponent={uploadBookComponent}
+        // updateUploadStatus={updateBookComponentUploading}
         />,
       )
     }
@@ -153,7 +149,6 @@ export class BookBuilder extends React.Component {
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
           onWorkflowUpdate={onWorkflowUpdate}
-          addBookComponents={addBookComponents}
           setState={setState}
           onWarning={onWarning}
           currentUser={currentUser}
@@ -165,7 +160,6 @@ export class BookBuilder extends React.Component {
           divisions={divisions}
           rules={rules}
           updateApplicationParameters={updateApplicationParameters}
-          updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}
           updateBookComponentUploading={updateBookComponentUploading}

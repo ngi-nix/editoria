@@ -342,16 +342,14 @@ const bookRenamedSubscription = props => {
 }
 
 const docxToHTMLJobSubscription = props => {
-  const { render, uploadBookComponentMutation } = props
+  const { render, ingestWordFilesMutation } = props
 
   const { id } = (
-    ((uploadBookComponentMutation || {}).uploadBookComponentResult || {})
+    ((ingestWordFilesMutation || {}).ingestWordFilesResult || {})
       .data || {}
   ).createDocxToHTMLJob || { id: false }
 
   if (!id) return render()
-
-  console.log(props, uploadBookComponentMutation.uploadBookComponent, "Got Mutation FUnction")
 
   const triggerRefetch = data => {
     console.log(data)

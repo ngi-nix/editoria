@@ -1,5 +1,6 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
+const flatten = require('lodash/flatten')
 const concat = require('lodash/concat')
 const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
@@ -13,6 +14,10 @@ const assign = require('lodash/assign')
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
 const { withFilter } = require('graphql-subscriptions')
+const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
+const { db } = require('@pubsweet/db-manager')
+const crypto = require('crypto')
+const waait = require('waait')
 
 const {
   ApplicationParameter,
@@ -38,7 +43,12 @@ const {
   BOOK_COMPONENT_TYPE_UPDATED,
 } = require('./consts')
 
-const { pubsubManager } = pubsweetServer
+const {
+  pubsubManager,
+  jobs: { connectToJobQueue },
+} = pubsweetServer
+
+const DOCX_TO_HTML = 'DOCX_TO_HTML'
 
 const getOrderedBookComponents = async bookComponent => {
   const divisions = await Division.findByField(
@@ -54,6 +64,35 @@ const getOrderedBookComponents = async bookComponent => {
   return orderedComponent
 }
 
+const extractFragmentProperties = fileName => {
+  const nameSpecifier = fileName.slice(0, 1)
+
+  let label
+  if (nameSpecifier === 'a') {
+    label = 'Frontmatter'
+  } else if (nameSpecifier === 'w') {
+    label = 'Backmatter'
+  } else {
+    label = 'Body'
+  }
+
+  let componentType
+  if (label !== 'Body') {
+    componentType = 'component'
+  } else if (fileName.includes('00')) {
+    componentType = 'unnumbered'
+  } else if (fileName.includes('pt0')) {
+    componentType = 'part'
+  } else {
+    componentType = 'chapter'
+  }
+
+  return {
+    label,
+    componentType,
+  }
+}
+
 const getBookComponent = async (_, { id }, ctx) => {
   const bookComponent = await BookComponent.findById(id)
   if (!bookComponent) {
@@ -62,9 +101,128 @@ const getBookComponent = async (_, { id }, ctx) => {
   return bookComponent
 }
 
-// TODO: Pending implementation
-const ingestWordFile = async (_, { files }, ctx) => {
-  //
+const ingestWordFile = async (_, { bookComponentFiles }, context) => {
+  const jobQueue = await connectToJobQueue()
+  const pubsub = await getPubsub()
+
+  const bookComponents = await Promise.all(
+    bookComponentFiles.map(async bookComponentFile => {
+      const { file, bookComponentId, bookId } = await bookComponentFile
+      const { createReadStream, filename } = await file
+      const stream = createReadStream()
+      const title = filename.split('.')[0]
+
+      const jobId = crypto.randomBytes(3).toString('hex')
+      const pubsubChannel = `${DOCX_TO_HTML}.${context.user}.${jobId}`
+
+      // A reference to actual pgboss job row
+      let queueJobId
+
+      /* eslint-disable */
+      const contentPromise = new Promise(async (resolv, rej) => {
+        pubsub.subscribe(pubsubChannel, async ({ docxToHTMLJob: { status } }) => {
+          logger.info(pubsubChannel, status)
+          if (status === 'Conversion complete') {
+            await waait(1000)
+            const job = await db('pgboss.job').whereRaw(
+              "data->'request'->>'id' = ?",
+              [queueJobId],
+            )
+            const content = job[0].data.response.html
+            resolv(content)
+
+          }
+        })
+
+        const chunks = []
+
+        await new Promise((resolve, reject) => {
+          stream.on('data', chunk => {
+            chunks.push(chunk)
+          })
+
+          stream.on('end', () => {
+
+            const result = Buffer.concat(chunks)
+
+            jobQueue
+              .publish(`xsweetGraphQL`, {
+                docx: {
+                  name: filename,
+                  data: result.toString('base64'),
+                },
+                pubsubChannel,
+              })
+              .then(id => (queueJobId = id))
+            resolve()
+          })
+
+          stream.on('error', e => {
+            pubsub.publish(pubsubChannel, {
+              status: e,
+            })
+            rej(e)
+            reject(e)
+          })
+        })
+
+      })
+
+      return await contentPromise.then(async content => {
+        let input = {}
+        let id = bookComponentId
+        if (!id) {
+          const name = filename.replace(/\.[^/.]+$/, '')
+          const {
+            componentType,
+            label,
+          } = extractFragmentProperties(name)
+
+          const division = await Division.query().where(
+            {
+              bookId,
+              label,
+            }
+          )
+
+          input = {
+            title: name,
+            bookId,
+            uploading: true,
+            componentType,
+            divisionId: division[0].id,
+          }
+          const newBookComponent = await addBookComponent(_, { input }, context)
+          id = newBookComponent.id
+        }
+
+        const bookComponentState = await BookComponentState.query().where(
+          'bookComponentId',
+          id,
+        )
+
+        const { workflowStages } = bookComponentState[0]
+
+        workflowStages[0].value = 1
+        workflowStages[1].value = 0
+
+        input = {
+          id,
+          title,
+          content,
+          uploading: false,
+          workflowStages,
+        }
+
+        const updatedBookComponent = await updateContent(_, { input }, context)
+
+        return [updatedBookComponent]
+      })
+    })
+  )
+
+  return flatten(bookComponents)
+  /* eslint-enable */
 }
 
 const addBookComponent = async (_, args, ctx, info) => {
@@ -120,7 +278,7 @@ const addBookComponent = async (_, args, ctx, info) => {
 
     logger.info(
       `Book component pushed to the array of division's book components [${
-        updatedDivision.bookComponents
+      updatedDivision.bookComponents
       }]`,
     )
     if (workflowStages) {
@@ -291,12 +449,12 @@ const deleteBookComponent = async (_, { input }, ctx) => {
     )
     logger.info(
       `Division's book component array before [${
-        componentDivision.bookComponents
+      componentDivision.bookComponents
       }]`,
     )
     logger.info(
       `Division's book component array after cleaned [${
-        updatedDivision.bookComponents
+      updatedDivision.bookComponents
       }]`,
     )
     pubsub.publish(BOOK_COMPONENT_DELETED, {
@@ -368,7 +526,7 @@ const updateWorkflowState = async (_, { input }, ctx) => {
     )
     logger.info(
       `Book component state updated with workflow ${
-        updatedBookComponentState.workflowStages
+      updatedBookComponentState.workflowStages
       }`,
     )
     const updatedBookComponent = await BookComponent.findById(id)
@@ -428,7 +586,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
       }
       const errorMsg = `There is a lock already for this book component for the user with id ${
         lock[0].userId
-      }`
+        }`
       logger.error(errorMsg)
       throw new Error(errorMsg)
     }

@@ -11,16 +11,13 @@ import {
   getBookQuery,
   getBookBuilderRulesQuery,
   createBookComponentMutation,
-  createBookComponentsMutation,
   deleteBookComponentMutation,
-  ingestWordFilesMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
-  updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
   unlockBookComponentMutation,
-  uploadBookComponentMutation,
+  ingestWordFilesMutation,
   updateBookComponentTypeMutation,
   updateApplicationParametersMutation,
   exportBookMutation,
@@ -37,7 +34,6 @@ import {
   updateBookMetadataMutation,
   bookMetadataSubscription,
   bookRenamedSubscription,
-  // docxToHTMLJobSubscription,
 } from './queries'
 
 const mapper = {
@@ -57,19 +53,15 @@ const mapper = {
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
-  uploadBookComponentMutation,
-  // docxToHTMLJobSubscription,
+  ingestWordFilesMutation,
   updateBookMetadataMutation,
   createBookComponentMutation,
   unlockBookComponentMutation,
-  createBookComponentsMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
-  updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
-  ingestWordFilesMutation,
   updateApplicationParametersMutation,
   updateBookComponentTypeMutation,
   exportBookMutation,
@@ -79,9 +71,7 @@ const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   book: get(args.getBookQuery, 'data.getBook'),
-  docxHtml: get(args.docxToHTMLJobSubscription, 'data.docxToHTMLJob'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
-  addBookComponents: args.createBookComponentsMutation.addBookComponents,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
   updateBookComponentPagination:
     args.updateBookComponentPaginationMutation.updateBookComponentPagination,
@@ -90,15 +80,13 @@ const mapProps = args => ({
   updateBookComponentWorkflowState:
     args.updateBookComponentWorkflowStateMutation
       .updateBookComponentWorkflowState,
-  updateBookComponentContent:
-    args.updateBookComponentContentMutation.updateContent,
   updateBookComponentUploading:
     args.updateBookComponentUploadingMutation.updateUploading,
   updateComponentType: args.updateBookComponentTypeMutation.updateComponentType,
   updateApplicationParameters:
     args.updateApplicationParametersMutation.updateApplicationParameter,
   updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
-  uploadBookComponent: args.uploadBookComponentMutation,
+  uploadBookComponent: args.ingestWordFilesMutation.ingestWordFiles,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
@@ -274,12 +262,10 @@ const Connected = props => {
     <Composed bookId={bookId}>
       {({
         book,
-        docxHtml,
         state,
         setState,
         onTeamManager,
         addBookComponent,
-        addBookComponents,
         deleteBookComponent,
         updateBookComponentPagination,
         updateBookComponentOrder,
@@ -290,7 +276,6 @@ const Connected = props => {
         onWarning,
         onMetadataAdd,
         uploadBookComponent,
-        updateBookComponentContent,
         updateBookComponentUploading,
         ingestWordFiles,
         onDeleteBookComponent,
@@ -303,11 +288,9 @@ const Connected = props => {
         refetchingBookBuilderRules,
         onWorkflowUpdate,
       }) => {
-        console.log(docxHtml, "CONNECTED BOOKIBUILDER")
         return (
           <BookBuilder
             addBookComponent={addBookComponent}
-            addBookComponents={addBookComponents}
             applicationParameter={applicationParameter}
             state={state}
             setState={setState}
@@ -329,7 +312,6 @@ const Connected = props => {
             loading={loading}
             loadingRules={loadingRules}
             rules={rules}
-            updateBookComponentContent={updateBookComponentContent}
             uploadBookComponent={uploadBookComponent}
             updateComponentType={updateComponentType}
             updateApplicationParameters={updateApplicationParameters}
