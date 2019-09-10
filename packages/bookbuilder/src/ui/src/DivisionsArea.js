@@ -15,7 +15,6 @@ const DivisionsContainer = styled.div`
 //   divisions,
 //   history,
 //   addBookComponent,
-//   addBookComponents,
 //   deleteBookComponent,
 //   updateBookComponentPagination,
 //   updateBookComponentOrder,
@@ -30,7 +29,6 @@ const DivisionsContainer = styled.div`
 //     return (
 //       <Division
 //         add={addBookComponent}
-//         addBookComponents={addBookComponents}
 //         bookComponents={bookComponents}
 //         bookId={bookId}
 //         deleteBookComponent={deleteBookComponent}

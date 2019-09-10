@@ -287,41 +287,39 @@ const Connected = props => {
         rules,
         refetchingBookBuilderRules,
         onWorkflowUpdate,
-      }) => {
-        return (
-          <BookBuilder
-            addBookComponent={addBookComponent}
-            applicationParameter={applicationParameter}
-            state={state}
-            setState={setState}
-            onTeamManager={onTeamManager}
-            onError={onError}
-            onWarning={onWarning}
-            currentUser={currentUser}
-            onAdminUnlock={onAdminUnlock}
-            onMetadataAdd={onMetadataAdd}
-            refetching={refetching}
-            refetchingBookBuilderRules={refetchingBookBuilderRules}
-            onWorkflowUpdate={onWorkflowUpdate}
-            book={book}
-            history={history}
-            exportBook={exportBook}
-            deleteBookComponent={deleteBookComponent}
-            onDeleteBookComponent={onDeleteBookComponent}
-            ingestWordFiles={ingestWordFiles}
-            loading={loading}
-            loadingRules={loadingRules}
-            rules={rules}
-            uploadBookComponent={uploadBookComponent}
-            updateComponentType={updateComponentType}
-            updateApplicationParameters={updateApplicationParameters}
-            updateBookComponentOrder={updateBookComponentOrder}
-            updateBookComponentPagination={updateBookComponentPagination}
-            updateBookComponentUploading={updateBookComponentUploading}
-            updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-          />
-        )
-      }}
+      }) => (
+        <BookBuilder
+          addBookComponent={addBookComponent}
+          applicationParameter={applicationParameter}
+          book={book}
+          currentUser={currentUser}
+          deleteBookComponent={deleteBookComponent}
+          exportBook={exportBook}
+          history={history}
+          ingestWordFiles={ingestWordFiles}
+          loading={loading}
+          loadingRules={loadingRules}
+          onAdminUnlock={onAdminUnlock}
+          onDeleteBookComponent={onDeleteBookComponent}
+          onError={onError}
+          onMetadataAdd={onMetadataAdd}
+          onTeamManager={onTeamManager}
+          onWarning={onWarning}
+          onWorkflowUpdate={onWorkflowUpdate}
+          refetching={refetching}
+          refetchingBookBuilderRules={refetchingBookBuilderRules}
+          rules={rules}
+          setState={setState}
+          state={state}
+          updateApplicationParameters={updateApplicationParameters}
+          updateBookComponentOrder={updateBookComponentOrder}
+          updateBookComponentPagination={updateBookComponentPagination}
+          updateBookComponentUploading={updateBookComponentUploading}
+          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+          updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
+        />
+      )}
     </Composed>
   )
 }

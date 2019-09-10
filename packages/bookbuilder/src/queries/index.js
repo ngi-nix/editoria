@@ -2,9 +2,7 @@ export { default as getBookQuery } from './getBook'
 export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
 export { default as getBookTeamsQuery } from './getBookTeams'
 export { default as createBookComponentMutation } from './createBookComponent'
-export { default as createBookComponentsMutation } from './createBookComponents'
 export { default as deleteBookComponentMutation } from './deleteBookComponent'
-// export { default as uploadBookComponentMutation } from './uploadBookComponent'
 export {
   default as updateBookComponentPaginationMutation,
 } from './updatePagination'

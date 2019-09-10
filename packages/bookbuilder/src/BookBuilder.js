@@ -133,7 +133,7 @@ export class BookBuilder extends React.Component {
           book={book}
           onWarning={onWarning}
           uploadBookComponent={uploadBookComponent}
-        // updateUploadStatus={updateBookComponentUploading}
+          // updateUploadStatus={updateBookComponentUploading}
         />,
       )
     }
@@ -144,21 +144,21 @@ export class BookBuilder extends React.Component {
           actions={productionEditorActions}
           productionEditors={productionEditors}
         />
-        <Header bookTitle={book.title} actions={headerActions} />
+        <Header actions={headerActions} bookTitle={book.title} />
         <DivisionsArea
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
-          onWorkflowUpdate={onWorkflowUpdate}
-          setState={setState}
-          onWarning={onWarning}
-          currentUser={currentUser}
-          onAdminUnlock={onAdminUnlock}
-          history={history}
           bookId={book.id}
+          currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
-          onDeleteBookComponent={onDeleteBookComponent}
           divisions={divisions}
+          history={history}
+          onAdminUnlock={onAdminUnlock}
+          onDeleteBookComponent={onDeleteBookComponent}
+          onWarning={onWarning}
+          onWorkflowUpdate={onWorkflowUpdate}
           rules={rules}
+          setState={setState}
           updateApplicationParameters={updateApplicationParameters}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}

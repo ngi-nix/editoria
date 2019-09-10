@@ -9,7 +9,7 @@ const animation = keyframes`
   100% { opacity: 1; }
 `
 
-const StyledUpload = styled(UploadButton) `
+const StyledUpload = styled(UploadButton)`
   flex-basis: ${({ componentType }) =>
     componentType === 'part' ? '16.6%' : '15.6%'};
   ${({ uploading }) => {
