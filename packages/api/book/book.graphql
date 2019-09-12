@@ -39,13 +39,19 @@ input MetadataInput {
   license: String
 }
 
+input RunningHeadersInput {
+  id: ID!
+  runningHeadersRight: String
+  runningHeadersLeft: String
+}
+
 extend type Mutation {
   archiveBook(id: ID!, archive: Boolean!): Book!
   createBook(input: CreateBookInput!): Book!
   renameBook(id: ID!, title: String!): Book!
   deleteBook(id: ID!): Book!
   updateMetadata(input: MetadataInput!): Book!
-  switchRunningHeaders(id: ID!): Book!
+  updateRunningHeaders(input: [RunningHeadersInput!]!, bookId:ID!): Book!
   exportBook(
     bookId: ID!
     destination: String!
@@ -61,5 +67,5 @@ extend type Subscription {
   bookDeleted: Book!
   bookRenamed: Book!
   bookMetadataUpdated: Book!
-  bookRunningHeadersSwitched: Book!
+  bookRunningHeadersUpdated: Book!
 }

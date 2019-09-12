@@ -241,7 +241,6 @@ class TemplateModal extends React.Component {
     for (let i = 0; i < fileList.length; i += 1) {
       selectedFiles.push(fileList.item(i))
     }
-
     this.setState({ files: selectedFiles })
     setFieldValue('files', selectedFiles)
     setFieldTouched('files', true)
@@ -255,7 +254,6 @@ class TemplateModal extends React.Component {
     const { thumbnail, mode } = this.state
     const reader = new FileReader()
     reader.readAsDataURL(file)
-
     reader.onloadend = function(e) {
       let newState
       if (mode === 'update') {

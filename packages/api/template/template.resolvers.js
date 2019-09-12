@@ -458,15 +458,11 @@ module.exports = {
   },
   Template: {
     async files(template, _, ctx) {
-      
       const files = await template.getFiles()
-      
       return files
     },
     async thumbnail(template, _, ctx) {
-      
       const thumbnail = await template.getThumbnail()
-      
       return thumbnail
     },
   },

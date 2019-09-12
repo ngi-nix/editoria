@@ -17,7 +17,7 @@ const {
   BOOK_RENAMED,
   BOOK_ARCHIVED,
   BOOK_METADATA_UPDATED,
-  BOOK_RUNNING_HEADERS_SWITCHED,
+  BOOK_RUNNING_HEADERS_UPDATED,
 } = require('./consts')
 const {
   Book,
@@ -280,13 +280,12 @@ const exportBook = async (
   ctx,
 ) => exporter(bookId, destination, converter, previewer, style)
 
-const switchRunningHeaders = async (_, { id }, ctx) => {
+const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
-    const bookComponents = await BookComponent.query().where('bookId', id)
 
     await Promise.all(
-      map(bookComponents, async bookComponent => {
+      map(input, async bookComponent => {
         const { id } = bookComponent
         const bookComponentState = await BookComponentState.query().where(
           'bookComponentId',
@@ -296,15 +295,15 @@ const switchRunningHeaders = async (_, { id }, ctx) => {
         return BookComponentState.query().patchAndFetchById(
           bookComponentState[0].id,
           {
-            runningHeadersRight: bookComponentState[0].runningHeadersLeft,
-            runningHeadersLeft: bookComponentState[0].runningHeadersRight,
+            runningHeadersRight: bookComponent.runningHeadersRight,
+            runningHeadersLeft: bookComponent.runningHeadersLeft,
           },
         )
       }),
     )
-    const updatedBook = await Book.findById(id)
-    pubsub.publish(BOOK_RUNNING_HEADERS_SWITCHED, {
-      bookRunningHeadersSwitched: updatedBook,
+    const updatedBook = await Book.findById(bookId)
+    pubsub.publish(BOOK_RUNNING_HEADERS_UPDATED, {
+      bookRunningHeadersUpdated: updatedBook,
     })
 
     return updatedBook
@@ -325,7 +324,7 @@ module.exports = {
     deleteBook,
     exportBook,
     updateMetadata,
-    switchRunningHeaders,
+    updateRunningHeaders,
   },
   Book: {
     async title(book, _, ctx) {
@@ -432,6 +431,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_METADATA_UPDATED)
+      },
+    },
+    bookRunningHeadersUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_RUNNING_HEADERS_UPDATED)
       },
     },
   },

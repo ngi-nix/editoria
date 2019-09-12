@@ -260,8 +260,6 @@ const renameBookComponent = async (_, { input }, ctx) => {
   return updatedBookComponent
 }
 
-
-
 const deleteBookComponent = async (_, { input }, ctx) => {
   const { id, deleted } = input
   try {
@@ -672,6 +670,14 @@ module.exports = {
       } catch (e) {
         return null
       }
+    },
+    async runningHeadersRight(bookComponent, _, ctx) {
+      const bookComponentState = await bookComponent.getBookComponentState()
+      return bookComponentState.runningHeadersRight
+    },
+    async runningHeadersLeft(bookComponent, _, ctx) {
+      const bookComponentState = await bookComponent.getBookComponentState()
+      return bookComponentState.runningHeadersLeft
     },
     async prevBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
