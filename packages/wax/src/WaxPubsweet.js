@@ -250,7 +250,7 @@ export class WaxPubsweet extends React.Component {
   }
 
   renderWax(editing) {
-    const { bookComponent, history, user, tags } = this.props
+    const { bookComponent, checkSpell, history, user, tags } = this.props
 
     const waxConfig = {
       layout: config.wax.layout,
@@ -369,6 +369,7 @@ export class WaxPubsweet extends React.Component {
         <Wax
           autoSave={autoSave === undefined ? false : autoSave}
           chapterNumber={chapterNumber}
+          checkSpell={checkSpell}
           className="editor-wrapper"
           content={content}
           customTags={tags}

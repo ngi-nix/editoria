@@ -2,9 +2,7 @@ const pubsweetServer = require('pubsweet-server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
 const pick = require('lodash/pick')
-const pickBy = require('lodash/pickBy')
 const omitBy = require('lodash/omitBy')
-const identity = require('lodash/identity')
 const isNil = require('lodash/isNil')
 const filter = require('lodash/filter')
 const config = require('config')
@@ -314,9 +312,7 @@ module.exports = {
       )
       let authors = []
       if (teams[0] && teams[0].members.length > 0) {
-        authors = map(teams[0].members, teamMember => {
-          return teamMember.user
-        })
+        authors = map(teams[0].members, teamMember => teamMember.user)
       }
       return authors
     },
