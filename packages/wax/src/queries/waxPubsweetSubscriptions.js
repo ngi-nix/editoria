@@ -11,6 +11,14 @@ const BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
+const CUSTOM_TAG_SUBSCRIPTION = gql`
+  subscription CustomTagUpdated {
+    customTagUpdated {
+      id
+    }
+  }
+`
+
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated($bookComponentIds: [ID]!) {
     bookComponentLockUpdated(bookComponentIds: $bookComponentIds) {
@@ -118,9 +126,30 @@ const lockChangeSubscription = props => {
     </Subscription>
   )
 }
+
+const customTagsSubscription = props => {
+  const { render, getCustomTagsQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getCustomTagsQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={CUSTOM_TAG_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   trackChangeSubscription,
   titleChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  customTagsSubscription,
 }

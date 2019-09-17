@@ -26,6 +26,7 @@ import {
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  customTagsSubscription,
 } from './queries'
 
 const mapper = {
@@ -39,6 +40,7 @@ const mapper = {
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  customTagsSubscription,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
