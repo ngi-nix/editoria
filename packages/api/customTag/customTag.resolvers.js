@@ -27,7 +27,7 @@ const addCustomTag = async (_, { input }, ctx) => {
     )
 
     const customTags = await CustomTag.query().where({ deleted: false })
-    console.log(customTags)
+
     pubsub.publish(CUSTOM_TAG_UPDATED, {
       customTagUpdated: customTags,
     })
@@ -41,7 +41,6 @@ const addCustomTag = async (_, { input }, ctx) => {
 
 const updateCustomTag = async (_, { input }, ctx) => {
   try {
-    const pubsub = await pubsubManager.getPubsub()
     await Promise.all(
       input.map(async tag => {
         const { id, deleted, tagType, label } = tag
@@ -52,7 +51,6 @@ const updateCustomTag = async (_, { input }, ctx) => {
         })
       }),
     )
-    logger.info(`Custom Tag component with id ${updateCustomTag.id} deleted`)
 
     const customTags = await CustomTag.query().where({ deleted: false })
 
