@@ -251,7 +251,7 @@ export class WaxPubsweet extends React.Component {
 
   renderWax(editing) {
     const { bookComponent, checkSpell, history, user, tags } = this.props
-
+    console.log('pubsweet', tags)
     const waxConfig = {
       layout: config.wax.layout,
       lockWhenEditing: config.wax.lockWhenEditing,

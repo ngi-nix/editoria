@@ -18,6 +18,7 @@ const getCustomTags = async (_, input, ctx) => {
 
 const addCustomTag = async (_, { input }, ctx) => {
   try {
+    const pubsub = await pubsubManager.getPubsub()
     await Promise.all(
       input.map(async tag => {
         const { label, tagType } = tag
@@ -26,6 +27,10 @@ const addCustomTag = async (_, { input }, ctx) => {
     )
 
     const customTags = await CustomTag.query().where({ deleted: false })
+    console.log(customTags)
+    pubsub.publish(CUSTOM_TAG_UPDATED, {
+      customTagUpdated: customTags,
+    })
 
     return customTags
   } catch (e) {
@@ -51,9 +56,6 @@ const updateCustomTag = async (_, { input }, ctx) => {
 
     const customTags = await CustomTag.query().where({ deleted: false })
 
-    pubsub.publish(CUSTOM_TAG_UPDATED, {
-      bookComponentOrderUpdated: customTags,
-    })
     return customTags
   } catch (e) {
     logger.error(e)
@@ -70,7 +72,7 @@ module.exports = {
     updateCustomTag,
   },
   Subscription: {
-    bookComponentOrderUpdated: {
+    customTagUpdated: {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(CUSTOM_TAG_UPDATED)
