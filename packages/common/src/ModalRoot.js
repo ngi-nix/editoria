@@ -46,6 +46,14 @@ const medium = css`
   margin-top: -370px;
   width: 940px;
 `
+const mediumNarrow = css`
+  height: 528px;
+  top: 50%;
+  left: 50%;
+  margin-left: -376.5px;
+  margin-top: -264px;
+  width: 753px;
+`
 const small = css`
   height: 250px;
   left: 50%;
@@ -84,6 +92,7 @@ const StyledModal = styled(ReactModalAdapter).attrs({
     ${props => props.size === 'largeNarrow' && largeNarrow};
     ${props => props.size === 'small' && small};
     ${props => props.size === 'medium' && medium};
+    ${props => props.size === 'medium_narrow' && mediumNarrow};
     /* stylelint-enable order/properties-alphabetical-order */
   }
 

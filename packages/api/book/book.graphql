@@ -54,10 +54,10 @@ extend type Mutation {
   updateRunningHeaders(input: [RunningHeadersInput!]!, bookId:ID!): Book!
   exportBook(
     bookId: ID!
-    destination: String!
-    converter: String
+    mode: String!
+    templateId: ID
     previewer: String
-    style: String
+    fileExtension: String
   ): String!
 }
 

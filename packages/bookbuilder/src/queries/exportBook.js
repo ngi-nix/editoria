@@ -5,17 +5,17 @@ import gql from 'graphql-tag'
 const EXPORT_BOOK = gql`
   mutation ExportBook(
     $bookId: ID!
-    $destination: String!
-    $converter: String
+    $mode: String!
+    $templateId: ID
     $previewer: String
-    $style: String
+    $fileExtension: String
   ) {
     exportBook(
       bookId: $bookId
-      destination: $destination
-      converter: $converter
+      mode: $mode
+      templateId: $templateId
       previewer: $previewer
-      style: $style
+      fileExtension: $fileExtension
     )
   }
 `

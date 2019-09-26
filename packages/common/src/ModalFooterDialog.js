@@ -72,7 +72,7 @@ const Label = styled.span`
 
 const ModalFooterDialog = props => {
   const {
-    className,
+    disableConfirm,
     onConfirm,
     onRequestClose,
     showCancelButton = true,
@@ -83,7 +83,7 @@ const ModalFooterDialog = props => {
   return (
     // <Wrapper className={className}>
     <ModalFooter>
-      <ConfirmButton onClick={onConfirm} primary>
+      <ConfirmButton disabled={disableConfirm} onClick={onConfirm} primary>
         <Label>{textSuccess}</Label>
       </ConfirmButton>
       {showCancelButton && (

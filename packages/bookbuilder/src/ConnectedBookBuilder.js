@@ -10,6 +10,7 @@ import statefull from './Statefull'
 import {
   getBookQuery,
   getBookBuilderRulesQuery,
+  getTemplatesQuery,
   createBookComponentMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
@@ -44,6 +45,7 @@ const mapper = {
   statefull,
   withModal,
   getBookQuery,
+  getTemplatesQuery,
   getBookBuilderRulesQuery,
   lockChangeSubscription,
   orderChangeSubscription,
@@ -214,6 +216,52 @@ const mapProps = args => ({
       book,
     })
   },
+  onExportBook: (bookId, bookTitle) => {
+    const { exportBookMutation, withModal } = args
+    const { exportBook } = exportBookMutation
+    const { showModal, hideModal } = withModal
+    const getTemplates = target => {
+      const {
+        getTemplatesQuery: { client, query },
+      } = args
+
+      return client.query({ query, variables: { target } })
+    }
+    const onConfirm = options => {
+      const { mode, viewer, format, templateId } = options
+      const payload = {
+        mode,
+        templateId: undefined,
+        previewer: undefined,
+        fileExtension: undefined,
+      }
+
+      if (mode === 'preview') {
+        payload.templateId = templateId
+        payload.previewer = viewer
+      } else {
+        if (format !== 'icml') {
+          payload.templateId = templateId
+        }
+        payload.fileExtension = format
+      }
+
+      exportBook({
+        variables: {
+          input: {
+            bookId,
+            ...payload,
+          },
+        },
+      })
+      hideModal()
+    }
+    showModal('exportBookModal', {
+      onConfirm,
+      bookTitle,
+      getTemplates,
+    })
+  },
   onWorkflowUpdate: (
     bookComponentId,
     workflowStages,
@@ -302,6 +350,7 @@ const Connected = props => {
         setState,
         onTeamManager,
         onBookSettings,
+        onExportBook,
         addBookComponent,
         deleteBookComponent,
         toggleIncludeInTOC,
@@ -341,6 +390,7 @@ const Connected = props => {
           onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
           onError={onError}
+          onExportBook={onExportBook}
           onMetadataAdd={onMetadataAdd}
           onTeamManager={onTeamManager}
           onWarning={onWarning}

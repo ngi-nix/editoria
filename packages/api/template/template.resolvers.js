@@ -21,22 +21,27 @@ const {
   TEMPLATE_UPDATED,
 } = require('./consts')
 
-const getTemplates = async (_, { ascending, sortKey }, ctx) => {
-  const templates = await Template.query().where('deleted', false)
-  const sortable = map(templates, template => {
-    const { id, name, author, target } = template
-    return { id, name: name.toLowerCase().trim(), author, target }
-  })
+const getTemplates = async (_, { ascending, sortKey, target }, ctx) => {
+  if (!target) {
+    const templates = await Template.query().where('deleted', false)
+    const sortable = map(templates, template => {
+      const { id, name, author, target } = template
+      return { id, name: name.toLowerCase().trim(), author, target }
+    })
 
-  const order = ascending ? 'asc' : 'desc'
+    const order = ascending ? 'asc' : 'desc'
 
-  const sorted = orderBy(sortable, sortKey, [order])
-  const result = map(sorted, item => find(templates, { id: item.id }))
-  return result
+    const sorted = orderBy(sortable, sortKey, [order])
+    const result = map(sorted, item => find(templates, { id: item.id }))
+    return result
+  }
+  return Template.query()
+    .where('deleted', false)
+    .andWhere('target', target)
 }
 const getTemplate = async (_, { id }, ctx) => {
   const template = await Template.findById(id)
-  
+
   return template
 }
 
@@ -261,7 +266,6 @@ const cloneTemplate = async (_, { input }, ctx) => {
 
 // TODO:
 const updateTemplate = async (_, { input }, ctx) => {
-  
   const {
     id,
     name,

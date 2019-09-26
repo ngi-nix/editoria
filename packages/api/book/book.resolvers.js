@@ -276,9 +276,9 @@ const updateMetadata = async (_, { input }, ctx) => {
 
 const exportBook = async (
   _,
-  { bookId, destination, converter, previewer, style },
+  { bookId, mode, previewer, templateId, fileExtension },
   ctx,
-) => exporter(bookId, destination, converter, previewer, style)
+) => exporter(bookId, mode, previewer, templateId, fileExtension, ctx)
 
 const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
   try {
