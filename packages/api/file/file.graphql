@@ -16,8 +16,10 @@ input UpdateFileInput {
   name: String
   source: String
   mimetype: String
+  data: String
 }
 
 extend type Mutation {
   uploadFile(input: NewFileInput!): File
+  updateFile(input: UpdateFileInput!): File
 }
