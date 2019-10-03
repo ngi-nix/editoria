@@ -62,23 +62,6 @@ const handlePrint = e => {
   pri.print()
 }
 
-const handleClick = e => {
-  e.preventDefault()
-  const { match } = this.props
-  const { params } = match
-  const { hashed } = params
-  const { changed } = this.state
-  axios
-    .post(`/api/pagedStyler/stylesheet/${hashed}/`, {
-      source: changed,
-    })
-    .then(res => {
-      this.setState({
-        random: this.state.random + 1,
-      })
-    })
-}
-
 const handleDownload = hashed => e => {
   e.preventDefault()
   axios.get(`/api/pagedStyler/exportHTML/${hashed}/`).then(res => {
@@ -92,11 +75,11 @@ const getCssFile = template =>
 const PagedStyler = ({ hashed, template, onWarningModal }) => {
   const [cssFile, setCssFile] = useState()
 
-  const currentTemplate = getCssFile(template)
+  const templateFile = getCssFile(template)
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/${currentTemplate.source}`)
+      const response = await fetch(`/${templateFile.source}`)
       const file = await response.text()
       setCssFile(file)
     }
@@ -109,7 +92,9 @@ const PagedStyler = ({ hashed, template, onWarningModal }) => {
     <Wrapper>
       <CodeEditorWrapper>
         <EditorToolbar>
-          <Actions onClick={() => onWarningModal(currentTemplate, cssFile)}>
+          <Actions
+            onClick={() => onWarningModal(templateFile, cssFile, template)}
+          >
             Save
           </Actions>
           <Actions onClick={handlePrint}>Print</Actions>

@@ -11,12 +11,13 @@ import {
 import withModal from 'editoria-common/src/withModal'
 import PagedStyler from './PagedStyler'
 import statefull from '../Statefull'
-import { updateFileMutation } from '../queries'
+import { updateFileMutation, getBookQuery } from '../queries'
 
 const mapper = {
   statefull,
   withModal,
   getTemplateQuery,
+  getBookQuery,
   cloneTemplateMutation,
   updateFileMutation,
 }
@@ -25,24 +26,31 @@ const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   template: get(args.getTemplateQuery, 'data.getTemplate'),
+  book: get(args.getBookQuery, 'data.getBook'),
+  loadingBook: args.getBookQuery.networkStatus === 1,
   loading: args.getTemplateQuery.networkStatus === 1,
   refetching:
     args.getTemplateQuery.networkStatus === 4 ||
     args.getTemplateQuery.networkStatus === 2, // possible apollo bug
-  onWarningModal: (file, data) => {
+  onWarningModal: (file, cssFile, template) => {
     const {
       withModal,
       cloneTemplateMutation: { cloneTemplate },
       getTemplateQuery: {
         data: {
-          getTemplate: { id, name },
+          getTemplate: { id },
+        },
+      },
+      getBookQuery: {
+        data: {
+          getBook: { title: name },
         },
       },
       updateFileMutation: { updateFile },
     } = args
     const { showModal, hideModal } = withModal
     const saveCssBook = () => {
-      cloneTemplate({ variables: { input: { id, name, cssFile: data } } })
+      cloneTemplate({ variables: { input: { id, name, cssFile } } })
       hideModal()
     }
 
@@ -51,7 +59,7 @@ const mapProps = args => ({
         variables: {
           input: {
             id: file.id,
-            data,
+            data: cssFile,
           },
         },
       })
@@ -62,6 +70,7 @@ const mapProps = args => ({
     showModal('warningPagedJs', {
       saveCssBook,
       saveCssAllBook,
+      name: template.name,
     })
   },
 })
@@ -71,12 +80,12 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const {
     match: {
-      params: { hashed, templateId },
+      params: { hashed, templateId, id },
     },
   } = props
 
   return (
-    <Composed templateId={templateId}>
+    <Composed bookId={id} templateId={templateId}>
       {({ template, onWarningModal, loading }) => {
         if (loading) return <p>Loading ...</p>
         return (

@@ -105,7 +105,7 @@ const createTemplate = async (_, { input }, ctx) => {
                 }).save()
                 logger.info(
                   `File representation created on the db with file id ${
-                  newFile.id
+                    newFile.id
                   }`,
                 )
                 resolve()
@@ -162,7 +162,7 @@ const createTemplate = async (_, { input }, ctx) => {
             }).save()
             logger.info(
               `Thumbnail representation created on the db with file id ${
-              newThumbnail.id
+                newThumbnail.id
               }`,
             )
             await Template.query()
@@ -199,6 +199,7 @@ const cloneTemplate = async (_, { input }, ctx) => {
       author: template.author,
       target: template.target,
       trimSize: template.trimSize,
+      referenceId: template.id,
     }).save()
 
     logger.info(`New template created with id ${newTemplate.id}`)
@@ -285,7 +286,7 @@ const updateTemplate = async (_, { input }, ctx) => {
     if (files.length > 0) {
       logger.info(
         `There is/are ${
-        files.length
+          files.length
         } new file/s to be uploaded for the template`,
       )
       await Promise.all(
@@ -320,7 +321,7 @@ const updateTemplate = async (_, { input }, ctx) => {
                 }).save()
                 logger.info(
                   `File representation created on the db with file id ${
-                  newFile.id
+                    newFile.id
                   }`,
                 )
                 resolve()
@@ -400,7 +401,7 @@ const updateTemplate = async (_, { input }, ctx) => {
             }).save()
             logger.info(
               `Thumbnail representation created on the db with file id ${
-              newThumbnail.id
+                newThumbnail.id
               }`,
             )
             await Template.query()
@@ -477,14 +478,14 @@ const deleteTemplate = async (_, { id }, ctx) => {
       )
       logger.info(
         `Thumbnail with id ${
-        deletedThumbnail.id
+          deletedThumbnail.id
         } patched with deleted set to true`,
       )
     }
 
     logger.info(
       `${
-      files.length
+        files.length
       } associated files should be patched with deleted set to true`,
     )
     await Promise.all(

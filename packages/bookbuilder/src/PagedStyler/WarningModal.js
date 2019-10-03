@@ -83,10 +83,10 @@ const Footer = props => {
   return (
     <ModalFooter>
       <ConfirmButton onClick={saveCssAllBook} primary>
-        <Label>Save css for all books</Label>
+        <Label>Modify</Label>
       </ConfirmButton>
       <ConfirmButton onClick={saveCssBook} primary>
-        <Label>Save css just for this book</Label>
+        <Label>Create New</Label>
       </ConfirmButton>
       {showCancelButton && (
         <CancelButton onClick={onRequestClose}>
@@ -99,22 +99,22 @@ const Footer = props => {
 
 const WarningModal = props => {
   const { isOpen, hideModal, data } = props
-  const { saveCssAllBook, saveCssBook } = data
+  const { saveCssAllBook, saveCssBook, name } = data
 
   return (
     <DialogModal
       footerComponent={
         <Footer saveCssAllBook={saveCssAllBook} saveCssBook={saveCssBook} />
       }
-      headerText="Change Css for template"
+      headerText="Modify Css"
       isOpen={isOpen}
       onRequestClose={hideModal}
       saveCssAllBook={saveCssAllBook}
       saveCssBook={saveCssBook}
     >
       <Text>
+        {`Do you want to modify the css of template "${name}" or create a new Template for the specific book.`}
         <br />
-        Are you sure you wish to continue?
       </Text>
     </DialogModal>
   )
