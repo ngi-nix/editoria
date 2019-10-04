@@ -21,6 +21,7 @@ input ClonedTemplateInput {
   id: ID
   name: String
   cssFile: String
+  hashed: String
 }
 
 input UpdateTemplateInput {

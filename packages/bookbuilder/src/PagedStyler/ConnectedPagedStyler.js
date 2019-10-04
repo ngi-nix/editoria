@@ -32,47 +32,50 @@ const mapProps = args => ({
   refetching:
     args.getTemplateQuery.networkStatus === 4 ||
     args.getTemplateQuery.networkStatus === 2, // possible apollo bug
-  onWarningModal: (file, cssFile, template) => {
-    const {
-      withModal,
-      cloneTemplateMutation: { cloneTemplate },
-      getTemplateQuery: {
-        data: {
-          getTemplate: { id },
-        },
-      },
-      getBookQuery: {
-        data: {
-          getBook: { title: name },
-        },
-      },
-      updateFileMutation: { updateFile },
-    } = args
-    const { showModal, hideModal } = withModal
-    const saveCssBook = () => {
-      cloneTemplate({ variables: { input: { id, name, cssFile } } })
-      hideModal()
-    }
-
-    const saveCssAllBook = () => {
-      updateFile({
-        variables: {
-          input: {
-            id: file.id,
-            data: cssFile,
+  onWarningModal: (file, cssFile, template, hashed) =>
+    new Promise((resolve, reject) => {
+      const {
+        withModal,
+        cloneTemplateMutation: { cloneTemplate },
+        getTemplateQuery: {
+          data: {
+            getTemplate: { id },
           },
         },
+        getBookQuery: {
+          data: {
+            getBook: { title: name },
+          },
+        },
+        updateFileMutation: { updateFile },
+      } = args
+      const { showModal, hideModal } = withModal
+      const saveCssBook = () => {
+        cloneTemplate({
+          variables: { input: { id, name, cssFile, hashed } },
+        }).then(() => resolve())
+        hideModal()
+      }
+
+      const saveCssAllBook = () => {
+        updateFile({
+          variables: {
+            input: {
+              id: file.id,
+              data: cssFile,
+              hashed,
+            },
+          },
+        }).then(() => resolve())
+        hideModal()
+      }
+
+      showModal('warningPagedJs', {
+        saveCssBook,
+        saveCssAllBook,
+        name: template.name,
       })
-
-      hideModal()
-    }
-
-    showModal('warningPagedJs', {
-      saveCssBook,
-      saveCssAllBook,
-      name: template.name,
-    })
-  },
+    }),
 })
 
 const Composed = adopt(mapper, mapProps)

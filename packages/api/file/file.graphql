@@ -17,6 +17,7 @@ input UpdateFileInput {
   source: String
   mimetype: String
   data: String
+  hashed: String
 }
 
 extend type Mutation {

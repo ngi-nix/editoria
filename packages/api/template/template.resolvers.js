@@ -188,7 +188,7 @@ const createTemplate = async (_, { input }, ctx) => {
 }
 
 const cloneTemplate = async (_, { input }, ctx) => {
-  const { id, name, cssFile } = input
+  const { id, name, cssFile, hashed } = input
   const pubsub = await pubsubManager.getPubsub()
 
   try {
@@ -220,6 +220,10 @@ const cloneTemplate = async (_, { input }, ctx) => {
 
         if (file.mimetype === 'text/css') {
           writeFileSync(outPath, cssFile)
+          writeFileSync(
+            path.join(uploadsPath, 'paged', hashed, 'default.css'),
+            cssFile,
+          )
         } else {
           copyFileSync(file.source, outPath)
         }

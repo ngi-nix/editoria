@@ -74,7 +74,7 @@ const getCssFile = template =>
 
 const PagedStyler = ({ hashed, template, onWarningModal }) => {
   const [cssFile, setCssFile] = useState()
-
+  const [random, setRandom] = useState('')
   const templateFile = getCssFile(template)
 
   useEffect(() => {
@@ -86,14 +86,20 @@ const PagedStyler = ({ hashed, template, onWarningModal }) => {
     if (!cssFile) fetchData()
   })
 
-  const random = ''
-
   return (
     <Wrapper>
       <CodeEditorWrapper>
         <EditorToolbar>
           <Actions
-            onClick={() => onWarningModal(templateFile, cssFile, template)}
+            onClick={() =>
+              onWarningModal(templateFile, cssFile, template, hashed).then(() =>
+                setRandom(
+                  Math.random()
+                    .toString(36)
+                    .substring(7),
+                ),
+              )
+            }
           >
             Save
           </Actions>
