@@ -55,6 +55,7 @@ class Navigation extends React.Component {
     const links = [
       <Action to="/books">Books</Action>,
       <Action to="/templates">Templates</Action>,
+      <Action to="/profile">User Profile</Action>,
     ]
 
     if (currentUser === null) return null

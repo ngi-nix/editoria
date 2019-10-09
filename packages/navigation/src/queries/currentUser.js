@@ -10,6 +10,8 @@ const CURRENT_USER = gql`
       id
       username
       admin
+      givenName
+      surname
     }
   }
 `
