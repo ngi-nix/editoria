@@ -142,6 +142,7 @@ const BookComponentActions = ({
     if (uploading) return
     history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
   }
+  if (componentType === 'toc') return null
   if (!isLocked) {
     return (
       <ActionGroup componentType={componentType} lock={lock}>
@@ -157,7 +158,7 @@ const BookComponentActions = ({
   return (
     <Container>
       <EditingNotification
-      goToEditor={goToEditor}
+        goToEditor={goToEditor}
         bookComponentId={bookComponentId}
         onAdminUnlock={onAdminUnlock}
         componentType={componentType}

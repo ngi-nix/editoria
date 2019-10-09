@@ -86,15 +86,19 @@ const BookComponentTitle = ({
 
   let bookComponentTitle = (
     <Title showNumber={showNumber} componentType={componentType}>
-      {title}
+      {title || 'Untitled'}
     </Title>
   )
   const url = `/books/${bookId}/bookComponents/${bookComponentId}`
-  if ((lock === null || lock === undefined) && !uploading) {
+  if (
+    (lock === null || lock === undefined) &&
+    !uploading &&
+    componentType !== 'toc'
+  ) {
     // const children = <Title onDoubleClick={goToEditor}>{title}</Title>
     bookComponentTitle = (
       <Title showNumber={showNumber} componentType={componentType}>
-        {withLink(title, url)}
+        {withLink(title || 'Untitled', url)}
       </Title>
     )
   }

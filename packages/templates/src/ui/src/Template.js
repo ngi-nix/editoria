@@ -167,6 +167,7 @@ const Template = props => {
     author,
     id,
     target,
+    notes,
     name,
     thumbnail,
     trimSize,
@@ -216,6 +217,10 @@ const Template = props => {
         <Row>
           <Label>target</Label>
           <Text>{target || '-'}</Text>
+        </Row>
+        <Row>
+          <Label>notes</Label>
+          <Text>{notes || '-'}</Text>
         </Row>
       </InfoContainer>
       {/* <Overlay>

@@ -37,7 +37,7 @@ input WorkFlowItemInput {
 
 type BookComponent {
   id: ID!
-  title: String!
+  title: String
   bookId: ID!
   bookTitle: String
   componentTypeOrder: Int!
@@ -60,7 +60,7 @@ type BookComponent {
 }
 
 input BookComponentInput {
-  title: String!
+  title: String
   bookId: ID!
   componentType: String!
   divisionId: ID!

@@ -1,5 +1,5 @@
-const HTMLEPUB = require('html-epub')
-const fs = require('fs')
+// const HTMLEPUB = require('html-epub')
+// const fs = require('fs')
 // const map = require('lodash/map')
 // const groupBy = require('lodash/groupBy')
 // const forEach = require('lodash/forEach')
@@ -7,46 +7,131 @@ const fs = require('fs')
 // const findIndex = require('lodash/findIndex')
 const cheerio = require('cheerio')
 
-const sorter = require('./sorter')
-const converters = require('./converters')
+// const sorter = require('./sorter')
+const {
+  substanceToHTML,
+  cleanDataIdAttributes,
+  vivliostyleDecorator,
+} = require('./converters')
+const {
+  generateContainer,
+  generatePagedjsContainer,
+} = require('./htmlGenerators')
+const { htmlToEPUB } = require('./htmlToEPUB')
 const processFragment = require('./process')
 const output = require('./output')
 const config = require('config')
 const pagednation = require('./pagednation')
 const bookConstructor = require('./bookConstructor')
 
-// const {
-//   BookTranslation,
-//   BookComponent,
-//   BookComponentTranslation,
-//   Division,
-// } = require('editoria-data-model/src').models
+const { Template } = require('editoria-data-model/src').models
 
 // const divisionTypeMapper = {
 //   Frontmatter: 'front',
 //   Body: 'body',
 //   Backmatter: 'back',
 // }
+
 const EpubBackend = async (
   bookId,
-  destination,
-  clientConverter,
-  clientPreviewer,
-  style,
+  mode,
+  templateId,
+  previewer,
+  fileExtension,
   ctx,
 ) => {
   try {
-    console.log('hello')
-    // const previewer = clientPreviewer || 'vivliostyle'
-    // const converter =
-    //   clientConverter ||
-    //   (config['pubsweet-client'] && config['pubsweet-client'].converter)
-    //     ? config['pubsweet-client'].converter
-    //     : 'default'
+    console.log('hello', bookId, mode, templateId, previewer, fileExtension)
 
-        const book = await bookConstructor(bookId, ctx)
+    const template = await Template.findById(templateId)
+    const { notes: notesType } = template
+    const templateHasEndnotes = notesType === 'endnotes'
 
-        console.log('book', book)
+    // The produced representation of the book holds two map data types one
+    // for the division and one for the book components of each division to
+    // ensure the order of things
+    const book = await bookConstructor(bookId, templateHasEndnotes, ctx)
+
+    const frontDivision = book.divisions.get('front')
+    const backDivision = book.divisions.get('back')
+
+    const tocComponent = frontDivision.bookComponents.get('toc')
+    tocComponent.content = generateContainer(tocComponent)
+
+    let endnotesComponent
+    if (templateHasEndnotes) {
+      endnotesComponent = backDivision.bookComponents.get('endnotes')
+      endnotesComponent.content = generateContainer(endnotesComponent)
+    }
+
+    book.divisions.forEach((division, divisionId) => {
+      let counter = 0
+      division.bookComponents.forEach((bookComponent, bookComponentId) => {
+        const { componentType } = bookComponent
+        const isTheFirstInBody = division.type === 'body' && counter === 0
+
+        if (componentType === 'toc' || componentType === 'endnotes') return
+
+        const container = generateContainer(bookComponent, isTheFirstInBody)
+
+        const convertedContent = substanceToHTML(
+          container,
+          bookComponent,
+          notesType,
+          tocComponent,
+          endnotesComponent,
+        )
+        bookComponent.content = cleanDataIdAttributes(convertedContent)
+        counter += 1
+      })
+    })
+
+    // Check if notes exist
+    const $ = cheerio.load(endnotesComponent.content)
+    if ($('ol').length === 0) {
+      backDivision.bookComponents.delete('endnotes')
+    }
+
+    if (previewer === 'vivliostyle' || fileExtension === 'epub') {
+      if (previewer === 'vivliostyle') {
+        book.divisions.forEach((division, divisionId) => {
+          division.bookComponents.forEach((bookComponent, bookComponentId) => {
+            const { content } = bookComponent
+            bookComponent.content = vivliostyleDecorator(content, book.title)
+          })
+        })
+      }
+      await htmlToEPUB(book, template)
+
+      // Here start the logic of html to epub
+      // each book component decorate with html-body
+      // each book component decorate with valid epub properties epub:type, etc
+      // fix urls (imgs, stylesheet, in actual css fix the fonts path if any)
+    }
+
+    if (previewer === 'pagedjs' || fileExtension === 'pdf') {
+      const output = cheerio.load(generatePagedjsContainer(book.title))
+      book.divisions.forEach((division, divisionId) => {
+        division.bookComponents.forEach((bookComponent, bookComponentId) => {
+          // console.log('types', bookComponent.componentType)
+          const { content } = bookComponent
+          output('body').append(content)
+        })
+      })
+      console.log('o', output.html())
+      // append to single html file each book component
+      // fix (fonts url if any in css file)
+    }
+
+    if (fileExtension === 'icml') {
+      // append to single html file each book component
+      // fix url images
+    }
+
+    // console.log('book', book)
+    // for (let [divisionId, division] of book.divisions) {
+    //   console.log('division', division)
+    // }
     // const bookTranslation = await BookTranslation.query()
     //   .where('bookId', bookId)
     //   .andWhere('languageIso', 'en')
@@ -105,10 +190,6 @@ const EpubBackend = async (
     //     }
     //   }),
     // )
-
-
-
-
 
     // ?????????
     // ?????????

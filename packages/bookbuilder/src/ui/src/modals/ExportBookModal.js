@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import styled from 'styled-components'
+import find from 'lodash/find'
 import DialogModal from 'editoria-common/src/DialogModal'
 import { th } from '@pubsweet/ui-toolkit'
 import map from 'lodash/map'
@@ -74,7 +75,7 @@ const StyledSelect = styled(WrappedSelect)`
     border-radius: 0;
     box-shadow: none;
     outline: 0;
-    width: 200px;
+    width: ${({ size }) => (size === 'small' ? '60px' : '200px')};
     &:hover {
       border-bottom: 1px solid ${th('colorPrimary')};
     }
@@ -122,7 +123,7 @@ const InfoContainer = styled.div`
   line-height: ${th('lineHeightBase')};
   margin-bottom: calc(${th('gridUnit')} * 2);
   text-align: center;
-  width: 50%;
+  width: 60%;
 `
 
 const RadioButton = styled.label`
@@ -149,6 +150,11 @@ const optionsFormatter = options => {
   }))
 }
 
+const extractTemplates = res => {
+  const { data } = res
+  const { getTemplates } = data
+  return getTemplates
+}
 const targetMapper = {
   epub: 'epub',
   pdf: 'pagedjs',
@@ -171,6 +177,8 @@ class ExportBookModal extends Component {
       selectedValue: null,
       viewer: 'pagedjs',
       templateId: undefined,
+      templates:[],
+      hasEndnotes: false,
       format: 'epub',
     }
   }
@@ -184,6 +192,7 @@ class ExportBookModal extends Component {
       this.setState({
         selectOptions: optionsFormatter(res),
         selectedValue: null,
+        templates: extractTemplates(res),
       }),
     )
   }
@@ -200,6 +209,7 @@ class ExportBookModal extends Component {
           this.setState({
             selectOptions: optionsFormatter(res),
             selectedValue: null,
+            templates: extractTemplates(res),
           }),
         )
       }
@@ -207,6 +217,7 @@ class ExportBookModal extends Component {
         this.setState({
           selectOptions: optionsFormatter(res),
           selectedValue: null,
+          templates: extractTemplates(res),
         }),
       )
     }
@@ -219,6 +230,7 @@ class ExportBookModal extends Component {
       viewer: 'pagedjs',
       templateId: undefined,
       selectedValue: null,
+      hasEndnotes: false,
       format: 'epub',
     })
   }
@@ -235,18 +247,21 @@ class ExportBookModal extends Component {
         viewer: value,
         templateId: undefined,
         selectedValue: null,
+        hasEndnotes: false,
       })
     } else {
       this.setState({
         format: value,
         templateId: undefined,
         selectedValue: null,
+        hasEndnotes: false,
       })
     }
     return getTemplates(targetMapper[value]).then(res =>
       this.setState({
         selectOptions: optionsFormatter(res),
         selectedValue: null,
+        templates: extractTemplates(res),
       }),
     )
   }
@@ -263,28 +278,48 @@ class ExportBookModal extends Component {
 
   onChange(selection) {
     const { value } = selection
-    this.setState({ templateId: value, selectedValue: selection })
+    const { templates } = this.state
+
+    const selectedTemplate = find(templates, { id: value })
+
+    const hasEndnotes = selectedTemplate.notes === 'endnotes'
+    this.setState({ templateId: value, selectedValue: selection, hasEndnotes })
   }
 
   renderTemplateSection() {
-    const { mode, format, selectOptions, selectedValue } = this.state
+    const {
+      mode,
+      format,
+      selectOptions,
+      selectedValue,
+      hasEndnotes,
+    } = this.state
+
     if (mode === 'download' && format === 'icml') {
       return null
     }
 
     return (
-      <TemplateRow>
-        <TemplateLabel>Template</TemplateLabel>
-        <StyledSelect
-          isClearable={false}
-          isDisabled={false}
-          isLoading={false}
-          isSearchable={false}
-          onChange={this.onChange}
-          options={selectOptions}
-          value={selectedValue}
-        />
-      </TemplateRow>
+      <Fragment>
+        <TemplateRow>
+          <TemplateLabel>Template</TemplateLabel>
+          <StyledSelect
+            isClearable={false}
+            isDisabled={false}
+            isLoading={false}
+            isSearchable={false}
+            onChange={this.onChange}
+            options={selectOptions}
+            value={selectedValue}
+          />
+        </TemplateRow>
+        {hasEndnotes && (
+          <InfoContainer>
+            You have selected a template where the notes of each book component
+            will be gathered and placed at the Backmatter of the book
+          </InfoContainer>
+        )}
+      </Fragment>
     )
   }
 

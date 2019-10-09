@@ -20,7 +20,7 @@ const divisionTypeMapper = {
 
 const eager = '[members.[user]]'
 
-module.exports = async (bookId, ctx) => {
+module.exports = async (bookId, templateHasEndnotes, ctx) => {
   const finalBook = {}
   const book = await Book.findById(bookId)
 
@@ -56,6 +56,7 @@ module.exports = async (bookId, ctx) => {
         includeInTOC: bookComponentState[0].includeInTOC,
         runningHeadersRight: bookComponentState[0].runningHeadersRight,
         runningHeadersLeft: bookComponentState[0].runningHeadersLeft,
+        pagination: bookComponent.pagination,
       }
     }),
   )
@@ -131,24 +132,60 @@ module.exports = async (bookId, ctx) => {
     authors: authors.length > 0 ? authors : null,
   }
 
-  const bookDivisions = []
+  // const bookDivisions = []
+  const bookDivisions = new Map()
 
   for (let i = 0; i < book.divisions.length; i += 1) {
     const division = find(divisions, { id: book.divisions[i] })
     const tempDivision = {
       label: division.label,
       type: divisionTypeMapper[division.label],
-      bookComponents: [],
+      // bookComponents: [],
+      bookComponents: new Map(),
     }
+
     forEach(division.bookComponents, bookComponentId => {
-      tempDivision.bookComponents.push(
-        find(bookComponentsWithNumber, { id: bookComponentId }),
-      )
+      // tempDivision.bookComponents.push(
+      //   find(bookComponentsWithNumber, { id: bookComponentId }),
+      // )
+      const bookComponent = find(bookComponentsWithNumber, {
+        id: bookComponentId,
+      })
+      if (bookComponent.componentType === 'toc') {
+        tempDivision.bookComponents.set('toc', bookComponent)
+
+        // } else if (
+        //   templateHasEndnotes &&
+        //   bookComponent.componentType === 'endnotes'
+        // ) {
+        //   tempDivision.bookComponents.set('endnotes', bookComponent)
+      } else {
+        tempDivision.bookComponents.set(bookComponentId, bookComponent)
+      }
     })
-    bookDivisions.push(tempDivision)
+    if (division.label === 'Backmatter' && templateHasEndnotes) {
+      const notesComponent = {
+        id: 'notes0',
+        divisionId: division.id,
+        content: null,
+        title: 'Notes',
+        componentType: 'endnotes',
+        includeInTOC: true,
+        runningHeadersRight: 'Notes',
+        runningHeadersLeft: 'Notes',
+        pagination: { left: false, right: true },
+        division: 'back',
+        number: 1,
+      }
+      tempDivision.bookComponents.set('endnotes', notesComponent)
+    }
+    // bookDivisions.push(tempDivision)
+    bookDivisions.set(divisionTypeMapper[division.label], tempDivision)
   }
   finalBook.title = bookTranslation[0].title
   finalBook.metadata = bookMetadata
   finalBook.divisions = bookDivisions
+  finalBook.id = book.id
+  finalBook.updated = book.updated
   return finalBook
 }

@@ -20,6 +20,12 @@ const selectOptions = [
   { label: 'VivlioStyle', value: 'vivliostyle' },
 ]
 
+const noteSelectOptions = [
+  { label: 'Footnotes', value: 'footnotes' },
+  { label: 'Endnotes', value: 'endnotes' },
+  { label: 'Chapter end notes', value: 'chapterEnd' },
+]
+
 const StyledModal = styled(ModalBody)`
   align-items: flex-start;
   display: flex;
@@ -207,6 +213,8 @@ class TemplateModal extends React.Component {
     this.updateThumbnail = this.updateThumbnail.bind(this)
     this.removeFile = this.removeFile.bind(this)
     this.removeThumbnail = this.removeThumbnail.bind(this)
+    this.handleSelectNotes = this.handleSelectNotes.bind(this)
+    this.handleSelect = this.handleSelect.bind(this)
     if (mode === 'create') {
       this.state = {
         error: false,
@@ -215,9 +223,18 @@ class TemplateModal extends React.Component {
         files: [],
         mode,
         target: undefined,
+        notes: find(noteSelectOptions, { value: 'footnotes' }),
       }
     } else {
-      const { name, files, thumbnail, target, author, trimSize } = template
+      const {
+        name,
+        files,
+        thumbnail,
+        target,
+        author,
+        trimSize,
+        notes,
+      } = template
       this.state = {
         error: false,
         deleteThumbnail: undefined,
@@ -230,6 +247,7 @@ class TemplateModal extends React.Component {
         files,
         mode,
         target: target ? find(selectOptions, { value: target }) : undefined,
+        notes: notes ? find(noteSelectOptions, { value: notes }) : undefined,
       }
     }
   }
@@ -248,6 +266,10 @@ class TemplateModal extends React.Component {
 
   handleSelect(selected) {
     this.setState({ target: selected })
+  }
+
+  handleSelectNotes(selected) {
+    this.setState({ notes: selected })
   }
 
   updateThumbnail(file, setFieldValue, setFieldTouched) {
@@ -384,7 +406,7 @@ class TemplateModal extends React.Component {
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
-          const { name, author, trimSize, files, thumbnail, target } = values
+          const { name, author, trimSize, files, thumbnail, target, notes } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
 
           let data
@@ -396,6 +418,7 @@ class TemplateModal extends React.Component {
               files,
               thumbnail,
               target: target ? target.value : undefined,
+              notes: notes ? notes.value : 'footnotes',
             }
           } else {
             data = {
@@ -407,6 +430,7 @@ class TemplateModal extends React.Component {
               files: filter(files, file => !file.id),
               thumbnail: thumbnail && thumbnail.id ? null : thumbnail,
               target: target ? target.value : undefined,
+              notes: notes ? notes.value : 'footnotes',
             }
           }
 
@@ -555,6 +579,21 @@ class TemplateModal extends React.Component {
                         }}
                         options={selectOptions}
                         value={this.state.target}
+                      />
+                      <Error>{errors.target}</Error>
+                    </FormFieldContainer>
+                  </FormField>
+                  <FormField>
+                    <Text>Notes</Text>
+                    <FormFieldContainer>
+                      <Select
+                        onChange={selected => {
+                          this.handleSelectNotes(selected)
+                          setFieldValue('notes', selected)
+                        }}
+                        defaultValue={noteSelectOptions[0]}
+                        options={noteSelectOptions}
+                        value={this.state.notes}
                       />
                       <Error>{errors.target}</Error>
                     </FormFieldContainer>

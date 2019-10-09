@@ -7,6 +7,7 @@ const GET_TEMPLATES = gql`
     getTemplates(target: $target) {
       id
       name
+      notes
     }
   }
 `

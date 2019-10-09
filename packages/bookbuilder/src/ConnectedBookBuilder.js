@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, findIndex, map } from 'lodash'
+import { get, findIndex, map, find } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import withModal from 'editoria-common/src/withModal'
@@ -216,7 +216,7 @@ const mapProps = args => ({
       book,
     })
   },
-  onExportBook: (bookId, bookTitle) => {
+  onExportBook: (book, bookTitle) => {
     const { exportBookMutation, withModal } = args
     const { exportBook } = exportBookMutation
     const { showModal, hideModal } = withModal
@@ -227,8 +227,7 @@ const mapProps = args => ({
 
       return client.query({ query, variables: { target } })
     }
-    const onConfirm = options => {
-      const { mode, viewer, format, templateId } = options
+    const onConfirm = (mode, viewer, templateId, format) => {
       const payload = {
         mode,
         templateId: undefined,
@@ -246,10 +245,11 @@ const mapProps = args => ({
         payload.fileExtension = format
       }
 
+
       exportBook({
         variables: {
           input: {
-            bookId,
+            bookId: book.id,
             ...payload,
           },
         },

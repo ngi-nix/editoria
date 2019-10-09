@@ -45,6 +45,7 @@ const mapProps = args => {
         name,
         author,
         target,
+        notes,
         trimSize,
       }) => {
         createTemplate({
@@ -53,6 +54,7 @@ const mapProps = args => {
               files,
               name,
               author,
+              notes,
               target,
               trimSize,
               thumbnail,
@@ -81,6 +83,7 @@ const mapProps = args => {
         deleteThumbnail,
         name,
         author,
+        notes,
         target,
         trimSize,
       }) => {
@@ -92,6 +95,7 @@ const mapProps = args => {
               deleteThumbnail,
               deleteFiles,
               name,
+              notes,
               author,
               target,
               trimSize,

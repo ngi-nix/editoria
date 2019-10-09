@@ -84,7 +84,6 @@ class Division extends React.Component {
     add({
       variables: {
         input: {
-          title: 'Untitled',
           bookId,
           componentType,
           divisionId,

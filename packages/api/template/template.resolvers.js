@@ -46,11 +46,11 @@ const getTemplate = async (_, { id }, ctx) => {
 }
 
 const createTemplate = async (_, { input }, ctx) => {
-  const { name, author, files, target, trimSize, thumbnail } = input
+  const { name, author, files, target, trimSize, thumbnail, notes } = input
 
   // const allowedFonts = ['.otf', '.woff', '.woff2']
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
-  const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
+  const allowedFiles = ['.css', '.otf', '.woff', '.woff2', '.ttf']
   const regexFiles = new RegExp(
     `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
@@ -66,6 +66,7 @@ const createTemplate = async (_, { input }, ctx) => {
       name,
       author,
       target,
+      notes,
       trimSize,
     }).save()
     logger.info(`New template created with id ${newTemplate.id}`)
@@ -273,6 +274,7 @@ const updateTemplate = async (_, { input }, ctx) => {
     files,
     target,
     trimSize,
+    notes,
     thumbnail,
     deleteFiles,
     deleteThumbnail,
@@ -280,7 +282,7 @@ const updateTemplate = async (_, { input }, ctx) => {
 
   // const allowedFonts = ['.otf', '.woff', '.woff2']
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
-  const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
+  const allowedFiles = ['.css', '.otf', '.woff', '.woff2', '.ttf']
   const regexFiles = new RegExp(
     `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
@@ -453,6 +455,7 @@ const updateTemplate = async (_, { input }, ctx) => {
       author,
       trimSize,
       target,
+      notes,
     })
     pubsub.publish(TEMPLATE_UPDATED, {
       templateUpdated: updatedTemplate,

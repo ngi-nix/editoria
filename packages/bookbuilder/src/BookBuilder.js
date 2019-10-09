@@ -118,7 +118,7 @@ export class BookBuilder extends React.Component {
       //   onError={onError}
       // />,
       <BookExporterButton
-        onClick={() => onExportBook(book.id, book.title)}
+        onClick={() => onExportBook(book, book.title)}
         onError={onError}
       />,
       <BookSettingsButton

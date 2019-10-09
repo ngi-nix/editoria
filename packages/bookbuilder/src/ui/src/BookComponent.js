@@ -41,7 +41,15 @@ const StyledButton = styled(ButtonWithoutLabel)`
 const BookComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: ${({ shouldIndent }) => (shouldIndent ? '5%' : '0')};
+  padding-left: ${({ shouldIndent, componentType }) => {
+    if (shouldIndent) {
+      if (componentType !== 'toc') {
+        return '5%'
+      }
+      return '3%'
+    }
+    return '0'
+  }};
   margin-bottom: calc(3 * ${th('gridUnit')});
   background-color: white;
   width: 100%;
@@ -333,23 +341,27 @@ const BookComponent = ({
   }
   return (
     <BookComponentContainer
+      componentType={componentType}
       // ref={instance => connectDragSource(connectDropTarget(instance))}
       shouldIndent={
-        componentType === 'chapter' ||
-        componentType === 'unnumbered' ||
-        componentType === 'component'
+        // componentType === 'chapter' ||
+        // componentType === 'unnumbered' ||
+        // componentType === 'component'
+        componentType !== 'part'
       }
     >
       <FirstRow>
         <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
-          <ComponentTypeMenu
-            addComponentType={onAddComponentType}
-            applicationParameter={applicationParameter}
-            componentType={componentType}
-            divisionType={divisionType}
-            onChange={onUpdateComponentType}
-          />
+          {componentType !== 'toc' && (
+            <ComponentTypeMenu
+              addComponentType={onAddComponentType}
+              applicationParameter={applicationParameter}
+              componentType={componentType}
+              divisionType={divisionType}
+              onChange={onUpdateComponentType}
+            />
+          )}
           {/* {lock && (
             <ButtonWithoutLabel onClick={goToEditor} icon={previewIcon} />
           )} */}
@@ -393,26 +405,31 @@ const BookComponent = ({
         />
       </FirstRow>
 
-      <SecondRow
-        applicationParameter={applicationParameter}
-        bookComponentId={id}
-        onWorkflowUpdate={onWorkflowUpdate}
-        onWarning={onWarning}
-        bookId={bookId}
-        componentType={componentType}
-        updateBookComponentUploading={updateBookComponentUploading}
-        divisionId={divisionId}
-        lock={lock}
-        pagination={pagination}
-        rules={rules}
-        uploading={uploading}
-        goToEditor={goToEditor}
-        trackChangesEnabled={trackChangesEnabled}
-        updatePagination={updatePagination}
-        updateWorkflowState={updateWorkflowState}
-        uploadBookComponent={uploadBookComponent}
-        workflowStages={workflowStages}
-      />
+      {componentType !== 'toc' && (
+        <SecondRow
+          applicationParameter={applicationParameter}
+          bookComponentId={id}
+          onWorkflowUpdate={onWorkflowUpdate}
+          onWarning={onWarning}
+          bookId={bookId}
+          componentType={componentType}
+          updateBookComponentUploading={updateBookComponentUploading}
+          divisionId={divisionId}
+          lock={lock}
+          outerContainer={outerContainer}
+          pagination={pagination}
+          rules={rules}
+          uploading={uploading}
+          goToEditor={goToEditor}
+          trackChangesEnabled={trackChangesEnabled}
+          // update={update}
+          updatePagination={updatePagination}
+          updateWorkflowState={updateWorkflowState}
+          uploadBookComponent={uploadBookComponent}
+          workflowStages={workflowStages}
+          showModal={showModal}
+        />
+      )}
     </BookComponentContainer>
   )
 }

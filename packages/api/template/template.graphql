@@ -5,6 +5,7 @@ type Template {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [File]!
 }
 
@@ -14,6 +15,7 @@ input CreateTemplateInput {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [Upload]!
 }
 
@@ -32,6 +34,7 @@ input UpdateTemplateInput {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [Upload]!
   deleteFiles: [String]!
 }

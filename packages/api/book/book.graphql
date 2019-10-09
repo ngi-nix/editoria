@@ -23,6 +23,14 @@ input CreateBookInput {
   title: String!
 }
 
+input ExportBookInput {
+  bookId: ID!
+  mode: String!
+  templateId: ID
+  previewer: String
+  fileExtension: String
+}
+
 extend type Query {
   getBook(id: ID!): Book!
 }
@@ -52,13 +60,7 @@ extend type Mutation {
   deleteBook(id: ID!): Book!
   updateMetadata(input: MetadataInput!): Book!
   updateRunningHeaders(input: [RunningHeadersInput!]!, bookId:ID!): Book!
-  exportBook(
-    bookId: ID!
-    mode: String!
-    templateId: ID
-    previewer: String
-    fileExtension: String
-  ): String!
+  exportBook(input: ExportBookInput!): String!
 }
 
 extend type Subscription {

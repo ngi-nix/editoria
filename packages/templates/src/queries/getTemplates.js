@@ -19,6 +19,7 @@ const GET_TEMPLATES = gql`
       author
       trimSize
       target
+      notes
     }
   }
 `

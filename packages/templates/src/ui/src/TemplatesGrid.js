@@ -20,7 +20,15 @@ const TemplatesGrid = props => {
   return (
     <GridContainer>
       {templates.map(template => {
-        const { name, id, author, target, thumbnail, trimSize } = template
+        const {
+          name,
+          id,
+          author,
+          target,
+          thumbnail,
+          trimSize,
+          notes,
+        } = template
         return (
           <Template
             onDeleteTemplate={onDeleteTemplate}
@@ -29,6 +37,7 @@ const TemplatesGrid = props => {
             id={id}
             author={author}
             target={target}
+            notes={notes}
             name={name}
             thumbnail={thumbnail}
             trimSize={trimSize}
