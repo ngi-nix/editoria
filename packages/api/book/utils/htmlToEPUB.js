@@ -9,14 +9,15 @@ const url = require('url')
 const config = require('config')
 const get = require('lodash/get')
 const map = require('lodash/map')
-const { writeFile } = require('./filesystem')
+const { writeFile, readFile } = require('./filesystem')
 const beautify = require('js-beautify').html
+const csstree = require('css-tree')
 const { epubDecorator } = require('./converters')
 
-const images = []
-const stylesheets = []
-const fonts = []
-const xhtmls = []
+let images = []
+let stylesheets = []
+let fonts = []
+let xhtmls = []
 
 const createEPUBFolder = async () => {
   try {
@@ -58,6 +59,36 @@ const createMimetype = async rootPath => {
   } catch (e) {
     throw new Error(e)
   }
+}
+
+const fixFontFaceUrls = (stylesheet, fonts) => {
+  console.log('content', stylesheet.content)
+  const ast = csstree.parse(stylesheet.content)
+  console.log('ast', ast)
+
+  // traverse AST and modify it
+  const allowedFiles = [".otf", ".woff", ".woff2", ".ttf"]
+  const regex = new RegExp(
+    '([a-zA-Z0-9s_\\.-:])+(' + allowedFiles.join('|') + ')$',
+  )
+  csstree.walk(ast, function(node) {
+    console.log('ddddd',node.value)
+    if (node.type === 'Url' && regex.test(node.value.value)) {
+      let temp = node.value.value
+      console.log('temp', temp)
+      for (let i = 0; i < fonts.length; i += 1) {
+        console.log('base', fonts[i].basename)
+        console.log('reg', new RegExp(fonts[i].basename).test(temp))
+        if (new RegExp(fonts[i].basename).test(temp)) {
+          console.log('in here')
+          node.value.value = `../Fonts/${fonts[i].basename}`
+        }
+      }
+    }
+  })
+  stylesheet.content = csstree.generate(ast)
+  // generate CSS from AST
+  // console.log(csstree.generate(ast));
 }
 
 const createContainer = async metaInfPath => {
@@ -120,15 +151,19 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
       })
     }
   }
+  stylesheets[0].content = await readFile(stylesheets[0].source)
+
   if (stylesheets.length === 0) {
     throw new Error('No stylesheet file exist in the template, export aborted')
   }
 
+  fixFontFaceUrls(stylesheets[0], fonts)
+
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       const { content, id } = bookComponent
-      console.log('id', id)
       const $ = cheerio.load(content)
+
       $('img[src]').each((index, node) => {
         const $node = $(node)
         const constructedId = `image-${id}-${index}`
@@ -150,7 +185,14 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
           filename,
           extension,
         })
-        $node.attr('href', `../Images/${basename}`)
+        $node.attr('src', `../Images/${basename}`)
+      })
+      $('figure').each((index, node) => {
+        const $node = $(node)
+        const srcExists = $node.attr('src')
+        if (srcExists) {
+          $node.removeAttr('src')
+        }
       })
       bookComponent.content = $.html('body')
     })
@@ -167,8 +209,8 @@ const transferAssets = async (images, stylesheets, fonts) => {
     )
     await Promise.all(
       map(stylesheets, async stylesheet => {
-        const { source, target } = stylesheet
-        return fs.copy(source, target)
+        const { content, target } = stylesheet
+        return writeFile(target, content)
       }),
     )
     await Promise.all(
@@ -190,19 +232,24 @@ const decorateText = async book => {
         book.title,
         stylesheets[0],
       )
-      // console.log('content', bookComponent.content)
     })
   })
 }
 
 const generateTOCNCX = async (book, epubFolder) => {
   const navPoints = []
+  const { metadata } = book
+  const { isbn, issn, issnL } = metadata
+
+  const identifier = isbn || issn || issnL
+  let counter = 0
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       const { id, includeInTOC, title, componentType } = bookComponent
+
       if (true) {
         navPoints.push({
-          '@id': id,
+          '@id': `nav-${counter}`,
           navLabel: {
             text: {
               '#text': title || componentType,
@@ -212,6 +259,7 @@ const generateTOCNCX = async (book, epubFolder) => {
             '@src': `Text/comp-number-${id}.xhtml`,
           },
         })
+        counter += 1
       }
     })
   })
@@ -222,7 +270,7 @@ const generateTOCNCX = async (book, epubFolder) => {
       head: {
         meta: [
           {
-            '@content': book.id,
+            '@content': `urn:uuid:${identifier || book.id}`,
             '@name': 'dtb:uid',
           },
           {
@@ -249,12 +297,10 @@ const generateTOCNCX = async (book, epubFolder) => {
       },
     },
   }
-  const output = builder
-    .create(toc, { encoding: 'UTF-8', standalone: 'no' })
-    .end({
-      pretty: true,
-    })
-  await writeFile(`${epubFolder.oebps}/toc.ncx`, output)
+  const output = builder.create(toc, { encoding: 'UTF-8' }).end({
+    pretty: true,
+  })
+  return writeFile(`${epubFolder.oebps}/toc.ncx`, output)
 }
 
 const generateContentOPF = async (book, epubFolder) => {
@@ -263,45 +309,29 @@ const generateContentOPF = async (book, epubFolder) => {
     isbn,
     issn,
     issnL,
-    copyrightStatement,
-    copyrightYear,
-    copyrightHolder,
     license,
+    copyrightHolder,
     authors,
     publicationDate,
   } = metadata
   const spineData = []
   const manifestData = []
   const identifier = isbn || issn || issnL
-  let identifierTemp
-  let publicationDateTemp
-  let rights = `${copyrightYear ||''} ${copyrightStatement ||''} ${copyrightHolder ||''}`
+
   const metaTemp = []
+
+  map(authors, (author, index) => {
+    metaTemp.push({
+      '@scheme': 'marc:relators',
+      '@property': 'role',
+      '@refines': `#creator${index}`,
+      '#text': 'aut',
+    })
+  })
   metaTemp.push({
     '@property': 'dcterms:modified',
     '#text': updated.toISOString().replace(/\.\d+Z$/, 'Z'),
   })
-  if (identifier) {
-    identifierTemp = {
-      'dc:identifier': {
-        '@id': 'BookId',
-        '#text': `urn:uuid:${identifier}`,
-      },
-    }
-    metaTemp.push({
-      '@refines': '#BookId',
-      '@property': 'identifier-type',
-      '@scheme': 'onix:codelist5',
-      '#text': 15,
-    })
-  }
-  if (publicationDate) {
-    publicationDateTemp = {
-      'dc:date': {
-        '#text': publicationDate,
-      },
-    }
-  }
 
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
@@ -360,23 +390,56 @@ const generateContentOPF = async (book, epubFolder) => {
         '@xmlns:ibooks': 'http://apple.com/ibooks/html-extensions',
         'dc:title': { '#text': title },
         'dc:language': { '#text': 'en' },
-        meta: {
-          '@property': 'dcterms:modified',
-          '#text': updated.toISOString().replace(/\.\d+Z$/, 'Z'),
-        },
+        'dc:creator': map(authors, (author, index) => ({
+          '@id': `creator${index}`,
+          '#text': author,
+        })),
+
+        meta: metaTemp,
       },
       manifest: { item: manifestData },
       spine: {
-        itemRef: spineData,
+        '@toc': 'ncx',
+        itemref: spineData,
       },
     },
   }
-  const output = builder
-    .create(contentOPF, { encoding: 'UTF-8', standalone: 'no' })
-    .end({
-      pretty: true,
+  if (identifier) {
+    contentOPF.package.metadata['dc:identifier'] = {
+      '@id': 'BookId',
+      '#text': `urn:uuid:${identifier}`,
+    }
+
+    metaTemp.push({
+      '@refines': '#BookId',
+      '@property': 'identifier-type',
+      '@scheme': 'onix:codelist5',
+      '#text': 15,
     })
-  await writeFile(`${epubFolder.oebps}/content.opf`, output)
+  } else {
+    contentOPF.package.metadata['dc:identifier'] = {
+      '@id': 'BookId',
+      '#text': `urn:uuid:${book.id}`,
+    }
+  }
+  if (publicationDate) {
+    contentOPF.package.metadata['dc:date'] = {
+      '#text': publicationDate,
+    }
+  }
+  if (license) {
+    contentOPF.package.metadata['dc:rights'] = {
+      '#text': license,
+    }
+  }
+  if (copyrightHolder) {
+    contentOPF.package.metadata['dc:publisher'] = { '#text': copyrightHolder }
+  }
+
+  const output = builder.create(contentOPF, { encoding: 'UTF-8' }).end({
+    pretty: true,
+  })
+  return writeFile(`${epubFolder.oebps}/content.opf`, output)
 }
 
 const convertToXML = async content => {
@@ -386,6 +449,7 @@ const convertToXML = async content => {
     force_output: true,
     tidy_mark: false,
     drop_empty_elements: false,
+    preserve_entities: true,
   }
 
   return new Promise((resolve, reject) => {
@@ -446,7 +510,7 @@ const transferTexts = async texts => {
       map(texts, async text => {
         const { content, target } = text
         const tidyContent = await convertToXML(
-          `<?xml version="1.0" encoding="utf-8" standalone="no"?>${content}`,
+          `<?xml version="1.0" encoding="utf-8"?>${content}`,
         )
         return writeFile(target, beautify(tidyContent))
       }),
@@ -456,20 +520,12 @@ const transferTexts = async texts => {
   }
 }
 
-// const writeFile = (location, content) =>
-//   new Promise((resolve, reject) => {
-//     fs.writeFile(location, content, 'utf8', err => {
-//       if (err) return reject(err)
-//       return resolve()
-//     })
-//   })
-// const readFile = location =>
-//   new Promise((resolve, reject) => {
-//     fs.readFile(location, 'utf8', (err, data) => {
-//       if (err) return reject(err)
-//       return resolve(data)
-//     })
-//   })
+const cleaner = () => {
+  images = []
+  stylesheets = []
+  fonts = []
+  xhtmls = []
+}
 
 const htmlToEPUB = async (book, template) => {
   try {
@@ -485,6 +541,7 @@ const htmlToEPUB = async (book, template) => {
     await transferTexts(xhtmls)
     await generateTOCNCX(book, epubFolder)
     await generateContentOPF(book, epubFolder)
+    cleaner()
     // console.log('images', images)
     // console.log('fonts', fonts)
     // console.log('stylesheet', stylesheets)

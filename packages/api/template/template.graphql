@@ -40,7 +40,7 @@ input UpdateTemplateInput {
 }
 
 extend type Query {
-  getTemplates(ascending: Boolean, sortKey: String, target: String): [Template]!
+  getTemplates(ascending: Boolean, sortKey: String, target: String, notes: String): [Template]!
   getTemplate(id: ID!): Template!
 }
 

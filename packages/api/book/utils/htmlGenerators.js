@@ -27,16 +27,16 @@ const generateContainer = (bookComponent, firstInBody = false) => {
     output = cheerio.load(
       `<nav id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
-      )}"><div class="running-left">${runningHeadersLeft || '&nbsp;'}</div>
-      <div class="running-right">${runningHeadersRight || '&nbsp;'}</div>
+      )}"><div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
+      <div class="running-right">${runningHeadersRight || '&#xA0;'}</div>
       <header><h1 class="ct">${title}</h1></header><ol></ol></section>`,
     )
   } else if (componentType === 'endnotes') {
     output = cheerio.load(
       `<section id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
-      )}"><div class="running-left">${runningHeadersLeft || '&nbsp;'}</div>
-      <div class="running-right">${runningHeadersRight || '&nbsp;'}</div>
+      )}"><div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
+      <div class="running-right">${runningHeadersRight || '&#xA0;'}</div>
       <header><h1 class="ct">${title}</h1></header></section>`,
     )
   } else {
@@ -49,9 +49,9 @@ const generateContainer = (bookComponent, firstInBody = false) => {
         pagination,
       )}">${
         firstInBody ? '<span class="restart-numbering"></span>' : ''
-      }<div class="running-left">${runningHeadersLeft || '&nbsp;'}</div>
+      }<div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
       <div class="running-right">${runningHeadersRight ||
-        '&nbsp;'}</div><header>${componentNumber || ''}</header></section>`,
+        '&#xA0;'}</div><header>${componentNumber || ''}</header></section>`,
     )
   }
   return output('body').html()

@@ -24,6 +24,7 @@
     "lodash": "4.17.15",
     "mkdirp": "^0.5.1",
     "xmlbuilder": "^13.0.2",
-    "js-beautify": "^1.10.2"
+    "js-beautify": "^1.10.2",
+    "css-tree":"^1.0.0-alpha.35"
   }
 }

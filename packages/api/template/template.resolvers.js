@@ -21,7 +21,7 @@ const {
   TEMPLATE_UPDATED,
 } = require('./consts')
 
-const getTemplates = async (_, { ascending, sortKey, target }, ctx) => {
+const getTemplates = async (_, { ascending, sortKey, target, notes }, ctx) => {
   if (!target) {
     const templates = await Template.query().where('deleted', false)
     const sortable = map(templates, template => {
@@ -36,8 +36,10 @@ const getTemplates = async (_, { ascending, sortKey, target }, ctx) => {
     return result
   }
   return Template.query()
+    .skipUndefined()
     .where('deleted', false)
     .andWhere('target', target)
+    .andWhere('notes', notes)
 }
 const getTemplate = async (_, { id }, ctx) => {
   const template = await Template.findById(id)
