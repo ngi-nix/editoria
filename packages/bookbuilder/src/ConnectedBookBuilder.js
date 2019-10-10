@@ -170,6 +170,28 @@ const mapProps = args => ({
       warning,
     })
   },
+  onEndNoteModal: componentType =>
+    new Promise((resolve, reject) => {
+      const {
+        withModal: { showModal, hideModal },
+      } = args
+
+      const onConfirm = () => {
+        hideModal()
+        resolve(true)
+      }
+
+      const onHideModal = () => {
+        hideModal()
+        resolve(false)
+      }
+
+      showModal('addEndNote', {
+        onConfirm,
+        onHideModal,
+        componentType,
+      })
+    }),
   onAdminUnlock: (bookComponentId, componentType, title) => {
     const { unlockBookComponentMutation, withModal } = args
     const { unlockBookComponent } = unlockBookComponentMutation
@@ -225,7 +247,18 @@ const mapProps = args => ({
         getTemplatesQuery: { client, query },
       } = args
 
-      return client.query({ query, variables: { target } })
+      const bookComponents = book.divisions.find(
+        division => division.label === 'Backmatter',
+      )
+      const endnote = (bookComponents || []).find(
+        bookComponent => bookComponent.componentType === 'endnotes',
+      )
+
+      const variables = endnote
+        ? Object.assign({ target }, { endnotes: 'endnotes' })
+        : { target }
+
+      return client.query({ query, variables })
     }
     const onConfirm = (mode, viewer, templateId, format) => {
       const payload = {
@@ -244,7 +277,6 @@ const mapProps = args => ({
         }
         payload.fileExtension = format
       }
-
 
       exportBook({
         variables: {
@@ -369,6 +401,7 @@ const Connected = props => {
         loading,
         refetching,
         onAdminUnlock,
+        onEndNoteModal,
         loadingRules,
         exportBook,
         rules,
@@ -389,6 +422,7 @@ const Connected = props => {
           onAdminUnlock={onAdminUnlock}
           onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
+          onEndNoteModal={onEndNoteModal}
           onError={onError}
           onExportBook={onExportBook}
           onMetadataAdd={onMetadataAdd}

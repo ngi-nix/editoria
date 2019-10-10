@@ -65,6 +65,7 @@ input BookComponentInput {
   componentType: String!
   divisionId: ID!
   uploading: Boolean
+  pagination: PaginationInput
 }
 
 input WordFileInput {

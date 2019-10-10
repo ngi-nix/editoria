@@ -11,25 +11,22 @@ const Text = styled.div`
   font-size: ${th('fontSizeBase')};
   color: #404040;
 `
-const DeleteBookComponentModal = props => {
-  const { isOpen, hideModal, data } = props
-  const { componentType, title, onConfirm } = data
+const AddEndNoteModal = props => {
+  const { isOpen, data } = props
+  const { componentType, onConfirm, onHideModal } = data
 
   return (
     <DialogModal
-      headerText={`Delete ${componentType}`}
+      headerText={`Add ${componentType}`}
       isOpen={isOpen}
       onConfirm={onConfirm}
-      onRequestClose={hideModal}
+      onRequestClose={onHideModal}
     >
       <Text>
-        {`Are you sure you want to delete this ${componentType} with title ${title}?`}
-        <br />
-        {componentType === 'endnotes' &&
-          `By doing so you will not be able to see templates with notes option endnotes`}
+        {`By creating a notes placeholder you will only be ablr to see templates with notes option se to endnotes`}
       </Text>
     </DialogModal>
   )
 }
 
-export default DeleteBookComponentModal
+export default AddEndNoteModal

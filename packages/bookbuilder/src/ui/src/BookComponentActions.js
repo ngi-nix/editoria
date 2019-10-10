@@ -146,10 +146,12 @@ const BookComponentActions = ({
   if (!isLocked) {
     return (
       <ActionGroup componentType={componentType} lock={lock}>
-        <Action disabled={uploading} onClick={goToEditor}>
-          {canViewFragmentEdit ? 'Edit' : 'View'}
-        </Action>
-        <Action onClick={handleClick} disabled={uploading}>
+        {componentType !== 'endnotes' && (
+          <Action disabled={uploading} onClick={goToEditor}>
+            {canViewFragmentEdit ? 'Edit' : 'View'}
+          </Action>
+        )}
+        <Action disabled={uploading} onClick={handleClick}>
           Delete
         </Action>
       </ActionGroup>
@@ -158,13 +160,13 @@ const BookComponentActions = ({
   return (
     <Container>
       <EditingNotification
-        goToEditor={goToEditor}
         bookComponentId={bookComponentId}
-        onAdminUnlock={onAdminUnlock}
         componentType={componentType}
         currentUser={currentUser}
-        title={title}
+        goToEditor={goToEditor}
         lock={lock}
+        onAdminUnlock={onAdminUnlock}
+        title={title}
       />
     </Container>
   )

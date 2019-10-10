@@ -98,6 +98,7 @@ export class BookBuilder extends React.Component {
       loading,
       loadingRules,
       setState,
+      onEndNoteModal,
       onWorkflowUpdate,
       onBookSettings,
     } = this.props
@@ -163,6 +164,7 @@ export class BookBuilder extends React.Component {
           history={history}
           onAdminUnlock={onAdminUnlock}
           onDeleteBookComponent={onDeleteBookComponent}
+          onEndNoteModal={onEndNoteModal}
           onWarning={onWarning}
           onWorkflowUpdate={onWorkflowUpdate}
           rules={rules}

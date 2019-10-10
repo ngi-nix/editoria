@@ -259,23 +259,23 @@ const BookComponent = ({
 
   const icon = (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="42"
-      height="42"
       fill="none"
+      height="42"
       viewBox="0 0 42 42"
+      width="42"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        id="outer"
-        fill="transparent"
-        strokeWidth="6"
         d="M4 21C4 11.6112 11.6112 4.00001 21 4.00001C30.3888 4.00001 38 11.6112 38 21C38 30.3888 30.3888 38 21 38C11.6112 38 4 30.3888 4 21Z"
+        fill="transparent"
+        id="outer"
+        strokeWidth="6"
       />
       <path
+        d="M4 21C4 11.6112 11.6112 4.00001 21 4.00001C30.3888 4.00001 38 11.6112 38 21C38 30.3888 30.3888 38 21 38C11.6112 38 4 30.3888 4 21Z"
         id="inner"
         stroke="white"
         strokeWidth="3"
-        d="M4 21C4 11.6112 11.6112 4.00001 21 4.00001C30.3888 4.00001 38 11.6112 38 21C38 30.3888 30.3888 38 21 38C11.6112 38 4 30.3888 4 21Z"
       />
       <g id="drag-icon">
         <path d="M19 13.5333C19 12.4288 19.8954 11.5333 21 11.5333C22.1046 11.5333 23 12.4288 23 13.5333C23 14.6379 22.1046 15.5333 21 15.5333C19.8954 15.5333 19 14.6379 19 13.5333Z" />
@@ -287,16 +287,16 @@ const BookComponent = ({
 
   const previewIcon = (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
+      fill="green"
       height="24"
       viewBox="0 0 24 24"
-      fill="green"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M0 0h24v24H0z" fill="none" />
       <path
-        fill="green"
         d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+        fill="green"
       />
     </svg>
   )
@@ -353,7 +353,7 @@ const BookComponent = ({
       <FirstRow>
         <ActionsLeft lock={lock}>
           <GrabIcon {...provided.dragHandleProps}>{icon}</GrabIcon>
-          {componentType !== 'toc' && (
+          {componentType !== 'toc' && componentType !== 'endnotes' && (
             <ComponentTypeMenu
               addComponentType={onAddComponentType}
               applicationParameter={applicationParameter}
@@ -378,51 +378,57 @@ const BookComponent = ({
           applicationParameter={applicationParameter}
           bookComponentId={id}
           bookId={bookId}
-          title={title}
-          divisionType={divisionType}
           componentType={componentType}
-          uploading={uploading}
-          lock={lock}
+          divisionType={divisionType}
           history={history}
-        />
-        <BookComponentActions
-          currentUser={currentUser}
-          outerContainer={outerContainer}
-          onDeleteBookComponent={onDeleteBookComponent}
-          onAdminUnlock={onAdminUnlock}
+          lock={lock}
           title={title}
           goToEditor={goToEditor}
           showModal={showModal}
           uploading={uploading}
+        />
+        <BookComponentActions
           bookComponentId={id}
-          componentType={componentType}
           bookId={bookId}
-          lock={lock}
+          componentType={componentType}
+          currentUser={currentUser}
+          goToEditor={goToEditor}
           history={history}
+          lock={lock}
+          onAdminUnlock={onAdminUnlock}
+          onDeleteBookComponent={onDeleteBookComponent}
+          outerContainer={outerContainer}
           remove={remove}
           rules={rules}
+          showModal={showModal}
+          showModalToggle={showModalToggle}
+          title={title}
+          uploading={uploading}
           // update={update}
         />
       </FirstRow>
 
-      {componentType !== 'toc' && (
+      {componentType !== 'toc' && componentType !== 'endnotes' && (
         <SecondRow
           applicationParameter={applicationParameter}
           bookComponentId={id}
-          onWorkflowUpdate={onWorkflowUpdate}
-          onWarning={onWarning}
           bookId={bookId}
           componentType={componentType}
           updateBookComponentUploading={updateBookComponentUploading}
           divisionId={divisionId}
+          goToEditor={goToEditor}
           lock={lock}
+          onWarning={onWarning}
+          onWorkflowUpdate={onWorkflowUpdate}
           outerContainer={outerContainer}
           pagination={pagination}
           rules={rules}
-          uploading={uploading}
-          goToEditor={goToEditor}
+          showModal={showModal}
+          showModalToggle={showModalToggle}
           trackChangesEnabled={trackChangesEnabled}
+          updateBookComponentContent={updateBookComponentContent}
           // update={update}
+          updateBookComponentUploading={updateBookComponentUploading}
           updatePagination={updatePagination}
           updateWorkflowState={updateWorkflowState}
           uploadBookComponent={uploadBookComponent}

@@ -85,7 +85,7 @@ const BookComponentTitle = ({
     indexOf(showNumberBeforeComponents, componentType) > -1 || false
 
   let bookComponentTitle = (
-    <Title showNumber={showNumber} componentType={componentType}>
+    <Title componentType={componentType} showNumber={showNumber}>
       {title || 'Untitled'}
     </Title>
   )
@@ -93,18 +93,19 @@ const BookComponentTitle = ({
   if (
     (lock === null || lock === undefined) &&
     !uploading &&
-    componentType !== 'toc'
+    componentType !== 'toc' &&
+    componentType !== 'endnotes'
   ) {
     // const children = <Title onDoubleClick={goToEditor}>{title}</Title>
     bookComponentTitle = (
-      <Title showNumber={showNumber} componentType={componentType}>
+      <Title componentType={componentType} showNumber={showNumber}>
         {withLink(title || 'Untitled', url)}
       </Title>
     )
   }
 
   return (
-    <Container lock={lock} componentType={componentType}>
+    <Container componentType={componentType} lock={lock}>
       {bookComponentTitle}
     </Container>
   )

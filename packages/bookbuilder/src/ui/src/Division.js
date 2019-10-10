@@ -78,6 +78,29 @@ class Division extends React.Component {
     // return false
   }
 
+  onAddEndNoteClick = async componentType => {
+    const { add, bookId, divisionId, onEndNoteModal } = this.props
+
+    const confirmClicked = await onEndNoteModal(componentType)
+
+    if (confirmClicked) {
+      add({
+        variables: {
+          input: {
+            title: 'Notes',
+            bookId,
+            componentType,
+            divisionId,
+            pagination: {
+              left: false,
+              right: true,
+            },
+          },
+        },
+      })
+    }
+  }
+
   onAddClick(componentType) {
     const { add, bookId, divisionId } = this.props
 
@@ -257,13 +280,23 @@ class Division extends React.Component {
 
     const componentConfig = find(divisionsConfig, ['name', label])
 
+    console.log(bookComponents)
     let addButtons = null
 
     if (canViewAddComponent) {
       addButtons = map(componentConfig.allowedComponentTypes, componentType =>
         componentType.visibleInHeader ? (
           <AddComponentButton
-            add={this.onAddClick}
+            add={
+              componentType.value === 'endnotes'
+                ? this.onAddEndNoteClick
+                : this.onAddClick
+            }
+            disabled={
+              bookComponents.find(
+                bookComponent => bookComponent.componentType === 'endnotes',
+              ) && componentType.value === 'endnotes'
+            }
             divisionName={componentConfig.name}
             label={`add ${componentType.title}`}
             type={componentType.value}
@@ -271,17 +304,6 @@ class Division extends React.Component {
         ) : null,
       )
     }
-    // const list = (
-    //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
-    // )
-
-    // const emptyList = (
-    //   <div className={styles.noChapters}>
-    //     There are no items in this division.
-    //   </div>
-    // )
-
-    // const displayed = bookComponents.length > 0 ? list : emptyList
 
     return (
       <DivisionContainer data-test-id={`${label}-division`}>

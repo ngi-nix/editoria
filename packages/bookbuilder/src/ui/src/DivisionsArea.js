@@ -209,6 +209,7 @@ class DivisionsArea extends Component {
       toggleIncludeInTOC,
       outerContainer,
       showModal,
+      onEndNoteModal,
       updateComponentType,
       uploadBookComponent,
       onDeleteBookComponent,
@@ -235,6 +236,7 @@ class DivisionsArea extends Component {
           label={label}
           onAdminUnlock={onAdminUnlock}
           onDeleteBookComponent={onDeleteBookComponent}
+          onEndNoteModal={onEndNoteModal}
           onWarning={onWarning}
           onWorkflowUpdate={onWorkflowUpdate}
           outerContainer={outerContainer}
