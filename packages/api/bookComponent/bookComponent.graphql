@@ -55,6 +55,8 @@ type BookComponent {
   trackChangesEnabled: Boolean!
   uploading: Boolean!
   includeInTOC: Boolean!
+  runningHeadersRight: String
+  runningHeadersLeft: String
 }
 
 input BookComponentInput {

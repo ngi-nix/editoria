@@ -17,10 +17,12 @@ const {
   BOOK_RENAMED,
   BOOK_ARCHIVED,
   BOOK_METADATA_UPDATED,
+  BOOK_RUNNING_HEADERS_UPDATED,
 } = require('./consts')
 const {
   Book,
   BookTranslation,
+  BookComponentState,
   BookComponent,
   Division,
 } = require('editoria-data-model/src').models
@@ -278,6 +280,39 @@ const exportBook = async (
   ctx,
 ) => exporter(bookId, destination, converter, previewer, style)
 
+const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+
+    await Promise.all(
+      map(input, async bookComponent => {
+        const { id } = bookComponent
+        const bookComponentState = await BookComponentState.query().where(
+          'bookComponentId',
+          id,
+        )
+
+        return BookComponentState.query().patchAndFetchById(
+          bookComponentState[0].id,
+          {
+            runningHeadersRight: bookComponent.runningHeadersRight,
+            runningHeadersLeft: bookComponent.runningHeadersLeft,
+          },
+        )
+      }),
+    )
+    const updatedBook = await Book.findById(bookId)
+    pubsub.publish(BOOK_RUNNING_HEADERS_UPDATED, {
+      bookRunningHeadersUpdated: updatedBook,
+    })
+
+    return updatedBook
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   Query: {
     getBook,
@@ -289,6 +324,7 @@ module.exports = {
     deleteBook,
     exportBook,
     updateMetadata,
+    updateRunningHeaders,
   },
   Book: {
     async title(book, _, ctx) {
@@ -395,6 +431,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_METADATA_UPDATED)
+      },
+    },
+    bookRunningHeadersUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_RUNNING_HEADERS_UPDATED)
       },
     },
   },

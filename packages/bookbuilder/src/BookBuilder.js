@@ -10,6 +10,7 @@ import {
   MetadataButton,
   BookExporter,
   DivisionsArea,
+  BookSettingsButton,
 } from './ui'
 
 // import ConnectedTeamManager from './TeamManager/ConnectedTeamManager'
@@ -96,6 +97,7 @@ export class BookBuilder extends React.Component {
       loadingRules,
       setState,
       onWorkflowUpdate,
+      onBookSettings,
     } = this.props
 
     if (loading || loadingRules) return 'Loading...'
@@ -117,6 +119,10 @@ export class BookBuilder extends React.Component {
         book={book}
         htmlToEpub={exportBook}
         onError={onError}
+      />,
+      <BookSettingsButton
+        label="Book Settings"
+        onClick={() => onBookSettings(book)}
       />,
     ]
     if (canViewTeamManager) {

@@ -27,8 +27,9 @@ export {
   addTeamMemberSubscription,
   bookMetadataSubscription,
   bookRenamedSubscription,
-  docxToHTMLJobSubscription,
+  // docxToHTMLJobSubscription,
   bookComponentIncludeInTOCSubscription,
+  runningHeadersUpdatedSubscription,
 } from './bookBuilderSubscriptions'
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'
@@ -46,5 +47,6 @@ export {
 } from './updateUploading'
 export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as exportBookMutation } from './exportBook'
+export { default as updateRunningHeadersMutation } from './updateRunningHeaders'
 export { default as unlockBookComponentMutation } from './unlockBookComponent'
 export { default as updateBookMetadataMutation } from './updateMetadata'

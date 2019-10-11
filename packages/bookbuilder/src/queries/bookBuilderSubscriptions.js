@@ -9,6 +9,15 @@ const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
+
+const RUNNING_HEADERS_UPDATED_SUBSCRIPTION = gql`
+  subscription RunningHeadersUpdated {
+    bookRunningHeadersUpdated {
+      id
+    }
+  }
+`
+
 const BOOK_COMPONENT_ADDED_SUBSCRIPTION = gql`
   subscription BookComponentAdded {
     bookComponentAdded {
@@ -366,31 +375,48 @@ const bookRenamedSubscription = props => {
   )
 }
 
-const docxToHTMLJobSubscription = props => {
-  const { render, ingestWordFilesMutation } = props
+// const docxToHTMLJobSubscription = props => {
+//   const { render, ingestWordFilesMutation } = props
 
-  const { id } = (
-    ((ingestWordFilesMutation || {}).ingestWordFilesResult || {})
-      .data || {}
-  ).createDocxToHTMLJob || { id: false }
+//   const { id } = (
+//     ((ingestWordFilesMutation || {}).ingestWordFilesResult || {}).data || {}
+//   ).createDocxToHTMLJob || { id: false }
 
-  if (!id) return render()
+//   if (!id) return render()
 
-  const triggerRefetch = data => {
-    console.log(data)
+//   const triggerRefetch = data => {
+//     console.log(data)
+//   }
+
+//   return (
+//     <Subscription
+//       onSubscriptionData={triggerRefetch}
+//       subscription={DOCX_TO_HTML_JOB}
+//       variables={{ jobId: id }}
+//     >
+//       {render}
+//     </Subscription>
+//   )
+// }
+
+const runningHeadersUpdatedSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
   }
 
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
-      subscription={DOCX_TO_HTML_JOB}
-      variables={{ jobId: id }}
+      subscription={RUNNING_HEADERS_UPDATED_SUBSCRIPTION}
     >
       {render}
     </Subscription>
   )
 }
-
 export {
   orderChangeSubscription,
   bookComponentAddedSubscription,
@@ -405,6 +431,7 @@ export {
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
-  docxToHTMLJobSubscription,
+  // docxToHTMLJobSubscription,
   bookComponentIncludeInTOCSubscription,
+  runningHeadersUpdatedSubscription,
 }

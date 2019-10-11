@@ -33,6 +33,8 @@ import {
   addTeamMemberSubscription,
   updateBookMetadataMutation,
   bookMetadataSubscription,
+  updateRunningHeadersMutation,
+  runningHeadersUpdatedSubscription,
   bookRenamedSubscription,
   toggleIncludeInTOCMutation,
   bookComponentIncludeInTOCSubscription,
@@ -54,6 +56,7 @@ const mapper = {
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
   bookComponentIncludeInTOCSubscription,
+  runningHeadersUpdatedSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
   ingestWordFilesMutation,
@@ -68,6 +71,7 @@ const mapper = {
   updateBookComponentUploadingMutation,
   updateApplicationParametersMutation,
   updateBookComponentTypeMutation,
+  updateRunningHeadersMutation,
   exportBookMutation,
 }
 
@@ -78,6 +82,7 @@ const mapProps = args => ({
   addBookComponent: args.createBookComponentMutation.addBookComponent,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
   toggleIncludeInTOC: args.toggleIncludeInTOCMutation.toggleIncludeInTOC,
+  updateRunningHeaders: args.updateRunningHeadersMutation.updateRunningHeaders,
   updateBookComponentPagination:
     args.updateBookComponentPaginationMutation.updateBookComponentPagination,
   updateBookComponentOrder:
@@ -127,6 +132,32 @@ const mapProps = args => ({
     showModal('errorModal', {
       onConfirm: hideModal,
       error,
+    })
+  },
+  onBookSettings: book => {
+    const { withModal, updateRunningHeadersMutation } = args
+    const { updateRunningHeaders } = updateRunningHeadersMutation
+    const { showModal, hideModal } = withModal
+    const { divisions } = book
+    const bookComponents = []
+    for (let i = 0; i < divisions.length; i += 1) {
+      for (let j = 0; j < divisions[i].bookComponents.length; j += 1) {
+        bookComponents.push(divisions[i].bookComponents[j])
+      }
+    }
+
+    const onConfirm = bookComponents => {
+      updateRunningHeaders({
+        variables: {
+          input: bookComponents,
+          bookId: book.id,
+        },
+      })
+      hideModal()
+    }
+    showModal('bookSettingsModal', {
+      onConfirm,
+      bookComponents,
     })
   },
   onWarning: warning => {
@@ -270,6 +301,7 @@ const Connected = props => {
         state,
         setState,
         onTeamManager,
+        onBookSettings,
         addBookComponent,
         deleteBookComponent,
         toggleIncludeInTOC,
@@ -306,6 +338,7 @@ const Connected = props => {
           loading={loading}
           loadingRules={loadingRules}
           onAdminUnlock={onAdminUnlock}
+          onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
           onError={onError}
           onMetadataAdd={onMetadataAdd}
