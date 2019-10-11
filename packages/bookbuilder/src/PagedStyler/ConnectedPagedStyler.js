@@ -86,11 +86,12 @@ const Connected = props => {
       params: { hashed, templateId, id },
     },
   } = props
-
+  console.log('props', props)
   return (
     <Composed bookId={id} templateId={templateId}>
       {({ template, onWarningModal, loading }) => {
         if (loading) return <p>Loading ...</p>
+        console.log('template', template)
         return (
           <PagedStyler
             hashed={hashed}

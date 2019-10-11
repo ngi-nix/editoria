@@ -231,7 +231,7 @@ class Division extends React.Component {
                   rules={rules}
                   showModal={showModal}
                   includeInTOC={includeInTOC}
-                  showModalToggle={showModalToggle}
+                  // showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}

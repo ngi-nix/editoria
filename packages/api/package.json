@@ -14,7 +14,6 @@
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "*",
     "cheerio": "^1.0.0-rc.2",
     "editoria-data-model": "^0.2.0",
     "highlight.js": "^9.13.1",
