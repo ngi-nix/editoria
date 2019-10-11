@@ -25,7 +25,7 @@ const AlignmentTool = ({ data, onClickAlignmentBox, componentType }) => {
   }
   const leftData = find(data, { id: 'left' })
   const rightData = find(data, { id: 'right' })
-  console.log('data', data)
+  
   const noBorderRight = { right: true }
   const noBorderLeft = { left: true }
 

@@ -16,7 +16,6 @@ class UploadFilesButton extends React.Component {
 
     const { updateFilesList, setFieldValue, setFieldTouched } = this.props
     const originalFiles = event.target.files
-    console.log('orig', originalFiles)
     updateFilesList(originalFiles, setFieldValue, setFieldTouched)
   }
 

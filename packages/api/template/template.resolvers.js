@@ -35,7 +35,7 @@ const getTemplates = async (_, { ascending, sortKey }, ctx) => {
 }
 const getTemplate = async (_, { id }, ctx) => {
   const template = await Template.findById(id)
-  console.log('template', template)
+  
   return template
 }
 
@@ -188,7 +188,7 @@ const createTemplate = async (_, { input }, ctx) => {
 
 // TODO:
 const updateTemplate = async (_, { input }, ctx) => {
-  console.log('input', input)
+  
   const {
     id,
     name,
@@ -458,15 +458,15 @@ module.exports = {
   },
   Template: {
     async files(template, _, ctx) {
-      console.log('template1', template)
+      
       const files = await template.getFiles()
-      console.log('files', files)
+      
       return files
     },
     async thumbnail(template, _, ctx) {
-      console.log('template2', template)
+      
       const thumbnail = await template.getThumbnail()
-      console.log('thum', thumbnail)
+      
       return thumbnail
     },
   },

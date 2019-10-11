@@ -63,7 +63,7 @@ class BookComponentState extends Base {
         },
         trackChangesEnabled: booleanDefaultFalse,
         uploading: booleanDefaultFalse,
-        includeInTOC: booleanDefaultFalse,
+        includeInToc: booleanDefaultFalse,
         runningHeadersRight: string,
         runningHeadersLeft: string,
         // left loose on purpose to allow for configurability

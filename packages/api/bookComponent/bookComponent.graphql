@@ -54,6 +54,7 @@ type BookComponent {
   componentType: String!
   trackChangesEnabled: Boolean!
   uploading: Boolean!
+  includeInTOC: Boolean!
 }
 
 input BookComponentInput {
@@ -75,6 +76,7 @@ input UpdateBookComponentInput {
   title: String
   deleted: Boolean
   lock: LockInput
+  includeInTOC: Boolean
   uploading: Boolean
   pagination: PaginationInput
   workflowStages: [WorkFlowItemInput]
@@ -109,6 +111,7 @@ extend type Mutation {
   updateContent(input: UpdateBookComponentInput): BookComponent!
   updateComponentType(input: UpdateBookComponentInput): BookComponent!
   updateUploading(input: UpdateBookComponentInput): BookComponent!
+  toggleIncludeInTOC(input: UpdateBookComponentInput): BookComponent!
 }
 
 extend type Subscription {
@@ -122,4 +125,5 @@ extend type Subscription {
   bookComponentContentUpdated: BookComponent!
   bookComponentTypeUpdated: BookComponent!
   bookComponentUploadingUpdated: BookComponent!
+  bookComponentTOCToggled: BookComponent!
 }

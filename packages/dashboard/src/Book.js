@@ -132,7 +132,7 @@ const Book = props => {
     onArchiveBook,
   } = props
   const { authors, isPublished, archived } = book
-  console.log('book', book)
+  
   const { canRenameBooks, canDeleteBooks, canArchiveBooks } = bookRule
 
   return (

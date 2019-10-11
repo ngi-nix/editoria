@@ -22,7 +22,6 @@ class UploadThumbnail extends React.Component {
 
     const { updateThumbnail, setFieldValue, setFieldTouched } = this.props
     const originalFiles = event.target.files
-    console.log('orig', originalFiles)
     updateThumbnail(originalFiles[0], setFieldValue, setFieldTouched)
   }
 

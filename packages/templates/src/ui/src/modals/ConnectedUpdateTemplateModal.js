@@ -18,7 +18,7 @@ const mapProps = args => {
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  console.log('props', props)
+  
   // const { data, isOpen } = props
   const { data, isOpen, hideModal } = props
   const { templateId } = data
