@@ -42,6 +42,8 @@ export {
   default as updateApplicationParametersMutation,
 } from './updateApplicationParameters'
 
+export { default as updateFileMutation } from './updateFile'
+
 export {
   default as updateBookComponentUploadingMutation,
 } from './updateUploading'

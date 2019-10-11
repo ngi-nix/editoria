@@ -2,6 +2,7 @@ const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
 const path = require('path')
+const { copyFileSync, writeFileSync } = require('fs')
 const fs = require('fs-extra')
 const config = require('config')
 
@@ -46,11 +47,11 @@ const createTemplate = async (_, { input }, ctx) => {
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
   const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
   const regexFiles = new RegExp(
-    '([a-zA-Z0-9s_\\.-:])+(' + allowedFiles.join('|') + ')$',
+    `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
 
   const regexThumbnails = new RegExp(
-    '([a-zA-Z0-9s_\\.-:])+(' + allowedThumbnails.join('|') + ')$',
+    `([a-zA-Z0-9s_\\.-:])+(${allowedThumbnails.join('|')})$`,
   )
 
   try {
@@ -186,6 +187,78 @@ const createTemplate = async (_, { input }, ctx) => {
   }
 }
 
+const cloneTemplate = async (_, { input }, ctx) => {
+  const { id, name, cssFile, hashed } = input
+  const pubsub = await pubsubManager.getPubsub()
+
+  try {
+    const template = await Template.query().findById(id)
+
+    const newTemplate = await new Template({
+      name,
+      author: template.author,
+      target: template.target,
+      trimSize: template.trimSize,
+      referenceId: template.id,
+    }).save()
+
+    logger.info(`New template created with id ${newTemplate.id}`)
+    let updateTemplate = newTemplate
+    const files = await File.query().where('templateId', id)
+    await Promise.all(
+      map(files, async file => {
+        const outPath = path.join(
+          uploadsPath,
+          'templates',
+          newTemplate.id,
+          file.name,
+        )
+
+        await fs.ensureDir(uploadsPath)
+        await fs.ensureDir(`${uploadsPath}/templates`)
+        await fs.ensureDir(`${uploadsPath}/templates/${newTemplate.id}`)
+
+        if (file.mimetype === 'text/css') {
+          writeFileSync(outPath, cssFile)
+          writeFileSync(
+            path.join(uploadsPath, 'paged', hashed, 'default.css'),
+            cssFile,
+          )
+        } else {
+          copyFileSync(file.source, outPath)
+        }
+        logger.info(`The path the the files will be stored is ${outPath}`)
+
+        const newFile = await new File(
+          Object.assign({
+            source: outPath,
+            templateId: newTemplate.id,
+            name: file.name,
+            mimetype: file.mimetype,
+          }),
+        ).save()
+        logger.info(
+          `File representation created on the db with file id ${newFile.id}`,
+        )
+        if (template.thumbnailId === file.id) {
+          updateTemplate = await Template.query().patchAndFetchById(
+            newTemplate.id,
+            { thumbnailId: newFile.id },
+          )
+        }
+      }),
+    )
+
+    pubsub.publish(TEMPLATE_CREATED, {
+      templateCreated: updateTemplate,
+    })
+    logger.info('New template created msg broadcasted')
+    return updateTemplate
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
 // TODO:
 const updateTemplate = async (_, { input }, ctx) => {
   
@@ -205,11 +278,11 @@ const updateTemplate = async (_, { input }, ctx) => {
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
   const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
   const regexFiles = new RegExp(
-    '([a-zA-Z0-9s_\\.-:])+(' + allowedFiles.join('|') + ')$',
+    `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
 
   const regexThumbnails = new RegExp(
-    '([a-zA-Z0-9s_\\.-:])+(' + allowedThumbnails.join('|') + ')$',
+    `([a-zA-Z0-9s_\\.-:])+(${allowedThumbnails.join('|')})$`,
   )
 
   try {
@@ -453,6 +526,7 @@ module.exports = {
   },
   Mutation: {
     createTemplate,
+    cloneTemplate,
     updateTemplate,
     deleteTemplate,
   },

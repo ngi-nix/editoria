@@ -17,6 +17,13 @@ input CreateTemplateInput {
   files: [Upload]!
 }
 
+input ClonedTemplateInput {
+  id: ID
+  name: String
+  cssFile: String
+  hashed: String
+}
+
 input UpdateTemplateInput {
   id: ID!
   name: String!
@@ -36,6 +43,7 @@ extend type Query {
 
 extend type Mutation {
   createTemplate(input: CreateTemplateInput): Template!
+  cloneTemplate(input: ClonedTemplateInput): Template!
   updateTemplate(input: UpdateTemplateInput): Template!
   deleteTemplate(id: ID!): ID!
 }

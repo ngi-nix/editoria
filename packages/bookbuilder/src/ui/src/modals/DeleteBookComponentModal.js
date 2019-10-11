@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import DialogModal from 'editoria-common/src/DialogModal'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
+
 const Text = styled.div`
   font-family: 'Fira Sans Condensed';
   text-align: center;
@@ -13,13 +14,13 @@ const Text = styled.div`
 const DeleteBookComponentModal = props => {
   const { isOpen, hideModal, data } = props
   const { componentType, title, onConfirm } = data
- 
+
   return (
     <DialogModal
-      isOpen={isOpen}
       headerText={`Delete ${componentType}`}
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>
         {`Are you sure you want to delete this ${componentType} with title ${title}?`}

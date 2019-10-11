@@ -23,8 +23,8 @@ const DialogModal = props => {
   return (
     <ModalRoot
       footerComponent={Footer}
-      shouldCloseOnOverlayClick={false}
       headerComponent={Header}
+      shouldCloseOnOverlayClick={false}
       size="small"
       {...rest}
     >
