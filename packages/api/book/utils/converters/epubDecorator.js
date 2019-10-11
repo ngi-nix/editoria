@@ -16,7 +16,13 @@ const editoriaToEPUBPropertiesMapper = {
   endnotes: 'endnotes',
 }
 
-module.exports = (bookComponent, bookTitle, stylesheet) => {
+module.exports = (
+  bookComponent,
+  bookTitle,
+  stylesheet,
+  hasEndnotes,
+  endNotesComponentId,
+) => {
   const { content, componentType, includeInTOC, division, id } = bookComponent
   const $ = cheerio.load(content)
 
@@ -43,16 +49,23 @@ module.exports = (bookComponent, bookTitle, stylesheet) => {
     'epub:type': editoriaToEPUBPropertiesMapper[componentType],
     role: `doc-${editoriaToEPUBPropertiesMapper[componentType]}`,
   })
-  if (editoriaToEPUBPropertiesMapper[componentType]) {
-    $('section').attr({
-      'epub:type': editoriaToEPUBPropertiesMapper[componentType],
-      role: `doc-${editoriaToEPUBPropertiesMapper[componentType]}`,
-    })
+  if (componentType !== 'toc') {
+    if (editoriaToEPUBPropertiesMapper[componentType]) {
+      $('section').attr({
+        'epub:type': editoriaToEPUBPropertiesMapper[componentType],
+        role: `doc-${editoriaToEPUBPropertiesMapper[componentType]}`,
+      })
+    }
   }
 
   $('.note-callout').each((i, elem) => {
     const $elem = $(elem)
     $elem.attr('epub:type', 'noteref')
+    if (hasEndnotes) {
+      const link = $elem.attr('href')
+
+      $elem.attr('href', `comp-number-${endNotesComponentId}.xhtml${link}`)
+    }
   })
 
   $('.footnote').each((i, elem) => {
@@ -62,6 +75,15 @@ module.exports = (bookComponent, bookTitle, stylesheet) => {
   $('.footnotes').each((i, elem) => {
     const $elem = $(elem)
     $elem.attr('epub:type', 'endnote')
+  })
+
+  $('.running-left').each((i, elem) => {
+    const $elem = $(elem)
+    $elem.remove()
+  })
+  $('.running-right').each((i, elem) => {
+    const $elem = $(elem)
+    $elem.remove()
   })
 
   if (componentType === 'toc') {

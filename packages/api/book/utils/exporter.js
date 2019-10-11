@@ -1,41 +1,29 @@
-// const HTMLEPUB = require('html-epub')
-// const fs = require('fs')
-// const map = require('lodash/map')
-// const groupBy = require('lodash/groupBy')
-// const forEach = require('lodash/forEach')
-// const pullAll = require('lodash/pullAll')
-// const findIndex = require('lodash/findIndex')
 const cheerio = require('cheerio')
-const archiver = require('archiver')
-const fs = require('fs')
-const { exec } = require('child_process')
+const { epubArchiver } = require('./epubArchiver')
+const fs = require('fs-extra')
+const path = require('path')
+const config = require('config')
+const get = require('lodash/get')
+const crypto = require('crypto')
 
-// const contains = require('lodash/contains')
+const { execCommand } = require('./filesystem')
 
-// const sorter = require('./sorter')
 const {
   substanceToHTML,
   cleanDataIdAttributes,
   vivliostyleDecorator,
 } = require('./converters')
+
 const {
   generateContainer,
   generatePagedjsContainer,
 } = require('./htmlGenerators')
-const { htmlToEPUB } = require('./htmlToEPUB')
-const processFragment = require('./process')
-const output = require('./output')
-const config = require('config')
-const pagednation = require('./pagednation')
-const bookConstructor = require('./bookConstructor')
 
+const { htmlToEPUB } = require('./htmlToEPUB')
+const bookConstructor = require('./bookConstructor')
 const { Template } = require('editoria-data-model/src').models
 
-// const divisionTypeMapper = {
-//   Frontmatter: 'front',
-//   Body: 'body',
-//   Backmatter: 'back',
-// }
+const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 
 const EpubBackend = async (
   bookId,
@@ -46,11 +34,10 @@ const EpubBackend = async (
   ctx,
 ) => {
   try {
-    console.log('hello', bookId, mode, templateId, previewer, fileExtension)
-
     const template = await Template.findById(templateId)
     const { notes: notesType } = template
     const templateHasEndnotes = notesType === 'endnotes'
+    let resultPath
 
     // The produced representation of the book holds two map data types one
     // for the division and one for the book components of each division to
@@ -75,7 +62,7 @@ const EpubBackend = async (
         const { componentType } = bookComponent
         const isTheFirstInBody = division.type === 'body' && counter === 0
 
-        if (componentType === 'toc' || componentType === 'endnotes') return
+        if (componentType === 'toc') return
 
         const container = generateContainer(bookComponent, isTheFirstInBody)
 
@@ -91,75 +78,69 @@ const EpubBackend = async (
       })
     })
 
-    // Check if notes exist
-    const $ = cheerio.load(endnotesComponent.content)
-    if ($('ol').length === 0) {
-      backDivision.bookComponents.delete('endnotes')
+    // Check if notes exist, else remove the book component
+    if (templateHasEndnotes) {
+      const $endnotes = cheerio.load(endnotesComponent.content)
+      if ($endnotes('ol').length === 0) {
+        backDivision.bookComponents.delete('endnotes')
+      }
     }
 
     if (previewer === 'vivliostyle' || fileExtension === 'epub') {
       if (previewer === 'vivliostyle') {
         book.divisions.forEach((division, divisionId) => {
           division.bookComponents.forEach((bookComponent, bookComponentId) => {
-            const { content } = bookComponent
-            bookComponent.content = vivliostyleDecorator(content, book.title)
+            bookComponent.content = vivliostyleDecorator(
+              bookComponent,
+              book.title,
+            )
           })
         })
       }
       const tempFolder = await htmlToEPUB(book, template)
-
-      // create a file to stream archive data to.
-      var output = fs.createWriteStream(
-        `${process.cwd()}/` + 'epubchecker_data/test.epub',
+      const epubFilePath = await epubArchiver(
+        tempFolder,
+        `${process.cwd()}/${uploadsDir}/epubs`,
       )
-      var archive = archiver('zip')
+      // for the validator
+      const validatorPoolPath = await epubArchiver(
+        tempFolder,
+        `${process.cwd()}/epubcheck_data`,
+      )
 
-      // listen for all archive data to be written
-      // 'close' event is fired only when a file descriptor is involved
-      output.on('close', function() {
-        console.log(archive.pointer() + ' total bytes')
-        console.log(
-          'archiver has been finalized and the output file descriptor has closed.',
+      const validationResult = await execCommand(
+        'docker-compose run --rm epubcheck',
+      )
+      console.log('valid', validationResult)
+      await fs.remove(validatorPoolPath)
+      // epubcheck here
+      resultPath = epubFilePath
+
+      if (previewer === 'vivliostyle') {
+        const vivliostyleRoot = `${process.cwd()}/${uploadsDir}/vivliostyle/`
+        const destination = path.join(
+          vivliostyleRoot,
+          `${crypto.randomBytes(32).toString('hex')}`,
         )
-      })
+        await fs.ensureDir(destination)
+        await fs.copy(tempFolder, destination)
+        await fs.remove(epubFilePath)
+        resultPath = destination
+      }
+      await fs.remove(tempFolder)
 
-      // This event is fired when the data source is drained no matter what was the data source.
-      // It is not part of this library but rather from the NodeJS Stream API.
-      // @see: https://nodejs.org/api/stream.html#stream_event_end
-      output.on('end', function() {
-        console.log('Data has been drained')
-      })
+      return resultPath
 
-      // good practice to catch warnings (ie stat failures and other non-blocking errors)
-      archive.on('warning', function(err) {
-        if (err.code === 'ENOENT') {
-          // log warning
-        } else {
-          // throw error
-          throw err
-        }
-      })
-
-      // good practice to catch this error explicitly
-      archive.on('error', function(err) {
-        throw err
-      })
-
-      // pipe archive data to the file
-      archive.pipe(output)
-      archive.append('application/epub+zip', { name: 'mimetype', store: true })
-      archive.directory(tempFolder, false)
-      archive.finalize()
-
-      exec(`docker-compose run --rm epubcheck`, function(
-        error,
-        stdout,
-        stderr,
-      ) {
-        console.log('1', stdout)
-        console.log('2', error)
-        console.log('3', stderr)
-      })
+      // exec(`docker-compose run --rm epubcheck`, function(
+      //   error,
+      //   stdout,
+      //   stderr,
+      // ) {
+      //   console.log('1', stdout)
+      //   console.log('2', error)
+      //   console.log('3', stderr)
+      // })
+      //to here
 
       // Here start the logic of html to epub
       // each book component decorate with html-body

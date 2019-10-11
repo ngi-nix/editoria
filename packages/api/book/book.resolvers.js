@@ -357,7 +357,7 @@ const updateMetadata = async (_, { input }, ctx) => {
 const exportBook = async (_, { input }, ctx) => {
   const { bookId, mode, previewer, templateId, fileExtension } = input
   try {
-    await exporter(bookId, mode, templateId, previewer, fileExtension, ctx)
+    return exporter(bookId, mode, templateId, previewer, fileExtension, ctx)
   } catch (e) {
     logger.error(e)
     throw new Error(e)

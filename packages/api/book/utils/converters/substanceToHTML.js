@@ -29,6 +29,9 @@ module.exports = (
   if (!content) return container
 
   const $ = cheerio.load(bookComponent.content)
+  if (componentType === 'endnotes') {
+    return $('body').html()
+  }
   let chapterEndnotes
 
   if (notesType === 'chapterEnd') {
@@ -134,7 +137,7 @@ module.exports = (
   $('series-title').each(replaceWithParagraph('series-title'))
   $('custom-block').each(replaceWithParagraph())
   $('custom-inline').each(replaceWithSpan())
-  $('comment').each(replaceWithText)
+  $('comment').each(replaceWithText())
   // $('chapter-number').each(replaceWithParagraph('sc-chapter-number'))
   $('chapter-title').each(replaceWithH1('ct'))
   $('chapter-subtitle').each(replaceWithParagraph('cst'))
@@ -286,6 +289,7 @@ module.exports = (
   //     $elem.removeAttr('data-id')
   //   }
   // })
+  
 
   const bodyContent = $('#main').contents()
   outerContainer('section').append(bodyContent)

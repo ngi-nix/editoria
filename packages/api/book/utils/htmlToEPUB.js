@@ -62,33 +62,23 @@ const createMimetype = async rootPath => {
 }
 
 const fixFontFaceUrls = (stylesheet, fonts) => {
-  console.log('content', stylesheet.content)
   const ast = csstree.parse(stylesheet.content)
-  console.log('ast', ast)
-
-  // traverse AST and modify it
-  const allowedFiles = [".otf", ".woff", ".woff2", ".ttf"]
+  const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
   const regex = new RegExp(
-    '([a-zA-Z0-9s_\\.-:])+(' + allowedFiles.join('|') + ')$',
+    `([a-zA-Z0-9\s_\\.\-:])+(${allowedFiles.join('|')})$`,
   )
-  csstree.walk(ast, function(node) {
-    console.log('ddddd',node.value)
+
+  csstree.walk(ast, node => {
     if (node.type === 'Url' && regex.test(node.value.value)) {
-      let temp = node.value.value
-      console.log('temp', temp)
+      const temp = node.value.value
       for (let i = 0; i < fonts.length; i += 1) {
-        console.log('base', fonts[i].basename)
-        console.log('reg', new RegExp(fonts[i].basename).test(temp))
         if (new RegExp(fonts[i].basename).test(temp)) {
-          console.log('in here')
           node.value.value = `../Fonts/${fonts[i].basename}`
         }
       }
     }
   })
   stylesheet.content = csstree.generate(ast)
-  // generate CSS from AST
-  // console.log(csstree.generate(ast));
 }
 
 const createContainer = async metaInfPath => {
@@ -224,13 +214,23 @@ const transferAssets = async (images, stylesheets, fonts) => {
   }
 }
 
-const decorateText = async book => {
+const decorateText = async (book, hasEndnotes) => {
+  const backDivision = book.divisions.get('back')
+  let endnotesComponent
+  let id
+  if (hasEndnotes) {
+    endnotesComponent = backDivision.bookComponents.get('endnotes')
+    id = endnotesComponent.id
+  }
+  console.log('end', backDivision)
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       bookComponent.content = epubDecorator(
         bookComponent,
         book.title,
         stylesheets[0],
+        hasEndnotes,
+        id,
       )
     })
   })
@@ -530,23 +530,22 @@ const cleaner = () => {
 const htmlToEPUB = async (book, template) => {
   try {
     const templateFiles = await template.getFiles()
+    console.log('templat', template)
+    const hasEndnotes = template.notes === 'endnotes'
+    console.log('has', hasEndnotes)
     const epubFolder = await createEPUBFolder()
 
     await createMimetype(epubFolder.root)
     await createContainer(epubFolder.metaInf)
     await gatherAssets(book, templateFiles, epubFolder)
     await transferAssets(images, stylesheets, fonts)
-    await decorateText(book)
+    await decorateText(book, hasEndnotes)
     await gatherTexts(book, epubFolder)
     await transferTexts(xhtmls)
     await generateTOCNCX(book, epubFolder)
     await generateContentOPF(book, epubFolder)
     cleaner()
-    // console.log('images', images)
-    // console.log('fonts', fonts)
-    // console.log('stylesheet', stylesheets)
 
-    console.log('folder', epubFolder)
     return epubFolder.root
   } catch (e) {
     throw new Error(e)

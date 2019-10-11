@@ -25,11 +25,12 @@ const generateContainer = (bookComponent, firstInBody = false) => {
   let output
   if (componentType === 'toc') {
     output = cheerio.load(
-      `<nav id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
+      `<section id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
       )}"><div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
-      <div class="running-right">${runningHeadersRight || '&#xA0;'}</div>
-      <header><h1 class="ct">${title}</h1></header><ol></ol></section>`,
+      <div class="running-right">${runningHeadersRight ||
+        '&#xA0;'}</div><header><h1 class="ct">${title}</h1></header><nav>
+      <ol></ol></nav></section>`,
     )
   } else if (componentType === 'endnotes') {
     output = cheerio.load(

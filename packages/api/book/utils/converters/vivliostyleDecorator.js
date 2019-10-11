@@ -2,6 +2,7 @@ const cheerio = require('cheerio')
 
 module.exports = (bookComponent, bookTitle) => {
   const { title, content } = bookComponent
+  console.log('content', content)
   const $ = cheerio.load(content)
   $('<div/>')
     .attr('class', 'dup')
@@ -11,16 +12,16 @@ module.exports = (bookComponent, bookTitle) => {
   $('<div/>')
     .attr('class', 'booktitle')
     .html(bookTitle)
-    .appendTo($('section'))
+    .prependTo($('section'))
 
-  $('<div>&nbsp;</div>')
+  $('<div>&#xA0;</div>')
     .attr('class', 'folio')
-    .appendTo($('section'))
+    .prependTo($('section'))
 
   $('<p/>')
     .attr('class', 'ch-start')
     .html('beginning')
-    .appendTo($('section'))
+    .prependTo($('section'))
 
 
   return $.html('body')
