@@ -163,7 +163,6 @@ class Division extends React.Component {
       applicationParameter,
       currentUser,
       updateBookComponentUploading,
-      updateBookComponentContent,
       onDeleteBookComponent,
       outerContainer,
       divisionId,
@@ -171,7 +170,6 @@ class Division extends React.Component {
       showModal,
       onWorkflowUpdate,
       onAdminUnlock,
-      showModalToggle,
       history,
       bookComponents,
       label,
@@ -179,6 +177,7 @@ class Division extends React.Component {
       reorderingAllowed,
       updateComponentType,
       updateApplicationParameters,
+      uploadBookComponent,
       rules,
     } = this.props
 
@@ -218,7 +217,6 @@ class Division extends React.Component {
                   hasContent={hasContent}
                   history={history}
                   id={id}
-                  updateBookComponentContent={updateBookComponentContent}
                   updateBookComponentUploading={updateBookComponentUploading}
                   key={id}
                   lock={lock}
@@ -231,16 +229,17 @@ class Division extends React.Component {
                   remove={this.onRemove}
                   rules={rules}
                   showModal={showModal}
-                  showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
                   updateApplicationParameters={updateApplicationParameters}
                   onWarning={onWarning}
+                  update={update}
+                  updateComponentType={updateComponentType}
                   updatePagination={this.onUpdatePagination}
                   updateWorkflowState={this.onUpdateWorkflowState}
+                  uploadBookComponent={uploadBookComponent}
                   uploading={uploading}
-                  update={update}
                   workflowStages={workflowStages}
                 />
               </div>
@@ -301,8 +300,8 @@ class Division extends React.Component {
               {bookComponents.length > 0 ? (
                 <BookComponentList>{bookComponentInstances}</BookComponentList>
               ) : (
-                <EmptyList>There are no items in this division.</EmptyList>
-              )}
+                  <EmptyList>There are no items in this division.</EmptyList>
+                )}
               {provided.placeholder}
             </div>
           )}

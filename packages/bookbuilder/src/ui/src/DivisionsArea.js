@@ -15,12 +15,10 @@ const DivisionsContainer = styled.div`
 //   divisions,
 //   history,
 //   addBookComponent,
-//   addBookComponents,
 //   deleteBookComponent,
 //   updateBookComponentPagination,
 //   updateBookComponentOrder,
 //   updateBookComponentWorkflowState,
-//   updateBookComponentContent,
 //   updateBookComponentUploading,
 //   outerContainer,
 //   showModal,
@@ -31,7 +29,6 @@ const DivisionsContainer = styled.div`
 //     return (
 //       <Division
 //         add={addBookComponent}
-//         addBookComponents={addBookComponents}
 //         bookComponents={bookComponents}
 //         bookId={bookId}
 //         deleteBookComponent={deleteBookComponent}
@@ -43,7 +40,6 @@ const DivisionsContainer = styled.div`
 //         showModal={showModal}
 //         showModalToggle={showModalToggle}
 //         reorderingAllowed={reorderingAllowed}
-//         updateBookComponentContent={updateBookComponentContent}
 //         updateBookComponentOrder={updateBookComponentOrder}
 //         updateBookComponentPagination={updateBookComponentPagination}
 //         updateBookComponentUploading={updateBookComponentUploading}
@@ -202,7 +198,6 @@ class DivisionsArea extends Component {
       history,
       onWarning,
       addBookComponent,
-      addBookComponents,
       deleteBookComponent,
       onWorkflowUpdate,
       updateApplicationParameters,
@@ -210,12 +205,11 @@ class DivisionsArea extends Component {
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
       onAdminUnlock,
-      updateBookComponentContent,
       updateBookComponentUploading,
       outerContainer,
       showModal,
-      showModalToggle,
       updateComponentType,
+      uploadBookComponent,
       onDeleteBookComponent,
       uploading,
       rules,
@@ -227,7 +221,6 @@ class DivisionsArea extends Component {
       return (
         <Division
           add={addBookComponent}
-          addBookComponents={addBookComponents}
           applicationParameter={applicationParameter}
           bookComponents={bookComponents}
           bookId={bookId}
@@ -245,14 +238,13 @@ class DivisionsArea extends Component {
           reorderingAllowed={reorderingAllowed}
           rules={rules}
           showModal={showModal}
-          showModalToggle={showModalToggle}
           updateApplicationParameters={updateApplicationParameters}
-          updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}
           updateBookComponentUploading={updateBookComponentUploading}
           updateBookComponentWorkflowState={updateBookComponentWorkflowState}
           updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
           uploadStatus={uploading}
         />
       )

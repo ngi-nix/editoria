@@ -177,7 +177,6 @@ const BookComponent = ({
   onDeleteBookComponent,
   outerContainer,
   showModal,
-  showModalToggle,
   pagination,
   remove,
   rules,
@@ -187,9 +186,9 @@ const BookComponent = ({
   onWorkflowUpdate,
   onAdminUnlock,
   uploading,
+  uploadBookComponent,
   updatePagination,
   updateWorkflowState,
-  updateBookComponentContent,
   updateComponentType,
   updateApplicationParameters,
 }) => {
@@ -304,7 +303,6 @@ const BookComponent = ({
           title={title}
           goToEditor={goToEditor}
           showModal={showModal}
-          showModalToggle={showModalToggle}
           uploading={uploading}
           bookComponentId={id}
           componentType={componentType}
@@ -313,7 +311,7 @@ const BookComponent = ({
           history={history}
           remove={remove}
           rules={rules}
-          // update={update}
+        // update={update}
         />
       </FirstRow>
 
@@ -324,22 +322,18 @@ const BookComponent = ({
         onWarning={onWarning}
         bookId={bookId}
         componentType={componentType}
-        updateBookComponentContent={updateBookComponentContent}
         updateBookComponentUploading={updateBookComponentUploading}
         divisionId={divisionId}
         lock={lock}
-        outerContainer={outerContainer}
         pagination={pagination}
         rules={rules}
         uploading={uploading}
         goToEditor={goToEditor}
         trackChangesEnabled={trackChangesEnabled}
-        // update={update}
         updatePagination={updatePagination}
         updateWorkflowState={updateWorkflowState}
+        uploadBookComponent={uploadBookComponent}
         workflowStages={workflowStages}
-        showModal={showModal}
-        showModalToggle={showModalToggle}
       />
     </BookComponentContainer>
   )

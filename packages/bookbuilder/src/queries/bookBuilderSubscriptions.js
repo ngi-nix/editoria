@@ -116,7 +116,6 @@ const orderChangeSubscription = props => {
   const { refetch } = getBookQuery
   const { pauseUpdates } = statefull
   const triggerRefetch = () => {
-    console.log('reorder sub')
     if (pauseUpdates) return
     refetch()
   }
@@ -341,6 +340,32 @@ const bookRenamedSubscription = props => {
     </Subscription>
   )
 }
+
+const docxToHTMLJobSubscription = props => {
+  const { render, ingestWordFilesMutation } = props
+
+  const { id } = (
+    ((ingestWordFilesMutation || {}).ingestWordFilesResult || {})
+      .data || {}
+  ).createDocxToHTMLJob || { id: false }
+
+  if (!id) return render()
+
+  const triggerRefetch = data => {
+    console.log(data)
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={DOCX_TO_HTML_JOB}
+      variables={{ jobId: id }}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   orderChangeSubscription,
   bookComponentAddedSubscription,
@@ -355,4 +380,5 @@ export {
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
+  docxToHTMLJobSubscription,
 }

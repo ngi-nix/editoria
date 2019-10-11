@@ -1,6 +1,12 @@
 const logger = require('@pubsweet/logger')
 const { CustomTag } = require('editoria-data-model/src').models
 
+const { CUSTOM_TAG_UPDATED } = require('./consts')
+
+const pubsweetServer = require('pubsweet-server')
+
+const { pubsubManager } = pubsweetServer
+
 const getCustomTags = async (_, input, ctx) => {
   const customTags = await CustomTag.query().where({ deleted: false })
   if (!customTags) {
@@ -12,6 +18,7 @@ const getCustomTags = async (_, input, ctx) => {
 
 const addCustomTag = async (_, { input }, ctx) => {
   try {
+    const pubsub = await pubsubManager.getPubsub()
     await Promise.all(
       input.map(async tag => {
         const { label, tagType } = tag
@@ -20,6 +27,10 @@ const addCustomTag = async (_, { input }, ctx) => {
     )
 
     const customTags = await CustomTag.query().where({ deleted: false })
+
+    pubsub.publish(CUSTOM_TAG_UPDATED, {
+      customTagUpdated: customTags,
+    })
 
     return customTags
   } catch (e) {
@@ -40,7 +51,6 @@ const updateCustomTag = async (_, { input }, ctx) => {
         })
       }),
     )
-    logger.info(`Custom Tag component with id ${updateCustomTag.id} deleted`)
 
     const customTags = await CustomTag.query().where({ deleted: false })
 
@@ -58,5 +68,13 @@ module.exports = {
   Mutation: {
     addCustomTag,
     updateCustomTag,
+  },
+  Subscription: {
+    customTagUpdated: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(CUSTOM_TAG_UPDATED)
+      },
+    },
   },
 }

@@ -11,15 +11,13 @@ import {
   getBookQuery,
   getBookBuilderRulesQuery,
   createBookComponentMutation,
-  createBookComponentsMutation,
   deleteBookComponentMutation,
-  ingestWordFilesMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
-  updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
   unlockBookComponentMutation,
+  ingestWordFilesMutation,
   updateBookComponentTypeMutation,
   updateApplicationParametersMutation,
   exportBookMutation,
@@ -54,18 +52,16 @@ const mapper = {
   productionEditorChangeSubscription,
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
-  updateBookMetadataMutation,
   bookMetadataSubscription,
+  ingestWordFilesMutation,
+  updateBookMetadataMutation,
   createBookComponentMutation,
   unlockBookComponentMutation,
-  createBookComponentsMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
   updatedBookComponentOrderMutation,
   updateBookComponentWorkflowStateMutation,
-  updateBookComponentContentMutation,
   updateBookComponentUploadingMutation,
-  ingestWordFilesMutation,
   updateApplicationParametersMutation,
   updateBookComponentTypeMutation,
   exportBookMutation,
@@ -76,7 +72,6 @@ const mapProps = args => ({
   setState: args.statefull.setState,
   book: get(args.getBookQuery, 'data.getBook'),
   addBookComponent: args.createBookComponentMutation.addBookComponent,
-  addBookComponents: args.createBookComponentsMutation.addBookComponents,
   deleteBookComponent: args.deleteBookComponentMutation.deleteBookComponent,
   updateBookComponentPagination:
     args.updateBookComponentPaginationMutation.updateBookComponentPagination,
@@ -85,14 +80,13 @@ const mapProps = args => ({
   updateBookComponentWorkflowState:
     args.updateBookComponentWorkflowStateMutation
       .updateBookComponentWorkflowState,
-  updateBookComponentContent:
-    args.updateBookComponentContentMutation.updateContent,
   updateBookComponentUploading:
     args.updateBookComponentUploadingMutation.updateUploading,
   updateComponentType: args.updateBookComponentTypeMutation.updateComponentType,
   updateApplicationParameters:
     args.updateApplicationParametersMutation.updateApplicationParameter,
   updateBookMetadata: args.updateBookMetadataMutation.updateMetadata,
+  uploadBookComponent: args.ingestWordFilesMutation.ingestWordFiles,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   ingestWordFiles: args.ingestWordFilesMutation.ingestWordFiles,
   exportBook: args.exportBookMutation.exportBook,
@@ -272,7 +266,6 @@ const Connected = props => {
         setState,
         onTeamManager,
         addBookComponent,
-        addBookComponents,
         deleteBookComponent,
         updateBookComponentPagination,
         updateBookComponentOrder,
@@ -282,7 +275,7 @@ const Connected = props => {
         onError,
         onWarning,
         onMetadataAdd,
-        updateBookComponentContent,
+        uploadBookComponent,
         updateBookComponentUploading,
         ingestWordFiles,
         onDeleteBookComponent,
@@ -294,42 +287,39 @@ const Connected = props => {
         rules,
         refetchingBookBuilderRules,
         onWorkflowUpdate,
-      }) => {
-        return (
-          <BookBuilder
-            addBookComponent={addBookComponent}
-            addBookComponents={addBookComponents}
-            applicationParameter={applicationParameter}
-            state={state}
-            setState={setState}
-            onTeamManager={onTeamManager}
-            onError={onError}
-            onWarning={onWarning}
-            currentUser={currentUser}
-            onAdminUnlock={onAdminUnlock}
-            onMetadataAdd={onMetadataAdd}
-            refetching={refetching}
-            refetchingBookBuilderRules={refetchingBookBuilderRules}
-            onWorkflowUpdate={onWorkflowUpdate}
-            book={book}
-            history={history}
-            exportBook={exportBook}
-            deleteBookComponent={deleteBookComponent}
-            onDeleteBookComponent={onDeleteBookComponent}
-            ingestWordFiles={ingestWordFiles}
-            loading={loading}
-            loadingRules={loadingRules}
-            rules={rules}
-            updateBookComponentContent={updateBookComponentContent}
-            updateComponentType={updateComponentType}
-            updateApplicationParameters={updateApplicationParameters}
-            updateBookComponentOrder={updateBookComponentOrder}
-            updateBookComponentPagination={updateBookComponentPagination}
-            updateBookComponentUploading={updateBookComponentUploading}
-            updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-          />
-        )
-      }}
+      }) => (
+        <BookBuilder
+          addBookComponent={addBookComponent}
+          applicationParameter={applicationParameter}
+          book={book}
+          currentUser={currentUser}
+          deleteBookComponent={deleteBookComponent}
+          exportBook={exportBook}
+          history={history}
+          ingestWordFiles={ingestWordFiles}
+          loading={loading}
+          loadingRules={loadingRules}
+          onAdminUnlock={onAdminUnlock}
+          onDeleteBookComponent={onDeleteBookComponent}
+          onError={onError}
+          onMetadataAdd={onMetadataAdd}
+          onTeamManager={onTeamManager}
+          onWarning={onWarning}
+          onWorkflowUpdate={onWorkflowUpdate}
+          refetching={refetching}
+          refetchingBookBuilderRules={refetchingBookBuilderRules}
+          rules={rules}
+          setState={setState}
+          state={state}
+          updateApplicationParameters={updateApplicationParameters}
+          updateBookComponentOrder={updateBookComponentOrder}
+          updateBookComponentPagination={updateBookComponentPagination}
+          updateBookComponentUploading={updateBookComponentUploading}
+          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+          updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
+        />
+      )}
     </Composed>
   )
 }

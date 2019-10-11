@@ -422,23 +422,6 @@ class SecondRow extends Component {
     updatePagination(bookComponentId, patch)
   }
 
-  // renderModal() {
-  //   const { bookComponentId, componentType, outerContainer } = this.props
-  //   const { modalType, showModal } = this.state
-
-  //   return (
-  //     <ProgressModal
-  //       bookComponentId={bookComponentId}
-  //       changeProgressState={this.changeProgressState}
-  //       componentType={componentType}
-  //       container={outerContainer}
-  //       modalType={modalType}
-  //       show={showModal}
-  //       toggle={this.toggleModal}
-  //     />
-  //   )
-  // }
-
   render() {
     const {
       bookId,
@@ -448,11 +431,8 @@ class SecondRow extends Component {
       componentType,
       uploading,
       lock,
-      showModal,
-      showModalToggle,
-      updateBookComponentContent,
       updateBookComponentUploading,
-      outerContainer,
+      uploadBookComponent,
       pagination,
       rules,
       workflowStages,
@@ -476,16 +456,12 @@ class SecondRow extends Component {
         {canViewUploadButton && (
           <UploadFileButton
             bookComponentId={bookComponentId}
-            updateBookComponentContent={updateBookComponentContent}
-            updateBookComponentUploading={updateBookComponentUploading}
-            workflowStages={workflowStages}
-            onWarning={onWarning}
             componentType={componentType}
             lock={lock}
+            onWarning={onWarning}
+            updateBookComponentUploading={updateBookComponentUploading}
+            uploadBookComponent={uploadBookComponent}
             uploading={uploading}
-            modalContainer={outerContainer}
-            showModal={showModal}
-            showModalToggle={showModalToggle}
           />
         )}
         {canViewStateList && (

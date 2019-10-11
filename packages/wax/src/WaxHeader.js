@@ -27,10 +27,10 @@ const WithLinkDecoration = styled.div`
 
 const Header = styled.div`
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: space-around;
   > div {
-    text-align:center;
+    text-align: center;
     width: 30%;
   }
 `

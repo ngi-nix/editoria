@@ -1,18 +1,21 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
+const flatten = require('lodash/flatten')
 const concat = require('lodash/concat')
 const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 // const map = require('lodash/flatMapDepth')
-const keys = require('lodash/keys')
 const map = require('lodash/map')
-const forEach = require('lodash/forEach')
+const { convertDocx, extractFragmentProperties } = require('./util')
+
 const clone = require('lodash/clone')
 const assign = require('lodash/assign')
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
 const { withFilter } = require('graphql-subscriptions')
+const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
+const crypto = require('crypto')
 
 const {
   ApplicationParameter,
@@ -38,7 +41,12 @@ const {
   BOOK_COMPONENT_TYPE_UPDATED,
 } = require('./consts')
 
-const { pubsubManager } = pubsweetServer
+const {
+  pubsubManager,
+  jobs: { connectToJobQueue },
+} = pubsweetServer
+
+const DOCX_TO_HTML = 'DOCX_TO_HTML'
 
 const getOrderedBookComponents = async bookComponent => {
   const divisions = await Division.findByField(
@@ -62,9 +70,73 @@ const getBookComponent = async (_, { id }, ctx) => {
   return bookComponent
 }
 
-// TODO: Pending implementation
-const ingestWordFile = async (_, { files }, ctx) => {
-  //
+const ingestWordFile = async (_, { bookComponentFiles }, context) => {
+  const jobQueue = await connectToJobQueue()
+  const pubsub = await getPubsub()
+
+  const bookComponents = await Promise.all(
+    bookComponentFiles.map(async bookComponentFile => {
+      const { file, bookComponentId, bookId } = await bookComponentFile
+      const { filename } = await file
+      const title = filename.split('.')[0]
+
+      const jobId = crypto.randomBytes(3).toString('hex')
+      const pubsubChannel = `${DOCX_TO_HTML}.${context.user}.${jobId}`
+
+      const contentPromise = convertDocx(file, pubsubChannel, pubsub, jobQueue)
+
+      const createBookComponent = await contentPromise.then(async content => {
+        let input = {}
+        let id = bookComponentId
+        if (!id) {
+          const name = filename.replace(/\.[^/.]+$/, '')
+          const { componentType, label } = extractFragmentProperties(name)
+
+          const division = await Division.query().where({
+            bookId,
+            label,
+          })
+
+          input = {
+            title: name,
+            bookId,
+            uploading: true,
+            componentType,
+            divisionId: division[0].id,
+          }
+          const newBookComponent = await addBookComponent(_, { input }, context)
+          id = newBookComponent.id
+        }
+
+        const bookComponentState = await BookComponentState.query().where(
+          'bookComponentId',
+          id,
+        )
+
+        const { workflowStages } = bookComponentState[0]
+
+        workflowStages[0].value = 1
+        workflowStages[1].value = 0
+
+        input = {
+          id,
+          title,
+          content,
+          uploading: false,
+          workflowStages,
+        }
+
+        const updatedBookComponent = await updateContent(_, { input }, context)
+
+        return [updatedBookComponent]
+      })
+
+      return createBookComponent
+    }),
+  )
+
+  return flatten(bookComponents)
+  /* eslint-enable */
 }
 
 const addBookComponent = async (_, args, ctx, info) => {
@@ -157,90 +229,6 @@ const addBookComponent = async (_, args, ctx, info) => {
   }
 }
 
-const addBookComponents = async (_, { input }, ctx, info) => {
-  const applicationParameters = await ApplicationParameter.query().where({
-    context: 'bookBuilder',
-    area: 'stages',
-  })
-
-  const { config: workflowStages } = applicationParameters[0]
-
-  let bookComponentWorkflowStages
-
-  try {
-    const pubsub = await pubsubManager.getPubsub()
-    const createdBookComponents = await Promise.all(
-      map(
-        input,
-        async ({ divisionId, bookId, componentType, title, uploading }) => {
-          const newBookComponent = {
-            bookId,
-            componentType,
-            divisionId,
-            archived: false,
-            deleted: false,
-          }
-          const bookComponent = await new BookComponent(newBookComponent).save()
-          await new BookComponentTranslation({
-            bookComponentId: bookComponent.id,
-            languageIso: 'en',
-            title,
-          }).save()
-
-          if (workflowStages) {
-            bookComponentWorkflowStages = {
-              workflowStages: map(workflowStages, stage => ({
-                type: stage.type,
-                label: stage.title,
-                value: -1,
-              })),
-            }
-          }
-
-          await new BookComponentState(
-            assign(
-              {},
-              {
-                bookComponentId: bookComponent.id,
-                trackChangesEnabled: false,
-                uploading: uploading || false,
-              },
-              bookComponentWorkflowStages,
-            ),
-          ).save()
-          return bookComponent
-        },
-      ),
-    )
-    const groupByDivision = groupBy(createdBookComponents, 'divisionId')
-    const divisionIds = keys(groupByDivision)
-    await Promise.all(
-      map(divisionIds, async divisionId => {
-        const division = await Division.findById(divisionId)
-        const newBookComponents = []
-        forEach(division.bookComponents, bookComponent => {
-          newBookComponents.push(bookComponent)
-        })
-        forEach(groupByDivision[divisionId], bookComponent => {
-          newBookComponents.push(bookComponent.id)
-        })
-        return Division.query().patchAndFetchById(divisionId, {
-          bookComponents: newBookComponents,
-        })
-      }),
-    )
-    forEach(createdBookComponents, bookComponent => {
-      pubsub.publish(BOOK_COMPONENT_ADDED, {
-        bookComponentAdded: bookComponent,
-      })
-    })
-
-    return createdBookComponents
-  } catch (e) {
-    logger.error(e)
-    throw new Error(e)
-  }
-}
 // TODO: Pending implementation
 const renameBookComponent = async (_, { input }, ctx) => {
   const { id, title } = input
@@ -449,7 +437,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
 
 // TODO: Pending implementation
 const updateContent = async (_, { input }, ctx) => {
-  const { id, content, workflowStages, uploading } = input
+  const { id, content, title, workflowStages, uploading } = input
   const pubsub = await pubsubManager.getPubsub()
 
   const bookComponentTranslation = await BookComponentTranslation.query().where(
@@ -457,7 +445,7 @@ const updateContent = async (_, { input }, ctx) => {
     id,
   )
   await BookComponentTranslation.query()
-    .patch({ content })
+    .patch({ content, title })
     .where('id', bookComponentTranslation[0].id)
     .andWhere('languageIso', 'en')
 
@@ -601,7 +589,6 @@ module.exports = {
   Mutation: {
     ingestWordFile,
     addBookComponent,
-    addBookComponents,
     renameBookComponent,
     deleteBookComponent,
     archiveBookComponent,

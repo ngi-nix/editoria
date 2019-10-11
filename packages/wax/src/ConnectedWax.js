@@ -14,6 +14,7 @@ import {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  spellCheckerQuery,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
@@ -25,6 +26,7 @@ import {
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  customTagsSubscription,
 } from './queries'
 
 const mapper = {
@@ -34,9 +36,11 @@ const mapper = {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  spellCheckerQuery,
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
+  customTagsSubscription,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
@@ -72,6 +76,13 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+  checkSpell: (language, text) => {
+    const {
+      spellCheckerQuery: { client, query },
+    } = args
+
+    return client.query({ query, variables: { language, text } })
+  },
   onUnlocked: (warning, handler) => {
     const { withModal } = args
     const { showModal, hideModal } = withModal
@@ -108,6 +119,7 @@ const Connected = props => {
     >
       {({
         bookComponent,
+        checkSpell,
         tags,
         setState,
         onUnlocked,
@@ -149,25 +161,26 @@ const Connected = props => {
           <WaxPubsweet
             addCustomTags={addCustomTags}
             bookComponent={bookComponent}
-            setState={setState}
-            editing={editing}
             bookComponentId={bookComponentId}
+            checkSpell={checkSpell}
             config={config}
+            editing={editing}
             history={history}
             key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
+            onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}
+            setState={setState}
             tags={tags}
             teamsLoading={teamsLoading}
             unlockBookComponent={unlockBookComponent}
-            updateCustomTags={updateTags}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
+            updateCustomTags={updateTags}
             uploadFile={uploadFile}
             user={user}
-            onUnlocked={onUnlocked}
             waxLoading={waxLoading}
           />
         )

@@ -1,0 +1,12 @@
+
+
+type SpellChecker {
+  language: JSON
+  matches: JSON
+  software: JSON
+  warnings: JSON
+}
+
+extend type Query {
+  spellChecker(language: String, text: String): SpellChecker
+}

@@ -2,7 +2,6 @@ export { default as getBookQuery } from './getBook'
 export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
 export { default as getBookTeamsQuery } from './getBookTeams'
 export { default as createBookComponentMutation } from './createBookComponent'
-export { default as createBookComponentsMutation } from './createBookComponents'
 export { default as deleteBookComponentMutation } from './deleteBookComponent'
 export {
   default as updateBookComponentPaginationMutation,
@@ -27,6 +26,7 @@ export {
   addTeamMemberSubscription,
   bookMetadataSubscription,
   bookRenamedSubscription,
+  docxToHTMLJobSubscription,
 } from './bookBuilderSubscriptions'
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'

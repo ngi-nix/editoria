@@ -75,7 +75,6 @@ export class BookBuilder extends React.Component {
       history,
       addBookComponent,
       onMetadataAdd,
-      addBookComponents,
       currentUser,
       deleteBookComponent,
       updateApplicationParameters,
@@ -83,8 +82,8 @@ export class BookBuilder extends React.Component {
       updateBookComponentOrder,
       updateBookComponentWorkflowState,
       updateBookComponentUploading,
-      updateBookComponentContent,
       updateComponentType,
+      uploadBookComponent,
       onDeleteBookComponent,
       onAdminUnlock,
       exportBook,
@@ -133,10 +132,8 @@ export class BookBuilder extends React.Component {
         <UploadFilesButton
           book={book}
           onWarning={onWarning}
-          create={addBookComponents}
-          divisions={divisions}
-          update={updateBookComponentContent}
-          updateUploadStatus={updateBookComponentUploading}
+          uploadBookComponent={uploadBookComponent}
+          // updateUploadStatus={updateBookComponentUploading}
         />,
       )
     }
@@ -147,29 +144,28 @@ export class BookBuilder extends React.Component {
           actions={productionEditorActions}
           productionEditors={productionEditors}
         />
-        <Header bookTitle={book.title} actions={headerActions} />
+        <Header actions={headerActions} bookTitle={book.title} />
         <DivisionsArea
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
-          onWorkflowUpdate={onWorkflowUpdate}
-          addBookComponents={addBookComponents}
-          setState={setState}
-          onWarning={onWarning}
-          currentUser={currentUser}
-          onAdminUnlock={onAdminUnlock}
-          history={history}
           bookId={book.id}
+          currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
-          onDeleteBookComponent={onDeleteBookComponent}
           divisions={divisions}
+          history={history}
+          onAdminUnlock={onAdminUnlock}
+          onDeleteBookComponent={onDeleteBookComponent}
+          onWarning={onWarning}
+          onWorkflowUpdate={onWorkflowUpdate}
           rules={rules}
+          setState={setState}
           updateApplicationParameters={updateApplicationParameters}
-          updateBookComponentContent={updateBookComponentContent}
           updateBookComponentOrder={updateBookComponentOrder}
           updateBookComponentPagination={updateBookComponentPagination}
           updateBookComponentUploading={updateBookComponentUploading}
           updateBookComponentWorkflowState={updateBookComponentWorkflowState}
           updateComponentType={updateComponentType}
+          uploadBookComponent={uploadBookComponent}
         />
       </Container>
     )
