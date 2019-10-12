@@ -170,6 +170,7 @@ const createBook = async (_, { input }, ctx) => {
           bookComponentId: createdBookComponent.id,
           trackChangesEnabled: false,
           uploading: false,
+          includeInToc: false,
         },
         bookComponentWorkflowStages,
       ),

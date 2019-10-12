@@ -220,9 +220,11 @@ const decorateText = async (book, hasEndnotes) => {
   let id
   if (hasEndnotes) {
     endnotesComponent = backDivision.bookComponents.get('endnotes')
-    id = endnotesComponent.id
+    if (endnotesComponent) { // for the case where there isn't any notes inside the of book
+      id = endnotesComponent.id
+    }
   }
-  console.log('end', backDivision)
+  
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       bookComponent.content = epubDecorator(
@@ -247,7 +249,7 @@ const generateTOCNCX = async (book, epubFolder) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       const { id, includeInTOC, title, componentType } = bookComponent
 
-      if (true) {
+      if (includeInTOC) {
         navPoints.push({
           '@id': `nav-${counter}`,
           navLabel: {

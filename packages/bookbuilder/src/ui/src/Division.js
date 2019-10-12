@@ -191,6 +191,7 @@ class Division extends React.Component {
       onWarning,
       showModal,
       toggleIncludeInTOC,
+      showModalToggle,
       onWorkflowUpdate,
       onAdminUnlock,
       history,
@@ -253,7 +254,7 @@ class Division extends React.Component {
                   rules={rules}
                   showModal={showModal}
                   includeInTOC={includeInTOC}
-                  // showModalToggle={showModalToggle}
+                  showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}

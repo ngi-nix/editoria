@@ -247,9 +247,10 @@ const mapProps = args => ({
         getTemplatesQuery: { client, query },
       } = args
 
-      const bookComponents = book.divisions.find(
+      const bookComponents = book.divisions.filter(
         division => division.label === 'Backmatter',
       )
+      console.log('bb', bookComponents)
       const endnote = (bookComponents || []).find(
         bookComponent => bookComponent.componentType === 'endnotes',
       )

@@ -198,6 +198,7 @@ class DivisionsArea extends Component {
       history,
       onWarning,
       addBookComponent,
+      showModalToggle,
       deleteBookComponent,
       onWorkflowUpdate,
       updateApplicationParameters,
@@ -230,6 +231,7 @@ class DivisionsArea extends Component {
           currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
           toggleIncludeInTOC={toggleIncludeInTOC}
+          showModalToggle={showModalToggle}
           divisionId={id}
           history={history}
           key={id}

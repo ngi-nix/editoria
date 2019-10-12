@@ -81,8 +81,13 @@ const EpubBackend = async (
     // Check if notes exist, else remove the book component
     if (templateHasEndnotes) {
       const $endnotes = cheerio.load(endnotesComponent.content)
+      const $toc = cheerio.load(tocComponent.content)
       if ($endnotes('ol').length === 0) {
         backDivision.bookComponents.delete('endnotes')
+        console.log('hmmm')
+        $toc('.toc-endnotes').remove()
+        tocComponent.content = $toc('body').html()
+        console.log('tocccc',tocComponent.content )
       }
     }
 

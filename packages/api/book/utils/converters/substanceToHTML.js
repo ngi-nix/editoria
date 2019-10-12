@@ -18,7 +18,7 @@ module.exports = (
   } = bookComponent
   const toc = cheerio.load(tocComponent.content)
 
-  if (true) {
+  if (includeInTOC) {
     const li = `<li class="toc-${division} toc-${componentType}"><a href="#comp-number-${id}"><span class="name">${title ||
       componentType}</span></a></li>`
 

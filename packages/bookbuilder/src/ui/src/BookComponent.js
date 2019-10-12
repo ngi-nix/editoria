@@ -21,11 +21,11 @@ const StyledButton = styled(ButtonWithoutLabel)`
   svg {
     #Line {
       visibility: ${({ includeInTOC }) =>
-        includeInTOC ? 'visible' : 'hidden'};
+        includeInTOC ? 'hidden' : 'visible'};
     }
     #Line_2 {
       visibility: ${({ includeInTOC }) =>
-        includeInTOC ? 'visible' : 'hidden'};
+        includeInTOC ? 'hidden' : 'visible'};
     }
   }
 
@@ -195,6 +195,7 @@ const BookComponent = ({
   connectDropTarget,
   applicationParameter,
   currentUser,
+  showModalToggle,
   history,
   componentType,
   componentTypeOrder,
@@ -339,6 +340,7 @@ const BookComponent = ({
   const goToEditor = () => {
     history.push(`/books/${bookId}/bookComponents/${id}`)
   }
+  console.log('incude', includeInTOC)
   return (
     <BookComponentContainer
       componentType={componentType}
@@ -426,14 +428,14 @@ const BookComponent = ({
           showModal={showModal}
           showModalToggle={showModalToggle}
           trackChangesEnabled={trackChangesEnabled}
-          updateBookComponentContent={updateBookComponentContent}
+          // updateBookComponentContent={updateBookComponentContent}
           // update={update}
-          updateBookComponentUploading={updateBookComponentUploading}
+          // updateBookComponentUploading={updateBookComponentUploading}
           updatePagination={updatePagination}
           updateWorkflowState={updateWorkflowState}
           uploadBookComponent={uploadBookComponent}
           workflowStages={workflowStages}
-          showModal={showModal}
+          // showModal={showModal}
         />
       )}
     </BookComponentContainer>

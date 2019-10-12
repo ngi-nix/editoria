@@ -101,7 +101,7 @@ class Book extends Base {
       this.divisions = [division.id]
     } else {
       const createdDivisions = await Promise.all(
-        divisions.map(division => this.addDivision(division.name)),
+        divisions.map(async division => this.addDivision(division.name)),
       )
       this.divisions = createdDivisions.map(d => d.id)
     }
