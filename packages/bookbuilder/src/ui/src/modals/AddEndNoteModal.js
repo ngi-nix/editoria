@@ -23,7 +23,8 @@ const AddEndNoteModal = props => {
       onRequestClose={onHideModal}
     >
       <Text>
-        {`By creating a notes placeholder you will only be ablr to see templates with notes option se to endnotes`}
+        By creating a notes placeholder you will only be able to see templates
+        with notes option set to endnotes
       </Text>
     </DialogModal>
   )

@@ -3,4 +3,5 @@ module.exports = {
   cleanDataIdAttributes: require('./cleanDataIdAttributes'),
   vivliostyleDecorator: require('./vivliostyleDecorator'),
   epubDecorator: require('./epubDecorator'),
+  fixFontFaceUrls: require('./fixFontFaceUrls'),
 }

@@ -242,24 +242,33 @@ const mapProps = args => ({
     const { exportBookMutation, withModal } = args
     const { exportBook } = exportBookMutation
     const { showModal, hideModal } = withModal
+    const { divisions } = book
     const getTemplates = target => {
       const {
         getTemplatesQuery: { client, query },
       } = args
 
-      const bookComponents = book.divisions.filter(
-        division => division.label === 'Backmatter',
-      )
-      console.log('bb', bookComponents)
-      const endnote = (bookComponents || []).find(
-        bookComponent => bookComponent.componentType === 'endnotes',
-      )
+      const backmatterDivision = find(divisions, { label: 'Backmatter' })
+      let backmatterBookComponents
+      if (backmatterDivision) {
+        backmatterBookComponents = backmatterDivision.bookComponents
+      }
 
-      const variables = endnote
-        ? Object.assign({ target }, { endnotes: 'endnotes' })
+      let endnotesComponent
+      if (backmatterBookComponents) {
+        endnotesComponent = find(backmatterBookComponents, {
+          componentType: 'endnotes',
+        })
+      }
+
+      console.log('endnote', endnotesComponent)
+
+      const variables = endnotesComponent
+        ? Object.assign({ target }, { notes: 'endnotes' })
         : { target }
-
-      return client.query({ query, variables })
+      console.log('variabe', variables)
+      console.log('client', client)
+      return client.query({ query, variables, fetchPolicy: 'no-cache' })
     }
     const onConfirm = (mode, viewer, templateId, format) => {
       const payload = {

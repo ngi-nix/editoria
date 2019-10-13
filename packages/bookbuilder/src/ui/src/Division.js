@@ -213,7 +213,7 @@ class Division extends React.Component {
         bookId,
         lock,
         divisionId,
-        includeInTOC,
+        includeInToc,
         componentTypeOrder,
         hasContent,
         title,
@@ -253,7 +253,7 @@ class Division extends React.Component {
                   remove={this.onRemove}
                   rules={rules}
                   showModal={showModal}
-                  includeInTOC={includeInTOC}
+                  includeInToc={includeInToc}
                   showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}

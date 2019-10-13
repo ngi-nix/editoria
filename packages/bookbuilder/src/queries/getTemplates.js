@@ -3,8 +3,8 @@ import { ApolloConsumer } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const GET_TEMPLATES = gql`
-  query GetTemplates($target: String) {
-    getTemplates(target: $target) {
+  query GetTemplates($target: String, $notes: String) {
+    getTemplates(target: $target, notes: $notes) {
       id
       name
       notes

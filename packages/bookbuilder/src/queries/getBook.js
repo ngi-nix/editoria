@@ -25,7 +25,7 @@ const GET_BOOK = gql`
           divisionId
           title
           bookId
-          includeInTOC
+          includeInToc
           runningHeadersLeft
           runningHeadersRight
           # hasContent

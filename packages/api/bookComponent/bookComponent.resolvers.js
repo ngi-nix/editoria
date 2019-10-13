@@ -800,7 +800,7 @@ module.exports = {
       return bookComponentState[0].workflowStages || null
     },
 
-    async includeInTOC(bookComponent, _, ctx) {
+    async includeInToc(bookComponent, _, ctx) {
       const state = await bookComponent.getBookComponentState()
       return state.includeInToc
     },

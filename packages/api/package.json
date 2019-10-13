@@ -26,6 +26,7 @@
     "xmlbuilder": "^13.0.2",
     "js-beautify": "^1.10.2",
     "css-tree":"^1.0.0-alpha.35",
-    "list-contents":"^4.0.2"
+    "list-contents":"^4.0.2",
+    "pagedjs-cli": "0.0.7"
   }
 }

@@ -190,7 +190,7 @@ const BookComponent = ({
   provided,
   bookId,
   onWarning,
-  includeInTOC,
+  includeInToc,
   connectDragSource,
   connectDropTarget,
   applicationParameter,
@@ -340,7 +340,7 @@ const BookComponent = ({
   const goToEditor = () => {
     history.push(`/books/${bookId}/bookComponents/${id}`)
   }
-  console.log('incude', includeInTOC)
+  console.log('incude', includeInToc)
   return (
     <BookComponentContainer
       componentType={componentType}
@@ -370,7 +370,7 @@ const BookComponent = ({
         </ActionsLeft>
         <StyledButton
           icon={tocIcon}
-          includeInTOC={includeInTOC}
+          includeInTOC={includeInToc}
           onClick={e => {
             e.preventDefault()
             onToggleIncludeInTOC(id)

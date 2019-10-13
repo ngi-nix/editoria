@@ -8,50 +8,9 @@
   <meta content="width=device-width, initial-scale=1" name="viewport">
 
   <script src="../lib/paged.js"></script>
-  <!-- <script src="../lib/paged.polyfill.js"></script> -->
-  <!-- <script src="../lib/numberingHeaders.js"></script>   -->
 
-  <!-- <script>
-    let Hyphenopoly = {
-      require: {
-        "en-us": "FORCEHYPHENOPOLY"
-      },
-      paths: {
-        patterndir: "../lib/hyphens/patterns/",
-        maindir: "../lib/hyphens/"
-      },
-      setup: {
-        classnames: {
-          "hyphenate": {
-            // hyphen: "•"
-          }
-        }
-      },
-      handleEvent: {
-        hyphenopolyEnd: function (e) {
-          // numHead();
-          window.previewer.preview();
-        }
-      }
-    };
-  </script> -->
-  <!-- <script src="../lib/hyphens/Hyphenopoly_Loader.js"></script> -->
   <script>
-    // class MyHandler extends Paged.Handler {
-    //   constructor(chunker, polisher, caller) {
-    //         super(chunker, polisher, caller);
-    //   }
-
-    //   beforeParsed(content) {
-    //       numHead();
-
-    //   }
-    // }
-    // Paged.registerHandlers(MyHandler);
-    // window.PagedConfig = {
-    //   auto: false
-    // };
-    let ready = new Promise(function (resolve, reject) {
+    let ready = new Promise(function(resolve, reject){
       if (document.readyState === "interactive" || document.readyState === "complete") {
         resolve(document.readyState);
         return;
@@ -93,8 +52,6 @@
 
       // Push all body elements to a document fragment
       let content = html.querySelectorAll('body > *');
-
-
       let fragment = document.createDocumentFragment();
       for (let i = 0; i < content.length; i++) {
         fragment.appendChild(content[i]);
@@ -116,14 +73,14 @@
         background-color: #fdfdfd;
         margin: 10px auto;
         flex: none;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 0 1px rgba(0, 0,0,0.2);
       }
 
     }
   </style>
 </head>
 
-<body class="hyphenate" lang="en-us">
+<body>
 
 </body>
 

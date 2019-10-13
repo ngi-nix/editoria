@@ -53,7 +53,7 @@ module.exports = async (bookId, templateHasEndnotes, ctx) => {
         content: bookComponentTranslation[0].content,
         title: bookComponentTranslation[0].title,
         componentType: bookComponent.componentType,
-        includeInTOC: bookComponentState[0].includeInTOC,
+        includeInTOC: bookComponentState[0].includeInToc,
         runningHeadersRight: bookComponentState[0].runningHeadersRight,
         runningHeadersLeft: bookComponentState[0].runningHeadersLeft,
         pagination: bookComponent.pagination,
@@ -159,26 +159,28 @@ module.exports = async (bookId, templateHasEndnotes, ctx) => {
         //   bookComponent.componentType === 'endnotes'
         // ) {
         //   tempDivision.bookComponents.set('endnotes', bookComponent)
+      } else if (bookComponent.componentType === 'endnotes') {
+        tempDivision.bookComponents.set('endnotes', bookComponent)
       } else {
         tempDivision.bookComponents.set(bookComponentId, bookComponent)
       }
     })
-    if (division.label === 'Backmatter' && templateHasEndnotes) {
-      const notesComponent = {
-        id: 'notes0',
-        divisionId: division.id,
-        content: null,
-        title: 'Notes',
-        componentType: 'endnotes',
-        includeInTOC: true,
-        runningHeadersRight: 'Notes',
-        runningHeadersLeft: 'Notes',
-        pagination: { left: false, right: true },
-        division: 'back',
-        number: 1,
-      }
-      tempDivision.bookComponents.set('endnotes', notesComponent)
-    }
+    // if (division.label === 'Backmatter' && templateHasEndnotes) {
+    //   const notesComponent = {
+    //     id: 'notes0',
+    //     divisionId: division.id,
+    //     content: null,
+    //     title: 'Notes',
+    //     componentType: 'endnotes',
+    //     includeInTOC: true,
+    //     runningHeadersRight: 'Notes',
+    //     runningHeadersLeft: 'Notes',
+    //     pagination: { left: false, right: true },
+    //     division: 'back',
+    //     number: 1,
+    //   }
+    //   tempDivision.bookComponents.set('endnotes', notesComponent)
+    // }
     // bookDivisions.push(tempDivision)
     bookDivisions.set(divisionTypeMapper[division.label], tempDivision)
   }

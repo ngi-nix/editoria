@@ -11,8 +11,8 @@ const get = require('lodash/get')
 const map = require('lodash/map')
 const { writeFile, readFile } = require('./filesystem')
 const beautify = require('js-beautify').html
-const csstree = require('css-tree')
-const { epubDecorator } = require('./converters')
+// const csstree = require('css-tree')
+const { epubDecorator, fixFontFaceUrls } = require('./converters')
 
 let images = []
 let stylesheets = []
@@ -61,25 +61,25 @@ const createMimetype = async rootPath => {
   }
 }
 
-const fixFontFaceUrls = (stylesheet, fonts) => {
-  const ast = csstree.parse(stylesheet.content)
-  const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
-  const regex = new RegExp(
-    `([a-zA-Z0-9\s_\\.\-:])+(${allowedFiles.join('|')})$`,
-  )
+// const fixFontFaceUrls = (stylesheet, fonts) => {
+//   const ast = csstree.parse(stylesheet.content)
+//   const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
+//   const regex = new RegExp(
+//     `([a-zA-Z0-9\s_\\.\-:])+(${allowedFiles.join('|')})$`,
+//   )
 
-  csstree.walk(ast, node => {
-    if (node.type === 'Url' && regex.test(node.value.value)) {
-      const temp = node.value.value
-      for (let i = 0; i < fonts.length; i += 1) {
-        if (new RegExp(fonts[i].basename).test(temp)) {
-          node.value.value = `../Fonts/${fonts[i].basename}`
-        }
-      }
-    }
-  })
-  stylesheet.content = csstree.generate(ast)
-}
+//   csstree.walk(ast, node => {
+//     if (node.type === 'Url' && regex.test(node.value.value)) {
+//       const temp = node.value.value
+//       for (let i = 0; i < fonts.length; i += 1) {
+//         if (new RegExp(fonts[i].basename).test(temp)) {
+//           node.value.value = `../Fonts/${fonts[i].basename}`
+//         }
+//       }
+//     }
+//   })
+//   stylesheet.content = csstree.generate(ast)
+// }
 
 const createContainer = async metaInfPath => {
   try {
@@ -117,9 +117,9 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
     const mimetype = mime.lookup(uri)
     if (templateFiles[i].mimetype === 'text/css') {
       const target = `${epubFolder.styles}/${basename}`
-      const id = `stylesheet-${dbId}-0`
+      const id = `stylesheet-${dbId}-${i}`
       stylesheets.push({
-        id: `stylesheet-${id}-0`,
+        id,
         source,
         target,
         mimetype,
@@ -147,7 +147,7 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
     throw new Error('No stylesheet file exist in the template, export aborted')
   }
 
-  fixFontFaceUrls(stylesheets[0], fonts)
+  fixFontFaceUrls(stylesheets[0], fonts, '../Fonts')
 
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
@@ -220,11 +220,12 @@ const decorateText = async (book, hasEndnotes) => {
   let id
   if (hasEndnotes) {
     endnotesComponent = backDivision.bookComponents.get('endnotes')
-    if (endnotesComponent) { // for the case where there isn't any notes inside the of book
+    if (endnotesComponent) {
+      // for the case where there isn't any notes inside the of book
       id = endnotesComponent.id
     }
   }
-  
+
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
       bookComponent.content = epubDecorator(
@@ -532,9 +533,7 @@ const cleaner = () => {
 const htmlToEPUB = async (book, template) => {
   try {
     const templateFiles = await template.getFiles()
-    console.log('templat', template)
     const hasEndnotes = template.notes === 'endnotes'
-    console.log('has', hasEndnotes)
     const epubFolder = await createEPUBFolder()
 
     await createMimetype(epubFolder.root)

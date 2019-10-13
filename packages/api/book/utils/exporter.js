@@ -6,21 +6,17 @@ const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
 
-const { execCommand } = require('./filesystem')
-
 const {
   substanceToHTML,
   cleanDataIdAttributes,
   vivliostyleDecorator,
 } = require('./converters')
 
-const {
-  generateContainer,
-  generatePagedjsContainer,
-} = require('./htmlGenerators')
+const { generateContainer } = require('./htmlGenerators')
 
 const { htmlToEPUB } = require('./htmlToEPUB')
 const bookConstructor = require('./bookConstructor')
+const { pagednation } = require('./pagednation')
 const { Template } = require('editoria-data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
@@ -84,10 +80,8 @@ const EpubBackend = async (
       const $toc = cheerio.load(tocComponent.content)
       if ($endnotes('ol').length === 0) {
         backDivision.bookComponents.delete('endnotes')
-        console.log('hmmm')
         $toc('.toc-endnotes').remove()
         tocComponent.content = $toc('body').html()
-        console.log('tocccc',tocComponent.content )
       }
     }
 
@@ -108,16 +102,16 @@ const EpubBackend = async (
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
       // for the validator
-      const validatorPoolPath = await epubArchiver(
-        tempFolder,
-        `${process.cwd()}/epubcheck_data`,
-      )
+      // const validatorPoolPath = await epubArchiver(
+      //   tempFolder,
+      //   `${process.cwd()}/epubcheck_data`,
+      // )
 
-      const validationResult = await execCommand(
-        'docker-compose run --rm epubcheck',
-      )
-      console.log('valid', validationResult)
-      await fs.remove(validatorPoolPath)
+      // const validationResult = await execCommand(
+      //   'docker-compose run --rm epubcheck',
+      // )
+      // console.log('valid', validationResult)
+      // await fs.remove(validatorPoolPath)
       // epubcheck here
       resultPath = epubFilePath
 
@@ -132,7 +126,7 @@ const EpubBackend = async (
         await fs.remove(epubFilePath)
         resultPath = destination
       }
-      await fs.remove(tempFolder)
+      // await fs.remove(tempFolder)
 
       return resultPath
 
@@ -154,185 +148,18 @@ const EpubBackend = async (
     }
 
     if (previewer === 'pagedjs' || fileExtension === 'pdf') {
-      const output = cheerio.load(generatePagedjsContainer(book.title))
-      book.divisions.forEach((division, divisionId) => {
-        division.bookComponents.forEach((bookComponent, bookComponentId) => {
-          // console.log('types', bookComponent.componentType)
-          const { content } = bookComponent
-          output('body').append(content)
-        })
-      })
-      console.log('o', output.html())
-      // append to single html file each book component
-      // fix (fonts url if any in css file)
+      if (fileExtension === 'pdf') {
+        const pagedFiles = await pagednation(book, template, true)
+        // pagedjs-cli
+        return resultPath
+      }
+      return await pagednation(book, template)
     }
 
     if (fileExtension === 'icml') {
       // append to single html file each book component
       // fix url images
     }
-
-    // console.log('book', book)
-    // for (let [divisionId, division] of book.divisions) {
-    //   console.log('division', division)
-    // }
-    // const bookTranslation = await BookTranslation.query()
-    //   .where('bookId', bookId)
-    //   .andWhere('languageIso', 'en')
-
-    // const book = {
-    //   title: bookTranslation[0].title,
-    //   identifier: bookId,
-    // }
-    // // chapters
-    // const bookComponentIds = []
-    // const divisions = await Division.query()
-    //   .where('bookId', bookId)
-    //   .andWhere('deleted', false)
-
-    // forEach(divisions, division => {
-    //   const { bookComponents } = division
-    //   forEach(bookComponents, id => {
-    //     bookComponentIds.push(id)
-    //   })
-    // })
-
-    // const convertedBookComponents = await Promise.all(
-    //   map(bookComponentIds, async (bookComponentId, i) => {
-    //     const bookComponent = await BookComponent.findById(bookComponentId)
-    //     const bookComponentTranslation = await BookComponentTranslation.query()
-    //       .where('bookComponentId', bookComponent.id)
-    //       .andWhere('languageIso', 'en')
-    //     const division = await Division.findById(bookComponent.divisionId)
-    //     const sortedPerDivision = await Promise.all(
-    //       map(division.bookComponents, async id => {
-    //         const bookComponent = await BookComponent.query()
-    //           .where('id', id)
-    //           .andWhere('deleted', false)
-    //         return bookComponent[0]
-    //       }),
-    //     )
-
-    //     const groupedByType = groupBy(
-    //       pullAll(sortedPerDivision, [undefined]),
-    //       'componentType',
-    //     )
-
-    //     const componentTypeNumber =
-    //       findIndex(
-    //         groupedByType[bookComponent.componentType],
-    //         item => item.id === bookComponent.id,
-    //       ) + 1
-
-    //     return {
-    //       id: bookComponent.id,
-    //       content: bookComponentTranslation[0].content,
-    //       title: bookComponentTranslation[0].title,
-    //       componentType: bookComponent.componentType,
-    //       division: divisionTypeMapper[division.label],
-    //       number: componentTypeNumber,
-    //     }
-    //   }),
-    // )
-
-    // ?????????
-    // ?????????
-    // ?????????
-    // let notesPart
-    // if (converter === 'ucp') {
-    //   notesPart = cheerio.load(
-    //     '<html><body><section id="comp-notes-0" data-type="notes"><header><h1 class="ct">Notes</h1></header></section></body></html>',
-    //   )
-    // }
-
-    // // CSS Theme
-
-    // // TODO: change it from array to the name of the selected theme
-    // let styles = [style].filter(name => name)
-    // // TODO: to be desided where the per applications themes should live
-    // let stylesRoot = `${process.cwd()}/static`
-
-    // if (styles.length === 0 || !fs.existsSync(`${stylesRoot}/${styles[0]}`)) {
-    //   if (previewer === 'vivliostyle') {
-    //     styles = ['default.css']
-    //   } else {
-    //     styles = ['paged_default.css']
-    //   }
-    //   stylesRoot = `${__dirname}/themes`
-    // }
-
-    // let fontsRoot =
-    //   config.epub && config.epub.fontsPath
-    //     ? process.cwd() + config.epub.fontsPath
-    //     : null
-
-    // if (!fs.existsSync(fontsRoot)) fontsRoot = ''
-
-    // // converters
-    // const activeConverters = [`wax-${previewer}-${converter}`]
-    //   .filter(name => name && converters[name])
-    //   .map(name => converters[name])
-
-    // const parts = convertedBookComponents.sort(sorter).map(
-    //   processFragment({
-    //     styles,
-    //     activeConverters,
-    //     book,
-    //     notesPart,
-    //     previewer,
-    //   }),
-    // )
-
-    // if (converter === 'ucp') {
-    //   const notesFragment = {
-    //     content: notesPart.html(),
-    //     division: 'back',
-    //     componentType: 'component',
-    //     title: 'Notes',
-    //     id: 'notes-0',
-    //   }
-
-    //   const notes = processFragment({
-    //     styles,
-    //     activeConverters,
-    //     book,
-    //     notesPart,
-    //     previewer,
-    //   })(notesFragment)
-
-    //   const notesHTML = cheerio.load(notesPart.html())
-    //   const hasNotes = notesHTML('ol').length > 0
-    //   if (hasNotes) {
-    //     parts.push(notes)
-    //   }
-    // }
-
-    // // TODO: read the path to the uploads folder from config
-    // const resourceRoot = `${process.cwd()}/uploads`
-
-    // let outcome
-    // switch (previewer) {
-    //   default: {
-    //     outcome = new HTMLEPUB(book, { resourceRoot, stylesRoot, fontsRoot })
-    //     await outcome.load(parts)
-    //     break
-    //   }
-    //   case 'paged': {
-    //     outcome = await pagednation.create(
-    //       book,
-    //       parts,
-    //       resourceRoot,
-    //       stylesRoot,
-    //       fontsRoot,
-    //     )
-    //     break
-    //   }
-    // }
-
-    // if (destination === 'folder') {
-    //   return output.folder(outcome, stylesRoot, previewer)
-    // }
-    // return output.attachment(outcome, bookId)
   } catch (e) {
     throw new Error(e)
   }
