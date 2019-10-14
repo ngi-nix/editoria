@@ -358,7 +358,7 @@ class ExportBookModal extends Component {
               />
               <span>EPUB</span>
             </RadioButton>
-            <RadioButton>
+            <RadioButton last>
               <input
                 checked={format === 'pdf'}
                 name="pdf"
@@ -368,7 +368,7 @@ class ExportBookModal extends Component {
               />
               <span>PDF</span>
             </RadioButton>
-            <RadioButton last>
+            {/* <RadioButton last>
               <input
                 checked={format === 'icml'}
                 name="icml"
@@ -377,7 +377,7 @@ class ExportBookModal extends Component {
                 value="icml"
               />
               <span>ICML</span>
-            </RadioButton>
+            </RadioButton> */}
           </FormatRow>
           <InfoContainer>{textMapper[format]}</InfoContainer>
         </Fragment>

@@ -209,6 +209,9 @@ class Menu extends React.Component {
   }
 
   handleClickOutside(event) {
+    if (this.state.open) {
+      document.removeEventListener('mousedown', this.handleClickOutside)
+    }
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       this.toggleMenu()
       document.removeEventListener('mousedown', this.handleClickOutside)
