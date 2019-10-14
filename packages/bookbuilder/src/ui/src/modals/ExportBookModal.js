@@ -177,8 +177,10 @@ class ExportBookModal extends Component {
       selectedValue: null,
       viewer: 'pagedjs',
       templateId: undefined,
-      templates:[],
+      templates: [],
       hasEndnotes: false,
+      validating: false,
+      generating: false,
       format: 'epub',
     }
   }
@@ -272,6 +274,12 @@ class ExportBookModal extends Component {
     const { onConfirm } = data
 
     if (!templateId && format !== 'icml') return false
+    if (viewer === 'vivliostyle' || format === 'epub') {
+      this.setState({ validating: true })
+    }
+    if (format === 'pdf') {
+      this.setState({ generating: true })
+    }
 
     return onConfirm(mode, viewer, templateId, format)
   }
@@ -408,18 +416,29 @@ class ExportBookModal extends Component {
   render() {
     const { isOpen, hideModal, data } = this.props
     const { bookTitle } = data
-    const { mode, templateId, format } = this.state
+    const { mode, templateId, format, generating, validating } = this.state
     const mainSection = this.renderFormatOptions()
     const templateSection = this.renderTemplateSection()
+    let confirmLabel
+
+    if (generating) {
+      confirmLabel = 'Generating'
+    }
+    if (validating) {
+      confirmLabel = 'Validating'
+    }
 
     return (
       <DialogModal
-        disableConfirm={!templateId && format !== 'icml'}
+        disableConfirm={
+          (!templateId && format !== 'icml') || (generating || validating)
+        }
         headerText="EXPORT BOOK"
         isOpen={isOpen}
         notCentered
         onConfirm={this.handleSubmit}
         onRequestClose={hideModal}
+        buttonLabel={confirmLabel}
         size="medium_narrow"
       >
         <Container>

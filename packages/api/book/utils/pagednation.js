@@ -22,11 +22,9 @@ const pagednation = async (book, template, pdf = false) => {
     const fonts = []
     const stylesheets = []
     const images = []
+    const hash = crypto.randomBytes(32).toString('hex')
     const pagedDir = `${process.cwd()}/${uploadsDir}/paged`
-    const pagedDestination = path.join(
-      pagedDir,
-      `${crypto.randomBytes(32).toString('hex')}`,
-    )
+    const pagedDestination = path.join(pagedDir, `${hash}`)
     await fs.ensureDir(pagedDestination)
 
     for (let i = 0; i < templateFiles.length; i += 1) {
@@ -62,13 +60,12 @@ const pagednation = async (book, template, pdf = false) => {
         })
       }
     }
-    stylesheets[0].content = await readFile(stylesheets[0].source)
-
     if (stylesheets.length === 0) {
       throw new Error(
-        'No stylesheet file exist in the template, export aborted',
+        'No stylesheet file exists in the selected template, export aborted',
       )
     }
+    stylesheets[0].content = await readFile(stylesheets[0].source)
 
     book.divisions.forEach((division, divisionId) => {
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
@@ -96,7 +93,11 @@ const pagednation = async (book, template, pdf = false) => {
             filename,
             extension,
           })
-          $node.attr('src', `./${basename}`)
+          if (pdf) {
+            $node.attr('src', `./${basename}`)
+          } else {
+            $node.attr('src', `/uploads/${basename}`)
+          }
         })
         $('figure').each((index, node) => {
           const $node = $(node)
@@ -143,7 +144,8 @@ const pagednation = async (book, template, pdf = false) => {
         .appendTo('head')
     }
     await writeFile(`${pagedDestination}/index.html`, output.html())
-    return pagedDestination
+    // return pagedDestination
+    return { clientPath: `${hash}/template/${template.id}`, hash }
   } catch (e) {
     throw new Error(e)
   }

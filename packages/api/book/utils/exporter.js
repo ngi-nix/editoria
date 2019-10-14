@@ -12,6 +12,8 @@ const {
   vivliostyleDecorator,
 } = require('./converters')
 
+const { execCommand } = require('./filesystem')
+
 const { generateContainer } = require('./htmlGenerators')
 
 const { htmlToEPUB } = require('./htmlToEPUB')
@@ -101,19 +103,22 @@ const EpubBackend = async (
         tempFolder,
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
+
       // for the validator
       // const validatorPoolPath = await epubArchiver(
       //   tempFolder,
       //   `${process.cwd()}/epubcheck_data`,
       // )
 
-      // const validationResult = await execCommand(
-      //   'docker-compose run --rm epubcheck',
-      // )
-      // console.log('valid', validationResult)
+      const validationResult = await execCommand(
+        `docker run --rm -v ${process.cwd()}/${uploadsDir}/epubs:/app/data kitforbes/epubcheck /app/data/${path.basename(
+          epubFilePath,
+        )}`,
+      )
+
       // await fs.remove(validatorPoolPath)
       // epubcheck here
-      resultPath = epubFilePath
+      resultPath = epubFilePath.replace(`${process.cwd()}`, '')
 
       if (previewer === 'vivliostyle') {
         const vivliostyleRoot = `${process.cwd()}/${uploadsDir}/vivliostyle/`
@@ -124,11 +129,11 @@ const EpubBackend = async (
         await fs.ensureDir(destination)
         await fs.copy(tempFolder, destination)
         await fs.remove(epubFilePath)
-        resultPath = destination
+        resultPath = destination.replace(`${process.cwd()}`, '')
       }
       // await fs.remove(tempFolder)
 
-      return resultPath
+      return { path: resultPath, validationResult }
 
       // exec(`docker-compose run --rm epubcheck`, function(
       //   error,
@@ -149,11 +154,26 @@ const EpubBackend = async (
 
     if (previewer === 'pagedjs' || fileExtension === 'pdf') {
       if (fileExtension === 'pdf') {
-        const pagedFiles = await pagednation(book, template, true)
+        const { hash } = await pagednation(book, template, true)
+        const path = require('path')
+
+        const pagedCLI = path.join(
+          `${process.cwd()}/`,
+          'node_modules/.bin/pagedjs-cli -i',
+        )
+        await fs.emptyDir(`${process.cwd()}/uploads/pdfs`)
+        const pdf = path.join(`${process.cwd()}/`, `uploads/pdfs/${hash}.pdf`)
+        await execCommand(
+          `${pagedCLI} ${process.cwd()}/uploads/paged/${hash}/index.html -o ${pdf}`,
+        )
         // pagedjs-cli
-        return resultPath
+        return {
+          path: pdf.replace(`${process.cwd()}`, ''),
+          validationResult: undefined,
+        }
       }
-      return await pagednation(book, template)
+      const { clientPath } = await pagednation(book, template)
+      return { path: clientPath, validationResult: undefined }
     }
 
     if (fileExtension === 'icml') {

@@ -9,6 +9,7 @@ const url = require('url')
 const config = require('config')
 const get = require('lodash/get')
 const map = require('lodash/map')
+const filter = require('lodash/filter')
 const { writeFile, readFile } = require('./filesystem')
 const beautify = require('js-beautify').html
 // const csstree = require('css-tree')
@@ -141,11 +142,12 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
       })
     }
   }
-  stylesheets[0].content = await readFile(stylesheets[0].source)
-
   if (stylesheets.length === 0) {
-    throw new Error('No stylesheet file exist in the template, export aborted')
+    throw new Error(
+      'No stylesheet file exists in the selected template, export aborted',
+    )
   }
+  stylesheets[0].content = await readFile(stylesheets[0].source)
 
   fixFontFaceUrls(stylesheets[0], fonts, '../Fonts')
 
@@ -312,14 +314,19 @@ const generateContentOPF = async (book, epubFolder) => {
     isbn,
     issn,
     issnL,
-    license,
+    copyrightYear,
     copyrightHolder,
+    copyrightStatement,
     authors,
     publicationDate,
   } = metadata
   const spineData = []
   const manifestData = []
   const identifier = isbn || issn || issnL
+  const rights = filter(
+    [copyrightYear, copyrightHolder, copyrightStatement],
+    item => item && item.length > 0,
+  ).join('. ')
 
   const metaTemp = []
 
@@ -430,9 +437,9 @@ const generateContentOPF = async (book, epubFolder) => {
       '#text': publicationDate,
     }
   }
-  if (license) {
+  if (rights) {
     contentOPF.package.metadata['dc:rights'] = {
-      '#text': license,
+      '#text': rights,
     }
   }
   if (copyrightHolder) {

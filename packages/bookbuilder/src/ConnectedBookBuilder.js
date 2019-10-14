@@ -238,7 +238,7 @@ const mapProps = args => ({
       book,
     })
   },
-  onExportBook: (book, bookTitle) => {
+  onExportBook: (book, bookTitle, history) => {
     const { exportBookMutation, withModal } = args
     const { exportBook } = exportBookMutation
     const { showModal, hideModal } = withModal
@@ -261,13 +261,9 @@ const mapProps = args => ({
         })
       }
 
-      console.log('endnote', endnotesComponent)
-
       const variables = endnotesComponent
         ? Object.assign({ target }, { notes: 'endnotes' })
         : { target }
-      console.log('variabe', variables)
-      console.log('client', client)
       return client.query({ query, variables, fetchPolicy: 'no-cache' })
     }
     const onConfirm = (mode, viewer, templateId, format) => {
@@ -296,7 +292,38 @@ const mapProps = args => ({
           },
         },
       })
-      hideModal()
+        .then(res => {
+          hideModal()
+          const { data } = res
+          const { exportBook } = data
+          const { path } = exportBook
+          if (mode === 'download') {
+            window.location.replace(path)
+          } else if (mode === 'preview') {
+            if (viewer === 'vivliostyle') {
+              const viliostylePath =
+                '/vivliostyle/viewer/vivliostyle-viewer.html'
+              const url = `${viliostylePath}#b=${path}`
+              window.open(url, '_blank')
+            } else {
+              history.push(`/books/${book.id}/pagedPreviewer/paged/${path}`)
+            }
+          }
+        })
+        .catch(res => {
+          console.log('error', res)
+          // const {error} = res
+          // console.log(errors)
+          // const {message} = error
+          hideModal()
+          showModal('warningModal', {
+            onConfirm: hideModal,
+            warning: `${res.message.replace(
+              'GraphQL error: Error: Error: ',
+              '',
+            )}`,
+          })
+        })
     }
     showModal('exportBookModal', {
       onConfirm,

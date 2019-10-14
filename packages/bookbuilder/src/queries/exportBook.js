@@ -4,7 +4,10 @@ import gql from 'graphql-tag'
 
 const EXPORT_BOOK = gql`
   mutation ExportBook($input: ExportBookInput!) {
-    exportBook(input: $input)
+    exportBook(input: $input) {
+      path
+      validationResult
+    }
   }
 `
 

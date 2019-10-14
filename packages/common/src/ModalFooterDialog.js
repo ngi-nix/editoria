@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import React, {Fragment} from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 
 // import { Button } from '@pubsweet/ui'
@@ -49,7 +49,10 @@ const CancelButton = styled.button`
   display: flex;
   padding: 0;
   border-bottom: 1px solid ${th('colorBackground')};
-
+  &:disabled {
+    background:#ccc;
+    cursor: not-allowed;
+  }
   &:not(:disabled):hover {
     color: ${th('colorPrimary')};
   }
@@ -78,16 +81,21 @@ const ModalFooterDialog = props => {
     showCancelButton = true,
     textCancel = 'Cancel',
     textSuccess = 'OK',
+    buttonLabel,
   } = props
+
+  const shouldDisableCancel =
+    disableConfirm &
+    (buttonLabel === 'Validating' || buttonLabel === 'Generating')
 
   return (
     // <Wrapper className={className}>
     <ModalFooter>
       <ConfirmButton disabled={disableConfirm} onClick={onConfirm} primary>
-        <Label>{textSuccess}</Label>
+        <Label>{buttonLabel || textSuccess}</Label>
       </ConfirmButton>
       {showCancelButton && (
-        <CancelButton onClick={onRequestClose}>
+        <CancelButton disabled={shouldDisableCancel} onClick={onRequestClose}>
           <Label>{textCancel}</Label>
         </CancelButton>
       )}

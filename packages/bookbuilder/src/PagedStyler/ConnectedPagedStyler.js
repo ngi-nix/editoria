@@ -39,7 +39,7 @@ const mapProps = args => ({
         cloneTemplateMutation: { cloneTemplate },
         getTemplateQuery: {
           data: {
-            getTemplate: { id },
+            getTemplate: { id, name: templateName },
           },
         },
         getBookQuery: {
@@ -52,8 +52,10 @@ const mapProps = args => ({
       const { showModal, hideModal } = withModal
       const saveCssBook = () => {
         cloneTemplate({
-          variables: { input: { id, name, cssFile, hashed } },
-        }).then(() => resolve())
+          variables: {
+            input: { id, name: `${templateName}-${name}`, cssFile, hashed },
+          },
+        }).then(res => resolve())
         hideModal()
       }
 
@@ -86,12 +88,11 @@ const Connected = props => {
       params: { hashed, templateId, id },
     },
   } = props
-  console.log('props', props)
+
   return (
     <Composed bookId={id} templateId={templateId}>
       {({ template, onWarningModal, loading }) => {
         if (loading) return <p>Loading ...</p>
-        console.log('template', template)
         return (
           <PagedStyler
             hashed={hashed}

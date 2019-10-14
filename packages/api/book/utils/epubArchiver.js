@@ -14,7 +14,6 @@ const epubArchiver = async (tempFolder, target) => {
     // const epubDir = `${process.cwd()}/${uploadsDir}/epubs`
     await fse.ensureDir(target)
     const epubFiles = await dirContents(tempFolder)
-    console.log('files', epubFiles)
     return new Promise((resolve, reject) => {
       const destination = path.join(
         target,

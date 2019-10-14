@@ -37,7 +37,6 @@ const getTemplates = async (_, { ascending, sortKey, target, notes }, ctx) => {
       return result
     }
     if (notes && notes === 'endnotes') {
-      console.log('notes', notes)
       return Template.query()
         .where('deleted', false)
         .andWhere('target', target)

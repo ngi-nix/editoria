@@ -15,10 +15,10 @@ const Centered = styled.div`
 `
 
 const DialogModal = props => {
-  const { children, headerText, notCentered, disableConfirm, ...rest } = props
+  const { children, headerText, notCentered, disableConfirm, buttonLabel, ...rest } = props
 
   const Header = <ModalHeader text={headerText} />
-  const Footer = <ModalFooterDialog disableConfirm={disableConfirm} />
+  const Footer = <ModalFooterDialog disableConfirm={disableConfirm} buttonLabel={buttonLabel} />
 
   return (
     <ModalRoot

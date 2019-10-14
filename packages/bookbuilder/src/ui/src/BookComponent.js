@@ -340,7 +340,6 @@ const BookComponent = ({
   const goToEditor = () => {
     history.push(`/books/${bookId}/bookComponents/${id}`)
   }
-  console.log('incude', includeInToc)
   return (
     <BookComponentContainer
       componentType={componentType}

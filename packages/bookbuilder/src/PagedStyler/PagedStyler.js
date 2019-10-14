@@ -64,7 +64,7 @@ const handlePrint = e => {
 
 const handleDownload = hashed => e => {
   e.preventDefault()
-  axios.get(`/api/pagedStyler/exportHTML/${hashed}/`).then(res => {
+  axios.get(`/api/fileserver/paged/${hashed}/index.html`).then(res => {
     window.location.replace(res.request.responseURL)
   })
 }

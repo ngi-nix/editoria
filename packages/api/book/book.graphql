@@ -53,14 +53,18 @@ input RunningHeadersInput {
   runningHeadersLeft: String
 }
 
+type ExportResult {
+  path: String!
+  validationResult: String
+}
 extend type Mutation {
   archiveBook(id: ID!, archive: Boolean!): Book!
   createBook(input: CreateBookInput!): Book!
   renameBook(id: ID!, title: String!): Book!
   deleteBook(id: ID!): Book!
   updateMetadata(input: MetadataInput!): Book!
-  updateRunningHeaders(input: [RunningHeadersInput!]!, bookId:ID!): Book!
-  exportBook(input: ExportBookInput!): String!
+  updateRunningHeaders(input: [RunningHeadersInput!]!, bookId: ID!): Book!
+  exportBook(input: ExportBookInput!): ExportResult!
 }
 
 extend type Subscription {

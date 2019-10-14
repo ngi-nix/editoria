@@ -128,6 +128,7 @@ const StyledTable = styled.table`
 
 const StyledTR = styled.tr`
   padding: 0;
+  display: inline-block;
   width: 100%;
 `
 
@@ -143,7 +144,7 @@ const StyledTD = styled.td`
   overflow-wrap: break-word;
   padding: ${th('gridUnit')};
   text-align: ${({ align }) => align};
-  width: 33.33%;
+  width: 8.33%;
 `
 const Universe = styled.div`
   flex-grow: 1;
@@ -170,7 +171,11 @@ const TableContainer = styled.div`
 const StyledModalFooter = styled(ModalFooter)`
   padding: 0;
 `
+const StyledTBody = styled.tbody`
+  display: block;
 
+  width: 100%;
+`
 const icon = (
   <svg
     width="18"
@@ -282,7 +287,7 @@ class BookSettings extends Component {
                   </HeaderContainer>
                   <TableContainer>
                     <StyledTable>
-                      <tbody>
+                      <StyledTBody>
                         {bcs.map(bc => (
                           <StyledTR key={bc.id}>
                             <StyledTD align="left">{bc.title}</StyledTD>
@@ -312,7 +317,7 @@ class BookSettings extends Component {
                             </StyledTD>
                           </StyledTR>
                         ))}
-                      </tbody>
+                      </StyledTBody>
                     </StyledTable>
                   </TableContainer>
                   <StyledModalFooter>

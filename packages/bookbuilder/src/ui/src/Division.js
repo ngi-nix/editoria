@@ -281,7 +281,6 @@ class Division extends React.Component {
 
     const componentConfig = find(divisionsConfig, ['name', label])
 
-    console.log(bookComponents)
     let addButtons = null
 
     if (canViewAddComponent) {
