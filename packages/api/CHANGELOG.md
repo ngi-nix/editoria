@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.1"></a>
+## [0.3.1](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.3.0...editoria-api@0.3.1) (2019-10-14)
+
+
+### Bug Fixes
+
+* **export:** fix for navigation in wax and template notes ([8968fd9](https://gitlab.coko.foundation/editoria/editoria/commit/8968fd9))
+
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.2.0...editoria-api@0.3.0) (2019-10-14)
 
