@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.7...editoria-common@0.2.0) (2019-10-14)
+
+
+### Features
+
+* **exporter:** exporter modal done ([d825e39](https://gitlab.coko.foundation/editoria/editoria/commit/d825e39))
+* **template:** save pagedjs to new template ([75e48c0](https://gitlab.coko.foundation/editoria/editoria/commit/75e48c0))
+
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-common@0.1.6...editoria-common@0.1.7) (2019-08-01)
 

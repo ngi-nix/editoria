@@ -1,6 +1,6 @@
 {
   "name": "editoria-api",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "GraphQl API for Editoria",
   "main": "index.js",
   "keywords": [
@@ -14,20 +14,20 @@
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
-    "archiver":"^3.1.1",
+    "archiver": "^3.1.1",
     "cheerio": "^1.0.0-rc.2",
-    "editoria-data-model": "^0.2.0",
+    "css-tree": "^1.0.0-alpha.35",
+    "editoria-data-model": "^0.3.0",
     "fs-extra": "^8.1.0",
     "highlight.js": "^9.13.1",
-    "libtidy-updated": "0.4.0",
-    "mime-types":"^2.1.24",
-    "lodash": "4.17.15",
-    "mkdirp": "^0.5.1",
-    "xmlbuilder": "^13.0.2",
     "js-beautify": "^1.10.2",
-    "css-tree":"^1.0.0-alpha.35",
-    "list-contents":"^4.0.2",
+    "libtidy-updated": "0.4.0",
+    "list-contents": "^4.0.2",
+    "lodash": "4.17.15",
+    "mime-types": "^2.1.24",
+    "mkdirp": "^0.5.1",
+    "pagedjs": "0.1.34",
     "pagedjs-cli": "0.0.9",
-    "pagedjs": "0.1.34"
+    "xmlbuilder": "^13.0.2"
   }
 }

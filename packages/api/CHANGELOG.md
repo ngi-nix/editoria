@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.2.0...editoria-api@0.3.0) (2019-10-14)
+
+
+### Bug Fixes
+
+* **customtags:** fixes on subscription ([687bee7](https://gitlab.coko.foundation/editoria/editoria/commit/687bee7))
+* **customtags:** subscription create fix ([e2165a4](https://gitlab.coko.foundation/editoria/editoria/commit/e2165a4))
+* **navigation:** exclude notes and toc ([0bbfb6a](https://gitlab.coko.foundation/editoria/editoria/commit/0bbfb6a))
+* **padedjs:** fix template texting to modals ([3f96227](https://gitlab.coko.foundation/editoria/editoria/commit/3f96227))
+* **pagedStyle:** refresh paged iframe ([1d3dd4c](https://gitlab.coko.foundation/editoria/editoria/commit/1d3dd4c))
+
+
+### Features
+
+* **book builder:** init include in toc ([aafd09b](https://gitlab.coko.foundation/editoria/editoria/commit/aafd09b))
+* **book builder:** running heads init ([df63d2f](https://gitlab.coko.foundation/editoria/editoria/commit/df63d2f))
+* **customTag:** add subscription for custom tag update ([af4c7fd](https://gitlab.coko.foundation/editoria/editoria/commit/af4c7fd))
+* **endnotes:** add footnotes component type ([72babd5](https://gitlab.coko.foundation/editoria/editoria/commit/72babd5))
+* **export:** export overhaul ([c06ed43](https://gitlab.coko.foundation/editoria/editoria/commit/c06ed43))
+* **exporter:** exporter modal done ([d825e39](https://gitlab.coko.foundation/editoria/editoria/commit/d825e39))
+* **jobxsweet:** cleanup and seperate upload from convert ([e17e9aa](https://gitlab.coko.foundation/editoria/editoria/commit/e17e9aa))
+* **jobxsweet:** integrate the new job xsweet ([a2bf999](https://gitlab.coko.foundation/editoria/editoria/commit/a2bf999))
+* **jobxsweet:** replace ink with xsweet job ([0b5de67](https://gitlab.coko.foundation/editoria/editoria/commit/0b5de67))
+* **profile:** new user page profile ([6e0fc62](https://gitlab.coko.foundation/editoria/editoria/commit/6e0fc62))
+* **template:** save pagedjs to new template ([75e48c0](https://gitlab.coko.foundation/editoria/editoria/commit/75e48c0))
+
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.1.6...editoria-api@0.2.0) (2019-08-01)
 

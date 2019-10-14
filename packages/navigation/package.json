@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-navigation",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The navigation for the Editoria project.",
   "main": "index.js",
   "keywords": [
@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "editoria-common": "^0.1.7",
+    "editoria-common": "^0.2.0",
     "lodash": "4.17.4",
     "pubsweet-client": "^9.2.3",
     "react": "^16.2.0",

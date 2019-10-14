@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.11.0"></a>
+# [0.11.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.10.1...pubsweet-component-wax@0.11.0) (2019-10-14)
+
+
+### Bug Fixes
+
+* **customtags:** subscription create fix ([e2165a4](https://gitlab.coko.foundation/editoria/editoria/commit/e2165a4))
+* **wax pubsweet:** scroller fix ([059f9c0](https://gitlab.coko.foundation/editoria/editoria/commit/059f9c0))
+
+
+### Features
+
+* **customTag:** add subscription for custom tag update ([af4c7fd](https://gitlab.coko.foundation/editoria/editoria/commit/af4c7fd))
+* **export:** export overhaul ([c06ed43](https://gitlab.coko.foundation/editoria/editoria/commit/c06ed43))
+
+
+
+
 <a name="0.10.1"></a>
 ## [0.10.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.10.0...pubsweet-component-wax@0.10.1) (2019-08-02)
 

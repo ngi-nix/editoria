@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.2.0...editoria-data-model@0.3.0) (2019-10-14)
+
+
+### Features
+
+* **book builder:** init include in toc ([aafd09b](https://gitlab.coko.foundation/editoria/editoria/commit/aafd09b))
+* **export:** export overhaul ([c06ed43](https://gitlab.coko.foundation/editoria/editoria/commit/c06ed43))
+* **profile:** new user page profile ([6e0fc62](https://gitlab.coko.foundation/editoria/editoria/commit/6e0fc62))
+
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.1.2...editoria-data-model@0.2.0) (2019-08-01)
 
