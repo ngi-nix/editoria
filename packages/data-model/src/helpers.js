@@ -276,6 +276,7 @@ const schema = {
     type: 'string',
     enum: ['epub', 'pagedjs', 'vivliostyle'],
   },
+  notesType: { type: 'string', enum: ['footnotes', 'endnotes', 'chapterEnd'] },
   language: {
     regexp: {
       pattern: langIsoRegex,
@@ -286,7 +287,8 @@ const schema = {
   },
   mimetype: {
     type: 'string',
-      pattern: "^(application|audio|font|image|model|multipart|text|video)\/[a-z0-9]+([-+.][a-z0-9]+)*$",
+    pattern:
+      '^(application|audio|font|image|model|multipart|text|video)/[a-z0-9]+([-+.][a-z0-9]+)*$',
     // if you want to know why this is default, look at
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
     default: 'application/octet-stream',

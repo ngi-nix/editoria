@@ -21,31 +21,47 @@ const {
   TEMPLATE_UPDATED,
 } = require('./consts')
 
-const getTemplates = async (_, { ascending, sortKey }, ctx) => {
-  const templates = await Template.query().where('deleted', false)
-  const sortable = map(templates, template => {
-    const { id, name, author, target } = template
-    return { id, name: name.toLowerCase().trim(), author, target }
-  })
+const getTemplates = async (_, { ascending, sortKey, target, notes }, ctx) => {
+  try {
+    if (!target) {
+      const templates = await Template.query().where('deleted', false)
+      const sortable = map(templates, template => {
+        const { id, name, author, target } = template
+        return { id, name: name.toLowerCase().trim(), author, target }
+      })
 
-  const order = ascending ? 'asc' : 'desc'
+      const order = ascending ? 'asc' : 'desc'
 
-  const sorted = orderBy(sortable, sortKey, [order])
-  const result = map(sorted, item => find(templates, { id: item.id }))
-  return result
+      const sorted = orderBy(sortable, sortKey, [order])
+      const result = map(sorted, item => find(templates, { id: item.id }))
+      return result
+    }
+    if (notes && notes === 'endnotes') {
+      return Template.query()
+        .where('deleted', false)
+        .andWhere('target', target)
+        .andWhere('notes', notes)
+    }
+    return Template.query()
+      .where('deleted', false)
+      .andWhere('target', target)
+      .whereNot('notes', 'endnotes')
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 const getTemplate = async (_, { id }, ctx) => {
   const template = await Template.findById(id)
-  
+
   return template
 }
 
 const createTemplate = async (_, { input }, ctx) => {
-  const { name, author, files, target, trimSize, thumbnail } = input
+  const { name, author, files, target, trimSize, thumbnail, notes } = input
 
   // const allowedFonts = ['.otf', '.woff', '.woff2']
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
-  const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
+  const allowedFiles = ['.css', '.otf', '.woff', '.woff2', '.ttf']
   const regexFiles = new RegExp(
     `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
@@ -61,6 +77,7 @@ const createTemplate = async (_, { input }, ctx) => {
       name,
       author,
       target,
+      notes,
       trimSize,
     }).save()
     logger.info(`New template created with id ${newTemplate.id}`)
@@ -104,9 +121,7 @@ const createTemplate = async (_, { input }, ctx) => {
                   templateId: newTemplate.id,
                 }).save()
                 logger.info(
-                  `File representation created on the db with file id ${
-                    newFile.id
-                  }`,
+                  `File representation created on the db with file id ${newFile.id}`,
                 )
                 resolve()
               } catch (e) {
@@ -161,9 +176,7 @@ const createTemplate = async (_, { input }, ctx) => {
               templateId: newTemplate.id,
             }).save()
             logger.info(
-              `Thumbnail representation created on the db with file id ${
-                newThumbnail.id
-              }`,
+              `Thumbnail representation created on the db with file id ${newThumbnail.id}`,
             )
             await Template.query()
               .patch({ thumbnailId: newThumbnail.id })
@@ -261,7 +274,6 @@ const cloneTemplate = async (_, { input }, ctx) => {
 
 // TODO:
 const updateTemplate = async (_, { input }, ctx) => {
-  
   const {
     id,
     name,
@@ -269,6 +281,7 @@ const updateTemplate = async (_, { input }, ctx) => {
     files,
     target,
     trimSize,
+    notes,
     thumbnail,
     deleteFiles,
     deleteThumbnail,
@@ -276,7 +289,7 @@ const updateTemplate = async (_, { input }, ctx) => {
 
   // const allowedFonts = ['.otf', '.woff', '.woff2']
   const allowedThumbnails = ['.png', '.jpg', '.jpeg']
-  const allowedFiles = ['.css', '.otf', '.woff', '.woff2']
+  const allowedFiles = ['.css', '.otf', '.woff', '.woff2', '.ttf']
   const regexFiles = new RegExp(
     `([a-zA-Z0-9s_\\.-:])+(${allowedFiles.join('|')})$`,
   )
@@ -289,9 +302,7 @@ const updateTemplate = async (_, { input }, ctx) => {
     const pubsub = await pubsubManager.getPubsub()
     if (files.length > 0) {
       logger.info(
-        `There is/are ${
-          files.length
-        } new file/s to be uploaded for the template`,
+        `There is/are ${files.length} new file/s to be uploaded for the template`,
       )
       await Promise.all(
         map(files, async file => {
@@ -324,9 +335,7 @@ const updateTemplate = async (_, { input }, ctx) => {
                   templateId: id,
                 }).save()
                 logger.info(
-                  `File representation created on the db with file id ${
-                    newFile.id
-                  }`,
+                  `File representation created on the db with file id ${newFile.id}`,
                 )
                 resolve()
               } catch (e) {
@@ -404,9 +413,7 @@ const updateTemplate = async (_, { input }, ctx) => {
               templateId: id,
             }).save()
             logger.info(
-              `Thumbnail representation created on the db with file id ${
-                newThumbnail.id
-              }`,
+              `Thumbnail representation created on the db with file id ${newThumbnail.id}`,
             )
             await Template.query()
               .patch({ thumbnailId: newThumbnail.id })
@@ -449,6 +456,7 @@ const updateTemplate = async (_, { input }, ctx) => {
       author,
       trimSize,
       target,
+      notes,
     })
     pubsub.publish(TEMPLATE_UPDATED, {
       templateUpdated: updatedTemplate,
@@ -481,16 +489,12 @@ const deleteTemplate = async (_, { id }, ctx) => {
         },
       )
       logger.info(
-        `Thumbnail with id ${
-          deletedThumbnail.id
-        } patched with deleted set to true`,
+        `Thumbnail with id ${deletedThumbnail.id} patched with deleted set to true`,
       )
     }
 
     logger.info(
-      `${
-        files.length
-      } associated files should be patched with deleted set to true`,
+      `${files.length} associated files should be patched with deleted set to true`,
     )
     await Promise.all(
       map(files, async file => {

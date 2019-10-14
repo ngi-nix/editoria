@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, findIndex, map } from 'lodash'
+import { get, findIndex, map, find } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import withModal from 'editoria-common/src/withModal'
@@ -10,6 +10,7 @@ import statefull from './Statefull'
 import {
   getBookQuery,
   getBookBuilderRulesQuery,
+  getTemplatesQuery,
   createBookComponentMutation,
   deleteBookComponentMutation,
   updateBookComponentPaginationMutation,
@@ -44,6 +45,7 @@ const mapper = {
   statefull,
   withModal,
   getBookQuery,
+  getTemplatesQuery,
   getBookBuilderRulesQuery,
   lockChangeSubscription,
   orderChangeSubscription,
@@ -168,6 +170,28 @@ const mapProps = args => ({
       warning,
     })
   },
+  onEndNoteModal: componentType =>
+    new Promise((resolve, reject) => {
+      const {
+        withModal: { showModal, hideModal },
+      } = args
+
+      const onConfirm = () => {
+        hideModal()
+        resolve(true)
+      }
+
+      const onHideModal = () => {
+        hideModal()
+        resolve(false)
+      }
+
+      showModal('addEndNote', {
+        onConfirm,
+        onHideModal,
+        componentType,
+      })
+    }),
   onAdminUnlock: (bookComponentId, componentType, title) => {
     const { unlockBookComponentMutation, withModal } = args
     const { unlockBookComponent } = unlockBookComponentMutation
@@ -212,6 +236,99 @@ const mapProps = args => ({
     showModal('metadataModal', {
       onConfirm,
       book,
+    })
+  },
+  onExportBook: (book, bookTitle, history) => {
+    const { exportBookMutation, withModal } = args
+    const { exportBook } = exportBookMutation
+    const { showModal, hideModal } = withModal
+    const { divisions } = book
+    const getTemplates = target => {
+      const {
+        getTemplatesQuery: { client, query },
+      } = args
+
+      const backmatterDivision = find(divisions, { label: 'Backmatter' })
+      let backmatterBookComponents
+      if (backmatterDivision) {
+        backmatterBookComponents = backmatterDivision.bookComponents
+      }
+
+      let endnotesComponent
+      if (backmatterBookComponents) {
+        endnotesComponent = find(backmatterBookComponents, {
+          componentType: 'endnotes',
+        })
+      }
+
+      const variables = endnotesComponent
+        ? Object.assign({ target }, { notes: 'endnotes' })
+        : { target }
+      return client.query({ query, variables, fetchPolicy: 'no-cache' })
+    }
+    const onConfirm = (mode, viewer, templateId, format) => {
+      const payload = {
+        mode,
+        templateId: undefined,
+        previewer: undefined,
+        fileExtension: undefined,
+      }
+
+      if (mode === 'preview') {
+        payload.templateId = templateId
+        payload.previewer = viewer
+      } else {
+        if (format !== 'icml') {
+          payload.templateId = templateId
+        }
+        payload.fileExtension = format
+      }
+
+      exportBook({
+        variables: {
+          input: {
+            bookId: book.id,
+            ...payload,
+          },
+        },
+      })
+        .then(res => {
+          hideModal()
+          const { data } = res
+          const { exportBook } = data
+          const { path } = exportBook
+          if (mode === 'download') {
+            window.location.replace(path)
+          } else if (mode === 'preview') {
+            if (viewer === 'vivliostyle') {
+              const viliostylePath =
+                '/vivliostyle/viewer/vivliostyle-viewer.html'
+              const url = `${viliostylePath}#b=${path}`
+              window.open(url, '_blank')
+            } else {
+              history.push(`/books/${book.id}/pagedPreviewer/paged/${path}`)
+            }
+          }
+        })
+        .catch(res => {
+          console.log('error', res)
+          // const {error} = res
+          // console.log(errors)
+          // const {message} = error
+          hideModal()
+          showModal('warningModal', {
+            onConfirm: hideModal,
+            warning: `${res.message.replace(
+              'GraphQL error: Error: Error: ',
+              '',
+            )}`,
+          })
+        })
+    }
+    showModal('exportBookModal', {
+      onConfirm,
+      bookTitle,
+      getTemplates,
     })
   },
   onWorkflowUpdate: (
@@ -302,6 +419,7 @@ const Connected = props => {
         setState,
         onTeamManager,
         onBookSettings,
+        onExportBook,
         addBookComponent,
         deleteBookComponent,
         toggleIncludeInTOC,
@@ -320,6 +438,7 @@ const Connected = props => {
         loading,
         refetching,
         onAdminUnlock,
+        onEndNoteModal,
         loadingRules,
         exportBook,
         rules,
@@ -340,7 +459,9 @@ const Connected = props => {
           onAdminUnlock={onAdminUnlock}
           onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
+          onEndNoteModal={onEndNoteModal}
           onError={onError}
+          onExportBook={onExportBook}
           onMetadataAdd={onMetadataAdd}
           onTeamManager={onTeamManager}
           onWarning={onWarning}

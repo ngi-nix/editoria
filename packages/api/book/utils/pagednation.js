@@ -1,43 +1,154 @@
 const cheerio = require('cheerio')
+const fs = require('fs-extra')
+const path = require('path')
+const config = require('config')
+const get = require('lodash/get')
+const crypto = require('crypto')
+const mime = require('mime-types')
+const url = require('url')
+const map = require('lodash/map')
 
-const create = async (book, parts, resourceRoot, stylesRoot, fontsRoot) => {
-  const output = cheerio.load(
-    `<!DOCTYPE html><html><head><title>${book.title}</title>
-    <meta charset="UTF-8"></head><body class="hyphenate" lang="en-us"><section class="titlepage"><header><h1 class="booktitle">${
-      book.title
-    }</h1></header></section></body></html>`,
-  )
-  const TOC = createTOC(parts)
-  output('body').append(TOC.html())
-  for (let i = 0; i < parts.length; i += 1) {
-    output('body').append(parts[i].content)
+const { readFile, writeFile } = require('./filesystem')
+
+const { fixFontFaceUrls } = require('./converters')
+
+const { generatePagedjsContainer } = require('./htmlGenerators')
+
+const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
+
+const pagednation = async (book, template, pdf = false) => {
+  try {
+    const templateFiles = await template.getFiles()
+    const fonts = []
+    const stylesheets = []
+    const images = []
+    const hash = crypto.randomBytes(32).toString('hex')
+    const pagedDir = `${process.cwd()}/${uploadsDir}/paged`
+    const pagedDestination = path.join(pagedDir, `${hash}`)
+    await fs.ensureDir(pagedDestination)
+
+    for (let i = 0; i < templateFiles.length; i += 1) {
+      const { id: dbId, source: uri } = templateFiles[i]
+      const source = url.resolve(`${process.cwd()}/`, uri)
+      const extension = path.extname(uri)
+      const basename = path.basename(uri)
+      const filename = path.basename(uri, extension)
+      const mimetype = mime.lookup(uri)
+      if (templateFiles[i].mimetype === 'text/css') {
+        const target = `${pagedDestination}/default.css`
+        const id = `stylesheet-${dbId}-${i}`
+        stylesheets.push({
+          id,
+          source,
+          target,
+          mimetype,
+          basename,
+          filename,
+          extension,
+        })
+      } else {
+        const target = `${pagedDestination}/${basename}`
+        const id = `font-${dbId}-${i}`
+        fonts.push({
+          id,
+          source,
+          target,
+          mimetype,
+          basename,
+          filename,
+          extension,
+        })
+      }
+    }
+    if (stylesheets.length === 0) {
+      throw new Error(
+        'No stylesheet file exists in the selected template, export aborted',
+      )
+    }
+    stylesheets[0].content = await readFile(stylesheets[0].source)
+
+    book.divisions.forEach((division, divisionId) => {
+      division.bookComponents.forEach((bookComponent, bookComponentId) => {
+        const { content, id } = bookComponent
+        const $ = cheerio.load(content)
+
+        $('img[src]').each((index, node) => {
+          const $node = $(node)
+          const constructedId = `image-${id}-${index}`
+
+          const uri = $node.attr('src').replace(/^\//, '') // ensure no leading slash
+          const source = url.resolve(`${process.cwd()}/`, uri)
+          const extension = path.extname(uri)
+          const basename = path.basename(uri)
+          const filename = path.basename(uri, extension)
+          const mimetype = mime.lookup(uri)
+          const target = `${pagedDestination}/${basename}`
+
+          images.push({
+            id: constructedId,
+            source,
+            target,
+            mimetype,
+            basename,
+            filename,
+            extension,
+          })
+          if (pdf) {
+            $node.attr('src', `./${basename}`)
+          } else {
+            $node.attr('src', `/uploads/${basename}`)
+          }
+        })
+        $('figure').each((index, node) => {
+          const $node = $(node)
+          const srcExists = $node.attr('src')
+          if (srcExists) {
+            $node.removeAttr('src')
+          }
+        })
+        bookComponent.content = $.html('body')
+      })
+    })
+
+    fixFontFaceUrls(stylesheets[0], fonts, '.')
+    await Promise.all(
+      map(images, async image => {
+        const { source, target } = image
+        return fs.copy(source, target)
+      }),
+    )
+    await Promise.all(
+      map(stylesheets, async stylesheet => {
+        const { content, target } = stylesheet
+        return writeFile(target, content)
+      }),
+    )
+    await Promise.all(
+      map(fonts, async font => {
+        const { source, target } = font
+        return fs.copy(source, target)
+      }),
+    )
+    const output = cheerio.load(generatePagedjsContainer(book.title))
+    book.divisions.forEach((division, divisionId) => {
+      division.bookComponents.forEach((bookComponent, bookComponentId) => {
+        const { content } = bookComponent
+        output('body').append(content)
+      })
+    })
+    if (pdf) {
+      output('<link/>')
+        .attr('href', './default.css')
+        .attr('type', 'text/css')
+        .attr('rel', 'stylesheet')
+        .appendTo('head')
+    }
+    await writeFile(`${pagedDestination}/index.html`, output.html())
+    // return pagedDestination
+    return { clientPath: `${hash}/template/${template.id}`, hash }
+  } catch (e) {
+    throw new Error(e)
   }
-  output('img').each((index, img) => {
-    const $img = output(img)
-
-    const tempUri = $img.attr('src')
-
-    $img.attr('src', `/uploads/${tempUri}`)
-  })
-  return output
 }
 
-const createTOC = parts => {
-  const $ = cheerio.load('<section class="toc" id="comp-toc-0"/>')
-  const title = $('<header><h1 class="ct">Contents</h1></header>')
-  $('section').append(title)
-  const ol = $('<ol/>')
-  $('section').append(ol)
-  for (let i = 0; i < parts.length; i += 1) {
-    const tocItem = $(`<li/>`)
-    tocItem.attr('class', `toc-${parts[i].division} toc-${parts[i].type}`)
-    const anchor = $('<a/>')
-    anchor.attr('href', `#comp-${parts[i].id}`)
-    anchor.text(parts[i].title)
-    tocItem.append(anchor)
-    ol.append(tocItem)
-  }
-  return $
-}
-
-module.exports = { create }
+module.exports = { pagednation }

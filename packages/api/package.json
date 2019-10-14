@@ -14,11 +14,20 @@
   "author": "Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
+    "archiver":"^3.1.1",
     "cheerio": "^1.0.0-rc.2",
     "editoria-data-model": "^0.2.0",
+    "fs-extra": "^8.1.0",
     "highlight.js": "^9.13.1",
-    "html-epub": "git+https://git@gitlab.coko.foundation/pubsweet/html-epub#updated-libtidy",
+    "libtidy-updated": "0.4.0",
+    "mime-types":"^2.1.24",
+    "lodash": "4.17.15",
     "mkdirp": "^0.5.1",
-    "unzipper": "^0.8.9"
+    "xmlbuilder": "^13.0.2",
+    "js-beautify": "^1.10.2",
+    "css-tree":"^1.0.0-alpha.35",
+    "list-contents":"^4.0.2",
+    "pagedjs-cli": "0.0.9",
+    "pagedjs": "0.1.34"
   }
 }

@@ -2,6 +2,7 @@ const pubsweetServer = require('pubsweet-server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
 const pick = require('lodash/pick')
+const assign = require('lodash/assign')
 const omitBy = require('lodash/omitBy')
 const isNil = require('lodash/isNil')
 const filter = require('lodash/filter')
@@ -25,6 +26,8 @@ const {
   BookComponentState,
   BookComponent,
   Division,
+  ApplicationParameter,
+  BookComponentTranslation,
 } = require('editoria-data-model/src').models
 
 const eager = '[members.[user, alias]]'
@@ -95,6 +98,84 @@ const createBook = async (_, { input }, ctx) => {
         }
       }),
     )
+    // CREATE TABLE OF CONTENTS IN THE FRONT MATTER
+    const workflowConfig = await ApplicationParameter.query().where({
+      context: 'bookBuilder',
+      area: 'stages',
+    })
+
+    const { config: workflowStages } = workflowConfig[0]
+
+    let bookComponentWorkflowStages
+
+    const division = await Division.query()
+      .where({ bookId: book.id, label: 'Frontmatter' })
+      .andWhere({ deleted: false })
+    logger.info(
+      `Division which will hold the book found with id ${division[0].id}`,
+    )
+    const newBookComponent = {
+      bookId: book.id,
+      componentType: 'toc',
+      divisionId: division[0].id,
+      pagination: {
+        left: false,
+        right: true,
+      },
+      archived: false,
+      deleted: false,
+    }
+    const createdBookComponent = await new BookComponent(
+      newBookComponent,
+    ).save()
+
+    logger.info(`New book component created with id ${createdBookComponent.id}`)
+    const translation = await new BookComponentTranslation({
+      bookComponentId: createdBookComponent.id,
+      languageIso: 'en',
+      title: 'Table of Contents',
+    }).save()
+
+    logger.info(
+      `New book component translation created with id ${translation.id}`,
+    )
+    const newBookComponents = division[0].bookComponents
+
+    newBookComponents.push(createdBookComponent.id)
+
+    const updatedDivision = await Division.query().patchAndFetchById(
+      division[0].id,
+      { bookComponents: newBookComponents },
+    )
+
+    logger.info(
+      `Book component pushed to the array of division's book components [${
+        updatedDivision.bookComponents
+      }]`,
+    )
+    if (workflowStages) {
+      bookComponentWorkflowStages = {
+        workflowStages: map(workflowStages, stage => ({
+          type: stage.type,
+          label: stage.title,
+          value: -1,
+        })),
+      }
+    }
+
+    await new BookComponentState(
+      assign(
+        {},
+        {
+          bookComponentId: createdBookComponent.id,
+          trackChangesEnabled: false,
+          uploading: false,
+          includeInToc: false,
+        },
+        bookComponentWorkflowStages,
+      ),
+    ).save()
+    /// END
     pubsub.publish(BOOK_CREATED, { bookCreated: book })
     return book
   } catch (e) {
@@ -274,11 +355,15 @@ const updateMetadata = async (_, { input }, ctx) => {
   }
 }
 
-const exportBook = async (
-  _,
-  { bookId, destination, converter, previewer, style },
-  ctx,
-) => exporter(bookId, destination, converter, previewer, style)
+const exportBook = async (_, { input }, ctx) => {
+  const { bookId, mode, previewer, templateId, fileExtension } = input
+  try {
+    return exporter(bookId, mode, templateId, previewer, fileExtension, ctx)
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
 
 const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
   try {

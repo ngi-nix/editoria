@@ -78,13 +78,35 @@ class Division extends React.Component {
     // return false
   }
 
+  onAddEndNoteClick = async componentType => {
+    const { add, bookId, divisionId, onEndNoteModal } = this.props
+
+    const confirmClicked = await onEndNoteModal(componentType)
+
+    if (confirmClicked) {
+      add({
+        variables: {
+          input: {
+            title: 'Notes',
+            bookId,
+            componentType,
+            divisionId,
+            pagination: {
+              left: false,
+              right: true,
+            },
+          },
+        },
+      })
+    }
+  }
+
   onAddClick(componentType) {
     const { add, bookId, divisionId } = this.props
 
     add({
       variables: {
         input: {
-          title: 'Untitled',
           bookId,
           componentType,
           divisionId,
@@ -169,6 +191,7 @@ class Division extends React.Component {
       onWarning,
       showModal,
       toggleIncludeInTOC,
+      showModalToggle,
       onWorkflowUpdate,
       onAdminUnlock,
       history,
@@ -190,7 +213,7 @@ class Division extends React.Component {
         bookId,
         lock,
         divisionId,
-        includeInTOC,
+        includeInToc,
         componentTypeOrder,
         hasContent,
         title,
@@ -230,8 +253,8 @@ class Division extends React.Component {
                   remove={this.onRemove}
                   rules={rules}
                   showModal={showModal}
-                  includeInTOC={includeInTOC}
-                  // showModalToggle={showModalToggle}
+                  includeInToc={includeInToc}
+                  showModalToggle={showModalToggle}
                   title={title}
                   trackChangesEnabled={trackChangesEnabled}
                   updateComponentType={updateComponentType}
@@ -264,7 +287,16 @@ class Division extends React.Component {
       addButtons = map(componentConfig.allowedComponentTypes, componentType =>
         componentType.visibleInHeader ? (
           <AddComponentButton
-            add={this.onAddClick}
+            add={
+              componentType.value === 'endnotes'
+                ? this.onAddEndNoteClick
+                : this.onAddClick
+            }
+            disabled={
+              bookComponents.find(
+                bookComponent => bookComponent.componentType === 'endnotes',
+              ) && componentType.value === 'endnotes'
+            }
             divisionName={componentConfig.name}
             label={`add ${componentType.title}`}
             type={componentType.value}
@@ -272,17 +304,6 @@ class Division extends React.Component {
         ) : null,
       )
     }
-    // const list = (
-    //   <ul className={styles.sectionChapters}> {bookComponentInstances} </ul>
-    // )
-
-    // const emptyList = (
-    //   <div className={styles.noChapters}>
-    //     There are no items in this division.
-    //   </div>
-    // )
-
-    // const displayed = bookComponents.length > 0 ? list : emptyList
 
     return (
       <DivisionContainer data-test-id={`${label}-division`}>

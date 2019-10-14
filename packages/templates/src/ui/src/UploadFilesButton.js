@@ -45,7 +45,7 @@ class UploadFilesButton extends React.Component {
 
     return (
       <UploadButton
-        accept=".css, .otf, .woff, .woff2"
+        accept=".css, .otf, .woff, .woff2, .ttf"
         icon={icon}
         id="files"
         label="add files"

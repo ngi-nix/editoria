@@ -6,6 +6,11 @@
   "author": "Collaborative Knowledge Foundation",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.5"
+    "express": "^4.15.5",
+    "fs-extra": "8.1.0",
+    "pagedjs": "0.1.34"
+  },
+  "scripts": {
+    "postinstall": "node install"
   }
 }

@@ -8,7 +8,8 @@ import {
   UploadFilesButton,
   DownloadEpubButton,
   MetadataButton,
-  BookExporter,
+  // BookExporter,
+  BookExporterButton,
   DivisionsArea,
   BookSettingsButton,
 } from './ui'
@@ -90,12 +91,14 @@ export class BookBuilder extends React.Component {
       onAdminUnlock,
       exportBook,
       onTeamManager,
+      onExportBook,
       onError,
       onWarning,
       rules,
       loading,
       loadingRules,
       setState,
+      onEndNoteModal,
       onWorkflowUpdate,
       onBookSettings,
     } = this.props
@@ -109,15 +112,14 @@ export class BookBuilder extends React.Component {
 
     const headerActions = [
       <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
-      <BookExporter
-        book={book}
-        history={history}
-        htmlToEpub={exportBook}
-        onError={onError}
-      />,
-      <DownloadEpubButton
-        book={book}
-        htmlToEpub={exportBook}
+      // <BookExporter
+      //   book={book}
+      //   history={history}
+      //   htmlToEpub={exportBook}
+      //   onError={onError}
+      // />,
+      <BookExporterButton
+        onClick={() => onExportBook(book, book.title, history)}
         onError={onError}
       />,
       <BookSettingsButton
@@ -162,6 +164,7 @@ export class BookBuilder extends React.Component {
           history={history}
           onAdminUnlock={onAdminUnlock}
           onDeleteBookComponent={onDeleteBookComponent}
+          onEndNoteModal={onEndNoteModal}
           onWarning={onWarning}
           onWorkflowUpdate={onWorkflowUpdate}
           rules={rules}

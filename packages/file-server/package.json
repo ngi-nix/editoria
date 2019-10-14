@@ -1,0 +1,16 @@
+{
+  "name": "editoria-file-server",
+  "version": "0.1.0",
+  "description": "Serving file back to client",
+  "main": "index.js",
+  "keywords": [
+    "pubsweet",
+    "pubsweet-component"
+  ],
+  "author": "Alexandros Georgantas",
+  "license": "MIT",
+  "dependencies": {
+    "mime-types": "^2.1.24",
+    "lodash": "4.17.15"
+  }
+}

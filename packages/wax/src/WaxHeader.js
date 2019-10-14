@@ -48,13 +48,13 @@ const WaxHeader = ({ bookComponent }) => {
     header = (
       <BookTitle data-testid="current-component">{`${
         bookComponent.bookTitle
-      } - Chapter ${chapterNumber}. ${bookComponent.title}`}</BookTitle>
+      } - Chapter ${chapterNumber}. ${bookComponent.title || 'Untitled'}`}</BookTitle>
     )
   } else {
     header = (
       <BookTitle data-testid="current-component">{`${
         bookComponent.bookTitle
-      } - ${bookComponent.title}`}</BookTitle>
+      } - ${bookComponent.title || 'Untitled'}`}</BookTitle>
     )
   }
   const { nextBookComponent, prevBookComponent } = bookComponent
@@ -64,7 +64,7 @@ const WaxHeader = ({ bookComponent }) => {
         {prevBookComponent && (
           <WithLinkDecoration data-testid="previous-component">
             {withLink(
-              `${prevBookComponent.title}`,
+              `${prevBookComponent.title || 'Untitled'}`,
               createUrl(prevBookComponent),
             )}
           </WithLinkDecoration>
@@ -75,7 +75,7 @@ const WaxHeader = ({ bookComponent }) => {
         {nextBookComponent && (
           <WithLinkDecoration data-testid="next-component">
             {withLink(
-              `${nextBookComponent.title}`,
+              `${nextBookComponent.title || 'Untitled'}`,
               createUrl(nextBookComponent),
             )}
           </WithLinkDecoration>

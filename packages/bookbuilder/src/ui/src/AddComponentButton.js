@@ -7,21 +7,21 @@ const StyledButton = styled(ButtonWithIcon)`
   margin: 0 calc(2 * ${th('gridUnit')}) 0 0 !important;
 `
 
-const AddComponentButton = ({ add, label, type }) => {
+const AddComponentButton = ({ add, label, type, disabled }) => {
   const addComponent = () => {
     add(type)
   }
   const icon = (
     <svg
-      width="28"
+      fill="none"
       height="28"
       viewBox="0 0 28 28"
-      fill="none"
+      width="28"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g id="Common/Icon/Add">
         <g id="Common/Icon-background">
-          <rect width="28" height="28" fill="white" />
+          <rect fill="white" height="28" width="28" />
         </g>
         <g id="Union">
           <path
@@ -29,15 +29,22 @@ const AddComponentButton = ({ add, label, type }) => {
             fill="#828282"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            clipRule="evenodd"
             d="M14 6C9.5888 6 6 9.5888 6 14C6 18.4112 9.5888 22 14 22C18.4112 22 22 18.4112 22 14C22 9.5888 18.4112 6 14 6ZM14 20.4C10.4712 20.4 7.6 17.5288 7.6 14C7.6 10.4712 10.4712 7.6 14 7.6C17.5288 7.6 20.4 10.4712 20.4 14C20.4 17.5288 17.5288 20.4 14 20.4Z"
             fill="#828282"
+            fillRule="evenodd"
           />
         </g>
       </g>
     </svg>
   )
-  return <StyledButton icon={icon} label={label} onClick={addComponent} />
+  return (
+    <StyledButton
+      disabled={disabled}
+      icon={icon}
+      label={label}
+      onClick={addComponent}
+    />
+  )
 }
 export default AddComponentButton

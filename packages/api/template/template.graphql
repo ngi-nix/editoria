@@ -5,6 +5,7 @@ type Template {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [File]!
 }
 
@@ -14,6 +15,7 @@ input CreateTemplateInput {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [Upload]!
 }
 
@@ -32,12 +34,13 @@ input UpdateTemplateInput {
   author: String
   trimSize: String
   target: String
+  notes: String
   files: [Upload]!
   deleteFiles: [String]!
 }
 
 extend type Query {
-  getTemplates(ascending: Boolean, sortKey: String): [Template]!
+  getTemplates(ascending: Boolean, sortKey: String, target: String, notes: String): [Template]!
   getTemplate(id: ID!): Template!
 }
 

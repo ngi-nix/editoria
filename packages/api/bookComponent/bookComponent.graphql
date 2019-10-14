@@ -37,7 +37,7 @@ input WorkFlowItemInput {
 
 type BookComponent {
   id: ID!
-  title: String!
+  title: String
   bookId: ID!
   bookTitle: String
   componentTypeOrder: Int!
@@ -54,17 +54,18 @@ type BookComponent {
   componentType: String!
   trackChangesEnabled: Boolean!
   uploading: Boolean!
-  includeInTOC: Boolean!
+  includeInToc: Boolean!
   runningHeadersRight: String
   runningHeadersLeft: String
 }
 
 input BookComponentInput {
-  title: String!
+  title: String
   bookId: ID!
   componentType: String!
   divisionId: ID!
   uploading: Boolean
+  pagination: PaginationInput
 }
 
 input WordFileInput {
@@ -78,7 +79,7 @@ input UpdateBookComponentInput {
   title: String
   deleted: Boolean
   lock: LockInput
-  includeInTOC: Boolean
+  includeInToc: Boolean
   uploading: Boolean
   pagination: PaginationInput
   workflowStages: [WorkFlowItemInput]

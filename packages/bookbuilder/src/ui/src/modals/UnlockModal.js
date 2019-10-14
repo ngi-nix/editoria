@@ -13,7 +13,7 @@ const Text = styled.div`
 const UnlockModal = props => {
   const { isOpen, hideModal, data } = props
   const { componentType, title, onConfirm } = data
- 
+
   return (
     <DialogModal
       isOpen={isOpen}
@@ -22,7 +22,8 @@ const UnlockModal = props => {
       onConfirm={onConfirm}
     >
       <Text>
-        {`Are you sure you want to unlock this ${componentType} with title ${title}?`}
+        {`Are you sure you want to unlock this ${componentType} with title ${title ||
+          'Untitled'}?`}
       </Text>
     </DialogModal>
   )

@@ -78,7 +78,7 @@ const OnlyIcon = styled.span`
 const Label = styled.div`
   font-size: ${th('fontSizeBase')};
   line-height: ${th('lineHeightBase')};
-  padding-right: 4px;
+  /* padding-right: 4px; */
 `
 
 const ButtonWithIcon = ({

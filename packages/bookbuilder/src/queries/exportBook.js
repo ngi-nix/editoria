@@ -3,20 +3,11 @@ import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const EXPORT_BOOK = gql`
-  mutation ExportBook(
-    $bookId: ID!
-    $destination: String!
-    $converter: String
-    $previewer: String
-    $style: String
-  ) {
-    exportBook(
-      bookId: $bookId
-      destination: $destination
-      converter: $converter
-      previewer: $previewer
-      style: $style
-    )
+  mutation ExportBook($input: ExportBookInput!) {
+    exportBook(input: $input) {
+      path
+      validationResult
+    }
   }
 `
 

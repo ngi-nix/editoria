@@ -23,7 +23,11 @@ const DeleteBookComponentModal = props => {
       onRequestClose={hideModal}
     >
       <Text>
-        {`Are you sure you want to delete this ${componentType} with title ${title}?`}
+        {`Are you sure you want to delete this ${componentType} with title ${title ||
+          'Untitled'}?`}
+        <br />
+        {componentType === 'endnotes' &&
+          `By doing so you will not be able to see templates with notes option endnotes`}
       </Text>
     </DialogModal>
   )

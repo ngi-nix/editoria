@@ -7,7 +7,7 @@ import ModalFooterDialog from './ModalFooterDialog'
 
 // Centers info message horizontally and vertically.
 const Centered = styled.div`
-  align-items: center;
+  align-items: ${({ notCentered }) => (notCentered ? 'flex-start' : 'center')};
   display: flex;
   height: 100%;
   justify-content: center;
@@ -15,10 +15,10 @@ const Centered = styled.div`
 `
 
 const DialogModal = props => {
-  const { children, headerText, ...rest } = props
+  const { children, headerText, notCentered, disableConfirm, buttonLabel, ...rest } = props
 
   const Header = <ModalHeader text={headerText} />
-  const Footer = <ModalFooterDialog />
+  const Footer = <ModalFooterDialog disableConfirm={disableConfirm} buttonLabel={buttonLabel} />
 
   return (
     <ModalRoot
@@ -28,7 +28,7 @@ const DialogModal = props => {
       size="small"
       {...rest}
     >
-      <Centered>{children}</Centered>
+      <Centered notCentered={notCentered}>{children}</Centered>
     </ModalRoot>
   )
 }

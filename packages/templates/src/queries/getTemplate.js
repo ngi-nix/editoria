@@ -15,6 +15,7 @@ const GET_TEMPLATE = gql`
       }
       author
       trimSize
+      notes
       target
       files {
         name

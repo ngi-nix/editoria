@@ -1,6 +1,7 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
 const flatten = require('lodash/flatten')
+const difference = require('lodash/difference')
 const concat = require('lodash/concat')
 const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
@@ -660,11 +661,20 @@ module.exports = {
     },
     async nextBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
-      const current = orderedComponent.findIndex(
+
+      const excludeBookComponent = await BookComponent.query()
+        .whereIn('componentType', ['toc', 'endnotes'])
+        .map(bookComponent => bookComponent.id)
+
+      const newOrderedComponent = difference(
+        orderedComponent,
+        excludeBookComponent,
+      )
+      const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )
       try {
-        const next = orderedComponent[current + 1]
+        const next = newOrderedComponent[current + 1]
         const nextBookComponent = await BookComponent.findById(next)
         return nextBookComponent
       } catch (e) {
@@ -790,7 +800,7 @@ module.exports = {
       return bookComponentState[0].workflowStages || null
     },
 
-    async includeInTOC(bookComponent, _, ctx) {
+    async includeInToc(bookComponent, _, ctx) {
       const state = await bookComponent.getBookComponentState()
       return state.includeInToc
     },
