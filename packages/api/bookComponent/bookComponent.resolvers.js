@@ -691,12 +691,20 @@ module.exports = {
     },
     async prevBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
-      const current = orderedComponent.findIndex(
+      const excludeBookComponent = await BookComponent.query()
+        .whereIn('componentType', ['toc', 'endnotes'])
+        .map(bookComponent => bookComponent.id)
+
+      const newOrderedComponent = difference(
+        orderedComponent,
+        excludeBookComponent,
+      )
+      const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )
 
       try {
-        const prev = orderedComponent[current - 1]
+        const prev = newOrderedComponent[current - 1]
         const prevBookComponent = await BookComponent.findById(prev)
         return prevBookComponent
       } catch (e) {

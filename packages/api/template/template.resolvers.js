@@ -212,6 +212,7 @@ const cloneTemplate = async (_, { input }, ctx) => {
       author: template.author,
       target: template.target,
       trimSize: template.trimSize,
+      notes:template.notes,
       referenceId: template.id,
     }).save()
 
