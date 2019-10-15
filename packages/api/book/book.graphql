@@ -29,6 +29,7 @@ input ExportBookInput {
   templateId: ID
   previewer: String
   fileExtension: String
+  icmlNotes: String
 }
 
 extend type Query {

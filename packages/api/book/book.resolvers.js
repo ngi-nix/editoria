@@ -149,9 +149,7 @@ const createBook = async (_, { input }, ctx) => {
     )
 
     logger.info(
-      `Book component pushed to the array of division's book components [${
-        updatedDivision.bookComponents
-      }]`,
+      `Book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
     )
     if (workflowStages) {
       bookComponentWorkflowStages = {
@@ -257,9 +255,7 @@ const deleteBook = async (_, args, ctx) => {
         )
         logger.info(`Associated division with id ${division.id} deleted`)
         logger.info(
-          `Corresponding division's book components [${
-            updatedDivision.bookComponents
-          }] cleaned`,
+          `Corresponding division's book components [${updatedDivision.bookComponents}] cleaned`,
         )
       }),
     )
@@ -356,9 +352,24 @@ const updateMetadata = async (_, { input }, ctx) => {
 }
 
 const exportBook = async (_, { input }, ctx) => {
-  const { bookId, mode, previewer, templateId, fileExtension } = input
+  const {
+    bookId,
+    mode,
+    previewer,
+    templateId,
+    fileExtension,
+    icmlNotes,
+  } = input
   try {
-    return exporter(bookId, mode, templateId, previewer, fileExtension, ctx)
+    return exporter(
+      bookId,
+      mode,
+      templateId,
+      previewer,
+      fileExtension,
+      icmlNotes,
+      ctx,
+    )
   } catch (e) {
     logger.error(e)
     throw new Error(e)

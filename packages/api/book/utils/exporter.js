@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
+const includes = require('lodash/includes')
 const crypto = require('crypto')
 
 const {
@@ -19,6 +20,8 @@ const { generateContainer } = require('./htmlGenerators')
 const { htmlToEPUB } = require('./htmlToEPUB')
 const bookConstructor = require('./bookConstructor')
 const { pagednation } = require('./pagednation')
+const { icmlArchiver } = require('./icmlArchiver')
+const { icmlPreparation } = require('./icmlPreparation')
 const { Template } = require('editoria-data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
@@ -29,12 +32,21 @@ const EpubBackend = async (
   templateId,
   previewer,
   fileExtension,
+  icmlNotes,
   ctx,
 ) => {
   try {
-    const template = await Template.findById(templateId)
-    const { notes: notesType } = template
-    const templateHasEndnotes = notesType === 'endnotes'
+    let template
+    let notesType
+    let templateHasEndnotes
+    if (fileExtension !== 'icml') {
+      template = await Template.findById(templateId)
+      const { notes } = template
+      notesType = notes
+      templateHasEndnotes = notesType === 'endnotes'
+    } else {
+      notesType = icmlNotes
+    }
     let resultPath
 
     // The produced representation of the book holds two map data types one
@@ -49,7 +61,10 @@ const EpubBackend = async (
     tocComponent.content = generateContainer(tocComponent)
 
     let endnotesComponent
-    if (templateHasEndnotes) {
+    if (
+      templateHasEndnotes ||
+      (fileExtension === 'icml' && icmlNotes === 'endnotes')
+    ) {
       endnotesComponent = backDivision.bookComponents.get('endnotes')
       endnotesComponent.content = generateContainer(endnotesComponent)
     }
@@ -115,7 +130,20 @@ const EpubBackend = async (
           epubFilePath,
         )}`,
       )
-
+      if (
+        includes(
+          validationResult,
+          'Error while parsing file: element "ol" incomplete; missing required element "li"',
+        ) ||
+        includes(
+          validationResult,
+          'Error while parsing file: element "navMap" incomplete; missing required element "navPoint"',
+        )
+      ) {
+        throw new Error(
+          'You have to include something in the Table of Contents of the book',
+        )
+      }
       // await fs.remove(validatorPoolPath)
       // epubcheck here
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
@@ -131,7 +159,7 @@ const EpubBackend = async (
         await fs.remove(epubFilePath)
         resultPath = destination.replace(`${process.cwd()}`, '')
       }
-      // await fs.remove(tempFolder)
+      await fs.remove(tempFolder)
 
       return { path: resultPath, validationResult }
 
@@ -177,10 +205,25 @@ const EpubBackend = async (
     }
 
     if (fileExtension === 'icml') {
+      const { path: icmlTempFolder } = await icmlPreparation(book)
+      await execCommand(
+        `docker run --rm -v ${icmlTempFolder}:/data pandoc/core index.html -o index.icml`,
+      )
+      await fs.remove(`${icmlTempFolder}/index.html`)
+      const icmlFilePath = await icmlArchiver(
+        icmlTempFolder,
+        `${process.cwd()}/${uploadsDir}/icmls`,
+      )
+      await fs.remove(icmlTempFolder)
+      return {
+        path: icmlFilePath.replace(`${process.cwd()}`, ''),
+        validationResult: undefined,
+      }
       // append to single html file each book component
       // fix url images
     }
   } catch (e) {
+    console.log('e', e)
     throw new Error(e)
   }
 }

@@ -243,23 +243,23 @@ const mapProps = args => ({
     const { exportBook } = exportBookMutation
     const { showModal, hideModal } = withModal
     const { divisions } = book
+    let endnotesComponent
+    const backmatterDivision = find(divisions, { label: 'Backmatter' })
+    let backmatterBookComponents
+    if (backmatterDivision) {
+      backmatterBookComponents = backmatterDivision.bookComponents
+    }
+
+    if (backmatterBookComponents) {
+      endnotesComponent = find(backmatterBookComponents, {
+        componentType: 'endnotes',
+      })
+    }
+
     const getTemplates = target => {
       const {
         getTemplatesQuery: { client, query },
       } = args
-
-      const backmatterDivision = find(divisions, { label: 'Backmatter' })
-      let backmatterBookComponents
-      if (backmatterDivision) {
-        backmatterBookComponents = backmatterDivision.bookComponents
-      }
-
-      let endnotesComponent
-      if (backmatterBookComponents) {
-        endnotesComponent = find(backmatterBookComponents, {
-          componentType: 'endnotes',
-        })
-      }
 
       const variables = endnotesComponent
         ? Object.assign({ target }, { notes: 'endnotes' })
@@ -272,6 +272,7 @@ const mapProps = args => ({
         templateId: undefined,
         previewer: undefined,
         fileExtension: undefined,
+        icmlNotes: endnotesComponent ? 'endnotes' : 'chapterEnd',
       }
 
       if (mode === 'preview') {
