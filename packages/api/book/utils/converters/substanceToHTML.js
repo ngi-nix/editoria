@@ -289,12 +289,13 @@ module.exports = (
   //     $elem.removeAttr('data-id')
   //   }
   // })
-  
 
   const bodyContent = $('#main').contents()
   outerContainer('section').append(bodyContent)
   if (notesType === 'chapterEnd') {
-    outerContainer('section').append(chapterEndnotes('body').html())
+    if (chapterEndnotes('ol > li').length > 0) {
+      outerContainer('section').append(chapterEndnotes('body').html())
+    }
   }
   return outerContainer('body').html()
 }
