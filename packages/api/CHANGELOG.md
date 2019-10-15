@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.3"></a>
+## [0.3.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.3.2...editoria-api@0.3.3) (2019-10-15)
+
+
+### Bug Fixes
+
+* **exporter:** remove chapter end notes when none exist ([ffb6123](https://gitlab.coko.foundation/editoria/editoria/commit/ffb6123))
+
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.3.1...editoria-api@0.3.2) (2019-10-15)
 
