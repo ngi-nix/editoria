@@ -1,6 +1,6 @@
 {
   "name": "editoria-api",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "GraphQl API for Editoria",
   "main": "index.js",
   "keywords": [
