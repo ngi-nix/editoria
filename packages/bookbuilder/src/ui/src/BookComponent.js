@@ -367,14 +367,16 @@ const BookComponent = ({
             <ButtonWithoutLabel onClick={goToEditor} icon={previewIcon} />
           )} */}
         </ActionsLeft>
-        <StyledButton
-          icon={tocIcon}
-          includeInTOC={includeInToc}
-          onClick={e => {
-            e.preventDefault()
-            onToggleIncludeInTOC(id)
-          }}
-        />
+        {componentType !== 'toc' && (
+          <StyledButton
+            icon={tocIcon}
+            includeInTOC={includeInToc}
+            onClick={e => {
+              e.preventDefault()
+              onToggleIncludeInTOC(id)
+            }}
+          />
+        )}
         <BookComponentTitle
           applicationParameter={applicationParameter}
           bookComponentId={id}

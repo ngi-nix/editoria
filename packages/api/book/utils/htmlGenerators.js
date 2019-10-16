@@ -25,7 +25,7 @@ const generateContainer = (bookComponent, firstInBody = false) => {
   let output
   if (componentType === 'toc') {
     output = cheerio.load(
-      `<section id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
+      `<section id="comp-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
       )}"><div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
       <div class="running-right">${runningHeadersRight ||
@@ -34,7 +34,7 @@ const generateContainer = (bookComponent, firstInBody = false) => {
     )
   } else if (componentType === 'endnotes') {
     output = cheerio.load(
-      `<section id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
+      `<section id="comp-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
       )}"><div class="running-left">${runningHeadersLeft || '&#xA0;'}</div>
       <div class="running-right">${runningHeadersRight || '&#xA0;'}</div>
@@ -46,7 +46,7 @@ const generateContainer = (bookComponent, firstInBody = false) => {
       componentNumber = `<span class="${componentType}-number">${number}</span>`
     }
     output = cheerio.load(
-      `<section id="component-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
+      `<section id="comp-number-${id}"  class="component-${division} ${componentType} ${paginationExtractor(
         pagination,
       )}">${
         firstInBody ? '<span class="restart-numbering"></span>' : ''

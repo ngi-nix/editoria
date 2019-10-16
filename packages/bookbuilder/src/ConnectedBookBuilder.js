@@ -299,7 +299,11 @@ const mapProps = args => ({
           const { exportBook } = data
           const { path } = exportBook
           if (mode === 'download') {
-            window.location.replace(path)
+            if (format === 'pdf') {
+              window.open(path, '_blank')
+            } else {
+              window.location.replace(path)
+            }
           } else if (mode === 'preview') {
             if (viewer === 'vivliostyle') {
               const viliostylePath =
