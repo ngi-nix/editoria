@@ -200,10 +200,10 @@ module.exports = (
         }
 
         const callout = $(`
-          <a class="note-callout" href="#${id}">
+          <a class="note-callout" href="#${bookComponent.id}-${id}">
             <sup>${noteNumber}</sup>
           </a>
-          <span class="footnote" id="${id}">${content}</span>
+          <span class="footnote" id="${bookComponent.id}-${id}">${content}</span>
         `)
 
         $elem.replaceWith(callout)
@@ -232,10 +232,10 @@ module.exports = (
           }
         }
         const li = endnotes('<li/>').html(content)
-        li.attr('id', id)
+        li.attr('id', `${bookComponent.id}-${id}`)
         notesList.append(li)
         const callout = $(`
-        <a class="note-callout" href="#${id}">
+        <a class="note-callout" href="#${bookComponent.id}-${id}">
           <sup>${noteNumber}</sup>
         </a>
       `)
@@ -267,10 +267,10 @@ module.exports = (
           }
         }
         const li = chapterEndnotes('<li/>').html(content)
-        li.attr('id', id)
+        li.attr('id', `${bookComponent.id}-${id}`)
         notesList.append(li)
         const callout = $(`
-        <a class="note-callout" href="#${id}">
+        <a class="note-callout" href="#${bookComponent.id}-${id}">
           <sup>${noteNumber}</sup>
         </a>
       `)
