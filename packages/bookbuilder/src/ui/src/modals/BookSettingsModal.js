@@ -127,8 +127,8 @@ const StyledTable = styled.table`
 `
 
 const StyledTR = styled.tr`
+  display: flex;
   padding: 0;
-  display: inline-block;
   width: 100%;
 `
 
@@ -136,6 +136,7 @@ const StyledTD = styled.td`
   border: 1px solid #3f3f3f;
   border-collapse: collapse;
   color: #3f3f3f;
+  display: flex;
   font-family: ${th('fontHeading')};
   font-size: ${th('fontSizeBaseSmall')};
   font-weight: normal;
@@ -144,7 +145,7 @@ const StyledTD = styled.td`
   overflow-wrap: break-word;
   padding: ${th('gridUnit')};
   text-align: ${({ align }) => align};
-  width: 8.33%;
+  width: 32%;
 `
 const Universe = styled.div`
   flex-grow: 1;
