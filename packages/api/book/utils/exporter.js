@@ -1,4 +1,6 @@
 const cheerio = require('cheerio')
+const pubsweetServer = require('pubsweet-server')
+const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
 const { epubArchiver } = require('./epubArchiver')
 const fs = require('fs-extra')
 const path = require('path')
@@ -6,6 +8,9 @@ const config = require('config')
 const get = require('lodash/get')
 const includes = require('lodash/includes')
 const crypto = require('crypto')
+const waait = require('waait')
+const { db } = require('@pubsweet/db-manager')
+const logger = require('@pubsweet/logger')
 
 const {
   substanceToHTML,
@@ -25,6 +30,10 @@ const { icmlPreparation } = require('./icmlPreparation')
 const { Template } = require('editoria-data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
+const {
+  pubsubManager,
+  jobs: { connectToJobQueue },
+} = pubsweetServer
 
 const EpubBackend = async (
   bookId,
@@ -36,6 +45,11 @@ const EpubBackend = async (
   ctx,
 ) => {
   try {
+    const jobQueue = await connectToJobQueue()
+    const pubsub = await getPubsub()
+    let queueJobId
+    const jobId = crypto.randomBytes(3).toString('hex')
+    const pubsubChannel = `EPUBCHECK.${ctx.user}.${jobId}`
     let template
     let notesType
     let templateHasEndnotes
@@ -124,12 +138,39 @@ const EpubBackend = async (
       //   tempFolder,
       //   `${process.cwd()}/epubcheck_data`,
       // )
+      const validationResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(
+          pubsubChannel,
+          async ({ epubcheckJob: { status } }) => {
+            logger.info(pubsubChannel, status)
+            if (status === 'Conversion complete') {
+              await waait(1000)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [queueJobId],
+              )
+              const { report } = job[0].data.response
+              console.log('report', report)
+              resolve(report)
+            }
+          },
+        )
+      })
+      jobQueue
+        .publish(`epubcheck`, {
+          filename: path.basename(epubFilePath),
+          pubsubChannel,
+        })
+        .then(id => (queueJobId = id))
 
-      const validationResult = await execCommand(
-        `docker run --rm -v ${process.cwd()}/${uploadsDir}/epubs:/app/data kitforbes/epubcheck /app/data/${path.basename(
-          epubFilePath,
-        )}`,
-      )
+      const validationResult = await validationResponse
+      console.log('validation', validationResult)
+
+      // await execCommand(
+      //   `docker run --rm -v ${process.cwd()}/${uploadsDir}/epubs:/app/data kitforbes/epubcheck /app/data/${path.basename(
+      //     epubFilePath,
+      //   )}`,
+      // )
       if (
         includes(
           validationResult,
