@@ -23,7 +23,7 @@ RUN yarn
 
 
 COPY . .
-
+RUN ls -la
 RUN chmod +x src/wait-for-it.sh
 RUN chmod +x src/service_run.sh
 
