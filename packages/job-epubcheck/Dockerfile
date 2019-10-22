@@ -11,8 +11,10 @@ ENV WAIT_TIMEOUT=$WAIT_TIMEOUT
 RUN apt-get update \
     && apt-get install -y software-properties-common unzip
 
-RUN apk add --update bash curl unzip openjdk7 && \
-  rm /var/cache/apk/*
+RUN add-apt-repository 'deb http://http.debian.net/debian stretch-backports main' \
+    && apt-get update \
+    && apt-get install -y openjdk-11-jre-headless
+
 
 # Install JS dependencies
 
