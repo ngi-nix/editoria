@@ -133,24 +133,19 @@ const EpubBackend = async (
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
 
-      // for the validator
-      // const validatorPoolPath = await epubArchiver(
-      //   tempFolder,
-      //   `${process.cwd()}/epubcheck_data`,
-      // )
+      // Init Job epubcheck
       const validationResponse = new Promise((resolve, reject) => {
         pubsub.subscribe(
           pubsubChannel,
           async ({ epubcheckJob: { status } }) => {
             logger.info(pubsubChannel, status)
-            if (status === 'Conversion complete') {
+            if (status === 'Validation complete') {
               await waait(1000)
               const job = await db('pgboss.job').whereRaw(
                 "data->'request'->>'id' = ?",
                 [queueJobId],
               )
               const { report } = job[0].data.response
-              console.log('report', report)
               resolve(report)
             }
           },
@@ -164,20 +159,23 @@ const EpubBackend = async (
         .then(id => (queueJobId = id))
 
       const validationResult = await validationResponse
-      console.log('validation', validationResult)
+      const {
+        checker: { nError, messages },
+      } = validationResult
+      // End
 
-      // await execCommand(
-      //   `docker run --rm -v ${process.cwd()}/${uploadsDir}/epubs:/app/data kitforbes/epubcheck /app/data/${path.basename(
-      //     epubFilePath,
-      //   )}`,
-      // )
+      let errorMsg
+      if (nError > 0) {
+        errorMsg = messages.map(msg => msg.messages).join('. ')
+      }
+
       if (
         includes(
-          validationResult,
+          errorMsg,
           'Error while parsing file: element "ol" incomplete; missing required element "li"',
         ) ||
         includes(
-          validationResult,
+          errorMsg,
           'Error while parsing file: element "navMap" incomplete; missing required element "navPoint"',
         )
       ) {
@@ -185,8 +183,7 @@ const EpubBackend = async (
           'You have to include something in the Table of Contents of the book',
         )
       }
-      // await fs.remove(validatorPoolPath)
-      // epubcheck here
+
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
 
       if (previewer === 'vivliostyle') {
@@ -203,22 +200,6 @@ const EpubBackend = async (
       await fs.remove(tempFolder)
 
       return { path: resultPath, validationResult }
-
-      // exec(`docker-compose run --rm epubcheck`, function(
-      //   error,
-      //   stdout,
-      //   stderr,
-      // ) {
-      //   console.log('1', stdout)
-      //   console.log('2', error)
-      //   console.log('3', stderr)
-      // })
-      //to here
-
-      // Here start the logic of html to epub
-      // each book component decorate with html-body
-      // each book component decorate with valid epub properties epub:type, etc
-      // fix urls (imgs, stylesheet, in actual css fix the fonts path if any)
     }
 
     if (previewer === 'pagedjs' || fileExtension === 'pdf') {
@@ -264,7 +245,6 @@ const EpubBackend = async (
       // fix url images
     }
   } catch (e) {
-    console.log('e', e)
     throw new Error(e)
   }
 }

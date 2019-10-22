@@ -20,19 +20,17 @@ const epubcheckHandler = enablePubsub => async job => {
     })
 
     pubsub.publish(job.data.pubsubChannel, {
-      epubcheckJob: { report },
+      epubcheckJob: { status: 'Validation complete', report },
     })
 
     return report
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e)
-    if (enablePubsub) {
-      const pubsub = await pubsubManager.getPubsub()
-      pubsub.publish(job.data.pubsubChannel, {
-        epubcheckJob: { status: 'Validation Error', error: e },
-      })
-    }
+
+    const pubsub = await pubsubManager.getPubsub()
+    pubsub.publish(job.data.pubsubChannel, {
+      epubcheckJob: { status: 'Validation Error', error: e },
+    })
 
     throw new Error('Validation error')
   }
