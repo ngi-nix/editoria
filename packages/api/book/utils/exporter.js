@@ -47,9 +47,11 @@ const EpubBackend = async (
   try {
     const jobQueue = await connectToJobQueue()
     const pubsub = await getPubsub()
-    let queueJobId
-    const jobId = crypto.randomBytes(3).toString('hex')
-    const pubsubChannel = `EPUBCHECK.${ctx.user}.${jobId}`
+
+    const jobIdEpub = crypto.randomBytes(3).toString('hex')
+    const pubsubChannelEpub = `EPUBCHECK.${ctx.user}.${jobIdEpub}`
+    const jobIdIcml = crypto.randomBytes(3).toString('hex')
+    const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
     let template
     let notesType
     let templateHasEndnotes
@@ -134,16 +136,23 @@ const EpubBackend = async (
       )
 
       // Init Job epubcheck
+      let epubJobId
+      jobQueue
+        .publish(`epubcheck`, {
+          filename: path.basename(epubFilePath),
+          pubsubChannelEpub,
+        })
+        .then(id => (epubJobId = id))
       const validationResponse = new Promise((resolve, reject) => {
         pubsub.subscribe(
-          pubsubChannel,
+          pubsubChannelEpub,
           async ({ epubcheckJob: { status } }) => {
-            logger.info(pubsubChannel, status)
+            logger.info(pubsubChannelEpub, status)
             if (status === 'Validation complete') {
               await waait(1000)
               const job = await db('pgboss.job').whereRaw(
                 "data->'request'->>'id' = ?",
-                [queueJobId],
+                [epubJobId],
               )
 
               resolve(job[0].data.response)
@@ -151,12 +160,6 @@ const EpubBackend = async (
           },
         )
       })
-      jobQueue
-        .publish(`epubcheck`, {
-          filename: path.basename(epubFilePath),
-          pubsubChannel,
-        })
-        .then(id => (queueJobId = id))
 
       const validationResult = await validationResponse
 
@@ -218,26 +221,33 @@ const EpubBackend = async (
       const { path: icmlTempFolder } = await icmlPreparation(book)
 
       // Init Job pandoc
-      const pandocResponse = new Promise((resolve, reject) => {
-        pubsub.subscribe(pubsubChannel, async ({ pandocJob: { status } }) => {
-          logger.info(pubsubChannel, status)
-          if (status === 'ICML creation completed') {
-            await waait(1000)
-            const job = await db('pgboss.job').whereRaw(
-              "data->'request'->>'id' = ?",
-              [queueJobId],
-            )
-
-            resolve(job[0].data.response)
-          }
-        })
-      })
+      let icmlId
+      console.log('before')
       jobQueue
-        .publish(`pandocICML`, {
-          path: icmlTempFolder,
-          pubsubChannel,
+        .publish('pandocICML', {
+          path: icmlTempFolder.hash,
+          pubsubChannelIcml,
         })
-        .then(id => (queueJobId = id))
+        .then(id => {(icmlId = id)})
+        console.log('under')
+      const pandocResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(
+          pubsubChannelIcml,
+          async ({ pandocJob: { status } }) => {
+            logger.info(pubsubChannelIcml, status)
+            if (status === 'ICML creation completed') {
+              await waait(1000)
+              console.log('sadfasdfasd', icmlId)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [icmlId],
+              )
+
+              resolve(job[0].data.response)
+            }
+          },
+        )
+      })
 
       await pandocResponse
 

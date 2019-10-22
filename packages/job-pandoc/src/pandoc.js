@@ -4,20 +4,21 @@ const { execSync } = require('child_process')
 
 const pandocICMLHandler = enablePubsub => async job => {
   try {
+    console.log('inside')
     const pubsub = await pubsubManager.getPubsub()
 
-    logger.info(job.data.pubsubChannel, 'has started.')
-    pubsub.publish(job.data.pubsubChannel, {
+    logger.info(job.data.pubsubChannelIcml, 'has started.')
+    pubsub.publish(job.data.pubsubChannelIcml, {
       pandocJob: {
         status: 'ICML creation started',
       },
     })
 
     execSync(
-      `pandoc /icmls/${job.data.path}/index.html -o /icmls/${job.data.path}/index.icml`,
+      `pandoc /temp/${job.data.path}/index.html -o /temp/${job.data.path}/index.icml`,
     )
 
-    pubsub.publish(job.data.pubsubChannel, {
+    pubsub.publish(job.data.pubsubChannelIcml, {
       pandocJob: { status: 'ICML creation completed' },
     })
 
@@ -26,7 +27,7 @@ const pandocICMLHandler = enablePubsub => async job => {
     // eslint-disable-next-line
 
     const pubsub = await pubsubManager.getPubsub()
-    pubsub.publish(job.data.pubsubChannel, {
+    pubsub.publish(job.data.pubsubChannelIcml, {
       pandocJob: { status: 'ICML creation error', error: e },
     })
 
@@ -40,7 +41,7 @@ const handleJobs = async () => {
   } = require('pubsweet-server')
 
   const jobQueue = await connectToJobQueue()
-
+    console.log('begining')
   // Subscribe to the job queue with an async handler
   await jobQueue.subscribe('pandocICML', pandocICMLHandler(true))
 }

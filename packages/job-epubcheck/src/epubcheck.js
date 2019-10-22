@@ -6,8 +6,8 @@ const epubcheckHandler = enablePubsub => async job => {
   try {
     const pubsub = await pubsubManager.getPubsub()
 
-    logger.info(job.data.pubsubChannel, 'has started.')
-    pubsub.publish(job.data.pubsubChannel, {
+    logger.info(job.data.pubsubChannelEpub, 'has started.')
+    pubsub.publish(job.data.pubsubChannelEpub, {
       epubcheckJob: {
         status: 'Validation started',
       },
@@ -19,7 +19,7 @@ const epubcheckHandler = enablePubsub => async job => {
       exclude: /\.(css|ttf|opf|woff|woff2)$/,
     })
 
-    pubsub.publish(job.data.pubsubChannel, {
+    pubsub.publish(job.data.pubsubChannelEpub, {
       epubcheckJob: { status: 'Validation complete', report },
     })
 
@@ -28,7 +28,7 @@ const epubcheckHandler = enablePubsub => async job => {
     // eslint-disable-next-line
 
     const pubsub = await pubsubManager.getPubsub()
-    pubsub.publish(job.data.pubsubChannel, {
+    pubsub.publish(job.data.pubsubChannelEpub, {
       epubcheckJob: { status: 'Validation Error', error: e },
     })
 
