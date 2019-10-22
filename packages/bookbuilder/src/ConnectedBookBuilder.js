@@ -323,10 +323,7 @@ const mapProps = args => ({
           hideModal()
           showModal('warningModal', {
             onConfirm: hideModal,
-            warning: `${res.message.replace(
-              'GraphQL error: Error: Error: ',
-              '',
-            )}`,
+            warning: `${res.message.replace('GraphQL error: Error: ', '')}`,
           })
         })
     }

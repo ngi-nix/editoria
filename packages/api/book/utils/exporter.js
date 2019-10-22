@@ -145,8 +145,8 @@ const EpubBackend = async (
                 "data->'request'->>'id' = ?",
                 [queueJobId],
               )
-              const { report } = job[0].data.response
-              resolve(report)
+
+              resolve(job[0].data.response)
             }
           },
         )
@@ -159,29 +159,17 @@ const EpubBackend = async (
         .then(id => (queueJobId = id))
 
       const validationResult = await validationResponse
+
       const {
-        checker: { nError, messages },
+        checker: { nError },
+        messages,
       } = validationResult
       // End
 
       let errorMsg
       if (nError > 0) {
-        errorMsg = messages.map(msg => msg.messages).join('. ')
-      }
-
-      if (
-        includes(
-          errorMsg,
-          'Error while parsing file: element "ol" incomplete; missing required element "li"',
-        ) ||
-        includes(
-          errorMsg,
-          'Error while parsing file: element "navMap" incomplete; missing required element "navPoint"',
-        )
-      ) {
-        throw new Error(
-          'You have to include something in the Table of Contents of the book',
-        )
+        errorMsg = messages.map(msg => msg.message).join(' * ')
+        throw new Error(errorMsg)
       }
 
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
@@ -199,7 +187,7 @@ const EpubBackend = async (
       }
       await fs.remove(tempFolder)
 
-      return { path: resultPath, validationResult }
+      return { path: resultPath }
     }
 
     if (previewer === 'pagedjs' || fileExtension === 'pdf') {
@@ -228,9 +216,36 @@ const EpubBackend = async (
 
     if (fileExtension === 'icml') {
       const { path: icmlTempFolder } = await icmlPreparation(book)
-      await execCommand(
-        `docker run --rm -v ${icmlTempFolder}:/data pandoc/core index.html -o index.icml`,
-      )
+
+      // Init Job pandoc
+      const pandocResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(pubsubChannel, async ({ pandocJob: { status } }) => {
+          logger.info(pubsubChannel, status)
+          if (status === 'ICML creation completed') {
+            await waait(1000)
+            const job = await db('pgboss.job').whereRaw(
+              "data->'request'->>'id' = ?",
+              [queueJobId],
+            )
+
+            resolve(job[0].data.response)
+          }
+        })
+      })
+      jobQueue
+        .publish(`pandocICML`, {
+          path: icmlTempFolder,
+          pubsubChannel,
+        })
+        .then(id => (queueJobId = id))
+
+      await pandocResponse
+
+      // End
+
+      // await execCommand(
+      //   `docker run --rm -v ${icmlTempFolder}:/data pandoc/core index.html -o index.icml`,
+      // )
       await fs.remove(`${icmlTempFolder}/index.html`)
       const icmlFilePath = await icmlArchiver(
         icmlTempFolder,
