@@ -1,11 +1,15 @@
 const cheerio = require('cheerio')
+const pubsweetServer = require('pubsweet-server')
+const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
 const { epubArchiver } = require('./epubArchiver')
 const fs = require('fs-extra')
 const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
-const includes = require('lodash/includes')
 const crypto = require('crypto')
+const waait = require('waait')
+const { db } = require('@pubsweet/db-manager')
+const logger = require('@pubsweet/logger')
 
 const {
   substanceToHTML,
@@ -25,6 +29,9 @@ const { icmlPreparation } = require('./icmlPreparation')
 const { Template } = require('editoria-data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
+const {
+  jobs: { connectToJobQueue },
+} = pubsweetServer
 
 const EpubBackend = async (
   bookId,
@@ -39,6 +46,9 @@ const EpubBackend = async (
     let template
     let notesType
     let templateHasEndnotes
+    const jobQueue = await connectToJobQueue()
+    const pubsub = await getPubsub()
+
     if (fileExtension !== 'icml') {
       template = await Template.findById(templateId)
       const { notes } = template
@@ -119,33 +129,48 @@ const EpubBackend = async (
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
 
-      // for the validator
-      // const validatorPoolPath = await epubArchiver(
-      //   tempFolder,
-      //   `${process.cwd()}/epubcheck_data`,
-      // )
+      // Init Job epubcheck
 
-      const validationResult = await execCommand(
-        `docker run --rm -v ${process.cwd()}/${uploadsDir}/epubs:/app/data kitforbes/epubcheck /app/data/${path.basename(
-          epubFilePath,
-        )}`,
-      )
-      if (
-        includes(
-          validationResult,
-          'Error while parsing file: element "ol" incomplete; missing required element "li"',
-        ) ||
-        includes(
-          validationResult,
-          'Error while parsing file: element "navMap" incomplete; missing required element "navPoint"',
+      const jobIdEpub = crypto.randomBytes(3).toString('hex')
+      const pubsubChannelEpub = `EPUBCHECK.${ctx.user}.${jobIdEpub}`
+      const epubJobId = await jobQueue.publish('epubcheck', {
+        filename: path.basename(epubFilePath),
+        pubsubChannelEpub,
+      })
+      console.log('epubid', epubJobId)
+      // .then(id => (epubJobId = id))
+      const validationResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(
+          pubsubChannelEpub,
+          async ({ epubcheckJob: { status } }) => {
+            logger.info(pubsubChannelEpub, status)
+            if (status === 'Validation complete') {
+              await waait(1000)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [epubJobId],
+              )
+
+              resolve(job[0].data.response)
+            }
+          },
         )
-      ) {
-        throw new Error(
-          'You have to include something in the Table of Contents of the book',
-        )
+      })
+
+      const validationResult = await validationResponse
+
+      const {
+        checker: { nError },
+        messages,
+      } = validationResult
+      // End
+
+      let errorMsg
+      if (nError > 0) {
+        errorMsg = messages.map(msg => msg.message).join(' * ')
+        throw new Error(errorMsg)
       }
-      // await fs.remove(validatorPoolPath)
-      // epubcheck here
+
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
 
       if (previewer === 'vivliostyle') {
@@ -161,23 +186,7 @@ const EpubBackend = async (
       }
       await fs.remove(tempFolder)
 
-      return { path: resultPath, validationResult }
-
-      // exec(`docker-compose run --rm epubcheck`, function(
-      //   error,
-      //   stdout,
-      //   stderr,
-      // ) {
-      //   console.log('1', stdout)
-      //   console.log('2', error)
-      //   console.log('3', stderr)
-      // })
-      //to here
-
-      // Here start the logic of html to epub
-      // each book component decorate with html-body
-      // each book component decorate with valid epub properties epub:type, etc
-      // fix urls (imgs, stylesheet, in actual css fix the fonts path if any)
+      return { path: resultPath }
     }
 
     if (previewer === 'pagedjs' || fileExtension === 'pdf') {
@@ -205,10 +214,37 @@ const EpubBackend = async (
     }
 
     if (fileExtension === 'icml') {
-      const { path: icmlTempFolder } = await icmlPreparation(book)
-      await execCommand(
-        `docker run --rm -v ${icmlTempFolder}:/data pandoc/core index.html -o index.icml`,
-      )
+      const { path: icmlTempFolder, hash } = await icmlPreparation(book)
+
+      // Init Job pandoc
+      const jobIdIcml = crypto.randomBytes(3).toString('hex')
+      const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
+      const icmlId = await jobQueue.publish('pandoc', {
+        filepath: hash,
+        pubsubChannelIcml,
+      })
+
+      const pandocResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(
+          pubsubChannelIcml,
+          async ({ pandocJob: { status } }) => {
+            logger.info(pubsubChannelIcml, status)
+            if (status === 'ICML creation completed') {
+              await waait(1000)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [icmlId],
+              )
+
+              resolve(job[0].data.response)
+            }
+          },
+        )
+      })
+
+      await pandocResponse
+      // End
+
       await fs.remove(`${icmlTempFolder}/index.html`)
       const icmlFilePath = await icmlArchiver(
         icmlTempFolder,
@@ -219,11 +255,8 @@ const EpubBackend = async (
         path: icmlFilePath.replace(`${process.cwd()}`, ''),
         validationResult: undefined,
       }
-      // append to single html file each book component
-      // fix url images
     }
   } catch (e) {
-    console.log('e', e)
     throw new Error(e)
   }
 }
