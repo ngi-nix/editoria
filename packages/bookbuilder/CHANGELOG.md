@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.0"></a>
+# [1.5.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.4.3...pubsweet-component-bookbuilder@1.5.0) (2019-10-23)
+
+
+### Features
+
+* **pandocjob:** create pandoc job ([c8eb472](https://gitlab.coko.foundation/editoria/editoria/commit/c8eb472))
+
+
+
+
 <a name="1.4.3"></a>
 ## [1.4.3](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.4.2...pubsweet-component-bookbuilder@1.4.3) (2019-10-17)
 

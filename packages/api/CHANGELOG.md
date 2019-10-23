@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.3.4...editoria-api@0.4.0) (2019-10-23)
+
+
+### Bug Fixes
+
+* **language-tools:** take dynaimc port form env ([891be46](https://gitlab.coko.foundation/editoria/editoria/commit/891be46))
+
+
+### Features
+
+* **epubcheckjob:** pubsweet epubcheck job ([3896d18](https://gitlab.coko.foundation/editoria/editoria/commit/3896d18))
+* **pandocjob:** create pandoc job ([c8eb472](https://gitlab.coko.foundation/editoria/editoria/commit/c8eb472))
+
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.3.3...editoria-api@0.3.4) (2019-10-16)
 
