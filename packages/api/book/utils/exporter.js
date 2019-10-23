@@ -214,50 +214,37 @@ const EpubBackend = async (
     }
 
     if (fileExtension === 'icml') {
-      const { path: icmlTempFolder } = await icmlPreparation(book)
+      const { path: icmlTempFolder, hash } = await icmlPreparation(book)
 
       // Init Job pandoc
       const jobIdIcml = crypto.randomBytes(3).toString('hex')
       const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
-      let icmlId
-      console.log('before')
-      jobQueue
-        .publish('pandoc', {
-          filepath: icmlTempFolder.hash,
+      const icmlId = await jobQueue.publish('pandoc', {
+        filepath: hash,
+        pubsubChannelIcml,
+      })
+
+      const pandocResponse = new Promise((resolve, reject) => {
+        pubsub.subscribe(
           pubsubChannelIcml,
-        })
-        .then(id => {
-          console.log('id', id)
-          icmlId = id
-        })
-        .catch(err => console.log(err))
-      console.log('under')
-      // const pandocResponse = new Promise((resolve, reject) => {
-      //   pubsub1.subscribe(
-      //     pubsubChannelIcml,
-      //     async ({ pandocJob: { status } }) => {
-      //       logger.info(pubsubChannelIcml, status)
-      //       if (status === 'ICML creation completed') {
-      //         await waait(1000)
-      //         console.log('sadfasdfasd', icmlId)
-      //         const job = await db('pgboss.job').whereRaw(
-      //           "data->'request'->>'id' = ?",
-      //           [icmlId],
-      //         )
+          async ({ pandocJob: { status } }) => {
+            logger.info(pubsubChannelIcml, status)
+            if (status === 'ICML creation completed') {
+              await waait(1000)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [icmlId],
+              )
 
-      //         resolve(job[0].data.response)
-      //       }
-      //     },
-      //   )
-      // })
+              resolve(job[0].data.response)
+            }
+          },
+        )
+      })
 
-      // await pandocResponse
-
+      await pandocResponse
       // End
 
-      // await execCommand(
-      //   `docker run --rm -v ${icmlTempFolder}:/data pandoc/core index.html -o index.icml`,
-      // )
       await fs.remove(`${icmlTempFolder}/index.html`)
       const icmlFilePath = await icmlArchiver(
         icmlTempFolder,
@@ -268,8 +255,6 @@ const EpubBackend = async (
         path: icmlFilePath.replace(`${process.cwd()}`, ''),
         validationResult: undefined,
       }
-      // append to single html file each book component
-      // fix url images
     }
   } catch (e) {
     throw new Error(e)

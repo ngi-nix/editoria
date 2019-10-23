@@ -11,12 +11,12 @@ ENV WAIT_TIMEOUT=$WAIT_TIMEOUT
 RUN wget https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-1-amd64.deb -O pandoc.deb; dpkg -i pandoc.deb; rm pandoc.deb
 
 # Install JS dependencies
-COPY package.json .
+COPY packages/job-pandoc/package.json .
 RUN yarn cache clean
 RUN yarn
 
 
-COPY . .
+COPY packages/job-pandoc .
 RUN chmod +x src/wait-for-it.sh
 RUN chmod +x src/service_run.sh
 
