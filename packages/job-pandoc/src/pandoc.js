@@ -14,18 +14,18 @@ const pandocICMLHandler = enablePubsub => async job => {
       },
     })
 
-    execSync(
-      `pandoc /temp/${job.data.path}/index.html -o /temp/${job.data.path}/index.icml`,
-    )
+    // execSync(
+    //   `pandoc /temp/${job.data.path}/index.html -o /temp/${job.data.path}/index.icml`,
+    // )
 
     pubsub.publish(job.data.pubsubChannelIcml, {
       pandocJob: { status: 'ICML creation completed' },
     })
 
-    return true
+    return new Promise()
   } catch (e) {
     // eslint-disable-next-line
-
+    console.log('eeeeeeee', e)
     const pubsub = await pubsubManager.getPubsub()
     pubsub.publish(job.data.pubsubChannelIcml, {
       pandocJob: { status: 'ICML creation error', error: e },
@@ -41,9 +41,9 @@ const handleJobs = async () => {
   } = require('pubsweet-server')
 
   const jobQueue = await connectToJobQueue()
-    console.log('begining')
+  // console.log('begining', jobQueue)
   // Subscribe to the job queue with an async handler
-  await jobQueue.subscribe('pandocICML', pandocICMLHandler(true))
+  await jobQueue.subscribe('pandoc', job => console.log('sdafasdfasdfasdfsda', job))
 }
 
 handleJobs()

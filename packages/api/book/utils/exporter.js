@@ -6,7 +6,6 @@ const fs = require('fs-extra')
 const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
-const includes = require('lodash/includes')
 const crypto = require('crypto')
 const waait = require('waait')
 const { db } = require('@pubsweet/db-manager')
@@ -31,7 +30,6 @@ const { Template } = require('editoria-data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 const {
-  pubsubManager,
   jobs: { connectToJobQueue },
 } = pubsweetServer
 
@@ -45,16 +43,12 @@ const EpubBackend = async (
   ctx,
 ) => {
   try {
-    const jobQueue = await connectToJobQueue()
-    const pubsub = await getPubsub()
-
-    const jobIdEpub = crypto.randomBytes(3).toString('hex')
-    const pubsubChannelEpub = `EPUBCHECK.${ctx.user}.${jobIdEpub}`
-    const jobIdIcml = crypto.randomBytes(3).toString('hex')
-    const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
     let template
     let notesType
     let templateHasEndnotes
+    const jobQueue = await connectToJobQueue()
+    const pubsub = await getPubsub()
+
     if (fileExtension !== 'icml') {
       template = await Template.findById(templateId)
       const { notes } = template
@@ -136,13 +130,15 @@ const EpubBackend = async (
       )
 
       // Init Job epubcheck
-      let epubJobId
-      jobQueue
-        .publish(`epubcheck`, {
-          filename: path.basename(epubFilePath),
-          pubsubChannelEpub,
-        })
-        .then(id => (epubJobId = id))
+
+      const jobIdEpub = crypto.randomBytes(3).toString('hex')
+      const pubsubChannelEpub = `EPUBCHECK.${ctx.user}.${jobIdEpub}`
+      const epubJobId = await jobQueue.publish('epubcheck', {
+        filename: path.basename(epubFilePath),
+        pubsubChannelEpub,
+      })
+      console.log('epubid', epubJobId)
+      // .then(id => (epubJobId = id))
       const validationResponse = new Promise((resolve, reject) => {
         pubsub.subscribe(
           pubsubChannelEpub,
@@ -221,35 +217,41 @@ const EpubBackend = async (
       const { path: icmlTempFolder } = await icmlPreparation(book)
 
       // Init Job pandoc
+      const jobIdIcml = crypto.randomBytes(3).toString('hex')
+      const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
       let icmlId
       console.log('before')
       jobQueue
-        .publish('pandocICML', {
-          path: icmlTempFolder.hash,
+        .publish('pandoc', {
+          filepath: icmlTempFolder.hash,
           pubsubChannelIcml,
         })
-        .then(id => {(icmlId = id)})
-        console.log('under')
-      const pandocResponse = new Promise((resolve, reject) => {
-        pubsub.subscribe(
-          pubsubChannelIcml,
-          async ({ pandocJob: { status } }) => {
-            logger.info(pubsubChannelIcml, status)
-            if (status === 'ICML creation completed') {
-              await waait(1000)
-              console.log('sadfasdfasd', icmlId)
-              const job = await db('pgboss.job').whereRaw(
-                "data->'request'->>'id' = ?",
-                [icmlId],
-              )
+        .then(id => {
+          console.log('id', id)
+          icmlId = id
+        })
+        .catch(err => console.log(err))
+      console.log('under')
+      // const pandocResponse = new Promise((resolve, reject) => {
+      //   pubsub1.subscribe(
+      //     pubsubChannelIcml,
+      //     async ({ pandocJob: { status } }) => {
+      //       logger.info(pubsubChannelIcml, status)
+      //       if (status === 'ICML creation completed') {
+      //         await waait(1000)
+      //         console.log('sadfasdfasd', icmlId)
+      //         const job = await db('pgboss.job').whereRaw(
+      //           "data->'request'->>'id' = ?",
+      //           [icmlId],
+      //         )
 
-              resolve(job[0].data.response)
-            }
-          },
-        )
-      })
+      //         resolve(job[0].data.response)
+      //       }
+      //     },
+      //   )
+      // })
 
-      await pandocResponse
+      // await pandocResponse
 
       // End
 
