@@ -13,7 +13,7 @@ const epubcheckHandler = enablePubsub => async job => {
       },
     })
 
-    const report = await epubchecker(`/epubs/${job.data.filename}`, {
+    const report = await epubchecker(`/uploads/epubs/${job.data.filename}`, {
       includeWarnings: true,
       // do not check CSS and font files
       exclude: /\.(css|ttf|opf|woff|woff2)$/,
