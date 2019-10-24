@@ -14,7 +14,7 @@ const pandocICMLHandler = enablePubsub => async job => {
     })
     await new Promise((resolve, reject) => {
       exec(
-        `pandoc /temp/${job.data.filepath}/index.html -o /temp/${job.data.filepath}/index.icml`,
+        `pandoc /uploads/temp/${job.data.filepath}/index.html -o /uploads/temp/${job.data.filepath}/index.icml`,
         (error, stdout, stderr) => {
           if (error) {
             return reject(error)
