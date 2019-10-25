@@ -104,6 +104,9 @@ const mapProps = args => {
       })
     },
     loadingRules: args.getDashboardRulesQuery.networkStatus === 1,
+    refetchingRules:
+      args.getDashboardRulesQuery.networkStatus === 4 ||
+      args.getDashboardRulesQuery.networkStatus === 2, // possible apollo bug
     rules: get(args.getDashboardRulesQuery, 'data.getDashBoardRules'),
   }
 }
@@ -115,8 +118,8 @@ const Connected = () => (
     {({
       archiveBook,
       collections,
-      rules,
       loadingRules,
+      refetchingRules,
       renameBook,
       deleteBook,
       onChangeSort,
@@ -125,10 +128,12 @@ const Connected = () => (
       onAddBook,
       onDeleteBook,
       onArchiveBook,
+      rules,
     }) => {
       return (
         <Dashboard
           archiveBook={archiveBook}
+          refetchingRules={refetchingRules}
           loadingRules={loadingRules}
           collections={collections}
           onAddBook={onAddBook}
