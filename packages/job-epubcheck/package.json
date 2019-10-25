@@ -1,6 +1,6 @@
 {
   "name": "editoria-epubcheck-job",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "PubSweet job component for running EPUBCHECK",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
