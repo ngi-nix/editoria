@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.5.0...pubsweet-component-bookbuilder@1.5.1) (2019-10-25)
+
+
+### Bug Fixes
+
+* **dashboard:** refetching fix ([070cf12](https://gitlab.coko.foundation/editoria/editoria/commit/070cf12))
+
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.4.3...pubsweet-component-bookbuilder@1.5.0) (2019-10-23)
 
