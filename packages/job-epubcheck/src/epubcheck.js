@@ -18,9 +18,18 @@ const epubcheckHandler = enablePubsub => async job => {
       // do not check CSS and font files
       exclude: /\.(css|ttf|opf|woff|woff2)$/,
     })
+    const {
+      checker: { nError },
+      messages,
+    } = report
+
+    let errorMsg
+    if (nError > 0) {
+      errorMsg = messages.map(msg => msg.message).join(' * ')
+    }
 
     pubsub.publish(job.data.pubsubChannelEpub, {
-      epubcheckJob: { status: 'Validation complete', report },
+      epubcheckJob: { status: 'Validation complete', error: errorMsg },
     })
 
     return report

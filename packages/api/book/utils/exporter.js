@@ -137,8 +137,7 @@ const EpubBackend = async (
         filename: path.basename(epubFilePath),
         pubsubChannelEpub,
       })
-      console.log('epubid', epubJobId)
-      // .then(id => (epubJobId = id))
+
       const validationResponse = new Promise((resolve, reject) => {
         pubsub.subscribe(
           pubsubChannelEpub,
@@ -159,16 +158,11 @@ const EpubBackend = async (
 
       const validationResult = await validationResponse
 
-      const {
-        checker: { nError },
-        messages,
-      } = validationResult
+      const { error } = validationResult
       // End
 
-      let errorMsg
-      if (nError > 0) {
-        errorMsg = messages.map(msg => msg.message).join(' * ')
-        throw new Error(errorMsg)
+      if (error) {
+        throw new Error(error)
       }
 
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
