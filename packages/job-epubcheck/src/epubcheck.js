@@ -18,6 +18,7 @@ const epubcheckHandler = enablePubsub => async job => {
       // do not check CSS and font files
       exclude: /\.(css|ttf|opf|woff|woff2)$/,
     })
+
     const {
       checker: { nError },
       messages,
@@ -27,12 +28,14 @@ const epubcheckHandler = enablePubsub => async job => {
     if (nError > 0) {
       errorMsg = messages.map(msg => msg.message).join(' * ')
     }
+    const result = {}
+    Object.assign(result, errorMsg ? { error: errorMsg } : { validation: 'ok' })
 
     pubsub.publish(job.data.pubsubChannelEpub, {
-      epubcheckJob: { status: 'Validation complete', error: errorMsg },
+      epubcheckJob: { status: 'Validation complete', result },
     })
 
-    return report
+    return result
   } catch (e) {
     // eslint-disable-next-line
 
