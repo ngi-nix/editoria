@@ -207,6 +207,8 @@ class DivisionsArea extends Component {
       updateBookComponentWorkflowState,
       onAdminUnlock,
       updateBookComponentUploading,
+      refetching,
+      refetchingBookBuilderRules,
       toggleIncludeInTOC,
       outerContainer,
       showModal,
@@ -256,6 +258,7 @@ class DivisionsArea extends Component {
         />
       )
     }
+    // if (refetchingBookBuilderRules || refetching) return 'Refetching...'
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}

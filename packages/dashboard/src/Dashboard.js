@@ -29,12 +29,14 @@ export class Dashboard extends Component {
       onChangeSort,
       refetching,
       renameBook,
+      refetchingRules,
       onAddBook,
       onDeleteBook,
       onArchiveBook,
     } = this.props
 
     if (loading || loadingRules) return 'Loading...'
+    
 
     return (
       <Container>
@@ -52,6 +54,7 @@ export class Dashboard extends Component {
                 books={collection.books}
                 bookRules={rules.bookRules}
                 refetching={refetching}
+                refetchingRules={refetchingRules}
                 onDeleteBook={onDeleteBook}
                 onArchiveBook={onArchiveBook}
                 remove={deleteBook}

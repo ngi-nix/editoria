@@ -13,7 +13,9 @@ const Wrapper = styled.div`
 const BookList = props => {
   const {
     books,
-    /* refetching, */ renameBook,
+    refetching,
+    refetchingRules,
+    renameBook,
     remove,
     archiveBook,
     onDeleteBook,
@@ -22,6 +24,7 @@ const BookList = props => {
   } = props
 
   // if (refetching) return 'Refetching...'
+  if (refetching || refetchingRules) return 'Refetching...'
 
   if (isEmpty(books)) {
     return <div>There are no books to display.</div>

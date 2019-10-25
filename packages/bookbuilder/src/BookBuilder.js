@@ -89,7 +89,8 @@ export class BookBuilder extends React.Component {
       uploadBookComponent,
       onDeleteBookComponent,
       onAdminUnlock,
-      exportBook,
+      refetching,
+      refetchingBookBuilderRules,
       onTeamManager,
       onExportBook,
       onError,
@@ -104,7 +105,6 @@ export class BookBuilder extends React.Component {
     } = this.props
 
     if (loading || loadingRules) return 'Loading...'
-    if (!book) return null
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 
@@ -156,6 +156,8 @@ export class BookBuilder extends React.Component {
         <Header actions={headerActions} bookTitle={book.title} />
         <DivisionsArea
           addBookComponent={addBookComponent}
+          refetching={refetching}
+          refetchingBookBuilderRules={refetchingBookBuilderRules}
           applicationParameter={applicationParameter}
           bookId={book.id}
           currentUser={currentUser}
