@@ -5,8 +5,13 @@ const get = require('lodash/get')
 
 const spellChecker = async (_, { language, text }, ctx) => {
   const languagePort = get(config, ['language-tools', 'port'], '8010')
+  const languageEndpoint = get(
+    config,
+    ['language-tools', 'endpoint'],
+    'localhost',
+  )
   const messageData = await fetch(
-    `http://localhost:${languagePort}/v2/check?language=${language}&text=${text}`,
+    `${languageEndpoint}:${languagePort}/v2/check?language=${language}&text=${text}`,
     {
       method: 'POST',
     },
