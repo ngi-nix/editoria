@@ -1,6 +1,6 @@
 {
   "name": "editoria-pdf-job",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "PubSweet job component for running pagedjs-cli",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,9 +10,9 @@
   "dependencies": {
     "@pubsweet/db-manager": "^3.0.20",
     "@pubsweet/logger": "^0.2.34",
+    "pagedjs-cli": "^0.0.9",
     "pubsweet-server": "^13.7.2",
-    "waait": "^1.0.5",
-    "pagedjs-cli":"^0.0.9"
+    "waait": "^1.0.5"
   },
   "publishConfig": {
     "access": "public"
