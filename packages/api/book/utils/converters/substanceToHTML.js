@@ -137,7 +137,7 @@ module.exports = (
   $('series-title').each(replaceWithParagraph('series-title'))
   $('custom-block').each(replaceWithParagraph())
   $('custom-inline').each(replaceWithSpan())
-  $('comment').each(replaceWithText())
+  $('comment').each(replaceWithText)
   // $('chapter-number').each(replaceWithParagraph('sc-chapter-number'))
   $('chapter-title').each(replaceWithH1('ct'))
   $('chapter-subtitle').each(replaceWithParagraph('cst'))
