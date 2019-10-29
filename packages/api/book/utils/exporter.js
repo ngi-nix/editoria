@@ -188,15 +188,33 @@ const EpubBackend = async (
         const { hash } = await pagednation(book, template, true)
         const path = require('path')
 
-        const pagedCLI = path.join(
-          `${process.cwd()}/`,
-          'node_modules/.bin/pagedjs-cli -i',
-        )
         await fs.emptyDir(`${process.cwd()}/uploads/pdfs`)
         const pdf = path.join(`${process.cwd()}/`, `uploads/pdfs/${hash}.pdf`)
-        await execCommand(
-          `${pagedCLI} ${process.cwd()}/uploads/paged/${hash}/index.html -o ${pdf}`,
-        )
+
+        const jobIdPDF = crypto.randomBytes(3).toString('hex')
+        const pubsubChannelPdf = `PDF.${ctx.user}.${jobIdPDF}`
+        const icmlId = await jobQueue.publish('pdf', {
+          filePath: `/uploads/paged/${hash}/index.html`,
+          outputPath: `/uploads/pdfs/${hash}.pdf`,
+          pubsubChannelPdf,
+        })
+
+        const pdfResponse = new Promise((resolve, reject) => {
+          pubsub.subscribe(pubsubChannelPdf, async ({ pdfJob: { status } }) => {
+            logger.info(pubsubChannelPdf, status)
+            if (status === 'PDF creation completed') {
+              await waait(1000)
+              const job = await db('pgboss.job').whereRaw(
+                "data->'request'->>'id' = ?",
+                [icmlId],
+              )
+
+              resolve(job[0].data.response)
+            }
+          })
+        })
+
+        await pdfResponse
         // pagedjs-cli
         return {
           path: pdf.replace(`${process.cwd()}`, ''),

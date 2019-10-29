@@ -139,6 +139,9 @@ class DivisionsArea extends Component {
         id: destination.droppableId,
       })
       const dragged = find(affectedSource.bookComponents, { id: draggableId })
+      if (dragged.componentType === 'toc') {
+        return
+      }
       const sourceBookComponentIndex = findIndex(
         affectedSource.bookComponents,
         { id: draggableId },
@@ -219,11 +222,10 @@ class DivisionsArea extends Component {
       uploading,
       rules,
     } = this.props
-    
+
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
     const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
-      
       return (
         <Division
           add={addBookComponent}

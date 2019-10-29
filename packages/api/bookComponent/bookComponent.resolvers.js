@@ -193,9 +193,7 @@ const addBookComponent = async (_, args, ctx, info) => {
     )
 
     logger.info(
-      `Book component pushed to the array of division's book components [${
-        updatedDivision.bookComponents
-      }]`,
+      `Book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
     )
     if (workflowStages) {
       bookComponentWorkflowStages = {
@@ -268,6 +266,12 @@ const deleteBookComponent = async (_, { input }, ctx) => {
       current: await BookComponent.findById(id),
       update: { deleted },
     }
+    const bookComponent = await BookComponent.findById(id)
+    if (bookComponent.componentType === 'toc') {
+      throw new Error(
+        'You cannot delete a component with type Table of Contents',
+      )
+    }
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
 
     const pubsub = await pubsubManager.getPubsub()
@@ -289,14 +293,10 @@ const deleteBookComponent = async (_, { input }, ctx) => {
       },
     )
     logger.info(
-      `Division's book component array before [${
-        componentDivision.bookComponents
-      }]`,
+      `Division's book component array before [${componentDivision.bookComponents}]`,
     )
     logger.info(
-      `Division's book component array after cleaned [${
-        updatedDivision.bookComponents
-      }]`,
+      `Division's book component array after cleaned [${updatedDivision.bookComponents}]`,
     )
     pubsub.publish(BOOK_COMPONENT_DELETED, {
       bookComponentDeleted: deletedBookComponent,
@@ -366,9 +366,7 @@ const updateWorkflowState = async (_, { input }, ctx) => {
       },
     )
     logger.info(
-      `Book component state updated with workflow ${
-        updatedBookComponentState.workflowStages
-      }`,
+      `Book component state updated with workflow ${updatedBookComponentState.workflowStages}`,
     )
     const updatedBookComponent = await BookComponent.findById(id)
     pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
@@ -386,7 +384,6 @@ const updateWorkflowState = async (_, { input }, ctx) => {
     throw new Error(e)
   }
 }
-
 
 const unlockBookComponent = async (_, { input }, ctx) => {
   try {
@@ -412,7 +409,6 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   }
 }
 
-
 const lockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
@@ -425,9 +421,7 @@ const lockBookComponent = async (_, { input }, ctx) => {
       if (lock[0].userId === ctx.user) {
         return bookComponent
       }
-      const errorMsg = `There is a lock already for this book component for the user with id ${
-        lock[0].userId
-      }`
+      const errorMsg = `There is a lock already for this book component for the user with id ${lock[0].userId}`
       logger.error(errorMsg)
       throw new Error(errorMsg)
     }
@@ -445,7 +439,6 @@ const lockBookComponent = async (_, { input }, ctx) => {
     throw new Error(e)
   }
 }
-
 
 const updateContent = async (_, { input }, ctx) => {
   const { id, content, title, workflowStages, uploading } = input
@@ -581,6 +574,12 @@ const updateUploading = async (_, { input }, ctx) => {
 const updateComponentType = async (_, { input }, ctx) => {
   const { id, componentType } = input
   const pubsub = await pubsubManager.getPubsub()
+  const currentBookComponent = await BookComponent.findById(id)
+  if (currentBookComponent.componentType === 'toc') {
+    throw new Error(
+      'You cannot change the component type of the Table of Contents',
+    )
+  }
   const updatedBookComponent = await BookComponent.query().patchAndFetchById(
     id,
     {
