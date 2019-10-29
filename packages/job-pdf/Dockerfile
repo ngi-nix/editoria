@@ -66,13 +66,13 @@ USER node
 RUN yarn global add node-gyp
 
 
-COPY --chown=node:node package.json .
+COPY --chown=node:node packages/job-pdf/package.json .
 RUN yarn cache clean
 RUN yarn
 RUN yarn add ghostscript4js
 
 
-COPY --chown=node:node . .
+COPY --chown=node:node packages/job-pdf .
 
 RUN chmod +x src/wait-for-it.sh
 RUN chmod +x src/service_run.sh
