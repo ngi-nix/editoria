@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.3"></a>
+## [0.4.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.2...editoria-api@0.4.3) (2019-10-29)
+
+
+### Bug Fixes
+
+* **exporter:** typo in comments ([cc2a86d](https://gitlab.coko.foundation/editoria/editoria/commit/cc2a86d))
+
+
+
+
 <a name="0.4.2"></a>
 ## [0.4.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.1...editoria-api@0.4.2) (2019-10-29)
 
