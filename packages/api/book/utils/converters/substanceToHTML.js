@@ -42,11 +42,6 @@ module.exports = (
   const endnotes = endnotesComponent && cheerio.load(endnotesComponent.content)
   const outerContainer = cheerio.load(container)
 
-  // const header = $('<header/>')
-  // if (componentType === 'toc') return content
-
-  // if (componentType === 'endnotes') return content
-
   const replaceWithBlockquote = className => (i, elem) => {
     const $elem = $(elem)
 
@@ -138,24 +133,12 @@ module.exports = (
   $('custom-block').each(replaceWithParagraph())
   $('custom-inline').each(replaceWithSpan())
   $('comment').each(replaceWithText)
-  // $('chapter-number').each(replaceWithParagraph('sc-chapter-number'))
   $('chapter-title').each(replaceWithH1('ct'))
   $('chapter-subtitle').each(replaceWithParagraph('cst'))
   $('source-note').each(replaceWithParagraph('exsn'))
   $('ol[styling="qa"]').each(replaceWithList('di'))
   $('ol[styling="unstyled"]').each(replaceWithList('none'))
-
-  // $('figure').each(replaceWithFigure(''))
   $('script').each(replaceWithPre('pre'))
-
-  // remove "uploads" from the start of each src attribute
-  // $('[src]').each((i, elem) => {
-  //   const $elem = $(elem)
-
-  //   const src = $elem.attr('src').replace(/^\/?uploads\//, '')
-
-  //   $elem.attr('src', src)
-  // })
 
   // accept or remove "track-change" elements
   $('track-change').each((i, elem) => {
@@ -190,7 +173,7 @@ module.exports = (
         const $elem = $(elem)
 
         const id = $elem.attr('data-id')
-        const noteNumber = `${i + 1}.`
+        const noteNumber = `${i + 1}`
         const element = $('#notes').find($(`#container-${id}`))
         let content = ''
 
@@ -200,9 +183,7 @@ module.exports = (
         }
 
         const callout = $(`
-          <a class="note-callout" href="#${bookComponent.id}-${id}">
-            <sup>${noteNumber}</sup>
-          </a>
+          <a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a>
           <span class="footnote" id="${bookComponent.id}-${id}">${content}</span>
         `)
 
@@ -219,7 +200,7 @@ module.exports = (
         const $elem = $(elem)
 
         const id = $elem.attr('data-id')
-        const noteNumber = `${i + 1}.`
+        const noteNumber = `${i + 1}`
         const element = $('#notes').find($(`#container-${id}`))
         let content = ''
 
@@ -235,9 +216,7 @@ module.exports = (
         li.attr('id', `${bookComponent.id}-${id}`)
         notesList.append(li)
         const callout = $(`
-        <a class="note-callout" href="#${bookComponent.id}-${id}">
-          <sup>${noteNumber}</sup>
-        </a>
+        <a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a>
       `)
 
         $elem.replaceWith(callout)
@@ -254,7 +233,7 @@ module.exports = (
         const $elem = $(elem)
 
         const id = $elem.attr('data-id')
-        const noteNumber = `${i + 1}.`
+        const noteNumber = `${i + 1}`
         const element = $('#notes').find($(`#container-${id}`))
         let content = ''
 
@@ -270,25 +249,15 @@ module.exports = (
         li.attr('id', `${bookComponent.id}-${id}`)
         notesList.append(li)
         const callout = $(`
-        <a class="note-callout" href="#${bookComponent.id}-${id}">
-          <sup>${noteNumber}</sup>
-        </a>
+        <a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a>
       `)
 
         $elem.replaceWith(callout)
       })
       chapterEndnotes('aside').append(notesList)
-      // console.log('chapterend', chapterEndnotes.html())
     }
   }
   $('#notes').remove()
-
-  // $('p').each((i, elem) => {
-  //   const $elem = $(elem)
-  //   if ($elem.attr('data-id')) {
-  //     $elem.removeAttr('data-id')
-  //   }
-  // })
 
   const bodyContent = $('#main').contents()
   outerContainer('section').append(bodyContent)
