@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.2"></a>
+## [0.1.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pandoc-job@0.1.1...editoria-pandoc-job@0.1.2) (2019-10-31)
+
+
+### Bug Fixes
+
+* **exporter:** icml fix standalone ([9bd270e](https://gitlab.coko.foundation/editoria/editoria/commit/9bd270e))
+
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pandoc-job@0.1.0...editoria-pandoc-job@0.1.1) (2019-10-24)
 
