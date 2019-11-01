@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.4"></a>
+## [0.0.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pdf-job@0.0.3...editoria-pdf-job@0.0.4) (2019-11-01)
+
+
+### Bug Fixes
+
+* **jobpdf:** correctionin of path ([e8b8021](https://gitlab.coko.foundation/editoria/editoria/commit/e8b8021))
+
+
+
+
 <a name="0.0.3"></a>
 ## [0.0.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pdf-job@0.0.2...editoria-pdf-job@0.0.3) (2019-10-29)
 
