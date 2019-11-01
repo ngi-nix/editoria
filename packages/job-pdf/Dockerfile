@@ -24,7 +24,7 @@ RUN apt-get update && \
 		rm -rf /var/lib/apt/lists/*
 
 # Update Freetype
-COPY docker-font.conf /etc/fonts/local.conf
+COPY packages/job-pdf/docker-font.conf /etc/fonts/local.conf
 ENV FREETYPE_PROPERTIES="truetype:interpreter-version=35"
 RUN apt-get update \
 		&& sh -c 'echo "deb http://http.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list' \
