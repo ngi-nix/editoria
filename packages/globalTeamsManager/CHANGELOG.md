@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.6"></a>
+## [0.2.6](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-editoria-global-teams@0.2.5...pubsweet-component-editoria-global-teams@0.2.6) (2019-11-05)
+
+
+### Bug Fixes
+
+* **jobs:** fix in pdf and other bugs ([7bef376](https://gitlab.coko.foundation/editoria/editoria/commit/7bef376))
+
+
+
+
 <a name="0.2.5"></a>
 ## [0.2.5](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-editoria-global-teams@0.2.4...pubsweet-component-editoria-global-teams@0.2.5) (2019-10-14)
 
