@@ -303,7 +303,7 @@ export class WaxPubsweet extends React.Component {
         mode.trackChanges.others.accept = false
         mode.trackChanges.others.reject = false
         mode.styling = false
-        translatedEditing = 'selection'
+        translatedEditing = 'disabled'
         break
       case 'selection_without_tc':
         mode.trackChanges.toggle = false

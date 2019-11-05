@@ -62,7 +62,7 @@ export class TeamManager extends React.Component {
           findUser={findUser}
         />
         <CancelButton type="submit" onClick={hideModal}>
-          <ButtonLabel>Cancel</ButtonLabel>
+          <ButtonLabel>Close</ButtonLabel>
         </CancelButton>
       </div>
     )

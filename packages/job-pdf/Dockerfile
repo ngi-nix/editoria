@@ -1,5 +1,4 @@
 FROM node:11
-WORKDIR /home/node
 
 ARG WAIT_SERVICE_PORT=postgres:5432
 ARG WAIT_TIMEOUT=300
@@ -56,20 +55,22 @@ RUN apt-get update && \
 		apt-get install -y vim && \
 		rm -rf /var/lib/apt/lists/*
 
+RUN npm install npm@latest -g
+RUN npm install -g node-gyp
+
 RUN adduser node audio \
 		&& adduser node video \
 		&& mkdir -p /home/node/Downloads \
 		&& chown -R node:node /home/node \
 		&& chown -R node:node /usr/lib 
-USER node
 
-RUN yarn global add node-gyp
+USER node
+WORKDIR /home/node
 
 
 COPY --chown=node:node packages/job-pdf/package.json .
-RUN yarn cache clean
-RUN yarn
-RUN yarn add ghostscript4js
+RUN npm install
+RUN npm install ghostscript4js
 
 
 COPY --chown=node:node packages/job-pdf .

@@ -161,14 +161,14 @@ class GlobalTeamsManager extends Component {
       return team
     })
 
-    const promises = data.map(team =>
-      updateGlobalTeam({
+    const promises = data.map(team => {
+      return updateGlobalTeam({
         variables: {
           id: team.id,
           input: omit(team, ['id', '__typename', 'type']),
         },
-      }),
-    )
+      })
+    })
 
     Promise.all(promises).then(res => {
       this.showRibbon()

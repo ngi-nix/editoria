@@ -9,11 +9,12 @@ const editoriaToEPUBPropertiesMapper = {
   toc: 'toc',
   introduction: 'introduction',
   preface: 'preface',
-  halftitle: 'halftitle',
-  titlepage: 'titlepage',
-  cover: 'cover',
   appendix: 'appendix',
   endnotes: 'endnotes',
+}
+const editoriaExtra = {
+  halftitle: 'halftitlepage',
+  titlepage: 'titlepage',
 }
 
 module.exports = (
@@ -54,6 +55,11 @@ module.exports = (
       $('section').attr({
         'epub:type': editoriaToEPUBPropertiesMapper[componentType],
         role: `doc-${editoriaToEPUBPropertiesMapper[componentType]}`,
+      })
+    }
+    if (editoriaExtra[componentType]) {
+      $('section').attr({
+        'epub:type': editoriaToEPUBPropertiesMapper[componentType],
       })
     }
   }
