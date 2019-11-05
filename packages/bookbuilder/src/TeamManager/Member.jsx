@@ -14,10 +14,13 @@ export class Member extends React.Component {
   _remove() {
     const { user, team, update } = this.props
 
-    const memberIndex = findIndex(team.members, { id: user.id })
-
+    const memberIndex = findIndex(team.members, { user: { id: user.id } })
     team.members.splice(memberIndex, 1)
-    const withoutMember = map(team.members, member => member.id)
+
+    const withoutMember = map(team.members, member => {
+      const { user } = member
+      return { user: { id: user.id } }
+    })
 
     update({
       variables: { id: team.id, input: { members: withoutMember } },
@@ -48,9 +51,7 @@ export class Member extends React.Component {
           style={{ backgroundImage: 'none' }}
         >
           <div>
-            <span>{`${user.givenName} ${user.surname} (${
-              user.username
-            })`}</span>
+            <span>{`${user.givenName} ${user.surname} (${user.username})`}</span>
           </div>
         </div>
       </li>

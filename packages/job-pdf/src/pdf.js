@@ -15,7 +15,7 @@ const pdfHandler = enablePubsub => async job => {
     })
     const pagedCLI = path.join(
       `${process.cwd()}/`,
-      'node_modules/.bin/pagedjs-cli -i',
+      'node_modules/pagedjs-cli/bin/paged -i',
     )
     await new Promise((resolve, reject) => {
       exec(

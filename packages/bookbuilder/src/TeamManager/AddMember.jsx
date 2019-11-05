@@ -148,6 +148,7 @@ export class AddMember extends React.Component {
         <AsyncSelect
           autoload={false}
           value={this.state.selectedOption}
+          placeholder="Type"
           closeMenuOnSelect
           onChange={this.handleChange}
           isClearable={false}

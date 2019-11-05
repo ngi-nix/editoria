@@ -178,7 +178,7 @@ const EpubBackend = async (
         await fs.remove(epubFilePath)
         resultPath = destination.replace(`${process.cwd()}`, '')
       }
-      await fs.remove(tempFolder)
+      // await fs.remove(tempFolder)
 
       return { path: resultPath }
     }
