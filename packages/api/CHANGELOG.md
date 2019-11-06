@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.7"></a>
+## [0.4.7](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.6...editoria-api@0.4.7) (2019-11-06)
+
+
+### Bug Fixes
+
+* **exporter:** remove temp folders ([fbd8bbe](https://gitlab.coko.foundation/editoria/editoria/commit/fbd8bbe))
+
+
+
+
 <a name="0.4.6"></a>
 ## [0.4.6](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.5...editoria-api@0.4.6) (2019-11-05)
 
