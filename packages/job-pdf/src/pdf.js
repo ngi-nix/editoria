@@ -40,8 +40,8 @@ const pdfHandler = enablePubsub => async job => {
     pubsub.publish(job.data.pubsubChannelPdf, {
       pdfJob: { status: 'PDF creation error', error: e },
     })
-
-    throw new Error('PDF error')
+    logger.error(e.message)
+    throw new Error('PDF error', e)
   }
 }
 

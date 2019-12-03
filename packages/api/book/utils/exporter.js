@@ -193,7 +193,7 @@ const EpubBackend = async (
 
         const jobIdPDF = crypto.randomBytes(3).toString('hex')
         const pubsubChannelPdf = `PDF.${ctx.user}.${jobIdPDF}`
-        const icmlId = await jobQueue.publish('pdf', {
+        const pdfId = await jobQueue.publish('pdf', {
           filePath: `/uploads/paged/${hash}/index.html`,
           outputPath: `/uploads/pdfs/${hash}.pdf`,
           pubsubChannelPdf,
@@ -206,7 +206,7 @@ const EpubBackend = async (
               await waait(1000)
               const job = await db('pgboss.job').whereRaw(
                 "data->'request'->>'id' = ?",
-                [icmlId],
+                [pdfId],
               )
 
               resolve(job[0].data.response)
