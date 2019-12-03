@@ -1,6 +1,6 @@
 {
   "name": "editoria-pdf-job",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "PubSweet job component for running pagedjs-cli",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
