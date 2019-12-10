@@ -48,6 +48,16 @@ const {
   jobs: { connectToJobQueue },
 } = pubsweetServer
 
+const {
+  useCaseAddBookComponent,
+  useCaseUpdateBookComponentContent,
+  useCaseUpdateUploading,
+  useCaseToggleIncludeInTOC,
+  useCaseUpdateComponentType,
+  useCaseUpdateTrackChanges,
+  useCaseUpdatePagination,
+} = require('../useCases')
+
 const DOCX_TO_HTML = 'DOCX_TO_HTML'
 
 const getOrderedBookComponents = async bookComponent => {
@@ -75,6 +85,7 @@ const getBookComponent = async (_, { id }, ctx) => {
 const ingestWordFile = async (_, { bookComponentFiles }, context) => {
   const jobQueue = await connectToJobQueue()
   const pubsub = await getPubsub()
+  console.log('bc', bookComponentFiles)
 
   const bookComponents = await Promise.all(
     bookComponentFiles.map(async bookComponentFile => {
@@ -141,97 +152,29 @@ const ingestWordFile = async (_, { bookComponentFiles }, context) => {
   /* eslint-enable */
 }
 
-const addBookComponent = async (_, args, ctx, info) => {
-  const { divisionId, bookId, componentType, title, uploading } = args.input
-
-  const applicationParameters = await ApplicationParameter.query().where({
-    context: 'bookBuilder',
-    area: 'stages',
-  })
-
-  const { config: workflowStages } = applicationParameters[0]
-
-  let bookComponentWorkflowStages
-
+const addBookComponent = async (_, { input }, ctx, info) => {
   try {
+    const { divisionId, bookId, componentType, title } = input
     const pubsub = await pubsubManager.getPubsub()
-    const division = await Division.findById(divisionId)
-    logger.info(
-      `Division which will hold the book found with id ${division.id}`,
-    )
-    const newBookComponent = {
+
+    const newBookComponent = await useCaseAddBookComponent(
+      divisionId,
       bookId,
       componentType,
-      divisionId,
-      archived: false,
-      deleted: false,
-    }
-    const createdBookComponent = await new BookComponent(
-      newBookComponent,
-    ).save()
-
-    logger.info(`New book component created with id ${createdBookComponent.id}`)
-    const translation = await new BookComponentTranslation({
-      bookComponentId: createdBookComponent.id,
-      languageIso: 'en',
       title,
-    }).save()
-
-    logger.info(
-      `New book component translation created with id ${translation.id}`,
-    )
-    const newBookComponents = division.bookComponents
-
-    // forEach(division.bookComponents, bookComponent => {
-    //   newBookComponents.push(bookComponent)
-    // })
-    newBookComponents.push(createdBookComponent.id)
-
-    const updatedDivision = await Division.query().patchAndFetchById(
-      division.id,
-      { bookComponents: newBookComponents },
     )
 
-    logger.info(
-      `Book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
-    )
-    if (workflowStages) {
-      bookComponentWorkflowStages = {
-        workflowStages: map(workflowStages, stage => ({
-          type: stage.type,
-          label: stage.title,
-          value: -1,
-        })),
-      }
-    }
-
-    const bookComponentState = await new BookComponentState(
-      assign(
-        {},
-        {
-          bookComponentId: createdBookComponent.id,
-          trackChangesEnabled: false,
-          uploading: uploading || false,
-          runningHeadersRight: title,
-          runningHeadersLeft: title,
-        },
-        bookComponentWorkflowStages,
-      ),
-    ).save()
-    logger.info(
-      `New state created for the book component ${bookComponentState}`,
-    )
     pubsub.publish(BOOK_COMPONENT_ADDED, {
-      bookComponentAdded: createdBookComponent,
+      bookComponentAdded: newBookComponent,
     })
-    return createdBookComponent
+
+    return newBookComponent
   } catch (e) {
-    logger.error(e)
+    logger.error(e.message)
     throw new Error(e)
   }
 }
 
-// TODO: Pending implementation
 const renameBookComponent = async (_, { input }, ctx) => {
   const { id, title } = input
   const pubsub = await pubsubManager.getPubsub()
@@ -308,16 +251,8 @@ const deleteBookComponent = async (_, { input }, ctx) => {
   }
 }
 
-// TODO: Pending implementation
-const archiveBookComponent = async (_, args, ctx) => {
-  // await ctx.models.bookComponent
-  //   .update({
-  //     id: args.input.id,
-  //     archived: true,
-  //   })
-  //   .exec()
-  // return ctx.models.bookComponent.findById({ id: args.input.id }).exec()
-}
+// Could be implemented in the future
+const archiveBookComponent = async (_, args, ctx) => {}
 
 const updateWorkflowState = async (_, { input }, ctx) => {
   try {
@@ -501,117 +436,153 @@ const updateContent = async (_, { input }, ctx) => {
 }
 
 const updatePagination = async (_, { input }, ctx) => {
-  const { id, pagination } = input
-  const pubsub = await pubsubManager.getPubsub()
+  try {
+    const { id, pagination } = input
+    const pubsub = await pubsubManager.getPubsub()
 
-  const currentAndUpdate = {
-    current: await BookComponent.findById(id),
-    update: { pagination },
+    const currentState = await BookComponentState.query().findOne({
+      bookComponentId: id,
+    })
+
+    if (!currentState) {
+      throw new Error(
+        `no state info exists for the book component with id ${id}`,
+      )
+    }
+
+    const currentAndUpdate = {
+      current: currentState,
+      update: { pagination },
+    }
+
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
+    await useCaseUpdatePagination(id, pagination)
+
+    const updatedBookComponent = await BookComponent.findById(id)
+
+    pubsub.publish(BOOK_COMPONENT_PAGINATION_UPDATED, {
+      bookComponentPaginationUpdated: updatedBookComponent,
+    })
+
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
   }
-  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-  const updatedBookComponent = await BookComponent.query().patchAndFetchById(
-    id,
-    {
-      pagination,
-    },
-  )
-  pubsub.publish(BOOK_COMPONENT_PAGINATION_UPDATED, {
-    bookComponentPaginationUpdated: updatedBookComponent,
-  })
-  return updatedBookComponent
 }
 
 const updateTrackChanges = async (_, { input }, ctx) => {
-  const { id, trackChangesEnabled } = input
-  const pubsub = await pubsubManager.getPubsub()
+  try {
+    const { id, trackChangesEnabled } = input
+    const pubsub = await pubsubManager.getPubsub()
 
-  const bookComponentState = await BookComponentState.query().where(
-    'bookComponentId',
-    id,
-  )
+    const currentState = await BookComponentState.query().findOne({
+      bookComponentId: id,
+    })
 
-  const currentAndUpdate = {
-    current: bookComponentState[0],
-    update: { trackChangesEnabled },
+    if (!currentState) {
+      throw new Error(
+        `no state info exists for the book component with id ${id}`,
+      )
+    }
+
+    const currentAndUpdate = {
+      current: currentState,
+      update: { trackChangesEnabled },
+    }
+
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
+    await useCaseUpdateTrackChanges(id, trackChangesEnabled)
+
+    const updatedBookComponent = await BookComponent.findById(id)
+
+    pubsub.publish(BOOK_COMPONENT_TRACK_CHANGES_UPDATED, {
+      bookComponentTrackChangesUpdated: updatedBookComponent,
+    })
+
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
   }
-  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-  await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
-    trackChangesEnabled,
-  })
-  const updatedBookComponent = await BookComponent.findById(id)
-  pubsub.publish(BOOK_COMPONENT_TRACK_CHANGES_UPDATED, {
-    bookComponentTrackChangesUpdated: updatedBookComponent,
-  })
-  return updatedBookComponent
 }
 
 const updateUploading = async (_, { input }, ctx) => {
-  const { id, uploading } = input
-  const pubsub = await pubsubManager.getPubsub()
+  try {
+    const { id, uploading } = input
+    const pubsub = await pubsubManager.getPubsub()
 
-  const bookComponentState = await BookComponentState.query().where(
-    'bookComponentId',
-    id,
-  )
+    const currentState = await BookComponentState.query().findOne({
+      bookComponentId: id,
+    })
 
-  const currentAndUpdate = {
-    current: bookComponentState[0],
-    update: { uploading },
+    if (!currentState) {
+      throw new Error(
+        `no state info exists for the book component with id ${id}`,
+      )
+    }
+
+    const currentAndUpdate = {
+      current: currentState,
+      update: { uploading },
+    }
+
+    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
+    await useCaseUpdateUploading(id, uploading)
+
+    const updatedBookComponent = await BookComponent.findById(id)
+
+    pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+      bookComponentUploadingUpdated: updatedBookComponent,
+    })
+
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
   }
-  await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-  await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
-    uploading,
-  })
-  const updatedBookComponent = await BookComponent.findById(id)
-  pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-    bookComponentUploadingUpdated: updatedBookComponent,
-  })
-  return updatedBookComponent
 }
+
 const updateComponentType = async (_, { input }, ctx) => {
-  const { id, componentType } = input
-  const pubsub = await pubsubManager.getPubsub()
-  const currentBookComponent = await BookComponent.findById(id)
-  if (currentBookComponent.componentType === 'toc') {
-    throw new Error(
-      'You cannot change the component type of the Table of Contents',
-    )
-  }
-  const updatedBookComponent = await BookComponent.query().patchAndFetchById(
-    id,
-    {
+  try {
+    const { id, componentType } = input
+    const pubsub = await pubsubManager.getPubsub()
+
+    const updatedBookComponent = await useCaseUpdateComponentType(
+      id,
       componentType,
-    },
-  )
-  pubsub.publish(BOOK_COMPONENT_TYPE_UPDATED, {
-    bookComponentTypeUpdated: updatedBookComponent,
-  })
-  return updatedBookComponent
+    )
+
+    pubsub.publish(BOOK_COMPONENT_TYPE_UPDATED, {
+      bookComponentTypeUpdated: updatedBookComponent,
+    })
+
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
 }
 
 const toggleIncludeInTOC = async (_, { input }, ctx) => {
   try {
     const { id } = input
-
     const pubsub = await pubsubManager.getPubsub()
-    const currentSate = await BookComponentState.query().where(
-      'bookComponentId',
-      id,
-    )
-    const up = await BookComponentState.query()
-      .patch({ includeInToc: !currentSate[0].includeInToc })
-      .findById(currentSate[0].id)
 
-    const updatedBookComponent = await BookComponent.findById(id)
+    await useCaseToggleIncludeInTOC(id)
+
+    const updatedBookComponent = await BookComponent.query().findOne({ id })
+
     pubsub.publish(BOOK_COMPONENT_TOC_UPDATED, {
       bookComponentTOCToggled: updatedBookComponent,
     })
+
     return updatedBookComponent
   } catch (e) {
-    logger.error(e)
+    logger.error(e.message)
     throw new Error(e)
   }
 }
