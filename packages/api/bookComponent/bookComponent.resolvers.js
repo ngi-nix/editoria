@@ -56,6 +56,9 @@ const {
   useCaseUpdateComponentType,
   useCaseUpdateTrackChanges,
   useCaseUpdatePagination,
+  useCaseLockBookComponent,
+  useCaseUnlockBookComponent,
+  useCaseUpdateWorkflowState,
 } = require('../useCases')
 
 const DOCX_TO_HTML = 'DOCX_TO_HTML'
@@ -258,52 +261,29 @@ const updateWorkflowState = async (_, { input }, ctx) => {
   try {
     const { id, workflowStages } = input
     const pubsub = await pubsubManager.getPubsub()
-    const applicationParameters = await ApplicationParameter.query().where({
-      context: 'bookBuilder',
-      area: 'lockTrackChangesWhenReviewing',
+
+    const bookComponentState = await BookComponentState.query().findOne({
+      bookComponentId: id,
     })
 
-    const { config: lockTrackChanges } = applicationParameters[0]
-
-    logger.info(
-      `Searching of book component state for the book component with id ${id}`,
-    )
-    const bookComponentState = await BookComponentState.query().where(
-      'bookComponentId',
-      id,
-    )
-    logger.info(
-      `Found book component state with id ${bookComponentState[0].id}`,
-    )
+    if (!bookComponentState) {
+      throw new Error(
+        `book component state does not exists for the book component with id ${id}`,
+      )
+    }
 
     const currentAndUpdate = {
-      current: bookComponentState[0],
+      current: bookComponentState,
       update: { workflowStages },
     }
 
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-    const update = {}
-    let isReviewing = false
-    if (lockTrackChanges) {
-      isReviewing = find(workflowStages, { type: 'review' }).value === 0
-      if (isReviewing) {
-        update.trackChangesEnabled = true
-        update.workflowStages = workflowStages
-      } else {
-        update.workflowStages = workflowStages
-      }
-    }
 
-    const updatedBookComponentState = await BookComponentState.query().patchAndFetchById(
-      bookComponentState[0].id,
-      {
-        ...update,
-      },
-    )
-    logger.info(
-      `Book component state updated with workflow ${updatedBookComponentState.workflowStages}`,
-    )
+    await useCaseUpdateWorkflowState(id, workflowStages)
+
+    const isReviewing = find(workflowStages, { type: 'review' }).value === 0
     const updatedBookComponent = await BookComponent.findById(id)
+
     pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
       bookComponentWorkflowUpdated: updatedBookComponent,
     })
@@ -313,6 +293,7 @@ const updateWorkflowState = async (_, { input }, ctx) => {
         bookComponentTrackChangesUpdated: updatedBookComponent,
       })
     }
+
     return updatedBookComponent
   } catch (e) {
     logger.error(e)
@@ -324,22 +305,18 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
-    const locks = await Lock.query()
-      .where('foreignId', id)
-      .andWhere('deleted', false)
-    if (locks.length > 0) {
-      await Lock.query().patchAndFetchById(locks[0].id, {
-        deleted: true,
-      })
-    }
+
+    await useCaseUnlockBookComponent(id)
+
     const updatedBookComponent = await BookComponent.findById(id)
 
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
       bookComponentLockUpdated: updatedBookComponent,
     })
+
     return updatedBookComponent
   } catch (e) {
-    logger.error(e)
+    logger.error(e.message)
     throw new Error(e)
   }
 }
@@ -348,29 +325,18 @@ const lockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
+
+    await useCaseLockBookComponent(id, ctx.user)
+
     const bookComponent = await BookComponent.findById(id)
-    const lock = await Lock.query()
-      .where('foreignId', id)
-      .andWhere('deleted', false)
-    if (lock.length > 0) {
-      if (lock[0].userId === ctx.user) {
-        return bookComponent
-      }
-      const errorMsg = `There is a lock already for this book component for the user with id ${lock[0].userId}`
-      logger.error(errorMsg)
-      throw new Error(errorMsg)
-    }
-    await new Lock({
-      foreignId: id,
-      foreignType: 'bookComponent',
-      userId: ctx.user,
-    }).save()
+
     pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
       bookComponentLockUpdated: bookComponent,
     })
+
     return bookComponent
   } catch (e) {
-    logger.error(e)
+    logger.error(e.message)
     throw new Error(e)
   }
 }

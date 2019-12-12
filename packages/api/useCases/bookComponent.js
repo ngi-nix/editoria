@@ -1,5 +1,5 @@
 // const findIndex = require('lodash/findIndex')
-// const find = require('lodash/find')
+const find = require('lodash/find')
 // const flatten = require('lodash/flatten')
 // const difference = require('lodash/difference')
 // const concat = require('lodash/concat')
@@ -26,7 +26,7 @@ const {
   Division,
   // Book,
   // BookTranslation,
-  // Lock,
+  Lock,
 } = require('editoria-data-model/src').models
 
 const addBookComponent = async (divisionId, bookId, componentType) => {
@@ -320,6 +320,176 @@ const updatePagination = async (bookComponentId, pagination) => {
   }
 }
 
+const unlockBookComponent = async bookComponentId => {
+  try {
+    const locks = await Lock.query()
+      .where('foreignId', bookComponentId)
+      .andWhere('deleted', false)
+
+    if (!locks || locks.length === 0) {
+      throw new Error(
+        `no lock found for the book component with id ${bookComponentId}`,
+      )
+    }
+
+    let numberOfAffectedRows
+
+    if (locks.length > 1) {
+      logger.error(
+        `multiple locks found for the book component with id ${bookComponentId}`,
+      )
+
+      numberOfAffectedRows = await Lock.query()
+        .patch({
+          deleted: true,
+        })
+        .whereIn('id', map(locks, lock => lock.id))
+
+      if (numberOfAffectedRows === locks.length) {
+        logger.info(
+          `all the locks deleted for book component with id ${bookComponentId}`,
+        )
+      }
+    }
+
+    const { id } = locks[0]
+
+    logger.info(
+      `lock with id ${id} found for the book component with id ${bookComponentId}`,
+    )
+
+    numberOfAffectedRows = await Lock.query()
+      .patch({
+        deleted: true,
+      })
+      .where('id', id)
+
+    logger.info(
+      `lock with id ${id} deleted for book component with id ${bookComponentId}`,
+    )
+
+    return numberOfAffectedRows
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
+const lockBookComponent = async (bookComponentId, userId) => {
+  try {
+    const locks = await Lock.query()
+      .where('foreignId', bookComponentId)
+      .andWhere('deleted', false)
+
+    if (locks.length > 1) {
+      logger.error(
+        `multiple locks found for the book component with id ${bookComponentId}`,
+      )
+
+      await Lock.query()
+        .patch({
+          deleted: true,
+        })
+        .whereIn('id', map(locks, lock => lock.id))
+
+      throw new Error(
+        `corrupted lock for the book component with id ${bookComponentId}, all locks deleted`,
+      )
+    }
+
+    if (locks.length === 1) {
+      if (locks[0].userId !== userId) {
+        const errorMsg = `There is a lock already for this book component for the user with id ${locks[0].userId}`
+        logger.error(errorMsg)
+        throw new Error(errorMsg)
+      }
+
+      logger.info(
+        `lock exists for book component with id ${bookComponentId} for the user with id ${userId}`,
+      )
+    }
+
+    logger.info(
+      `no existing lock found for book component with id ${bookComponentId}`,
+    )
+
+    const lock = await new Lock({
+      foreignId: bookComponentId,
+      foreignType: 'bookComponent',
+      userId,
+    }).save()
+
+    logger.info(
+      `lock acquired for book component with id ${bookComponentId} for the user with id ${userId}`,
+    )
+
+    return lock
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
+const updateWorkflowState = async (bookComponentId, workflowStages) => {
+  try {
+    const applicationParameters = await ApplicationParameter.query().findOne({
+      context: 'bookBuilder',
+      area: 'lockTrackChangesWhenReviewing',
+    })
+
+    if (!applicationParameters) {
+      throw new Error(`application parameters do not exist`)
+    }
+
+    const { config: lockTrackChanges } = applicationParameters
+
+    logger.info(
+      `searching of book component state for the book component with id ${bookComponentId}`,
+    )
+
+    const bookComponentState = await BookComponentState.query().findOne({
+      bookComponentId,
+    })
+
+    if (!bookComponentState) {
+      throw new Error(
+        `book component state does not exists for the book component with id ${bookComponentId}`,
+      )
+    }
+
+    logger.info(`found book component state with id ${bookComponentState.id}`)
+
+    const update = {}
+
+    let isReviewing = false
+
+    if (lockTrackChanges) {
+      isReviewing = find(workflowStages, { type: 'review' }).value === 0
+
+      if (isReviewing) {
+        update.trackChangesEnabled = true
+        update.workflowStages = workflowStages
+      } else {
+        update.workflowStages = workflowStages
+      }
+    }
+
+    const updatedBookComponentState = await BookComponentState.query().patchAndFetchById(
+      bookComponentState.id,
+      {
+        ...update,
+      },
+    )
+
+    logger.info(`book component state with id ${bookComponentState.id} updated`)
+
+    return updatedBookComponentState
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   addBookComponent,
   updateContent,
@@ -328,4 +498,7 @@ module.exports = {
   updateUploading,
   updateTrackChanges,
   updatePagination,
+  unlockBookComponent,
+  lockBookComponent,
+  updateWorkflowState,
 }

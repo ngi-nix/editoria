@@ -8,4 +8,7 @@ module.exports = {
   useCaseUpdateUploading: bookComponentUseCase.updateUploading,
   useCaseUpdateTrackChanges: bookComponentUseCase.updateTrackChanges,
   useCaseUpdatePagination: bookComponentUseCase.updatePagination,
+  useCaseLockBookComponent: bookComponentUseCase.lockBookComponent,
+  useCaseUnlockBookComponent: bookComponentUseCase.unlockBookComponent,
+  useCaseUpdateWorkflowState: bookComponentUseCase.updateWorkflowState,
 }
