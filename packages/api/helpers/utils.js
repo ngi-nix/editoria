@@ -16,4 +16,15 @@ utils.reorderArray = (array, item, to, from = undefined) => {
   return resArray
 }
 
+utils.isEmpty = data => {
+  let isEmpty = false
+  if (!data) {
+    isEmpty = true
+  } else {
+    isEmpty = data.trim().length === 0
+  }
+
+  return isEmpty
+}
+
 module.exports = utils

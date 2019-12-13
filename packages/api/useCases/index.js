@@ -11,4 +11,6 @@ module.exports = {
   useCaseLockBookComponent: bookComponentUseCase.lockBookComponent,
   useCaseUnlockBookComponent: bookComponentUseCase.unlockBookComponent,
   useCaseUpdateWorkflowState: bookComponentUseCase.updateWorkflowState,
+  useCaseDeleteBookComponent: bookComponentUseCase.deleteBookComponent,
+  useCaseRenameBookComponent: bookComponentUseCase.renameBookComponent,
 }

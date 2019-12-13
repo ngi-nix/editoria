@@ -59,6 +59,8 @@ const {
   useCaseLockBookComponent,
   useCaseUnlockBookComponent,
   useCaseUpdateWorkflowState,
+  useCaseDeleteBookComponent,
+  useCaseRenameBookComponent,
 } = require('../useCases')
 
 const DOCX_TO_HTML = 'DOCX_TO_HTML'
@@ -179,77 +181,55 @@ const addBookComponent = async (_, { input }, ctx, info) => {
 }
 
 const renameBookComponent = async (_, { input }, ctx) => {
-  const { id, title } = input
-  const pubsub = await pubsubManager.getPubsub()
-  const bookComponentTranslation = await BookComponentTranslation.query().where(
-    'bookComponentId',
-    id,
-  )
-  await BookComponentTranslation.query()
-    .patch({ title })
-    .where('id', bookComponentTranslation[0].id)
-    .andWhere('languageIso', 'en')
-  const bookComponentState = await BookComponentState.query().where(
-    'bookComponentId',
-    id,
-  )
-  await BookComponentState.query().patchAndFetchById(bookComponentState[0].id, {
-    runningHeadersRight: title,
-    runningHeadersLeft: title,
-  })
-  const updatedBookComponent = await BookComponent.findById(id)
-  pubsub.publish(BOOK_COMPONENT_TITLE_UPDATED, {
-    bookComponentTitleUpdated: updatedBookComponent,
-  })
+  try {
+    const { id, title } = input
+    const pubsub = await pubsubManager.getPubsub()
 
-  return updatedBookComponent
+    await useCaseRenameBookComponent(id, title, 'en')
+
+    const updatedBookComponent = await BookComponent.findById(id)
+
+    pubsub.publish(BOOK_COMPONENT_TITLE_UPDATED, {
+      bookComponentTitleUpdated: updatedBookComponent,
+    })
+
+    logger.info('message BOOK_COMPONENT_TITLE_UPDATED broadcasted')
+
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
 }
 
 const deleteBookComponent = async (_, { input }, ctx) => {
-  const { id, deleted } = input
   try {
+    const { id, deleted } = input
+    const pubsub = await pubsubManager.getPubsub()
+    const bookComponent = await BookComponent.findById(id)
+
+    if (!bookComponent) {
+      throw new Error(`book component with id ${id} does not exists`)
+    }
+
     const currentAndUpdate = {
-      current: await BookComponent.findById(id),
+      current: bookComponent,
       update: { deleted },
     }
-    const bookComponent = await BookComponent.findById(id)
-    if (bookComponent.componentType === 'toc') {
-      throw new Error(
-        'You cannot delete a component with type Table of Contents',
-      )
-    }
+
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
 
-    const pubsub = await pubsubManager.getPubsub()
-    const deletedBookComponent = await BookComponent.query().patchAndFetchById(
-      id,
-      {
-        deleted,
-      },
-    )
-    logger.info(`Book component with id ${deletedBookComponent.id} deleted`)
-    const { divisionId } = deletedBookComponent
-    const componentDivision = await Division.findById(divisionId)
-    const clonedBookComponents = clone(componentDivision.bookComponents)
-    pullAll(clonedBookComponents, [id])
-    const updatedDivision = await Division.query().patchAndFetchById(
-      componentDivision.id,
-      {
-        bookComponents: clonedBookComponents,
-      },
-    )
-    logger.info(
-      `Division's book component array before [${componentDivision.bookComponents}]`,
-    )
-    logger.info(
-      `Division's book component array after cleaned [${updatedDivision.bookComponents}]`,
-    )
+    const deletedBookComponent = await useCaseDeleteBookComponent(bookComponent)
+
     pubsub.publish(BOOK_COMPONENT_DELETED, {
       bookComponentDeleted: deletedBookComponent,
     })
+
+    logger.info('message BOOK_COMPONENT_DELETED broadcasted')
+
     return deletedBookComponent
   } catch (e) {
-    logger.error(e)
+    logger.error(e.message)
     throw new Error(e)
   }
 }
@@ -342,63 +322,34 @@ const lockBookComponent = async (_, { input }, ctx) => {
 }
 
 const updateContent = async (_, { input }, ctx) => {
-  const { id, content, title, workflowStages, uploading } = input
-  const pubsub = await pubsubManager.getPubsub()
+  try {
+    const { id, content } = input
+    const pubsub = await pubsubManager.getPubsub()
 
-  const bookComponentTranslation = await BookComponentTranslation.query().where(
-    'bookComponentId',
-    id,
-  )
-  await BookComponentTranslation.query()
-    .patch({ content, title })
-    .where('id', bookComponentTranslation[0].id)
-    .andWhere('languageIso', 'en')
+    const {
+      shouldNotifyWorkflowChange,
+    } = await useCaseUpdateBookComponentContent(id, content, 'en')
 
-  const updatedBookComponent = await BookComponent.findById(id)
-  if (workflowStages) {
-    const bookComponentState = await BookComponentState.query().where(
-      'bookComponentId',
-      id,
-    )
+    const updatedBookComponent = await BookComponent.findById(id)
 
-    const currentAndUpdate = {
-      current: bookComponentState[0],
-      update: { workflowStages },
+    pubsub.publish(BOOK_COMPONENT_CONTENT_UPDATED, {
+      bookComponentContentUpdated: updatedBookComponent,
+    })
+
+    logger.info('message BOOK_COMPONENT_CONTENT_UPDATED broadcasted')
+
+    if (shouldNotifyWorkflowChange) {
+      pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
+        bookComponentWorkflowUpdated: updatedBookComponent,
+      })
+      logger.info('message BOOK_COMPONENT_WORKFLOW_UPDATED broadcasted')
     }
-    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
 
-    await BookComponentState.query().patchAndFetchById(
-      bookComponentState[0].id,
-      {
-        workflowStages,
-      },
-    )
+    return updatedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
   }
-  if (uploading !== undefined) {
-    const bookComponentState = await BookComponentState.query().where(
-      'bookComponentId',
-      id,
-    )
-    const currentAndUpdate = {
-      current: bookComponentState[0],
-      update: { uploading },
-    }
-    await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-    await BookComponentState.query().patchAndFetchById(
-      bookComponentState[0].id,
-      {
-        uploading,
-      },
-    )
-  }
-  pubsub.publish(BOOK_COMPONENT_CONTENT_UPDATED, {
-    bookComponentContentUpdated: updatedBookComponent,
-  })
-  pubsub.publish(BOOK_COMPONENT_WORKFLOW_UPDATED, {
-    bookComponentWorkflowUpdated: updatedBookComponent,
-  })
-  return updatedBookComponent
 }
 
 const updatePagination = async (_, { input }, ctx) => {

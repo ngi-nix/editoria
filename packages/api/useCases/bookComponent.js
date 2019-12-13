@@ -1,16 +1,16 @@
-// const findIndex = require('lodash/findIndex')
+const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
 // const flatten = require('lodash/flatten')
 // const difference = require('lodash/difference')
 // const concat = require('lodash/concat')
 // const flattenDeep = require('lodash/flattenDeep')
 // const groupBy = require('lodash/groupBy')
-// const pullAll = require('lodash/pullAll')
+const pullAll = require('lodash/pullAll')
 // const map = require('lodash/flatMapDepth')
 const map = require('lodash/map')
 // const { convertDocx, extractFragmentProperties } = require('./util')
 
-// const clone = require('lodash/clone')
+const clone = require('lodash/clone')
 const assign = require('lodash/assign')
 const logger = require('@pubsweet/logger')
 // const pubsweetServer = require('pubsweet-server')
@@ -28,6 +28,8 @@ const {
   // BookTranslation,
   Lock,
 } = require('editoria-data-model/src').models
+
+const { isEmpty } = require('../helpers/utils')
 
 const addBookComponent = async (divisionId, bookId, componentType) => {
   try {
@@ -51,7 +53,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
     }
 
     logger.info(
-      `Division which will hold the book found with id ${division.id}`,
+      `division which will hold the book found with id ${division.id}`,
     )
 
     const newBookComponent = {
@@ -66,7 +68,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
       newBookComponent,
     ).save()
 
-    logger.info(`New book component created with id ${createdBookComponent.id}`)
+    logger.info(`new book component created with id ${createdBookComponent.id}`)
 
     const translation = await new BookComponentTranslation({
       bookComponentId: createdBookComponent.id,
@@ -74,7 +76,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
     }).save()
 
     logger.info(
-      `New book component translation created with id ${translation.id}`,
+      `new book component translation created with id ${translation.id}`,
     )
     const newBookComponents = division.bookComponents
 
@@ -86,7 +88,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
     )
 
     logger.info(
-      `Book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
+      `book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
     )
 
     if (workflowStages) {
@@ -112,7 +114,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
     ).save()
 
     logger.info(
-      `New state created for the book component ${bookComponentState}`,
+      `new state created with id ${bookComponentState.id} for the book component with id ${createdBookComponent.id}`,
     )
 
     return createdBookComponent
@@ -122,10 +124,10 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
   }
 }
 
-const updateContent = async (bookComponentId, content) => {
+const updateContent = async (bookComponentId, content, languageIso) => {
   try {
     const bookComponentTranslation = await BookComponentTranslation.query().findOne(
-      { bookComponentId },
+      { bookComponentId, languageIso },
     )
 
     const { id: translationId } = bookComponentTranslation
@@ -134,16 +136,61 @@ const updateContent = async (bookComponentId, content) => {
       `The translation entry found for the book component with id ${bookComponentId}. The entry's id is ${translationId}`,
     )
 
-    await BookComponentTranslation.query()
-      .patch({ content })
-      .where('id', translationId)
-      .andWhere('languageIso', 'en')
+    const updatedContent = await BookComponentTranslation.query().patchAndFetchById(
+      translationId,
+      { content },
+    )
 
     logger.info(
       `The translation entry updated for the book component with id ${bookComponentId} and entry's id ${translationId}`,
     )
 
-    return BookComponent.findById(bookComponentId)
+    let shouldNotifyWorkflowChange = false
+
+    if (isEmpty(bookComponentTranslation.content) && !isEmpty(content)) {
+      const hasWorkflowConfig = await ApplicationParameter.query().findOne({
+        context: 'bookBuilder',
+        area: 'stages',
+      })
+
+      if (hasWorkflowConfig) {
+        logger.info(`should update also workflow`)
+        const bookComponentState = await BookComponentState.query().findOne({
+          bookComponentId,
+        })
+
+        if (!bookComponentState) {
+          throw new Error(
+            `state does not exist for the book component with id ${bookComponentId}`,
+          )
+        }
+
+        const { id, workflowStages } = bookComponentState
+
+        const uploadStepIndex = findIndex(workflowStages, { type: 'upload' })
+        const filePrepStepIndex = findIndex(workflowStages, {
+          type: 'file_prep',
+        })
+        workflowStages[uploadStepIndex].value = 1
+        workflowStages[filePrepStepIndex].value = 0
+
+        const updatedState = await BookComponentState.query().patchAndFetchById(
+          id,
+          {
+            workflowStages,
+          },
+        )
+
+        if (!updatedState) {
+          throw new Error(
+            `workflow was not updated for the book component with id ${bookComponentId}`,
+          )
+        }
+        shouldNotifyWorkflowChange = true
+      }
+    }
+
+    return { updatedContent, shouldNotifyWorkflowChange }
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)
@@ -407,6 +454,8 @@ const lockBookComponent = async (bookComponentId, userId) => {
       logger.info(
         `lock exists for book component with id ${bookComponentId} for the user with id ${userId}`,
       )
+
+      return locks[0]
     }
 
     logger.info(
@@ -490,6 +539,105 @@ const updateWorkflowState = async (bookComponentId, workflowStages) => {
   }
 }
 
+const deleteBookComponent = async bookComponent => {
+  try {
+    const { id, componentType, divisionId } = bookComponent
+
+    if (componentType === 'toc') {
+      throw new Error(
+        'you cannot delete a component with type Table of Contents',
+      )
+    }
+
+    const deletedBookComponent = await BookComponent.query().patchAndFetchById(
+      id,
+      {
+        deleted: true,
+      },
+    )
+
+    logger.info(`book component with id ${deletedBookComponent.id} deleted`)
+
+    const componentDivision = await Division.findById(divisionId)
+
+    if (!componentDivision) {
+      throw new Error(
+        `division does not exists for the book component with id ${id}`,
+      )
+    }
+
+    const clonedBookComponents = clone(componentDivision.bookComponents)
+
+    pullAll(clonedBookComponents, [id])
+
+    const updatedDivision = await Division.query().patchAndFetchById(
+      componentDivision.id,
+      {
+        bookComponents: clonedBookComponents,
+      },
+    )
+
+    logger.info(
+      `division's book component array before [${componentDivision.bookComponents}]`,
+    )
+    logger.info(
+      `division's book component array after cleaned [${updatedDivision.bookComponents}]`,
+    )
+
+    return deletedBookComponent
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
+const renameBookComponent = async (bookComponentId, title, languageIso) => {
+  try {
+    const bookComponentTranslation = await BookComponentTranslation.query().findOne(
+      { bookComponentId, languageIso },
+    )
+
+    if (!bookComponentTranslation) {
+      throw new Error(
+        `translation entry does not exists for the book component with id ${bookComponentId}`,
+      )
+    }
+
+    const updatedTranslation = await BookComponentTranslation.query().patchAndFetchById(
+      bookComponentTranslation.id,
+      { title },
+    )
+
+    logger.info(
+      `the title of the book component with id ${bookComponentId} changed`,
+    )
+
+    const bookComponentState = await BookComponentState.query().findOne({
+      bookComponentId,
+    })
+
+    if (!bookComponentState) {
+      throw new Error(
+        `book component state does not exists for the book component with id ${bookComponentId}, thus running headers will not be able to update with the new title`,
+      )
+    }
+
+    await BookComponentState.query().patchAndFetchById(bookComponentState.id, {
+      runningHeadersRight: title,
+      runningHeadersLeft: title,
+    })
+
+    logger.info(
+      `running headers updated for the book component with id ${bookComponentId}`,
+    )
+
+    return updatedTranslation
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   addBookComponent,
   updateContent,
@@ -501,4 +649,6 @@ module.exports = {
   unlockBookComponent,
   lockBookComponent,
   updateWorkflowState,
+  deleteBookComponent,
+  renameBookComponent,
 }
