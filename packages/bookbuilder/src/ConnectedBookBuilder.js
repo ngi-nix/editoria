@@ -39,6 +39,7 @@ import {
   bookRenamedSubscription,
   toggleIncludeInTOCMutation,
   bookComponentIncludeInTOCSubscription,
+  uploadingUpdatedSubscription,
 } from './queries'
 
 const mapper = {
@@ -61,6 +62,7 @@ const mapper = {
   runningHeadersUpdatedSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
+  uploadingUpdatedSubscription,
   ingestWordFilesMutation,
   updateBookMetadataMutation,
   createBookComponentMutation,

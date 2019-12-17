@@ -1,17 +1,13 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
-const flatten = require('lodash/flatten')
 const difference = require('lodash/difference')
 const concat = require('lodash/concat')
 const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
-// const map = require('lodash/flatMapDepth')
 const map = require('lodash/map')
 const { convertDocx, extractFragmentProperties } = require('./util')
 
-const clone = require('lodash/clone')
-const assign = require('lodash/assign')
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
 const { withFilter } = require('graphql-subscriptions')
@@ -19,7 +15,6 @@ const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
 const crypto = require('crypto')
 
 const {
-  ApplicationParameter,
   BookComponentState,
   BookComponent,
   BookComponentTranslation,
@@ -87,10 +82,9 @@ const getBookComponent = async (_, { id }, ctx) => {
   return bookComponent
 }
 
-const ingestWordFile = async (_, { bookComponentFiles }, context) => {
+const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   const jobQueue = await connectToJobQueue()
   const pubsub = await getPubsub()
-  console.log('bc', bookComponentFiles)
 
   const bookComponents = await Promise.all(
     bookComponentFiles.map(async bookComponentFile => {
@@ -99,62 +93,84 @@ const ingestWordFile = async (_, { bookComponentFiles }, context) => {
       const title = filename.split('.')[0]
 
       const jobId = crypto.randomBytes(3).toString('hex')
-      const pubsubChannel = `${DOCX_TO_HTML}.${context.user}.${jobId}`
+      const pubsubChannel = `${DOCX_TO_HTML}.${ctx.user}.${jobId}`
 
-      const contentPromise = convertDocx(file, pubsubChannel, pubsub, jobQueue)
+      let componentId = bookComponentId
 
-      const createBookComponent = await contentPromise.then(async content => {
-        let input = {}
-        let id = bookComponentId
-        if (!id) {
-          const name = filename.replace(/\.[^/.]+$/, '')
-          const { componentType, label } = extractFragmentProperties(name)
+      if (!bookComponentId) {
+        const name = filename.replace(/\.[^/.]+$/, '')
+        const { componentType, label } = extractFragmentProperties(name)
 
-          const division = await Division.query().where({
-            bookId,
-            label,
-          })
+        const division = await Division.query().findOne({
+          bookId,
+          label,
+        })
 
-          input = {
-            title: name,
-            bookId,
-            uploading: true,
-            componentType,
-            divisionId: division[0].id,
-          }
-          const newBookComponent = await addBookComponent(_, { input }, context)
-          id = newBookComponent.id
+        if (!division) {
+          throw new Error(
+            `division with label ${label} does not exist for the book with id ${bookId}`,
+          )
         }
 
-        const bookComponentState = await BookComponentState.query().where(
-          'bookComponentId',
-          id,
+        const newBookComponent = await useCaseAddBookComponent(
+          division.id,
+          bookId,
+          componentType,
         )
 
-        const { workflowStages } = bookComponentState[0]
+        pubsub.publish(BOOK_COMPONENT_ADDED, {
+          bookComponentAdded: newBookComponent,
+        })
 
-        workflowStages[0].value = 1
-        workflowStages[1].value = 0
+        componentId = newBookComponent.id
+      }
 
-        input = {
-          id,
-          title,
-          content,
-          uploading: false,
-          workflowStages,
-        }
+      let uploading = true
 
-        const updatedBookComponent = await updateContent(_, { input }, context)
-
-        return [updatedBookComponent]
+      const currentComponentState = await BookComponentState.query().findOne({
+        bookComponentId: componentId,
       })
 
-      return createBookComponent
+      if (!currentComponentState) {
+        throw new Error(
+          `component state for the book component with id ${componentId} does not exist`,
+        )
+      }
+
+      const currentAndUpdate = {
+        current: currentComponentState,
+        update: { uploading },
+      }
+
+      await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
+      await useCaseUpdateUploading(componentId, uploading)
+
+      await useCaseRenameBookComponent(componentId, title, 'en')
+
+      const updatedBookComponent = await BookComponent.findById(componentId)
+
+      pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+        bookComponentUploadingUpdated: updatedBookComponent,
+      })
+
+      const content = await convertDocx(file, pubsubChannel, pubsub, jobQueue)
+
+      await useCaseUpdateBookComponentContent(componentId, content, 'en')
+
+      uploading = false
+
+      await useCaseUpdateUploading(componentId, uploading)
+
+      pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+        bookComponentUploadingUpdated: updatedBookComponent,
+      })
+
+      return updatedBookComponent
     }),
   )
 
-  return flatten(bookComponents)
-  /* eslint-enable */
+  return bookComponents
 }
 
 const addBookComponent = async (_, { input }, ctx, info) => {
@@ -357,26 +373,20 @@ const updatePagination = async (_, { input }, ctx) => {
     const { id, pagination } = input
     const pubsub = await pubsubManager.getPubsub()
 
-    const currentState = await BookComponentState.query().findOne({
-      bookComponentId: id,
-    })
+    const currentBookComponent = await BookComponent.findById(id)
 
-    if (!currentState) {
-      throw new Error(
-        `no state info exists for the book component with id ${id}`,
-      )
+    if (!currentBookComponent) {
+      throw new Error(`book component with id ${id} does not exists`)
     }
 
     const currentAndUpdate = {
-      current: currentState,
+      current: currentBookComponent,
       update: { pagination },
     }
 
     await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
 
-    await useCaseUpdatePagination(id, pagination)
-
-    const updatedBookComponent = await BookComponent.findById(id)
+    const updatedBookComponent = await useCaseUpdatePagination(id, pagination)
 
     pubsub.publish(BOOK_COMPONENT_PAGINATION_UPDATED, {
       bookComponentPaginationUpdated: updatedBookComponent,

@@ -1,5 +1,6 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
+const { transaction, raw } = require('objection')
 // const flatten = require('lodash/flatten')
 // const difference = require('lodash/difference')
 // const concat = require('lodash/concat')
@@ -33,91 +34,96 @@ const { isEmpty } = require('../helpers/utils')
 
 const addBookComponent = async (divisionId, bookId, componentType) => {
   try {
-    const applicationParameters = await ApplicationParameter.query().findOne({
-      context: 'bookBuilder',
-      area: 'stages',
-    })
+    return transaction(
+      ApplicationParameter,
+      BookComponent,
+      BookComponentTranslation,
+      BookComponentState,
+      Division,
+      async (
+        ApplicationParameter,
+        BookComponent,
+        BookComponentTranslation,
+        BookComponentState,
+        Division,
+      ) => {
+        const applicationParameters = await ApplicationParameter.query().findOne(
+          {
+            context: 'bookBuilder',
+            area: 'stages',
+          },
+        )
 
-    if (!applicationParameters) {
-      throw new Error(`application parameters do not exist`)
-    }
+        if (!applicationParameters) {
+          throw new Error(`application parameters do not exist`)
+        }
 
-    const { config: workflowStages } = applicationParameters
+        const { config: workflowStages } = applicationParameters
 
-    let bookComponentWorkflowStages
+        let bookComponentWorkflowStages
 
-    const division = await Division.findById(divisionId)
+        const newBookComponent = {
+          bookId,
+          componentType,
+          divisionId,
+          archived: false,
+          deleted: false,
+        }
 
-    if (!division) {
-      throw new Error(`division with id ${divisionId} does not exists`)
-    }
+        const createdBookComponent = await new BookComponent(
+          newBookComponent,
+        ).save()
 
-    logger.info(
-      `division which will hold the book found with id ${division.id}`,
-    )
+        logger.info(
+          `new book component created with id ${createdBookComponent.id}`,
+        )
 
-    const newBookComponent = {
-      bookId,
-      componentType,
-      divisionId,
-      archived: false,
-      deleted: false,
-    }
-
-    const createdBookComponent = await new BookComponent(
-      newBookComponent,
-    ).save()
-
-    logger.info(`new book component created with id ${createdBookComponent.id}`)
-
-    const translation = await new BookComponentTranslation({
-      bookComponentId: createdBookComponent.id,
-      languageIso: 'en',
-    }).save()
-
-    logger.info(
-      `new book component translation created with id ${translation.id}`,
-    )
-    const newBookComponents = division.bookComponents
-
-    newBookComponents.push(createdBookComponent.id)
-
-    const updatedDivision = await Division.query().patchAndFetchById(
-      division.id,
-      { bookComponents: newBookComponents },
-    )
-
-    logger.info(
-      `book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
-    )
-
-    if (workflowStages) {
-      bookComponentWorkflowStages = {
-        workflowStages: map(workflowStages, stage => ({
-          type: stage.type,
-          label: stage.title,
-          value: -1,
-        })),
-      }
-    }
-
-    const bookComponentState = await new BookComponentState(
-      assign(
-        {},
-        {
+        const translation = await new BookComponentTranslation({
           bookComponentId: createdBookComponent.id,
-          trackChangesEnabled: false,
-          uploading: false,
-        },
-        bookComponentWorkflowStages,
-      ),
-    ).save()
+          languageIso: 'en',
+        }).save()
 
-    logger.info(
-      `new state created with id ${bookComponentState.id} for the book component with id ${createdBookComponent.id}`,
+        logger.info(
+          `new book component translation created with id ${translation.id}`,
+        )
+
+        await Division.query()
+          .where('id', divisionId)
+          .patch({
+            book_components: raw(
+              `book_components || '"${createdBookComponent.id}"'`,
+            ),
+          })
+
+        if (workflowStages) {
+          bookComponentWorkflowStages = {
+            workflowStages: map(workflowStages, stage => ({
+              type: stage.type,
+              label: stage.title,
+              value: -1,
+            })),
+          }
+        }
+
+        const bookComponentState = await new BookComponentState(
+          assign(
+            {},
+            {
+              bookComponentId: createdBookComponent.id,
+              trackChangesEnabled: false,
+              uploading: false,
+            },
+            bookComponentWorkflowStages,
+          ),
+        ).save()
+
+        logger.info(
+          `new state created with id ${bookComponentState.id} for the book component with id ${createdBookComponent.id}`,
+        )
+
+        return createdBookComponent
+      },
     )
-
-    return createdBookComponent
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)
@@ -333,34 +339,9 @@ const updateTrackChanges = async (bookComponentId, trackChangesEnabled) => {
 
 const updatePagination = async (bookComponentId, pagination) => {
   try {
-    const currentState = await BookComponentState.query().findOne({
-      bookComponentId,
+    return BookComponent.query().patchAndFetchById(bookComponentId, {
+      pagination,
     })
-
-    if (!currentState) {
-      throw new Error(
-        `no state info exists for the book component with id ${bookComponentId}`,
-      )
-    }
-
-    const { id } = currentState
-
-    logger.info(
-      `Current state for the book component with id ${bookComponentId} found with id ${id}`,
-    )
-
-    const updatedState = await BookComponentState.query().patchAndFetchById(
-      id,
-      {
-        pagination,
-      },
-    )
-
-    logger.info(
-      `book component track changes state changed from ${currentState.pagination} to ${updatedState.pagination} for book component with id ${bookComponentId}`,
-    )
-
-    return updatedState
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)
