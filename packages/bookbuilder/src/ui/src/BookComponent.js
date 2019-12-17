@@ -429,6 +429,7 @@ const BookComponent = ({
           showModal={showModal}
           showModalToggle={showModalToggle}
           trackChangesEnabled={trackChangesEnabled}
+          uploading={uploading}
           // updateBookComponentContent={updateBookComponentContent}
           // update={update}
           // updateBookComponentUploading={updateBookComponentUploading}

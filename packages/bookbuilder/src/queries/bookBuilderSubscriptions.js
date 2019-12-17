@@ -10,6 +10,14 @@ const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
+const BOOK_COMPONENT_UPLOADING_UPDATED_SUBSCRIPTION = gql`
+  subscription BookComponentUploadingUpdated {
+    bookComponentUploadingUpdated {
+      id
+    }
+  }
+`
+
 const RUNNING_HEADERS_UPDATED_SUBSCRIPTION = gql`
   subscription RunningHeadersUpdated {
     bookRunningHeadersUpdated {
@@ -417,6 +425,26 @@ const runningHeadersUpdatedSubscription = props => {
     </Subscription>
   )
 }
+
+const uploadingUpdatedSubscription = props => {
+  const { render, getBookQuery, statefull } = props
+  const { pauseUpdates } = statefull
+  const { refetch } = getBookQuery
+  const triggerRefetch = () => {
+    if (pauseUpdates) return
+    refetch()
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_UPLOADING_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
+
 export {
   orderChangeSubscription,
   bookComponentAddedSubscription,
@@ -434,4 +462,5 @@ export {
   // docxToHTMLJobSubscription,
   bookComponentIncludeInTOCSubscription,
   runningHeadersUpdatedSubscription,
+  uploadingUpdatedSubscription,
 }

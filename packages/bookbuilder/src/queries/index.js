@@ -31,6 +31,7 @@ export {
   // docxToHTMLJobSubscription,
   bookComponentIncludeInTOCSubscription,
   runningHeadersUpdatedSubscription,
+  uploadingUpdatedSubscription,
 } from './bookBuilderSubscriptions'
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'

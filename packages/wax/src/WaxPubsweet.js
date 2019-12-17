@@ -69,7 +69,7 @@ export class WaxPubsweet extends React.Component {
       bookComponent: { id },
       editing,
     } = this.props
-
+    console.log('in unmount')
     if (editing === 'preview' || editing === 'selection') return
     this.unlock(id)
   }
@@ -99,29 +99,6 @@ export class WaxPubsweet extends React.Component {
 
   save(content) {
     const { bookComponent, updateBookComponentContent } = this.props
-    const sourceBefore = bookComponent.content || ''
-    const hasContentBefore = sourceBefore.trim().length > 0
-    const hasContent = content.trim().length > 0
-    let workflowStages
-
-    if (!hasContentBefore && hasContent) {
-      workflowStages = bookComponent.workflowStages.map(stage => ({
-        label: stage.label,
-        type: stage.type,
-        value: stage.value,
-      }))
-      workflowStages[0].value = 1 // upload stage
-      workflowStages[1].value = 0 // file_prep stage
-      return updateBookComponentContent({
-        variables: {
-          input: {
-            id: bookComponent.id,
-            content,
-            workflowStages,
-          },
-        },
-      })
-    }
 
     return updateBookComponentContent({
       variables: {
