@@ -212,7 +212,7 @@ const cloneTemplate = async (_, { input }, ctx) => {
       author: template.author,
       target: template.target,
       trimSize: template.trimSize,
-      notes:template.notes,
+      notes: template.notes,
       referenceId: template.id,
     }).save()
 
@@ -305,6 +305,56 @@ const updateTemplate = async (_, { input }, ctx) => {
       logger.info(
         `There is/are ${files.length} new file/s to be uploaded for the template`,
       )
+
+      if (deleteFiles) {
+        logger.info(
+          `Existing file/s with id/s ${deleteFiles} will be patched and set to deleted true`,
+        )
+        await Promise.all(
+          map(deleteFiles, async fileId => {
+            const deletedFile = await File.query().patchAndFetchById(fileId, {
+              deleted: true,
+            })
+            logger.info(`File with id ${deletedFile.id} was patched`)
+            const thumbnailPath = path.join(
+              uploadsPath,
+              'templates',
+              id,
+              deletedFile.name,
+            )
+            await fs.remove(thumbnailPath)
+            logger.info(
+              `File with name ${deletedFile.name} removed from the server`,
+            )
+          }),
+        )
+      }
+
+      if (deleteThumbnail) {
+        logger.info(
+          `Existing thumbnail with id ${deleteThumbnail} will be patched and set to deleted true`,
+        )
+        const deletedThumbnail = await File.query().patchAndFetchById(
+          deleteThumbnail,
+          { deleted: true },
+        )
+        logger.info(`File with id ${deletedThumbnail.id} was patched`)
+        const thumbnailPath = path.join(
+          uploadsPath,
+          'templates',
+          id,
+          deletedThumbnail.name,
+        )
+        await fs.remove(thumbnailPath)
+        logger.info(
+          `File with name ${deletedThumbnail.name} removed from the server`,
+        )
+        await Template.query()
+          .patch({ thumbnailId: null })
+          .findById(id)
+        logger.info('Template thumbnailId property updated')
+      }
+
       await Promise.all(
         map(files, async file => {
           const { createReadStream, filename, mimetype, encoding } = await file
@@ -347,31 +397,6 @@ const updateTemplate = async (_, { input }, ctx) => {
           })
         }),
       )
-    }
-
-    if (deleteThumbnail) {
-      logger.info(
-        `Existing thumbnail with id ${deleteThumbnail} will be patched and set to deleted true`,
-      )
-      const deletedThumbnail = await File.query().patchAndFetchById(
-        deleteThumbnail,
-        { deleted: true },
-      )
-      logger.info(`File with id ${deletedThumbnail.id} was patched`)
-      const thumbnailPath = path.join(
-        uploadsPath,
-        'templates',
-        id,
-        deletedThumbnail.name,
-      )
-      await fs.remove(thumbnailPath)
-      logger.info(
-        `File with name ${deletedThumbnail.name} removed from the server`,
-      )
-      await Template.query()
-        .patch({ thumbnailId: null })
-        .findById(id)
-      logger.info('Template thumbnailId property updated')
     }
 
     if (thumbnail) {
@@ -429,29 +454,29 @@ const updateTemplate = async (_, { input }, ctx) => {
       })
     }
 
-    if (deleteFiles) {
-      logger.info(
-        `Existing file/s with id/s ${deleteFiles} will be patched and set to deleted true`,
-      )
-      await Promise.all(
-        map(deleteFiles, async fileId => {
-          const deletedFile = await File.query().patchAndFetchById(fileId, {
-            deleted: true,
-          })
-          logger.info(`File with id ${deletedFile.id} was patched`)
-          const thumbnailPath = path.join(
-            uploadsPath,
-            'templates',
-            id,
-            deletedFile.name,
-          )
-          await fs.remove(thumbnailPath)
-          logger.info(
-            `File with name ${deletedFile.name} removed from the server`,
-          )
-        }),
-      )
-    }
+    // if (deleteFiles) {
+    //   logger.info(
+    //     `Existing file/s with id/s ${deleteFiles} will be patched and set to deleted true`,
+    //   )
+    //   await Promise.all(
+    //     map(deleteFiles, async fileId => {
+    //       const deletedFile = await File.query().patchAndFetchById(fileId, {
+    //         deleted: true,
+    //       })
+    //       logger.info(`File with id ${deletedFile.id} was patched`)
+    //       const thumbnailPath = path.join(
+    //         uploadsPath,
+    //         'templates',
+    //         id,
+    //         deletedFile.name,
+    //       )
+    //       await fs.remove(thumbnailPath)
+    //       logger.info(
+    //         `File with name ${deletedFile.name} removed from the server`,
+    //       )
+    //     }),
+    //   )
+    // }
     const updatedTemplate = await Template.query().patchAndFetchById(id, {
       name,
       author,
