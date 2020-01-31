@@ -13,13 +13,13 @@ const Centered = styled.div`
 `
 
 const CustomModal = props => {
-  const { children, headerText, size, ...rest } = props
+  const { children, headerText, size, footerComponent, ...rest } = props
 
   const Header = <ModalHeader text={headerText} />
 
   return (
     <ModalRoot
-      footerComponent={null}
+      footerComponent={footerComponent || null}
       headerComponent={Header}
       size={size}
       {...rest}

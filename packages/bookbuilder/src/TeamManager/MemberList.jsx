@@ -1,37 +1,32 @@
 /* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
 import Member from './Member'
-import styles from '../styles/teamManager.local.scss'
+
+const MemberListContainer = styled.ul`
+  list-style-type: none;
+  margin: calc(2 * ${th('gridUnit')}) 0 calc(2 * ${th('gridUnit')}) 0;
+  padding: 0 calc(2 * ${th('gridUnit')}) 0 calc(2 * ${th('gridUnit')});
+`
 
 export class MemberList extends React.Component {
   render() {
-    const {
-      members,
-      color,
-      team,
-      update,
-      // bookId,
-      rules,
-    } = this.props
-    // const remove = team.teamType.name !== 'Production Editor'
-
-    const list = members.map((member, i) => (
+    const { members, color, team, update, rules } = this.props
+    const list = members.map(member => (
       <Member
         color={color}
-        key={i}
-        // remove={remove}
+        key={member.id}
         rules={rules}
         team={team}
         update={update}
-        // bookId={bookId}
         user={member.user}
         users={[]}
       />
     ))
 
-    return <ul className={styles.teamMembersContainer}>{list}</ul>
+    return <MemberListContainer>{list}</MemberListContainer>
   }
 }
 

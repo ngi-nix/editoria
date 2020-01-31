@@ -1,9 +1,14 @@
 import { find, keys } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 import Group from './Group'
-import styles from '../styles/teamManager.local.scss'
+
+const ListWrapper = styled.div`
+  border-bottom: 1px solid #000;
+  flex: 1;
+`
 
 export class GroupList extends React.Component {
   constructor(props) {
@@ -28,41 +33,26 @@ export class GroupList extends React.Component {
   }
 
   render() {
-    const {
-      teams,
-      findUser,
-      update,
-      // bookId,
-      rules,
-      canViewAddTeamMember,
-    } = this.props
+    const { teams, findUser, update, rules, canViewAddTeamMember } = this.props
     const { options } = this
 
-    // TODO -- refactor
-    // do it like this to guarantee order of groups
     const groups = keys(options).map((key, i) => {
-      // get team of this name
       const team = find(teams, team => team.role === key)
-
       if (!team) return null
-      /* eslint-disable */
+
       return (
-        <div key={i}>
-          <Group
-            // bookId={bookId}
-            options={options[team.role]}
-            rules={rules}
-            canViewAddTeamMember={canViewAddTeamMember}
-            team={team}
-            update={update}
-            findUser={findUser}
-          />
-          <div className={styles.groupSeparator} />
-        </div>
+        <Group
+          canViewAddTeamMember={canViewAddTeamMember}
+          findUser={findUser}
+          key={team.role}
+          options={options[team.role]}
+          rules={rules}
+          team={team}
+          update={update}
+        />
       )
     })
-    /* eslint-enable */
-    return <div className={styles.groupList}>{groups}</div>
+    return <ListWrapper>{groups}</ListWrapper>
   }
 }
 

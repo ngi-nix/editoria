@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
 import GroupHeader from './GroupHeader'
@@ -31,7 +31,6 @@ export class Group extends React.Component {
       findUser,
       options,
       update,
-      // bookId,
       rules,
       canViewAddTeamMember,
     } = this.props
@@ -40,7 +39,7 @@ export class Group extends React.Component {
     const allowed = true
 
     return (
-      <div>
+      <Fragment>
         <GroupHeader
           allowed={allowed}
           canViewAddTeamMember={canViewAddTeamMember}
@@ -50,7 +49,6 @@ export class Group extends React.Component {
         />
 
         <MemberList
-          // bookId={bookId}
           color={options.color}
           members={members}
           rules={rules}
@@ -58,14 +56,13 @@ export class Group extends React.Component {
           update={update}
         />
         <AddMember
-          // bookId={bookId}
           findUser={findUser}
           hideInput={this._closeAddMember}
           show={this.state.isAddMemberOpen}
           team={team}
           update={update}
         />
-      </div>
+      </Fragment>
     )
   }
 }

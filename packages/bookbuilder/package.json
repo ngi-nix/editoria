@@ -15,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
-    "classnames": "^2.2.5",
     "codemirror": "^5.45.0",
     "config": "^3.1.0",
     "editoria-common": "^0.2.0",

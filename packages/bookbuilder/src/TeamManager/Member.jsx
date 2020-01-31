@@ -1,14 +1,56 @@
 import { findIndex, map } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
 
-import styles from '../styles/teamManager.local.scss'
+import { DefaultButton } from '../ui'
 
+const ListItem = styled.li`
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+`
+
+const MemberContainer = styled.div`
+  flex-basis: 90%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+`
+
+const User = styled.span`
+  background-color: white;
+  font-family: ${th('fontReading')};
+  font-size: ${th('fontSizeHeading5')};
+  line-height: ${th('lineHeightHeading5')};
+  overflow-y: hidden;
+  padding-right: ${th('gridUnit')};
+  word-wrap: break-word;
+  &:after {
+    content: '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . '
+      '. . . . . . . . . . . . . . . . . . . . ';
+    float: left;
+    font-size: ${th('fontSizeBaseSmall')};
+    padding-top: 3px;
+    white-space: nowrap;
+    width: 0;
+  }
+`
+const ActionsContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-basis: 10%;
+  justify-content: center;
+`
 export class Member extends React.Component {
   constructor(props) {
     super(props)
     this._remove = this._remove.bind(this)
-    this.renderRemove = this.renderRemove.bind(this)
   }
 
   _remove() {
@@ -26,46 +68,25 @@ export class Member extends React.Component {
       variables: { id: team.id, input: { members: withoutMember } },
     })
   }
-  renderRemove(authorized) {
-    const { user } = this.props
-    if (authorized) {
-      return (
-        <li>
-          <div className={styles.memberContainer}>
-            <div className={styles.personContainer}>
-              <span>{`${user.givenName} ${user.surname}`}</span>
-            </div>
-            <div className={styles.actionsContainer}>
-              <div className={styles.actionContainer}>
-                <a onClick={this._remove}>Remove</a>
-              </div>
-            </div>
-          </div>
-        </li>
-      )
-    }
-    return (
-      <li>
-        <div
-          className={styles.personContainer}
-          style={{ backgroundImage: 'none' }}
-        >
-          <div>
-            <span>{`${user.givenName} ${user.surname} (${user.username})`}</span>
-          </div>
-        </div>
-      </li>
-    )
-  }
+
   render() {
-    const { team, rules } = this.props
+    const { team, rules, user } = this.props
     const { canRemoveTeamMember } =
       rules.teamRoles.find(rule => rule.role === team.role) || {}
-    if (canRemoveTeamMember) {
-      return this.renderRemove(true)
-    }
 
-    return this.renderRemove(false)
+    return (
+      <ListItem>
+        <MemberContainer>
+          <User>{`${user.givenName} ${user.surname}`}</User>
+        </MemberContainer>
+
+        {canRemoveTeamMember && (
+          <ActionsContainer>
+            <DefaultButton label="Remove" onClick={this._remove} />
+          </ActionsContainer>
+        )}
+      </ListItem>
+    )
   }
 }
 

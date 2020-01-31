@@ -2,26 +2,26 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import CustomModal from 'editoria-common/src/CustomModal'
+import ModalFooterDialog from 'editoria-common/src/ModalFooterDialog'
 import TeamManager from './TeamManager'
 
+const Footer = (
+  <ModalFooterDialog showConfirmButton={false} textCancel="Close" />
+)
 class TeamManagerModal extends React.Component {
   renderBody() {
     const {
       teams,
       findUser,
       updateTeam,
-      // bookId,
       rules,
       canViewAddTeamMember,
-      hideModal,
     } = this.props
 
     return (
       <TeamManager
-        // bookId={bookId}
         canViewAddTeamMember={canViewAddTeamMember}
         findUser={findUser}
-        hideModal={hideModal}
         rules={rules}
         teams={teams}
         updateTeam={updateTeam}
@@ -36,11 +36,12 @@ class TeamManagerModal extends React.Component {
 
     return (
       <CustomModal
+        footerComponent={Footer}
+        headerText="Book's Team Manager"
         isOpen={isOpen}
+        onRequestClose={hideModal}
         shouldCloseOnOverlayClick={false}
         size="medium"
-        headerText="Book's Team Manager"
-        onRequestClose={hideModal}
       >
         {body}
       </CustomModal>

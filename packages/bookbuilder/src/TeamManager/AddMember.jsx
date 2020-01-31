@@ -2,102 +2,26 @@ import { map, debounce, isEmpty } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import AsyncSelect from 'react-select/lib/Async'
+import styled from 'styled-components'
+import { th } from '@pubsweet/ui-toolkit'
 
-import styles from '../styles/teamManager.local.scss'
-
+const Container = styled.div`
+  margin-bottom: calc(2 * ${th('gridUnit')});
+  padding: 0 calc(2 * ${th('gridUnit')}) 0 calc(2 * ${th('gridUnit')});
+  width: 95%;
+`
 export class AddMember extends React.Component {
   constructor(props) {
     super(props)
-
-    // this._onClickAdd = this._onClickAdd.bind(this)
-
-    // this._search = this._search.bind(this)
-    // this._save = this._save.bind(this)
-    // this._updateMessage = this._updateMessage.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.promiseOptions = this.promiseOptions.bind(this)
     this.searchUsers = this.searchUsers.bind(this)
-    // this._hide = this._hide.bind(this)
 
     this.state = {
       message: {},
       selectedOption: null,
     }
   }
-
-  // _onClickAdd() {
-  //   this.setState({ message: {} })
-  //   this._search(this.addUser.state.value)
-  //   this.addUser.state.value = ''
-  // }
-
-  /* eslint-disable */
-  // _search(username) {
-  //   const { team, users, findUser } = this.props
-  // findUser({
-  //   variables: {
-  //     search: username,
-  //   },
-  // }).then(res=>console.log(res))
-
-  // const user = find(users, c => c.username === username)
-
-  // if (user) {
-  //   team.members = union(team.members, [user.id])
-  //   this._save(team)
-  //   return this._updateMessage(null, username)
-  // }
-
-  // this._updateMessage('error', username)
-  // }
-  /* eslint-enable */
-
-  // _save(team) {
-  //   const { update, updateCollection, book, users } = this.props
-  //   update(team).then(res => {
-  //     if (res.team.teamType === 'productionEditor') {
-  //       const productionEditors = []
-  //       for (let i = 0; i < res.team.members.length; i += 1) {
-  //         productionEditors.push(find(users, c => c.id === res.team.members[i]))
-  //       }
-  //       updateCollection({
-  //         id: book.id,
-  //         productionEditor: productionEditors,
-  //       })
-  //     }
-  //   })
-  // }
-
-  /* eslint-disable */
-  // _updateMessage(error, username) {
-  //   let msg
-
-  //   if (error) {
-  //     msg = `user ${username} not found`
-  //     return this.setState({
-  //       message: {
-  //         error: true,
-  //         text: msg,
-  //         classname: 'failureGroup',
-  //       },
-  //     })
-  //   }
-
-  //   msg = `user ${username} successfully added to group`
-  //   this.setState({
-  //     message: {
-  //       error: false,
-  //       text: msg,
-  //       classname: 'successGroup',
-  //     },
-  //   })
-  // }
-  /* eslint-enable */
-
-  // _hide() {
-  //   this.setState({ message: {} })
-  //   this.props.hideInput()
-  // }
 
   handleChange(selectedOption) {
     this.setState({ selectedOption })
@@ -143,25 +67,22 @@ export class AddMember extends React.Component {
 
   render() {
     const { show } = this.props
-    const addSingleMember = show ? (
-      <div className={styles.userInputContainer}>
-        <AsyncSelect
-          autoload={false}
-          value={this.state.selectedOption}
-          placeholder="Type"
-          closeMenuOnSelect
-          onChange={this.handleChange}
-          isClearable={false}
-          loadOptions={debounce(this.searchUsers, 500)}
-        />
 
-        <span className={styles[this.state.message.classname]}>
-          {this.state.message.text}
-        </span>
-      </div>
-    ) : null
-
-    return <span> {addSingleMember} </span>
+    return (
+      <Container>
+        {show && (
+          <AsyncSelect
+            autoload={false}
+            closeMenuOnSelect
+            isClearable={false}
+            loadOptions={debounce(this.searchUsers, 500)}
+            onChange={this.handleChange}
+            placeholder="Search"
+            value={this.state.selectedOption}
+          />
+        )}
+      </Container>
+    )
   }
 }
 

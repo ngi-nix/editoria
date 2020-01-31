@@ -59,12 +59,11 @@ const Connected = props => {
         updateTeam,
       }) => (
         <TeamManagerModal
-          // bookId={bookId}
-          isOpen={isOpen}
-          loading={loading}
-          hideModal={hideModal}
           canViewAddTeamMember={(rules || {}).canViewAddTeamMember}
           findUser={findUser}
+          hideModal={hideModal}
+          isOpen={isOpen}
+          loading={loading}
           loadingRules={loadingRules}
           refetching={refetching}
           rules={rules}
