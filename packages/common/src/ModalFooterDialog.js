@@ -50,7 +50,7 @@ const CancelButton = styled.button`
   padding: 0;
   border-bottom: 1px solid ${th('colorBackground')};
   &:disabled {
-    background:#ccc;
+    background: #ccc;
     cursor: not-allowed;
   }
   &:not(:disabled):hover {
@@ -79,6 +79,7 @@ const ModalFooterDialog = props => {
     onConfirm,
     onRequestClose,
     showCancelButton = true,
+    showConfirmButton = true,
     textCancel = 'Cancel',
     textSuccess = 'OK',
     buttonLabel,
@@ -91,9 +92,11 @@ const ModalFooterDialog = props => {
   return (
     // <Wrapper className={className}>
     <ModalFooter>
-      <ConfirmButton disabled={disableConfirm} onClick={onConfirm} primary>
-        <Label>{buttonLabel || textSuccess}</Label>
-      </ConfirmButton>
+      {showConfirmButton && (
+        <ConfirmButton disabled={disableConfirm} onClick={onConfirm} primary>
+          <Label>{buttonLabel || textSuccess}</Label>
+        </ConfirmButton>
+      )}
       {showCancelButton && (
         <CancelButton disabled={shouldDisableCancel} onClick={onRequestClose}>
           <Label>{textCancel}</Label>
