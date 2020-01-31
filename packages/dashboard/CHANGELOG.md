@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.4"></a>
+## [0.3.4](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.3.3...pubsweet-component-editoria-dashboard@0.3.4) (2020-01-31)
+
+
+
+
+**Note:** Version bump only for package pubsweet-component-editoria-dashboard
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://gitlab.coko.foundation/editoria/editoria-dashboard/compare/pubsweet-component-editoria-dashboard@0.3.2...pubsweet-component-editoria-dashboard@0.3.3) (2019-10-25)
 
