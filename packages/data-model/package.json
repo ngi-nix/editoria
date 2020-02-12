@@ -1,6 +1,6 @@
 {
   "name": "editoria-data-model",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Data model definitions for Editoria",
   "main": "index.js",
   "keywords": [

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.11...editoria-api@0.5.0) (2020-02-12)
+
+
+### Features
+
+* **api:** aws s3 integration ([088f24a](https://gitlab.coko.foundation/editoria/editoria/commit/088f24a))
+
+
+
+
 <a name="0.4.11"></a>
 ## [0.4.11](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.4.10...editoria-api@0.4.11) (2020-01-09)
 

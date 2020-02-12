@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-user-profile",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The application user Profile for the Editoria project.",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@pubsweet/ui": "^10.3.0",
-    "editoria-common": "^0.2.1",
+    "editoria-common": "^0.2.2",
     "formik": "^1.5.1",
     "lodash": "4.17.4",
     "pubsweet-client": "^9.2.3",
