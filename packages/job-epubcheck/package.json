@@ -8,10 +8,10 @@
   "author": "Alexandros Georgantas, John Kopanas",
   "license": "MIT",
   "dependencies": {
-    "@pubsweet/db-manager": "^3.0.20",
-    "@pubsweet/logger": "^0.2.34",
+    "@pubsweet/db-manager": "^3.1.3",
+    "@pubsweet/logger": "^0.2.38",
     "epubchecker": "^4.2.2",
-    "pubsweet-server": "^13.7.2",
+    "pubsweet-server": "^13.9.0",
     "waait": "^1.0.5"
   },
   "publishConfig": {

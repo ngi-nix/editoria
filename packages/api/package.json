@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "author": "Alexandros Georgantas",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "archiver": "^3.1.1",
     "aws-sdk": "^2.610.0",
