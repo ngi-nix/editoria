@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApolloConsumer } from 'react-apollo'
+import { ApolloConsumer } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const GET_TEMPLATES = gql`

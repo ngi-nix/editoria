@@ -1,5 +1,5 @@
 import React from 'react'
-import { Query } from 'react-apollo'
+import { Query } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const GET_BOOK_TEAMS = gql`
