@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.7"></a>
+## [0.0.7](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pdf-job@0.0.6...editoria-pdf-job@0.0.7) (2020-03-03)
+
+
+
+
+**Note:** Version bump only for package editoria-pdf-job
+
 <a name="0.0.6"></a>
 ## [0.0.6](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-pdf-job@0.0.5...editoria-pdf-job@0.0.6) (2019-12-03)
 

@@ -1,6 +1,6 @@
 {
   "name": "editoria-component-login",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Basic login component for PubSweet",
   "main": "index.js",
   "author": "Collaborative Knowledge Foundation",

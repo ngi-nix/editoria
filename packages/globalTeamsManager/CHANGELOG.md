@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.2.9"></a>
+## [0.2.9](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-editoria-global-teams@0.2.8...pubsweet-component-editoria-global-teams@0.2.9) (2020-03-03)
+
+
+
+
+**Note:** Version bump only for package pubsweet-component-editoria-global-teams
+
 <a name="0.2.8"></a>
 ## [0.2.8](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-editoria-global-teams@0.2.7...pubsweet-component-editoria-global-teams@0.2.8) (2020-02-12)
 

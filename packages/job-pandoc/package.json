@@ -1,6 +1,6 @@
 {
   "name": "editoria-pandoc-job",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "PubSweet job component for running Pandoc",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,6 +1,6 @@
 {
   "name": "pubsweet-component-editoria-dashboard",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "The application dashboard for the Editoria project.",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "dependencies": {
     "@apollo/react-components": "^3.1.3",
     "@pubsweet/ui": "^12.3.1",
-    "editoria-common": "^0.2.2",
+    "editoria-common": "^0.2.3",
     "formik": "^1.5.1",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
