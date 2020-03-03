@@ -8,19 +8,19 @@
     "pubsweet-component",
     "data model"
   ],
-  "author": "Yannis Barlas",
+  "author": "Yannis Barlas, Alexandros Georgantas",
   "license": "ISC",
   "dependencies": {
-    "@pubsweet/base-model": "3.0.8",
-    "@pubsweet/db-manager": "3.0.7",
-    "@pubsweet/logger": "^0.2.21",
-    "@pubsweet/model-team": "2.0.8",
-    "@pubsweet/model-user": "5.1.8",
+    "@pubsweet/base-model": "^3.6.0",
+    "@pubsweet/db-manager": "^3.1.5",
+    "@pubsweet/logger": "^0.2.40",
+    "@pubsweet/model-team": "^3.0.3",
+    "@pubsweet/model-user": "^5.1.10",
     "jest": "^23.6.0",
     "knex": "^0.15.2",
     "lodash": "4.17.15",
-    "pubsweet": "4.1.3",
-    "pubsweet-server": "13.9.0",
+    "pubsweet": "5.1.8",
+    "pubsweet-server": "13.9.2",
     "uuid": "^3.3.2",
     "waait": "^1.0.2"
   },
@@ -30,10 +30,5 @@
   "devDependencies": {
     "supertest": "^3.3.0",
     "winston": "2"
-  },
-  "resolutions": {
-    "@pubsweet/model-team": "2.0.8",
-    "@pubsweet/base-model": "3.0.8",
-    "bcrypt": "3.0.6"
   }
 }

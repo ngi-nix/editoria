@@ -70,18 +70,18 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
           deleted: false,
         }
 
-        const createdBookComponent = await new BookComponent(
+        const createdBookComponent = await BookComponent.query().insert(
           newBookComponent,
-        ).save()
+        )
 
         logger.info(
           `new book component created with id ${createdBookComponent.id}`,
         )
 
-        const translation = await new BookComponentTranslation({
+        const translation = await BookComponentTranslation.query().insert({
           bookComponentId: createdBookComponent.id,
           languageIso: 'en',
-        }).save()
+        })
 
         logger.info(
           `new book component translation created with id ${translation.id}`,
@@ -105,7 +105,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
           }
         }
 
-        const bookComponentState = await new BookComponentState(
+        const bookComponentState = await BookComponentState.query().insert(
           assign(
             {},
             {
@@ -115,7 +115,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
             },
             bookComponentWorkflowStages,
           ),
-        ).save()
+        )
 
         logger.info(
           `new state created with id ${bookComponentState.id} for the book component with id ${createdBookComponent.id}`,
@@ -371,7 +371,10 @@ const unlockBookComponent = async bookComponentId => {
         .patch({
           deleted: true,
         })
-        .whereIn('id', map(locks, lock => lock.id))
+        .whereIn(
+          'id',
+          map(locks, lock => lock.id),
+        )
 
       if (numberOfAffectedRows === locks.length) {
         logger.info(
@@ -418,7 +421,10 @@ const lockBookComponent = async (bookComponentId, userId) => {
         .patch({
           deleted: true,
         })
-        .whereIn('id', map(locks, lock => lock.id))
+        .whereIn(
+          'id',
+          map(locks, lock => lock.id),
+        )
 
       throw new Error(
         `corrupted lock for the book component with id ${bookComponentId}, all locks deleted`,
@@ -443,11 +449,11 @@ const lockBookComponent = async (bookComponentId, userId) => {
       `no existing lock found for book component with id ${bookComponentId}`,
     )
 
-    const lock = await new Lock({
+    const lock = await Lock.query().insert({
       foreignId: bookComponentId,
       foreignType: 'bookComponent',
       userId,
-    }).save()
+    })
 
     logger.info(
       `lock acquired for book component with id ${bookComponentId} for the user with id ${userId}`,

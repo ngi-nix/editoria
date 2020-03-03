@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import Authorize from 'pubsweet-client/src/helpers/Authorize'
+// import Authorize from 'pubsweet-client/src/helpers/Authorize'
 import { Action as UIAction, ActionGroup as UIActionGroup } from '@pubsweet/ui'
 
 const underlineFade = css`

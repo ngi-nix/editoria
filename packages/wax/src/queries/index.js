@@ -7,9 +7,7 @@ export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as updateCustomTagMutation } from './updateCustomTag'
 export { default as addCustomTagMutation } from './addCustomTag'
 export { default as spellCheckerQuery } from './spellChecker'
-export {
-  default as updateBookComponentTrackChangesMutation,
-} from './updateTrackChanges'
+export { default as updateBookComponentTrackChangesMutation } from './updateTrackChanges'
 export { default as renameBookComponentMutation } from './renameBookComponent'
 export { default as uploadFileMutation } from './uploadFile'
 export { default as lockBookComponentMutation } from './lockBookComponent'

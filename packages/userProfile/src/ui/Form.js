@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Form, Formik } from 'formik'
-import { isFunction } from 'lodash'
+import isFunction from 'lodash/isFunction'
 
 const FormHelper = props => {
   const { children, ...other } = props

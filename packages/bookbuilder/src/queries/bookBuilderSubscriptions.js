@@ -1,5 +1,5 @@
 import React from 'react'
-import { Subscription } from 'react-apollo'
+import { Subscription } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
@@ -280,7 +280,7 @@ const lockChangeSubscription = props => {
     refetch()
   }
 
-  if (!getBookQuery.data.getBook) {
+  if (!getBookQuery.data) {
     return null
   }
   const { divisions } = getBookQuery.data.getBook

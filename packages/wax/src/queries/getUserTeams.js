@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Query } from 'react-apollo'
+import { Query } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const CURRENT_USER_TEAM = gql`

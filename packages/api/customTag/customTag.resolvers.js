@@ -22,7 +22,7 @@ const addCustomTag = async (_, { input }, ctx) => {
     await Promise.all(
       input.map(async tag => {
         const { label, tagType } = tag
-        await new CustomTag({ label, tagType }).save()
+        await CustomTag.query().insert({ label, tagType })
       }),
     )
 

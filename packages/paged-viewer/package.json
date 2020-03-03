@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "author": "Collaborative Knowledge Foundation",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.15.5",
     "fs-extra": "8.1.0",
-    "pagedjs": "0.1.34"
+    "pagedjs": "0.1.38"
   },
   "scripts": {
     "postinstall": "node install"

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, findIndex, map, find } from 'lodash'
+import { get, findIndex, map, find, pickBy } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import withModal from 'editoria-common/src/withModal'
@@ -225,15 +225,17 @@ const mapProps = args => ({
       if (values.copyrightYear === '') {
         values.copyrightYear = 1900
       }
+      const filtered = pickBy(values, v => v !== null && v !== undefined);
       updateMetadata({
         variables: {
           input: {
             id: book.id,
-            ...values,
+            ...filtered,
           },
         },
+      }).then(res => {
+        hideModal()
       })
-      hideModal()
     }
     showModal('metadataModal', {
       onConfirm,
