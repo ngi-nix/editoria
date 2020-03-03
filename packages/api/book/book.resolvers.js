@@ -48,15 +48,15 @@ const createBook = async (_, { input }, ctx) => {
     await ctx.helpers.can(ctx.user, 'create', 'Book')
 
     const pubsub = await pubsubManager.getPubsub()
-    const book = await new Book({
+    const book = await Book.query().insert({
       collectionId,
-    }).save()
+    })
     logger.info(`New Book created with id ${book.id}`)
-    await new BookTranslation({
+    await BookTranslation.query().insert({
       bookId: book.id,
       title,
       languageIso: 'en',
-    }).save()
+    })
     logger.info(
       `New Book Translation (title: ${title})created for the book ${book.id}`,
     )
@@ -125,16 +125,16 @@ const createBook = async (_, { input }, ctx) => {
       archived: false,
       deleted: false,
     }
-    const createdBookComponent = await new BookComponent(
+    const createdBookComponent = await BookComponent.query().insert(
       newBookComponent,
-    ).save()
+    )
 
     logger.info(`New book component created with id ${createdBookComponent.id}`)
-    const translation = await new BookComponentTranslation({
+    const translation = await BookComponentTranslation.query().insert({
       bookComponentId: createdBookComponent.id,
       languageIso: 'en',
       title: 'Table of Contents',
-    }).save()
+    })
 
     logger.info(
       `New book component translation created with id ${translation.id}`,
@@ -161,7 +161,7 @@ const createBook = async (_, { input }, ctx) => {
       }
     }
 
-    await new BookComponentState(
+    await BookComponentState.query().insert(
       assign(
         {},
         {
@@ -172,7 +172,7 @@ const createBook = async (_, { input }, ctx) => {
         },
         bookComponentWorkflowStages,
       ),
-    ).save()
+    )
     /// END
     pubsub.publish(BOOK_CREATED, { bookCreated: book })
     return book

@@ -116,11 +116,11 @@ class Book extends Base {
   }
 
   async addDivision(label) {
-    return new Division({
+    return Division.query().insert({
       bookId: this.id,
       bookComponents: [],
       label,
-    }).save()
+    })
   }
 
   getCollection() {

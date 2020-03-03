@@ -280,7 +280,7 @@ const lockChangeSubscription = props => {
     refetch()
   }
 
-  if (!getBookQuery.data.getBook) {
+  if (!getBookQuery.data) {
     return null
   }
   const { divisions } = getBookQuery.data.getBook

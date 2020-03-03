@@ -3,7 +3,9 @@ import styled from 'styled-components'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import Select from 'react-select'
-import { sortBy, keys, omit } from 'lodash'
+import sortBy from 'lodash/sortBy'
+import keys from 'lodash/keys'
+import omit from 'lodash/omit'
 
 const TeamHeadingWrapper = styled.h4`
   border-bottom: 1px solid black;

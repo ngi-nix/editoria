@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { adopt } from 'react-adopt'
 
 import GlobalTeamsManager from './GlobalTeamsManager'

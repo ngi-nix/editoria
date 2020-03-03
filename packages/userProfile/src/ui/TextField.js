@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { get } from 'lodash'
+import get from 'lodash/get'
 
 import { TextField as UiTextField } from '@pubsweet/ui'
 import { fadeIn, th } from '@pubsweet/ui-toolkit'

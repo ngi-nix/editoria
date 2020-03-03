@@ -9,12 +9,12 @@ import { th } from '@pubsweet/ui-toolkit'
 
 import RibbonFeedback from './RibbonFeedback'
 import Loading from './Loading'
-import { TextField } from './formElements'
-import { Form } from './form'
+import TextField from './TextField'
+import Form from './Form'
 
 const Wrapper = styled.div`
-  display: block;
   clear: both;
+  display: block;
   float: none;
   margin: 0 auto;
   max-width: 76%;
@@ -27,22 +27,22 @@ const InnerWrapper = styled.div`
 `
 
 const Header = styled(H3)`
-  border-bottom: solid 1px black;
   align-items: flex-start;
-  display: flex;
-  position: sticky;
   background-color: white;
-  height: 48px;
-  z-index: 1;
-  top: 0;
-  margin-bottom: calc(3 * ${th('gridUnit')});
+  border-bottom: solid 1px black;
   color: #3f3f3f;
+  display: flex;
   font-family: ${th('fontReading')};
   font-weight: normal;
+  height: 48px;
+  margin-bottom: calc(3 * ${th('gridUnit')});
   margin-right: calc(3 * ${th('gridUnit')});
   padding-bottom: 0;
   padding-top: 3px;
+  position: sticky;
   text-transform: uppercase;
+  top: 0;
+  z-index: 1;
 `
 
 const Separator = styled.div`
@@ -52,29 +52,29 @@ const Separator = styled.div`
 `
 
 const SectionWrapper = styled.div`
-  margin-bottom: calc(${th('gridUnit')} * 2);
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  margin-bottom: calc(${th('gridUnit')} * 2);
 `
 
 const PasswordWrapper = styled.div`
-  margin-bottom: calc(${th('gridUnit')} * 2);
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-bottom: calc(${th('gridUnit')} * 2);
 `
 
 const SectionHeader = styled(H4)`
-  margin: calc(${th('gridUnit')} * 2) 0;
   color: #3f3f3f;
   font-family: ${th('fontReading')};
   font-weight: normal;
+  margin: calc(${th('gridUnit')} * 2) 0;
 `
 
 const UpdateButton = styled(Button)`
-  width: 50%;
   background: #404040;
+  width: 50%;
 `
 
 const PersonalInformation = props => {
@@ -139,7 +139,7 @@ const PersonalInformation = props => {
                       error={errors.surname}
                       handleBlur={handleBlur}
                       handleChange={handleChange}
-                      label="Surame"
+                      label="Surname"
                       name="surname"
                       touched={touched}
                       value={values.surname}

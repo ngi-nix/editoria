@@ -111,7 +111,7 @@ const lockChangeSubscription = props => {
     if (pauseUpdates) return
     refetch()
   }
-  if (!getBookComponentQuery.data.getBookComponent) {
+  if (!getBookComponentQuery.data) {
     return null
   }
   const { id } = getBookComponentQuery.data.getBookComponent

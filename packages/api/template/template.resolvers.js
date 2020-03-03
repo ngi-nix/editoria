@@ -73,13 +73,13 @@ const createTemplate = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     logger.info('About to create a new template')
-    const newTemplate = await new Template({
+    const newTemplate = await Template.query().insert({
       name,
       author,
       target,
       notes,
       trimSize,
-    }).save()
+    })
     logger.info(`New template created with id ${newTemplate.id}`)
     if (files.length > 0) {
       logger.info(
@@ -103,10 +103,7 @@ const createTemplate = async (_, { input }, ctx) => {
           logger.info(`The path the the files will be stored is ${outPath}`)
           const outStream = fs.createWriteStream(outPath)
           const stream = createReadStream()
-          stream.pipe(
-            outStream,
-            { encoding },
-          )
+          stream.pipe(outStream, { encoding })
           outStream.on('error', () => {
             throw new Error('Unable to write file')
           })
@@ -114,12 +111,12 @@ const createTemplate = async (_, { input }, ctx) => {
             stream.on('end', async () => {
               try {
                 logger.info('File uploaded to server')
-                const newFile = await new File({
+                const newFile = await File.query().insert({
                   name: filename,
                   mimetype,
                   source: outPath,
                   templateId: newTemplate.id,
-                }).save()
+                })
                 logger.info(
                   `File representation created on the db with file id ${newFile.id}`,
                 )
@@ -158,10 +155,7 @@ const createTemplate = async (_, { input }, ctx) => {
         const outStream = fs.createWriteStream(outPath)
         const stream = createReadStream()
 
-        stream.pipe(
-          outStream,
-          { encoding },
-        )
+        stream.pipe(outStream, { encoding })
         outStream.on('error', () => {
           throw new Error('Unable to write file')
         })
@@ -169,12 +163,12 @@ const createTemplate = async (_, { input }, ctx) => {
         stream.on('end', async () => {
           try {
             logger.info('Thumbnail uploaded to the server')
-            const newThumbnail = await new File({
+            const newThumbnail = await File.query().insert({
               name: filename,
               mimetype,
               source: outPath,
               templateId: newTemplate.id,
-            }).save()
+            })
             logger.info(
               `Thumbnail representation created on the db with file id ${newThumbnail.id}`,
             )
@@ -207,14 +201,14 @@ const cloneTemplate = async (_, { input }, ctx) => {
   try {
     const template = await Template.query().findById(id)
 
-    const newTemplate = await new Template({
+    const newTemplate = await Template.query().insert({
       name,
       author: template.author,
       target: template.target,
       trimSize: template.trimSize,
       notes: template.notes,
       referenceId: template.id,
-    }).save()
+    })
 
     logger.info(`New template created with id ${newTemplate.id}`)
     let updateTemplate = newTemplate
@@ -243,14 +237,14 @@ const cloneTemplate = async (_, { input }, ctx) => {
         }
         logger.info(`The path the the files will be stored is ${outPath}`)
 
-        const newFile = await new File(
+        const newFile = await File.query().insert(
           Object.assign({
             source: outPath,
             templateId: newTemplate.id,
             name: file.name,
             mimetype: file.mimetype,
           }),
-        ).save()
+        )
         logger.info(
           `File representation created on the db with file id ${newFile.id}`,
         )
@@ -368,10 +362,7 @@ const updateTemplate = async (_, { input }, ctx) => {
           logger.info(`The path the the files will be stored is ${outPath}`)
           const outStream = fs.createWriteStream(outPath)
           const stream = createReadStream()
-          stream.pipe(
-            outStream,
-            { encoding },
-          )
+          stream.pipe(outStream, { encoding })
           outStream.on('error', () => {
             throw new Error('Unable to write file')
           })
@@ -379,12 +370,12 @@ const updateTemplate = async (_, { input }, ctx) => {
             stream.on('end', async () => {
               try {
                 logger.info('File uploaded to server')
-                const newFile = await new File({
+                const newFile = await File.query().insert({
                   name: filename,
                   mimetype,
                   source: outPath,
                   templateId: id,
-                }).save()
+                })
                 logger.info(
                   `File representation created on the db with file id ${newFile.id}`,
                 )
@@ -421,10 +412,7 @@ const updateTemplate = async (_, { input }, ctx) => {
         const outStream = fs.createWriteStream(outPath)
         const stream = createReadStream()
 
-        stream.pipe(
-          outStream,
-          { encoding },
-        )
+        stream.pipe(outStream, { encoding })
         outStream.on('error', () => {
           throw new Error('Unable to write file')
         })
@@ -432,12 +420,12 @@ const updateTemplate = async (_, { input }, ctx) => {
         stream.on('end', async () => {
           try {
             logger.info('Thumbnail uploaded to the server')
-            const newThumbnail = await new File({
+            const newThumbnail = await File.query().insert({
               name: filename,
               mimetype,
               source: outPath,
               templateId: id,
-            }).save()
+            })
             logger.info(
               `Thumbnail representation created on the db with file id ${newThumbnail.id}`,
             )

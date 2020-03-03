@@ -22,7 +22,7 @@
     "fs-extra": "^8.1.0",
     "highlight.js": "^9.13.1",
     "js-beautify": "^1.10.2",
-    "libtidy-updated": "0.4.0",
+    "libtidy-updated": "0.4.1",
     "list-contents": "^4.0.2",
     "lodash": "4.17.15",
     "mime-types": "^2.1.24",
