@@ -35,7 +35,7 @@ const pagednation = async (book, template, pdf = false) => {
       const filename = path.basename(uri, extension)
       const mimetype = mime.lookup(uri)
       if (templateFiles[i].mimetype === 'text/css') {
-        const target = `${pagedDestination}/default.css`
+        const target = `${pagedDestination}/${filename}.css`
         const id = `stylesheet-${dbId}-${i}`
         stylesheets.push({
           id,
@@ -138,7 +138,7 @@ const pagednation = async (book, template, pdf = false) => {
     })
     if (pdf) {
       output('<link/>')
-        .attr('href', './default.css')
+        .attr('href', `./${stylesheets[0].filename}.css`)
         .attr('type', 'text/css')
         .attr('rel', 'stylesheet')
         .appendTo('head')
