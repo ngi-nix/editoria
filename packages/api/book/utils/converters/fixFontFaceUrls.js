@@ -1,6 +1,6 @@
 const csstree = require('css-tree')
 
-module.exports =  (stylesheet, fonts, where) => {
+module.exports = (stylesheet, fonts, where) => {
   const ast = csstree.parse(stylesheet.content)
   const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
   const regex = new RegExp(

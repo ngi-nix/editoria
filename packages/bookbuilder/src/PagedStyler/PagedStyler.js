@@ -127,7 +127,9 @@ const PagedStyler = ({ hashed, template, onWarningModal }) => {
           frameBorder="0"
           id="printBook"
           key={random}
-          src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/default.css`}
+          src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/${
+            getCssFile(template).name
+          }`}
           title="PagedJS"
         />
       </PreviewArea>
