@@ -1,6 +1,8 @@
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
+const isUndefined = require('lodash/isUndefined')
+const omitBy = require('lodash/omitBy')
 const path = require('path')
 const { copyFileSync, writeFileSync } = require('fs')
 const fs = require('fs-extra')
@@ -20,6 +22,8 @@ const {
   TEMPLATE_DELETED,
   TEMPLATE_UPDATED,
 } = require('./consts')
+
+const exporter = require('../book/utils/exporter')
 
 const getTemplates = async (_, { ascending, sortKey, target, notes }, ctx) => {
   try {
@@ -195,7 +199,7 @@ const createTemplate = async (_, { input }, ctx) => {
 }
 
 const cloneTemplate = async (_, { input }, ctx) => {
-  const { id, name, cssFile, hashed } = input
+  const { id, bookId, name, cssFile, hashed } = input
   const pubsub = await pubsubManager.getPubsub()
 
   try {
@@ -228,10 +232,10 @@ const cloneTemplate = async (_, { input }, ctx) => {
 
         if (file.mimetype === 'text/css') {
           writeFileSync(outPath, cssFile)
-          writeFileSync(
-            path.join(uploadsPath, 'paged', hashed, 'default.css'),
-            cssFile,
-          )
+          // writeFileSync(
+          //   path.join(uploadsPath, 'paged', hashed, file.name),
+          //   cssFile,
+          // )
         } else {
           copyFileSync(file.source, outPath)
         }
@@ -261,7 +265,17 @@ const cloneTemplate = async (_, { input }, ctx) => {
       templateCreated: updateTemplate,
     })
     logger.info('New template created msg broadcasted')
-    return updateTemplate
+    return exporter(
+      bookId,
+      'preview',
+      newTemplate.id,
+      'pagedjs',
+      undefined,
+      newTemplate.notes,
+      ctx,
+    )
+    // updateTemplate.clonedPath = clonedPath
+    // return updateTemplate
   } catch (e) {
     throw new Error(e)
   }
@@ -537,6 +551,28 @@ const deleteTemplate = async (_, { id }, ctx) => {
   }
 }
 
+const updateTemplateCSSFile = async (_, { input }, ctx) => {
+  try {
+    const { id, data, hashed, ...restFile } = input
+    const result = omitBy(restFile, isUndefined)
+    const currentFile = await File.query().patchAndFetchById(id, result)
+    if (data) {
+      fs.writeFileSync(currentFile.source, data)
+      if (hashed) {
+        fs.writeFileSync(
+          path.join(uploadsPath, 'paged', hashed, currentFile.name),
+          data,
+        )
+      }
+    }
+
+    return currentFile
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   Query: {
     getTemplates,
@@ -546,6 +582,7 @@ module.exports = {
     createTemplate,
     cloneTemplate,
     updateTemplate,
+    updateTemplateCSSFile,
     deleteTemplate,
   },
   Template: {

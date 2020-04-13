@@ -5,10 +5,7 @@ import gql from 'graphql-tag'
 const CLONE_TEMPLATE = gql`
   mutation CloneTemplate($input: ClonedTemplateInput!) {
     cloneTemplate(input: $input) {
-      id
-      files {
-        name
-      }
+      path
     }
   }
 `

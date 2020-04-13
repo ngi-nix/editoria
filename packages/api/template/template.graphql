@@ -20,8 +20,9 @@ input CreateTemplateInput {
 }
 
 input ClonedTemplateInput {
-  id: ID
-  name: String
+  id: ID!
+  bookId: ID!
+  name: String!
   cssFile: String
   hashed: String
 }
@@ -39,6 +40,15 @@ input UpdateTemplateInput {
   deleteFiles: [String]!
 }
 
+input UpdateTemplateCSSFileInput {
+  id: ID!
+  name: String
+  source: String
+  mimetype: String
+  data: String
+  hashed: String
+}
+
 extend type Query {
   getTemplates(ascending: Boolean, sortKey: String, target: String, notes: String): [Template]!
   getTemplate(id: ID!): Template!
@@ -46,8 +56,9 @@ extend type Query {
 
 extend type Mutation {
   createTemplate(input: CreateTemplateInput): Template!
-  cloneTemplate(input: ClonedTemplateInput): Template!
+  cloneTemplate(input: ClonedTemplateInput): ExportResult!
   updateTemplate(input: UpdateTemplateInput): Template!
+  updateTemplateCSSFile(input: UpdateTemplateCSSFileInput!): File!
   deleteTemplate(id: ID!): ID!
 }
 

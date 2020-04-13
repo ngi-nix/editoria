@@ -3,6 +3,7 @@
 import React from 'react'
 import { get } from 'lodash'
 import { adopt } from 'react-adopt'
+import { withRouter } from 'react-router-dom'
 import {
   getTemplateQuery,
   cloneTemplateMutation,
@@ -11,7 +12,7 @@ import {
 import withModal from 'editoria-common/src/withModal'
 import PagedStyler from './PagedStyler'
 import statefull from '../Statefull'
-import { updateFileMutation, getBookQuery } from '../queries'
+import { updateTemplateCSSFileMutation, getBookQuery } from '../queries'
 
 const mapper = {
   statefull,
@@ -19,7 +20,7 @@ const mapper = {
   getTemplateQuery,
   getBookQuery,
   cloneTemplateMutation,
-  updateFileMutation,
+  updateTemplateCSSFileMutation,
 }
 
 const mapProps = args => ({
@@ -27,40 +28,70 @@ const mapProps = args => ({
   setState: args.statefull.setState,
   template: get(args.getTemplateQuery, 'data.getTemplate'),
   book: get(args.getBookQuery, 'data.getBook'),
+  cloneTemplate: args.cloneTemplateMutation.cloneTemplate,
+  updateTemplateCSSFile:
+    args.updateTemplateCSSFileMutation.updateTemplateCSSFile,
   loadingBook: args.getBookQuery.networkStatus === 1,
   loading: args.getTemplateQuery.networkStatus === 1,
   refetching:
     args.getTemplateQuery.networkStatus === 4 ||
     args.getTemplateQuery.networkStatus === 2, // possible apollo bug
-  onWarningModal: (file, cssFile, template, hashed) =>
-    new Promise((resolve, reject) => {
-      const {
-        withModal,
-        cloneTemplateMutation: { cloneTemplate },
-        getTemplateQuery: {
-          data: {
-            getTemplate: { id, name: templateName },
-          },
-        },
-        getBookQuery: {
-          data: {
-            getBook: { title: name },
-          },
-        },
-        updateFileMutation: { updateFile },
-      } = args
-      const { showModal, hideModal } = withModal
+  onWarningModal: (
+    bookId,
+    bookTitle,
+    file,
+    cssFile,
+    template,
+    hashed,
+    history,
+  ) => {
+    const {
+      cloneTemplateMutation,
+      updateTemplateCSSFileMutation,
+      withModal,
+    } = args
+    const { cloneTemplate } = cloneTemplateMutation
+    const { updateTemplateCSSFile } = updateTemplateCSSFileMutation
+    const { showModal, hideModal } = withModal
+    return new Promise((resolve, reject) => {
+      //   const {
+      //     withModal,
+      //     cloneTemplateMutation: { cloneTemplate },
+      //     getTemplateQuery: {
+      //       data: {
+      //         getTemplate: { id, name: templateName },
+      //       },
+      //     },
+      //     getBookQuery: {
+      //       data: {
+      //         getBook: { title: name },
+      //       },
+      //     },
+      //     updateTemplateCSSFileMutation: { updateTemplateCSSFile },
+      //   } = args
       const saveCssBook = () => {
         cloneTemplate({
           variables: {
-            input: { id, name: `${templateName}-${name}`, cssFile, hashed },
+            input: {
+              id: template.id,
+              bookId,
+              name: `${template.name}-${bookTitle}`,
+              cssFile,
+              hashed,
+            },
           },
-        }).then(res => resolve())
-        hideModal()
+        }).then(res => {
+          const { data } = res
+          const { cloneTemplate } = data
+          const { path } = cloneTemplate
+          history.push(`/books/${bookId}/pagedPreviewer/paged/${path}`)
+          hideModal()
+          resolve()
+        })
       }
 
       const saveCssAllBook = () => {
-        updateFile({
+        updateTemplateCSSFile({
           variables: {
             input: {
               id: file.id,
@@ -68,7 +99,7 @@ const mapProps = args => ({
               hashed,
             },
           },
-        }).then(() => resolve())
+        }).then(res => resolve())
         hideModal()
       }
 
@@ -77,7 +108,8 @@ const mapProps = args => ({
         saveCssAllBook,
         name: template.name,
       })
-    }),
+    })
+  },
 })
 
 const Composed = adopt(mapper, mapProps)
@@ -87,15 +119,18 @@ const Connected = props => {
     match: {
       params: { hashed, templateId, id },
     },
+    history,
   } = props
-
   return (
     <Composed bookId={id} templateId={templateId}>
-      {({ template, onWarningModal, loading }) => {
-        if (loading) return <p>Loading ...</p>
+      {({ book, template, onWarningModal, loading, loadingBook }) => {
+        if (loading || loadingBook) return <p>Loading ...</p>
         return (
           <PagedStyler
+            bookId={book.id}
+            bookTitle={book.title}
             hashed={hashed}
+            history={history}
             onWarningModal={onWarningModal}
             template={template}
           />
@@ -105,4 +140,4 @@ const Connected = props => {
   )
 }
 
-export default Connected
+export default withRouter(Connected)
