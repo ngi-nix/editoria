@@ -461,6 +461,7 @@ const Connected = props => {
         <BookBuilder
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
+          onAssetManager={onAssetManager}
           book={book}
           currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
