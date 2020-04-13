@@ -34,7 +34,7 @@ export { default as updateBookComponentTypeMutation } from './updateComponentTyp
 
 export { default as updateApplicationParametersMutation } from './updateApplicationParameters'
 
-export { default as updateFileMutation } from './updateFile'
+export { default as updateTemplateCSSFileMutation } from './updateTemplateCSSFile'
 
 export { default as updateBookComponentUploadingMutation } from './updateUploading'
 export { default as updateBookComponentContentMutation } from './updateContent'

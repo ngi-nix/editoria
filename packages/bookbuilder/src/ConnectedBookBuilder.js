@@ -225,7 +225,7 @@ const mapProps = args => ({
       if (values.copyrightYear === '') {
         values.copyrightYear = 1900
       }
-      const filtered = pickBy(values, v => v !== null && v !== undefined);
+      const filtered = pickBy(values, v => v !== null && v !== undefined)
       updateMetadata({
         variables: {
           input: {
@@ -320,10 +320,6 @@ const mapProps = args => ({
           }
         })
         .catch(res => {
-          console.log('error', res)
-          // const {error} = res
-          // console.log(errors)
-          // const {message} = error
           hideModal()
           showModal('warningModal', {
             onConfirm: hideModal,

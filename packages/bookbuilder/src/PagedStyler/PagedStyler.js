@@ -72,9 +72,17 @@ const handleDownload = hashed => e => {
 const getCssFile = template =>
   template.files.find(file => file.mimetype === 'text/css')
 
-const PagedStyler = ({ hashed, template, onWarningModal }) => {
+const PagedStyler = ({
+  bookId,
+  bookTitle,
+  hashed,
+  history,
+  template,
+  onWarningModal,
+}) => {
   const [cssFile, setCssFile] = useState()
   const [random, setRandom] = useState('')
+  const { id } = template
   const templateFile = getCssFile(template)
 
   useEffect(() => {
@@ -83,8 +91,8 @@ const PagedStyler = ({ hashed, template, onWarningModal }) => {
       const file = await response.text()
       setCssFile(file)
     }
-    if (!cssFile) fetchData()
-  })
+    fetchData()
+  }, [id])
 
   return (
     <Wrapper>
@@ -92,7 +100,15 @@ const PagedStyler = ({ hashed, template, onWarningModal }) => {
         <EditorToolbar>
           <Actions
             onClick={() =>
-              onWarningModal(templateFile, cssFile, template, hashed).then(() =>
+              onWarningModal(
+                bookId,
+                bookTitle,
+                templateFile,
+                cssFile,
+                template,
+                hashed,
+                history,
+              ).then(() =>
                 setRandom(
                   Math.random()
                     .toString(36)
