@@ -1,16 +1,23 @@
-const bookComponentUseCase = require('./bookComponent')
+const bookComponent = require('./bookComponent')
+const fileHosting = require('./fileHosting')
 
 module.exports = {
-  useCaseAddBookComponent: bookComponentUseCase.addBookComponent,
-  useCaseUpdateBookComponentContent: bookComponentUseCase.updateContent,
-  useCaseToggleIncludeInTOC: bookComponentUseCase.toggleIncludeInTOC,
-  useCaseUpdateComponentType: bookComponentUseCase.updateComponentType,
-  useCaseUpdateUploading: bookComponentUseCase.updateUploading,
-  useCaseUpdateTrackChanges: bookComponentUseCase.updateTrackChanges,
-  useCaseUpdatePagination: bookComponentUseCase.updatePagination,
-  useCaseLockBookComponent: bookComponentUseCase.lockBookComponent,
-  useCaseUnlockBookComponent: bookComponentUseCase.unlockBookComponent,
-  useCaseUpdateWorkflowState: bookComponentUseCase.updateWorkflowState,
-  useCaseDeleteBookComponent: bookComponentUseCase.deleteBookComponent,
-  useCaseRenameBookComponent: bookComponentUseCase.renameBookComponent,
+  useCaseAddBookComponent: bookComponent.addBookComponent,
+  useCaseUpdateBookComponentContent: bookComponent.updateContent,
+  useCaseToggleIncludeInTOC: bookComponent.toggleIncludeInTOC,
+  useCaseUpdateComponentType: bookComponent.updateComponentType,
+  useCaseUpdateUploading: bookComponent.updateUploading,
+  useCaseUpdateTrackChanges: bookComponent.updateTrackChanges,
+  useCaseUpdatePagination: bookComponent.updatePagination,
+  useCaseLockBookComponent: bookComponent.lockBookComponent,
+  useCaseUnlockBookComponent: bookComponent.unlockBookComponent,
+  useCaseUpdateWorkflowState: bookComponent.updateWorkflowState,
+  useCaseDeleteBookComponent: bookComponent.deleteBookComponent,
+  useCaseRenameBookComponent: bookComponent.renameBookComponent,
+  useCaseSignS3: fileHosting.signS3,
+  useCaseUploadFile: fileHosting.uploadFile,
+  useCaseDeleteFiles: fileHosting.deleteFiles,
+  useCaseListRemoteFiles: fileHosting.listFiles,
+  useCaseGetRemoteFileInfo: fileHosting.getFileInfo,
+  useCaseFetchRemoteFileLocally: fileHosting.locallyDownloadFile,
 }

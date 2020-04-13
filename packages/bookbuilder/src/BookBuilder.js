@@ -8,6 +8,7 @@ import {
   UploadFilesButton,
   DownloadEpubButton,
   MetadataButton,
+  AssetManagerButton,
   // BookExporter,
   BookExporterButton,
   DivisionsArea,
@@ -88,6 +89,7 @@ export class BookBuilder extends React.Component {
       updateComponentType,
       uploadBookComponent,
       onDeleteBookComponent,
+      onAssetManager,
       onAdminUnlock,
       refetching,
       refetchingBookBuilderRules,
@@ -112,6 +114,7 @@ export class BookBuilder extends React.Component {
 
     const headerActions = [
       <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
+      <AssetManagerButton onAssetManager={() => onAssetManager(book.id)} />,
       // <BookExporter
       //   book={book}
       //   history={history}

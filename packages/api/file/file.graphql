@@ -20,6 +20,9 @@ input NewFileInput {
 #   hashed: String
 # }
 
+extend type Query {
+  getFiles(bookId: ID!, ascending: Boolean!, sortKey: String!): [File]!
+}
 extend type Mutation {
   uploadFile(input: NewFileInput!): File
   # updateFile(input: UpdateFileInput!): File

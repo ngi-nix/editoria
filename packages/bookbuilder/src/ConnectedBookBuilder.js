@@ -242,6 +242,15 @@ const mapProps = args => ({
       book,
     })
   },
+  onAssetManager: bookId => {
+    const { withModal } = args
+
+    const { showModal } = withModal
+
+    showModal('assetManagerModal', {
+      bookId,
+    })
+  },
   onExportBook: (book, bookTitle, history) => {
     const { exportBookMutation, withModal } = args
     const { exportBook } = exportBookMutation
@@ -434,6 +443,7 @@ const Connected = props => {
         onWarning,
         onMetadataAdd,
         uploadBookComponent,
+        onAssetManager,
         updateBookComponentUploading,
         ingestWordFiles,
         onDeleteBookComponent,
@@ -450,6 +460,7 @@ const Connected = props => {
         <BookBuilder
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
+          onAssetManager={onAssetManager}
           book={book}
           currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
