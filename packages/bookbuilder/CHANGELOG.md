@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.9"></a>
+## [1.5.9](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.5.8...pubsweet-component-bookbuilder@1.5.9) (2020-04-13)
+
+
+### Bug Fixes
+
+* **templates:** copying and cloning for templates fixed ([e328a52](https://gitlab.coko.foundation/editoria/editoria/commit/e328a52))
+
+
+
+
 <a name="1.5.8"></a>
 ## [1.5.8](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-bookbuilder@1.5.7...pubsweet-component-bookbuilder@1.5.8) (2020-03-24)
 

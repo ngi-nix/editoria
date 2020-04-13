@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.5.3"></a>
+## [0.5.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.5.2...editoria-api@0.5.3) (2020-04-13)
+
+
+### Bug Fixes
+
+* **templates:** copying and cloning for templates fixed ([e328a52](https://gitlab.coko.foundation/editoria/editoria/commit/e328a52))
+
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.5.1...editoria-api@0.5.2) (2020-03-24)
 
