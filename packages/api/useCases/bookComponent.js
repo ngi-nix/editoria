@@ -111,6 +111,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
             {
               bookComponentId: createdBookComponent.id,
               trackChangesEnabled: false,
+              includeInTOC: true,
               uploading: false,
             },
             bookComponentWorkflowStages,

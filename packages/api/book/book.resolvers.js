@@ -81,21 +81,21 @@ const createBook = async (_, { input }, ctx) => {
         )
         logger.info(`Team of type ${role} created for the book ${book.id}`)
 
-        const user = await ctx.connectors.User.fetchOne(ctx.user, ctx)
-        if (!user.admin && role === 'productionEditor') {
-          const userMember = pick(user, [
-            'id',
-            'email',
-            'username',
-            'admin',
-            'type',
-          ])
-          const member = { members: [{ user: [userMember] }] }
-          await ctx.connectors.Team.update(newTeam.id, member, ctx, {
-            unrelate: false,
-            eager: 'members.user.teams',
-          })
-        }
+        // const user = await ctx.connectors.User.fetchOne(ctx.user, ctx)
+        // if (!user.admin && role === 'productionEditor') {
+        //   const userMember = pick(user, [
+        //     'id',
+        //     'email',
+        //     'username',
+        //     'admin',
+        //     'type',
+        //   ])
+        //   const member = { members: [{ user: [userMember] }] }
+        //   await ctx.connectors.Team.update(newTeam.id, member, ctx, {
+        //     unrelate: false,
+        //     eager: 'members.user.teams',
+        //   })
+        // }
       }),
     )
     // CREATE TABLE OF CONTENTS IN THE FRONT MATTER
