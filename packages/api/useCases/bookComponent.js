@@ -78,10 +78,18 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
           `new book component created with id ${createdBookComponent.id}`,
         )
 
-        const translation = await BookComponentTranslation.query().insert({
+        const translationData = {
           bookComponentId: createdBookComponent.id,
           languageIso: 'en',
-        })
+        }
+
+        if (componentType === 'endnotes') {
+          translationData.title = 'Notes'
+        }
+
+        const translation = await BookComponentTranslation.query().insert(
+          translationData,
+        )
 
         logger.info(
           `new book component translation created with id ${translation.id}`,
@@ -111,7 +119,7 @@ const addBookComponent = async (divisionId, bookId, componentType) => {
             {
               bookComponentId: createdBookComponent.id,
               trackChangesEnabled: false,
-              includeInTOC: true,
+              includeInToc: true,
               uploading: false,
             },
             bookComponentWorkflowStages,
