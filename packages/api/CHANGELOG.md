@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.5.5"></a>
+## [0.5.5](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.5.4...editoria-api@0.5.5) (2020-04-21)
+
+
+
+
+**Note:** Version bump only for package editoria-api
+
 <a name="0.5.4"></a>
 ## [0.5.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.5.3...editoria-api@0.5.4) (2020-04-17)
 
