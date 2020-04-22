@@ -64,10 +64,6 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "**/react-adopt",
-      "**/react-powerplug"
     ]
   }
 }
