@@ -249,6 +249,7 @@ const mapProps = args => ({
 
     showModal('assetManagerModal', {
       bookId,
+      withImport: false,
     })
   },
   onExportBook: (book, bookTitle, history) => {
@@ -460,7 +461,6 @@ const Connected = props => {
         <BookBuilder
           addBookComponent={addBookComponent}
           applicationParameter={applicationParameter}
-          onAssetManager={onAssetManager}
           book={book}
           currentUser={currentUser}
           deleteBookComponent={deleteBookComponent}
@@ -470,6 +470,7 @@ const Connected = props => {
           loading={loading}
           loadingRules={loadingRules}
           onAdminUnlock={onAdminUnlock}
+          onAssetManager={onAssetManager}
           onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
           onEndNoteModal={onEndNoteModal}

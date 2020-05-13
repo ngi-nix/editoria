@@ -1,8 +1,0 @@
-type S3Payload {
-  signedRequest: String!
-  url: String!
-}
-
-extend type Mutation {
-  getSignedUrl(filename: String!, fileType: String!): S3Payload!
-}

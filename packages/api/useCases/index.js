@@ -1,5 +1,6 @@
 const bookComponent = require('./bookComponent')
-const fileHosting = require('./fileHosting')
+const objectStorage = require('./objectStorage')
+const file = require('./file')
 
 module.exports = {
   useCaseAddBookComponent: bookComponent.addBookComponent,
@@ -14,10 +15,17 @@ module.exports = {
   useCaseUpdateWorkflowState: bookComponent.updateWorkflowState,
   useCaseDeleteBookComponent: bookComponent.deleteBookComponent,
   useCaseRenameBookComponent: bookComponent.renameBookComponent,
-  useCaseSignS3: fileHosting.signS3,
-  useCaseUploadFile: fileHosting.uploadFile,
-  useCaseDeleteFiles: fileHosting.deleteFiles,
-  useCaseListRemoteFiles: fileHosting.listFiles,
-  useCaseGetRemoteFileInfo: fileHosting.getFileInfo,
-  useCaseFetchRemoteFileLocally: fileHosting.locallyDownloadFile,
+  useCaseSignURL: objectStorage.signURL,
+  useCaseUploadFile: objectStorage.uploadFile,
+  useCaseDeleteRemoteFiles: objectStorage.deleteFiles,
+  useCaseListRemoteFiles: objectStorage.listFiles,
+  useCaseGetRemoteFileInfo: objectStorage.getFileInfo,
+  useCaseFetchRemoteFileLocally: objectStorage.locallyDownloadFile,
+  useCaseCreateFile: file.createFile,
+  useCaseUpdateFile: file.updateFile,
+  useCaseGetEntityFiles: file.getEntityFiles,
+  useCaseGetFiles: file.getFiles,
+  useCaseGetFile: file.getFile,
+  useCaseDeleteDBFile: file.deleteFile,
+  useCaseDeleteDBFiles: file.deleteFiles,
 }

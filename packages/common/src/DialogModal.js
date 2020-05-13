@@ -22,14 +22,16 @@ const DialogModal = props => {
     notCentered,
     disableConfirm,
     buttonLabel,
+    textCancel,
     ...rest
   } = props
 
   const Header = <ModalHeader text={headerText} />
   const Footer = (
     <ModalFooterDialog
-      disableConfirm={disableConfirm}
       buttonLabel={buttonLabel}
+      disableConfirm={disableConfirm}
+      textCancel={textCancel}
     />
   )
 

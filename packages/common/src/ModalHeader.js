@@ -10,10 +10,10 @@ const Header = styled.div`
   /* box-shadow: 0 0 1px ${th('colorPrimary')}; */
   font-family: ${th('fontHeading')};
   /* margin-bottom: 1px; */
-  width: 100%;
+  padding-top: 4px;
   text-align: center;
   /* margin-top: 8px; */
-  padding-top: 4px;
+  width: 100%;
   /* padding: ${th('gridUnit')} calc(${th('gridUnit')} * 2); */
 `
 
@@ -47,7 +47,8 @@ const HeaderText = styled.div`
 // )
 
 const ModalHeader = props => {
-  const { className, closeIcon = true, onRequestClose, text } = props
+  // const { className, closeIcon = true, onRequestClose, text } = props
+  const { className, text } = props
 
   return (
     <Header className={className}>

@@ -113,7 +113,7 @@ export class BookBuilder extends React.Component {
     const productionEditorActions = []
 
     const headerActions = [
-      <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
+      <MetadataButton key={0} book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
       <AssetManagerButton onAssetManager={() => onAssetManager(book.id)} />,
       // <BookExporter
       //   book={book}
@@ -122,10 +122,12 @@ export class BookBuilder extends React.Component {
       //   onError={onError}
       // />,
       <BookExporterButton
+        key={1}
         onClick={() => onExportBook(book, book.title, history)}
         onError={onError}
       />,
       <BookSettingsButton
+        key={2}
         label="Book Settings"
         onClick={() => onBookSettings(book)}
       />,
@@ -133,6 +135,7 @@ export class BookBuilder extends React.Component {
     if (canViewTeamManager) {
       headerActions.unshift(
         <TeamManagerButton
+          key={3}
           label="Team Manager"
           onClick={() => onTeamManager(book.id)}
         />,
@@ -142,6 +145,7 @@ export class BookBuilder extends React.Component {
     if (canViewMultipleFilesUpload) {
       headerActions.unshift(
         <UploadFilesButton
+          key={4}
           book={book}
           onWarning={onWarning}
           uploadBookComponent={uploadBookComponent}

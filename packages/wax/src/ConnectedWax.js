@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, sortBy } from 'lodash'
+import { get, sortBy, map } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
@@ -14,6 +14,7 @@ import {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  getFileQuery,
   spellCheckerQuery,
   updateCustomTagMutation,
   addCustomTagMutation,
@@ -36,6 +37,7 @@ const mapper = {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  getFileQuery,
   spellCheckerQuery,
   trackChangeSubscription,
   lockChangeSubscription,
@@ -76,6 +78,32 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+  onAssetManager: bookId =>
+    new Promise((resolve, reject) => {
+      const { withModal } = args
+
+      const { showModal, hideModal } = withModal
+
+      const handleImport = async selectedFileIds => {
+        const {
+          getFileQuery: { client, query },
+        } = args
+
+        const files = await Promise.all(
+          map(selectedFileIds, async id =>
+            client.query({ query, variables: { id } }),
+          ),
+        )
+        hideModal()
+        resolve(files)
+      }
+
+      showModal('assetManagerEditor', {
+        bookId,
+        withImport: true,
+        handleImport,
+      })
+    }),
   checkSpell: (language, text) => {
     const {
       spellCheckerQuery: { client, query },
