@@ -150,6 +150,7 @@ const Connected = props => {
         checkSpell,
         tags,
         setState,
+        onAssetManager,
         onUnlocked,
         rules,
         teams,
@@ -190,6 +191,7 @@ const Connected = props => {
             addCustomTags={addCustomTags}
             bookComponent={bookComponent}
             bookComponentId={bookComponentId}
+            bookId={bookId}
             checkSpell={checkSpell}
             config={config}
             editing={editing}
@@ -197,6 +199,7 @@ const Connected = props => {
             key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
+            onAssetManager={onAssetManager}
             onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}
