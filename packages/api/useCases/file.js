@@ -66,6 +66,17 @@ const updateFile = async (id, data) => {
   }
 }
 
+const updateFiles = async (ids, data) => {
+  try {
+    return File.query()
+      .patch(data)
+      .whereIn(ids)
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
 const deleteFile = async (id, remoteToo = false) => {
   try {
     const deletedFile = await File.query().patchAndFetchById(id, {
@@ -186,6 +197,7 @@ const getFile = async id => {
 module.exports = {
   createFile,
   updateFile,
+  updateFiles,
   deleteFile,
   deleteFiles,
   getEntityFiles,

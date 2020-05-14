@@ -1,5 +1,6 @@
 const logger = require('@pubsweet/logger')
 const map = require('lodash/map')
+const union = require('lodash/union')
 const { FileTranslation } = require('editoria-data-model/src').models
 const pubsweetServer = require('pubsweet-server')
 
@@ -13,6 +14,7 @@ const {
   useCaseGetFile,
   useCaseSignURL,
   useCaseDeleteDBFiles,
+  useCaseUpdateFiles,
 } = require('../useCases')
 
 const { FILES_UPLOADED, FILE_UPDATED, FILES_DELETED } = require('./consts')
@@ -123,6 +125,25 @@ const deleteFiles = async (_, { ids, remoteToo }, ctx) => {
   }
 }
 
+const bulkFilesCorrelation = async (
+  _,
+  { toCorrelate, toUnCorrelate, entityId, entityType },
+  ctx,
+) => {
+  try {
+    if (toCorrelate.length > 0) {
+      await useCaseUpdateFiles(toCorrelate, { [`${entityType}Id`]: entityId })
+    }
+    if (toUnCorrelate.length > 0) {
+      await useCaseUpdateFiles(toUnCorrelate, { [`${entityType}Id`]: null })
+    }
+    return union(toCorrelate, toUnCorrelate)
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   Query: {
     getEntityFiles,
@@ -134,6 +155,7 @@ module.exports = {
     uploadFiles,
     updateFile,
     deleteFiles,
+    bulkFilesCorrelation,
   },
   File: {
     async alt({ id }, _, ctx) {

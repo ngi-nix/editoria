@@ -56,6 +56,7 @@ const {
   useCaseUpdateWorkflowState,
   useCaseDeleteBookComponent,
   useCaseRenameBookComponent,
+  useCaseGetEntityFiles,
 } = require('../useCases')
 
 const DOCX_TO_HTML = 'DOCX_TO_HTML'
@@ -693,6 +694,9 @@ module.exports = {
       //   bookComponent.id,
       // )
       return bookComponentState[0].uploading
+    },
+    async files({ id }, _, ctx) {
+      return useCaseGetEntityFiles(id, 'bookComponent')
     },
     async pagination(bookComponent, _, ctx) {
       return bookComponent.pagination

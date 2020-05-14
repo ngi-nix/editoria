@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, sortBy, map } from 'lodash'
+import { get, sortBy } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
@@ -15,6 +15,7 @@ import {
   getWaxRulesQuery,
   getUserTeamsQuery,
   getSpecificFilesQuery,
+  getBookComponentFilesQuery,
   spellCheckerQuery,
   updateCustomTagMutation,
   addCustomTagMutation,
@@ -24,6 +25,7 @@ import {
   lockBookComponentMutation,
   unlockBookComponentMutation,
   uploadFileMutation,
+  bulkFilesCorrelationMutation,
   trackChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
@@ -38,6 +40,7 @@ const mapper = {
   getWaxRulesQuery,
   getUserTeamsQuery,
   getSpecificFilesQuery,
+  getBookComponentFilesQuery,
   spellCheckerQuery,
   trackChangeSubscription,
   lockChangeSubscription,
@@ -51,6 +54,7 @@ const mapper = {
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
+  bulkFilesCorrelationMutation,
 }
 
 const getUserWithColor = (teams = []) => {
@@ -75,6 +79,7 @@ const mapProps = args => ({
   updateBookComponentTrackChanges:
     args.updateBookComponentTrackChangesMutation.updateTrackChanges,
   uploadFile: args.uploadFileMutation.uploadFile,
+  bulkFilesCorrelation: args.bulkFilesCorrelationMutation.bulkFilesCorrelation,
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
@@ -159,6 +164,7 @@ const Connected = props => {
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
+        bulkFilesCorrelation,
         lockBookComponent,
         unlockBookComponent,
         renameBookComponent,
@@ -192,6 +198,7 @@ const Connected = props => {
             bookComponent={bookComponent}
             bookComponentId={bookComponentId}
             bookId={bookId}
+            bulkFilesCorrelation={bulkFilesCorrelation}
             checkSpell={checkSpell}
             config={config}
             editing={editing}

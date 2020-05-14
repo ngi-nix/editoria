@@ -44,6 +44,7 @@ type BookComponent {
   hasContent: Boolean!
   divisionId: ID!
   divisionType: String
+  files: [File]!
   lock: Lock
   nextBookComponent: BookComponent
   prevBookComponent: BookComponent
@@ -97,8 +98,6 @@ input IngestWordFiles {
 extend type Query {
   getBookComponent(id: ID!): BookComponent!
 }
-
-
 
 extend type Mutation {
   ingestWordFile(bookComponentFiles: [IngestWordFiles!]): [BookComponent!]

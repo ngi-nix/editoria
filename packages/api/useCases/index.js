@@ -23,6 +23,7 @@ module.exports = {
   useCaseFetchRemoteFileLocally: objectStorage.locallyDownloadFile,
   useCaseCreateFile: file.createFile,
   useCaseUpdateFile: file.updateFile,
+  useCaseUpdateFiles: file.updateFiles,
   useCaseGetEntityFiles: file.getEntityFiles,
   useCaseGetFiles: file.getFiles,
   useCaseGetSpecificFiles: file.getSpecificFiles,

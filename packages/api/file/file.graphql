@@ -68,6 +68,7 @@ extend type Query {
 }
 extend type Mutation {
   uploadFiles(files: [Upload]!, entityType: String, entityId: ID): [File]!
+  bulkFilesCorrelation(toCorrelate:[ID], toUnCorrelate:[ID], entityId:ID!, entityType:String!):[ID]!
   updateFile(input: UpdateFileInput!): File!
   deleteFiles(ids: [ID!]!, remoteToo: Boolean): [ID]!
 }

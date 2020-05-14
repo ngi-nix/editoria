@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
+import { replaceImageSrc } from './utils'
 
 const Container = styled.div`
   display: flex;
@@ -70,7 +71,7 @@ export class WaxPubsweet extends React.Component {
       bookComponent: { id },
       editing,
     } = this.props
-    console.log('in unmount')
+
     if (editing === 'preview' || editing === 'selection') return
     this.unlock(id)
   }
@@ -140,12 +141,13 @@ export class WaxPubsweet extends React.Component {
   update(patch) {
     const {
       bookComponent,
+      bulkFilesCorrelation,
       updateBookComponentTrackChanges,
       renameBookComponent,
       updateCustomTags,
       addCustomTags,
     } = this.props
-    const { trackChanges, title, tags } = patch
+    const { trackChanges, title, tags, images } = patch
 
     if (tags) {
       const addTags = tags.filter(tag => !tag.id)
@@ -184,6 +186,19 @@ export class WaxPubsweet extends React.Component {
             id: bookComponent.id,
             title,
           },
+        },
+      })
+    }
+
+    if (images) {
+      const { added, deleted } = images
+
+      return bulkFilesCorrelation({
+        variables: {
+          toCorrelate: added,
+          toUnCorrelate: deleted,
+          entityId: bookComponent.id,
+          entityType: 'bookComponent',
         },
       })
     }
@@ -334,10 +349,16 @@ export class WaxPubsweet extends React.Component {
     // see trackChanges hack in mapStateToProps
     // const content = get(bookComponent, 'content')
     let { content } = bookComponent
+    const { hasContent, files } = bookComponent
 
     if (content === null) {
       content = ''
     }
+
+    if (hasContent && files.length > 0) {
+      content = replaceImageSrc(content, files)
+    }
+
     const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')
 
     let chapterNumber
