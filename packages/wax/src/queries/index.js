@@ -2,7 +2,7 @@ export { default as getBookComponentQuery } from './getBookComponent'
 export { default as getCustomTagsQuery } from './getCustomTags'
 export { default as getWaxRulesQuery } from './getWaxRules'
 export { default as getUserTeamsQuery } from './getUserTeams'
-export { default as getFileQuery } from './getFile'
+export { default as getSpecificFilesQuery } from './getSpecificFiles'
 
 export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as updateCustomTagMutation } from './updateCustomTag'

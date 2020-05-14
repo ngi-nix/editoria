@@ -25,6 +25,7 @@ module.exports = {
   useCaseUpdateFile: file.updateFile,
   useCaseGetEntityFiles: file.getEntityFiles,
   useCaseGetFiles: file.getFiles,
+  useCaseGetSpecificFiles: file.getSpecificFiles,
   useCaseGetFile: file.getFile,
   useCaseDeleteDBFile: file.deleteFile,
   useCaseDeleteDBFiles: file.deleteFiles,

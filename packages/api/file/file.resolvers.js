@@ -8,6 +8,7 @@ const {
   useCaseUpdateFile,
   useCaseCreateFile,
   useCaseGetEntityFiles,
+  useCaseGetSpecificFiles,
   useCaseGetFiles,
   useCaseGetFile,
   useCaseSignURL,
@@ -19,9 +20,18 @@ const { FILES_UPLOADED, FILE_UPDATED, FILES_DELETED } = require('./consts')
 const { pubsubManager } = pubsweetServer
 
 const getEntityFiles = async (_, { input }, ctx) => {
-  const { entityId, entityType, sortingParams } = input
   try {
+    const { entityId, entityType, sortingParams } = input
     return useCaseGetEntityFiles(entityId, entityType, sortingParams)
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
+const getSpecificFiles = async (_, { ids }, ctx) => {
+  try {
+    return useCaseGetSpecificFiles(ids)
   } catch (e) {
     logger.error(e)
     throw new Error(e)
@@ -103,7 +113,6 @@ const deleteFiles = async (_, { ids, remoteToo }, ctx) => {
     } else {
       deletedFiles = await useCaseDeleteDBFiles(ids)
     }
-    console.log('d', deletedFiles)
     pubsub.publish(FILES_DELETED, {
       filesDeleted: deletedFiles,
     })
@@ -117,6 +126,7 @@ const deleteFiles = async (_, { ids, remoteToo }, ctx) => {
 module.exports = {
   Query: {
     getEntityFiles,
+    getSpecificFiles,
     getFiles,
     getFile,
   },
@@ -146,6 +156,14 @@ module.exports = {
         }
       }
       return useCaseSignURL('getObject', objectKey)
+    },
+    async mimetype({ mimetype }, { target }, ctx) {
+      if (mimetype.match(/^image\//)) {
+        if (target && target === 'editor') {
+          return 'image/png'
+        }
+      }
+      return mimetype
     },
   },
   Subscription: {

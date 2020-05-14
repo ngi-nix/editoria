@@ -157,11 +157,26 @@ const getFiles = async () => {
   }
 }
 
+const getSpecificFiles = async ids => {
+  try {
+    const file = await File.query()
+      .whereIn('id', ids)
+      .andWhere({ deleted: false })
+
+    return file
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
 const getFile = async id => {
   try {
-    return File.query()
-      .where({ id })
-      .andWhere({ deleted: false })
+    const file = await File.findById(id)
+    if (file.deleted) {
+      throw new Error('file does not exists')
+    }
+    return file
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)
@@ -175,5 +190,6 @@ module.exports = {
   deleteFiles,
   getEntityFiles,
   getFiles,
+  getSpecificFiles,
   getFile,
 }

@@ -14,7 +14,7 @@ import {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
-  getFileQuery,
+  getSpecificFilesQuery,
   spellCheckerQuery,
   updateCustomTagMutation,
   addCustomTagMutation,
@@ -37,7 +37,7 @@ const mapper = {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
-  getFileQuery,
+  getSpecificFilesQuery,
   spellCheckerQuery,
   trackChangeSubscription,
   lockChangeSubscription,
@@ -86,16 +86,16 @@ const mapProps = args => ({
 
       const handleImport = async selectedFileIds => {
         const {
-          getFileQuery: { client, query },
+          getSpecificFilesQuery: { client, query },
         } = args
+        const { data } = await client.query({
+          query,
+          variables: { ids: selectedFileIds },
+        })
+        const { getSpecificFiles } = data
 
-        const files = await Promise.all(
-          map(selectedFileIds, async id =>
-            client.query({ query, variables: { id } }),
-          ),
-        )
         hideModal()
-        resolve(files)
+        resolve(getSpecificFiles)
       }
 
       showModal('assetManagerEditor', {

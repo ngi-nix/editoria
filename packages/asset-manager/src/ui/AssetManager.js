@@ -109,11 +109,15 @@ class AssetManager extends Component {
 
   deleteHandler() {
     const { deleteFiles } = this.props
-    const { checkboxSelected } = this.state
+    const { checkboxSelected, selectedItem } = this.state
     const self = this
-    deleteFiles(checkboxSelected).then(() =>
-      self.setState({ checkboxSelected: [] }),
-    )
+    deleteFiles(checkboxSelected).then(() => {
+      if (selectedItem && indexOf(checkboxSelected, selectedItem) === -1) {
+        self.setState({ checkboxSelected: [] })
+      } else {
+        self.setState({ checkboxSelected: [], selectedItem: undefined })
+      }
+    })
   }
 
   importHandler() {

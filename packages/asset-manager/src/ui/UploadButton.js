@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 
 import { ActionButton } from '../ui'
 
@@ -11,7 +10,6 @@ const Wrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-start;
-  margin-right: calc(2 * ${th('gridUnit')});
 `
 
 const UploadButton = ({
