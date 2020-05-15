@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import config from 'config'
 import Wax from 'wax-editor-react'
 import WaxHeader from './WaxHeader'
-import { replaceImageSrc } from './utils'
 
 const Container = styled.div`
   display: flex;
@@ -141,13 +140,12 @@ export class WaxPubsweet extends React.Component {
   update(patch) {
     const {
       bookComponent,
-      bulkFilesCorrelation,
       updateBookComponentTrackChanges,
       renameBookComponent,
       updateCustomTags,
       addCustomTags,
     } = this.props
-    const { trackChanges, title, tags, images } = patch
+    const { trackChanges, title, tags } = patch
 
     if (tags) {
       const addTags = tags.filter(tag => !tag.id)
@@ -190,18 +188,6 @@ export class WaxPubsweet extends React.Component {
       })
     }
 
-    if (images) {
-      const { added, deleted } = images
-
-      return bulkFilesCorrelation({
-        variables: {
-          toCorrelate: added,
-          toUnCorrelate: deleted,
-          entityId: bookComponent.id,
-          entityType: 'bookComponent',
-        },
-      })
-    }
     // const { actions, book, fragment, history } = this.props
     // const { updateFragment } = actions
 
@@ -349,14 +335,10 @@ export class WaxPubsweet extends React.Component {
     // see trackChanges hack in mapStateToProps
     // const content = get(bookComponent, 'content')
     let { content } = bookComponent
-    const { hasContent, files } = bookComponent
 
+    console.log('bb', bookComponent)
     if (content === null) {
       content = ''
-    }
-
-    if (hasContent && files.length > 0) {
-      content = replaceImageSrc(content, files)
     }
 
     const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')

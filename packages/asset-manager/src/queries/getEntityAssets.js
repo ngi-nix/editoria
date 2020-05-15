@@ -12,6 +12,7 @@ const GET_ENTITY_FILES = gql`
       mimetype
       size
       updated
+      inUse
       metadata {
         width
         height

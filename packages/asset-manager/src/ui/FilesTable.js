@@ -151,6 +151,13 @@ const FilesTable = ({
                       </TableCell>
                     )
                   }
+                  if (label === 'inUse') {
+                    return (
+                      <TableCell key={label} width={width}>
+                        {item[label] ? 'Yes' : 'No'}
+                      </TableCell>
+                    )
+                  }
                   return (
                     <TableCell key={label} width={width}>
                       {item[label]}

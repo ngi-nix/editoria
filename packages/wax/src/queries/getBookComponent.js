@@ -39,11 +39,6 @@ const GET_BOOK_COMPONENT = gql`
         bookId
       }
       content
-      files {
-        id
-        alt
-        source(size: medium)
-      }
     }
   }
 `

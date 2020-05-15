@@ -4,7 +4,6 @@ export { default as getWaxRulesQuery } from './getWaxRules'
 export { default as getUserTeamsQuery } from './getUserTeams'
 export { default as getSpecificFilesQuery } from './getSpecificFiles'
 
-export { default as bulkFilesCorrelationMutation } from './bulkFilesCorrelation'
 export { default as updateBookComponentContentMutation } from './updateContent'
 export { default as updateCustomTagMutation } from './updateCustomTag'
 export { default as addCustomTagMutation } from './addCustomTag'

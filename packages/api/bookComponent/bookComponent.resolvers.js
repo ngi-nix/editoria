@@ -6,7 +6,11 @@ const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
-const { convertDocx, extractFragmentProperties } = require('./util')
+const {
+  convertDocx,
+  extractFragmentProperties,
+  replaceImageSrc,
+} = require('./util')
 
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
@@ -56,7 +60,6 @@ const {
   useCaseUpdateWorkflowState,
   useCaseDeleteBookComponent,
   useCaseRenameBookComponent,
-  useCaseGetEntityFiles,
 } = require('../useCases')
 
 const DOCX_TO_HTML = 'DOCX_TO_HTML'
@@ -622,6 +625,11 @@ module.exports = {
       const bookComponentTranslation = await BookComponentTranslation.query()
         .where('bookComponentId', bookComponent.id)
         .andWhere('languageIso', 'en')
+      const content = bookComponentTranslation[0].content || ''
+      const hasContent = content.trim().length > 0
+      if (hasContent) {
+        return replaceImageSrc(bookComponentTranslation[0].content)
+      }
       return bookComponentTranslation[0].content
     },
     async trackChangesEnabled(bookComponent, _, ctx) {
@@ -694,9 +702,6 @@ module.exports = {
       //   bookComponent.id,
       // )
       return bookComponentState[0].uploading
-    },
-    async files({ id }, _, ctx) {
-      return useCaseGetEntityFiles(id, 'bookComponent')
     },
     async pagination(bookComponent, _, ctx) {
       return bookComponent.pagination

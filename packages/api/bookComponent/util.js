@@ -2,6 +2,47 @@ const waait = require('waait')
 const { db } = require('@pubsweet/db-manager')
 const logger = require('@pubsweet/logger')
 
+const cheerio = require('cheerio')
+const find = require('lodash/find')
+
+const { useCaseGetContentFiles } = require('../useCases')
+
+const replaceImageSrc = async content => {
+  const $ = cheerio.load(content)
+  const fileIds = []
+
+  $('img').each((i, elem) => {
+    const $elem = $(elem)
+    const fileId = $elem.attr('data-fileid')
+
+    fileIds.push(fileId)
+  })
+
+  if (fileIds.length > 0) {
+    const files = await useCaseGetContentFiles(fileIds)
+
+    $('img').each((i, elem) => {
+      const $elem = $(elem)
+      const fileId = $elem.attr('data-fileid')
+
+      const correspondingFile = find(files, { id: fileId })
+
+      if (correspondingFile) {
+        const { source, alt } = correspondingFile
+
+        $elem.attr('src', source)
+        if (alt) {
+          $elem.attr('alt', alt)
+        }
+      } else {
+        $elem.attr('src', '')
+        $elem.attr('alt', '')
+      }
+    })
+  }
+  return $.html()
+}
+
 module.exports = {
   convertDocx: async (file, pubsubChannel, pubsub, jobQueue) => {
     // A reference to actual pgboss job row
@@ -41,10 +82,9 @@ module.exports = {
 
             if (status === 'Conversion complete') {
               await waait(2000)
-              const job = await db('pgboss.job').whereRaw(
-                "data->'request'->>'id' = ?",
-                [queueJobId],
-              )
+              const job = await db(
+                'pgboss.job',
+              ).whereRaw("data->'request'->>'id' = ?", [queueJobId])
               const content = job[0].data.response.html
               resolve(content)
             }
@@ -88,4 +128,5 @@ module.exports = {
       componentType,
     }
   },
+  replaceImageSrc,
 }

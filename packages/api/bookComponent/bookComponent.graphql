@@ -44,7 +44,6 @@ type BookComponent {
   hasContent: Boolean!
   divisionId: ID!
   divisionType: String
-  files: [File]!
   lock: Lock
   nextBookComponent: BookComponent
   prevBookComponent: BookComponent

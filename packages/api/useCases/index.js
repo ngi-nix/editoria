@@ -30,4 +30,7 @@ module.exports = {
   useCaseGetFile: file.getFile,
   useCaseDeleteDBFile: file.deleteFile,
   useCaseDeleteDBFiles: file.deleteFiles,
+  useCaseGetFileURL: file.getFileURL,
+  useCaseGetContentFiles: file.getContentFiles,
+  useCaseIsFileInUse: file.isFileInUse,
 }

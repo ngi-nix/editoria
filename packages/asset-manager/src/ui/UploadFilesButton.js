@@ -18,7 +18,10 @@ class UploadFilesButton extends React.Component {
     const self = this
 
     this.setState({ uploading: true })
-    handler(files).then(() => self.setState({ uploading: false }))
+    handler(files).then(() => {
+      self.setState({ uploading: false })
+      // target.value = ''
+    })
   }
 
   render() {

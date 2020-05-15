@@ -1,9 +1,15 @@
 const pickBy = require('lodash/pickBy')
 const map = require('lodash/map')
-const { File, FileTranslation } = require('editoria-data-model/src').models
+const {
+  File,
+  FileTranslation,
+  BookComponent,
+  BookComponentTranslation,
+} = require('editoria-data-model/src').models
 const logger = require('@pubsweet/logger')
 
-const { deleteFiles: deleteRemoteFiles } = require('./objectStorage')
+const { deleteFiles: deleteRemoteFiles, signURL } = require('./objectStorage')
+const { imageFinder } = require('../helpers/utils')
 
 const createFile = async (
   { name, size, mimetype, tags, metadata, extension },
@@ -185,8 +191,9 @@ const getFile = async id => {
   try {
     const file = await File.findById(id)
     if (file.deleted) {
-      throw new Error('file does not exists')
+      throw new Error('this file is deleted')
     }
+
     return file
   } catch (e) {
     logger.error(e.message)
@@ -194,6 +201,83 @@ const getFile = async id => {
   }
 }
 
+const getFileURL = async (id, size = undefined) => {
+  const file = await File.findById(id)
+
+  if (file.deleted) {
+    throw new Error('this file is deleted')
+  }
+
+  const { mimetype, objectKey } = file
+
+  if (mimetype.match(/^image\//)) {
+    if (size && size !== 'original') {
+      const deconstructedKey = objectKey.split('.')
+      return signURL('getObject', `${deconstructedKey[0]}_${size}.png`)
+    }
+  }
+  return signURL('getObject', objectKey)
+}
+
+const getContentFiles = async fileIds => {
+  try {
+    const files = await getSpecificFiles(fileIds)
+    return Promise.all(
+      map(files, async file => {
+        const { id, mimetype, objectKey } = file
+
+        const translation = await FileTranslation.query().where({
+          fileId: id,
+          languageIso: 'en',
+        })
+        file.alt = translation.length === 1 ? translation[0].alt : null
+
+        if (mimetype.match(/^image\//)) {
+          file.mimetype = 'image/png'
+          const deconstructedKey = objectKey.split('.')
+          file.source = await signURL(
+            'getObject',
+            `${deconstructedKey[0]}_medium.png`,
+          )
+          return file
+        }
+
+        file.source = await signURL('getObject', objectKey)
+
+        return file
+      }),
+    )
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
+
+const isFileInUse = async (bookId, fileId) => {
+  try {
+    const bookComponentsOfBook = await BookComponent.query()
+      .where({ bookId })
+      .andWhere({ deleted: false })
+    const foundIn = []
+    await Promise.all(
+      map(bookComponentsOfBook, async bookComponent => {
+        const { id } = bookComponent
+        const translation = await BookComponentTranslation.query()
+          .where('bookComponentId', id)
+          .andWhere('languageIso', 'en')
+
+        if (imageFinder(translation[0].content, fileId)) {
+          foundIn.push(id)
+        }
+        return translation
+      }),
+    )
+    return foundIn
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
+}
 module.exports = {
   createFile,
   updateFile,
@@ -204,4 +288,7 @@ module.exports = {
   getFiles,
   getSpecificFiles,
   getFile,
+  getFileURL,
+  getContentFiles,
+  isFileInUse,
 }

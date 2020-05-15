@@ -148,7 +148,8 @@ class AssetManager extends Component {
       { label: 'name', width: 37, sortable: true },
       { label: 'updated', width: 28, sortable: true },
       { label: 'size', width: 15, sortable: false },
-      { label: 'mimetype', width: 18, sortable: false },
+      { label: 'mimetype', width: 17, sortable: false },
+      { label: 'inUse', width: 1, sortable: false },
     ]
 
     return (
