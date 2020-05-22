@@ -17830,10 +17830,10 @@ watchpack@^1.3.1, watchpack@^1.6.0:
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
 
-wax-editor-core@^1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/wax-editor-core/-/wax-editor-core-1.1.16.tgz#80bf8b31f0a29aa846df666223b67ecef7721df9"
-  integrity sha512-MoNgQuSLvtKfZiad/fy3YO7v6duuJPWssM3UwMQkGee8jq5bieXA9yxoT+yeYQACG1GOaId18dLedk0yFrV0pw==
+wax-editor-core@^1.1.17:
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/wax-editor-core/-/wax-editor-core-1.1.17.tgz#d73e88dc75669520e4bef5803b97b11e2ceadd2b"
+  integrity sha512-+PxWxTEqC17X+cYBU/BzpD3rpiZdvZ10pmju00rJZvEI+rIO2ZIopiuCqQFRwrUQKtKlU/N5Jxyd4RTZZA2MZg==
   dependencies:
     codemirror "^5.38.0"
     font-awesome "^4.7.0"
@@ -17841,16 +17841,16 @@ wax-editor-core@^1.1.16:
     simplebar "^4.1.0"
     substance "git+https://gitlab.coko.foundation/wax/substance-fork#master"
 
-wax-editor-react@^0.2.32:
-  version "0.2.32"
-  resolved "https://registry.yarnpkg.com/wax-editor-react/-/wax-editor-react-0.2.32.tgz#828ac1bcaa8c1a3076dd2b5f8b072c8179c089b5"
-  integrity sha512-VKOGSwhAchrtNUrAApRsdFlVbaBaR4fGtI983z5s0Oaws4pjFFGgLOGTNz+6p27spcXmfyDIqIVEn4IyKQE12w==
+wax-editor-react@0.2.33:
+  version "0.2.33"
+  resolved "https://registry.yarnpkg.com/wax-editor-react/-/wax-editor-react-0.2.33.tgz#d1e0c36b78d162c95124ecc334148672eb3c582d"
+  integrity sha512-yUZE8/PKPfrAuNwha+A2vV4gmqhOrsGx/mq9PZcepz8AYB3ZIxzxt/lKxy9d5A9CYhwAeUTK2jMfS1jQfOfNPg==
   dependencies:
     lodash "^4.17.4"
     react "^16.12.0"
     react-dom "^16.12.0"
     react-router-dom "^5.1.2"
-    wax-editor-core "^1.1.16"
+    wax-editor-core "^1.1.17"
 
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"
