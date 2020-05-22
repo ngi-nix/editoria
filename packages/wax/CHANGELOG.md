@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.11.11"></a>
+## [0.11.11](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.11.10...pubsweet-component-wax@0.11.11) (2020-05-22)
+
+
+### Bug Fixes
+
+* **wax:** missing library added ([0252129](https://gitlab.coko.foundation/editoria/editoria/commit/0252129))
+
+
+
+
 <a name="0.11.10"></a>
 ## [0.11.10](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.11.9...pubsweet-component-wax@0.11.10) (2020-05-22)
 
