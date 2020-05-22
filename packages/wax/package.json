@@ -1,7 +1,7 @@
 {
   "name": "pubsweet-component-wax",
   "description": "PubSweet component for the Wax collaborative document editor",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "main": "index.js",
   "keywords": [
     "wax",
