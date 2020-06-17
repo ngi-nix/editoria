@@ -24,7 +24,7 @@ module.exports = (
   hasEndnotes,
   endNotesComponentId,
 ) => {
-  const { content, componentType, includeInTOC, division, id } = bookComponent
+  const { content, componentType, division } = bookComponent
   const $ = cheerio.load(content)
 
   $('html').attr({
@@ -34,7 +34,7 @@ module.exports = (
     lang: 'en',
   })
   $('<link/>')
-    .attr('href', `../Styles/${stylesheet.basename}`)
+    .attr('href', `../Styles/${stylesheet.originalFilename}`)
     .attr('type', 'text/css')
     .attr('rel', 'stylesheet')
     .appendTo('head')

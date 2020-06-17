@@ -17,8 +17,6 @@ const {
   vivliostyleDecorator,
 } = require('./converters')
 
-const { execCommand } = require('./filesystem')
-
 const { generateContainer } = require('./htmlGenerators')
 
 const { htmlToEPUB } = require('./htmlToEPUB')
@@ -145,10 +143,9 @@ const EpubBackend = async (
             logger.info(pubsubChannelEpub, status)
             if (status === 'Validation complete') {
               await waait(1000)
-              const job = await db('pgboss.job').whereRaw(
-                "data->'request'->>'id' = ?",
-                [epubJobId],
-              )
+              const job = await db(
+                'pgboss.job',
+              ).whereRaw("data->'request'->>'id' = ?", [epubJobId])
 
               resolve(job[0].data.response)
             }
@@ -204,10 +201,9 @@ const EpubBackend = async (
             logger.info(pubsubChannelPdf, status)
             if (status === 'PDF creation completed') {
               await waait(1000)
-              const job = await db('pgboss.job').whereRaw(
-                "data->'request'->>'id' = ?",
-                [pdfId],
-              )
+              const job = await db(
+                'pgboss.job',
+              ).whereRaw("data->'request'->>'id' = ?", [pdfId])
 
               resolve(job[0].data.response)
             }
@@ -243,10 +239,9 @@ const EpubBackend = async (
             logger.info(pubsubChannelIcml, status)
             if (status === 'ICML creation completed') {
               await waait(1000)
-              const job = await db('pgboss.job').whereRaw(
-                "data->'request'->>'id' = ?",
-                [icmlId],
-              )
+              const job = await db(
+                'pgboss.job',
+              ).whereRaw("data->'request'->>'id' = ?", [icmlId])
 
               resolve(job[0].data.response)
             }

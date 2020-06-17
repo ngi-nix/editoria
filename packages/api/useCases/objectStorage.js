@@ -72,7 +72,7 @@ const healthCheck = () =>
       resolve(data)
     })
   })
-
+// getObject, putObject
 const signURL = async (operation, key) => {
   const s3Params = {
     Bucket: bucket,
@@ -90,6 +90,7 @@ const uploadFileHandler = (fileStream, filename, mimeType) => {
     Body: fileStream,
     ContentType: mimeType,
   }
+
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, data) => {
       if (err) {
@@ -179,13 +180,24 @@ const handleImageUpload = async (fileStream, filename, mimeType, encoding) => {
 //  medium: {location:String, key:String, bucket:String}, //if applicable or undefined
 //  small: {location:String, key:String, bucket:String}, //if applicable or undefined
 // }
-const uploadFile = async (fileStream, filename, mimeType, encoding) => {
+const uploadFile = async (
+  fileStream,
+  filename,
+  mimeType,
+  encoding = undefined,
+  forceObjectKey = undefined,
+) => {
   try {
-    const hashedFilename = `${crypto
-      .randomBytes(6)
-      .toString('hex')}.${getFileExtension(filename)}`
+    let hashedFilename
+    if (forceObjectKey) {
+      hashedFilename = forceObjectKey
+    } else {
+      hashedFilename = `${crypto
+        .randomBytes(6)
+        .toString('hex')}.${getFileExtension(filename)}`
+    }
 
-    if (mimeType.match(/^image\//)) {
+    if (mimeType.match(/^image\//) && encoding) {
       return handleImageUpload(fileStream, hashedFilename, mimeType, encoding)
     }
 

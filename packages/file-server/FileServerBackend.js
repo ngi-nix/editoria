@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fse = require('fs-extra')
 const config = require('config')
 const mime = require('mime-types')
 const get = require('lodash/get')
@@ -14,6 +15,16 @@ const readFile = location =>
   })
 
 const FileServerBackend = app => {
+  app.use('/api/fileserver/cleanup/:scope/:hash', async (req, res, next) => {
+    const { scope, hash } = req.params
+    const path = `${process.cwd()}/${uploadsDir}/${scope}/${hash}`
+    try {
+      await fse.remove(path)
+      res.end()
+    } catch (error) {
+      res.status(500).json({ error: error.message })
+    }
+  })
   app.use('/api/fileserver/:scope/:location/:file', async (req, res, next) => {
     const { location, file, scope } = req.params
     const path = `${process.cwd()}/${uploadsDir}/${scope}/${location}/${file}`

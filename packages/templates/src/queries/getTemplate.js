@@ -11,7 +11,7 @@ const GET_TEMPLATE = gql`
         name
         mimetype
         id
-        source
+        source(size: small)
       }
       author
       trimSize
@@ -22,6 +22,8 @@ const GET_TEMPLATE = gql`
         mimetype
         id
         source
+        extension
+        objectKey
       }
     }
   }
@@ -32,7 +34,7 @@ const getTemplateQuery = props => {
 
   return (
     <Query
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       notifyOnNetworkStatusChange
       query={GET_TEMPLATE}
       variables={{ id }}

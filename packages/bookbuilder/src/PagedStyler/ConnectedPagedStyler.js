@@ -12,7 +12,11 @@ import {
 import withModal from 'editoria-common/src/withModal'
 import PagedStyler from './PagedStyler'
 import statefull from '../Statefull'
-import { updateTemplateCSSFileMutation, getBookQuery } from '../queries'
+import {
+  updateTemplateCSSFileMutation,
+  getBookQuery,
+  templateUpdatedForPagedStyledSubscription,
+} from '../queries'
 
 const mapper = {
   statefull,
@@ -21,6 +25,7 @@ const mapper = {
   getBookQuery,
   cloneTemplateMutation,
   updateTemplateCSSFileMutation,
+  templateUpdatedForPagedStyledSubscription,
 }
 
 const mapProps = args => ({
@@ -54,21 +59,6 @@ const mapProps = args => ({
     const { updateTemplateCSSFile } = updateTemplateCSSFileMutation
     const { showModal, hideModal } = withModal
     return new Promise((resolve, reject) => {
-      //   const {
-      //     withModal,
-      //     cloneTemplateMutation: { cloneTemplate },
-      //     getTemplateQuery: {
-      //       data: {
-      //         getTemplate: { id, name: templateName },
-      //       },
-      //     },
-      //     getBookQuery: {
-      //       data: {
-      //         getBook: { title: name },
-      //       },
-      //     },
-      //     updateTemplateCSSFileMutation: { updateTemplateCSSFile },
-      //   } = args
       const saveCssBook = () => {
         cloneTemplate({
           variables: {
@@ -84,7 +74,7 @@ const mapProps = args => ({
           const { data } = res
           const { cloneTemplate } = data
           const { path } = cloneTemplate
-          history.push(`/books/${bookId}/pagedPreviewer/paged/${path}`)
+          history.replace(`/books/${bookId}/pagedPreviewer/paged/${path}`)
           hideModal()
           resolve()
         })
@@ -95,12 +85,20 @@ const mapProps = args => ({
           variables: {
             input: {
               id: file.id,
+              bookId,
               data: cssFile,
               hashed,
             },
           },
-        }).then(res => resolve())
-        hideModal()
+        }).then(res => {
+          const { data } = res
+          console.log('d', data)
+          const { updateTemplateCSSFile } = data
+          const { path } = updateTemplateCSSFile
+          history.replace(`/books/${bookId}/pagedPreviewer/paged/${path}`)
+          hideModal()
+          resolve()
+        })
       }
 
       showModal('warningPagedJs', {

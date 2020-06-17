@@ -4,22 +4,22 @@ import DialogModal from 'editoria-common/src/DialogModal'
 import { th } from '@pubsweet/ui-toolkit'
 
 const Text = styled.div`
-  font-family: 'Fira Sans Condensed';
-  text-align: center;
-  line-height: ${th('lineHeightBase')};
-  width: 100%;
-  font-size: ${th('fontSizeBase')};
   color: #404040;
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  text-align: center;
+  width: 100%;
 `
 const DeleteBookModal = props => {
   const { isOpen, hideModal, data } = props
   const { templateName, onConfirm } = data
   return (
     <DialogModal
-      isOpen={isOpen}
       headerText="Delete Template"
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>
         {`Are you sure you want to delete the template with name ${templateName}?`}
