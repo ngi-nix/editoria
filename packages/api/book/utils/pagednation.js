@@ -18,7 +18,7 @@ const { fixFontFaceUrls } = require('./converters')
 
 const { generatePagedjsContainer } = require('./htmlGenerators')
 
-const { objectKeyExtractor } = require('../../../common')
+const { objectKeyExtractor } = require('editoria-common')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 

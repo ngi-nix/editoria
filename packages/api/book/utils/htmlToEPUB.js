@@ -17,7 +17,7 @@ const {
   useCaseSignURL,
 } = require('../../useCases')
 const { imageGatherer } = require('./gatherImages')
-const { objectKeyExtractor } = require('../../../common')
+const { objectKeyExtractor } = require('editoria-common')
 
 let images = []
 let stylesheets = []

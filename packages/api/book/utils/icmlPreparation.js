@@ -15,7 +15,7 @@ const {
 } = require('../../useCases')
 
 const { generatePagedjsContainer } = require('./htmlGenerators')
-const { objectKeyExtractor } = require('../../../common')
+const { objectKeyExtractor } = require('editoria-common')
 const { imageGatherer } = require('./gatherImages')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
