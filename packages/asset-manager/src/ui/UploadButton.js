@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-
 import { ActionButton } from '../ui'
 
 const Input = styled.input`

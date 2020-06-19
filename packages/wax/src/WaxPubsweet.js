@@ -335,8 +335,7 @@ export class WaxPubsweet extends React.Component {
     // see trackChanges hack in mapStateToProps
     // const content = get(bookComponent, 'content')
     let { content } = bookComponent
-
-    console.log('bb', bookComponent)
+    
     if (content === null) {
       content = ''
     }

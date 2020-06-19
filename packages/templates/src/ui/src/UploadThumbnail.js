@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import { mimetypeHelpers } from 'editoria-common'
 
 import UploadButton from './UploadButton'
-import { mimetypeHelpers } from '../../../../common'
 
 const StyledButton = styled(UploadButton)`
   border: 1px solid grey;

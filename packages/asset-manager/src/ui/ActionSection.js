@@ -81,7 +81,7 @@ class ActionSection extends Component {
             )}
             {shouldShowImport && (
               <ActionButton
-                label="Import File"
+                label="Import File/s"
                 onClick={importHandler}
                 type="primary"
               />

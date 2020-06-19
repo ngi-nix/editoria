@@ -77,19 +77,7 @@ const ItemHeader = styled.h5`
   padding: 0;
 `
 
-const FileDetails = ({
-  // alt,
-  // source,
-  // id,
-  // name,
-  // size,
-  // mimetype,
-  // updated,
-  file,
-  updateFile,
-  // metadata,
-  closeHandler,
-}) => {
+const FileDetails = ({ file, updateFile, closeHandler }) => {
   const { alt, source, id, name, size, mimetype, updated, metadata } = file
   return (
     <PreviewWrapper>

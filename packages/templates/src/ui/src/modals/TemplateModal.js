@@ -351,8 +351,8 @@ class TemplateModal extends React.Component {
         </FormField>
       )
     }
-    return files.map(file => (
-      <FormField key={`${file.name}`}>
+    return files.map((file, index) => (
+      <FormField key={`${file.name}-${index}`}>
         <Filename>
           {file.extension ? `${file.name}.${file.extension}` : `${file.name}`}
         </Filename>

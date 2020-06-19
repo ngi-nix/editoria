@@ -1,6 +1,6 @@
 import React from 'react'
+import { mimetypeHelpers } from 'editoria-common'
 import UploadButton from './UploadButton'
-import { mimetypeHelpers } from '../../../../common'
 
 const { templateFileExtensions } = mimetypeHelpers
 class UploadFilesButton extends React.Component {

@@ -1,6 +1,5 @@
 const logger = require('@pubsweet/logger')
 const map = require('lodash/map')
-const uniq = require('lodash/uniq')
 const { FileTranslation } = require('editoria-data-model/src').models
 const pubsweetServer = require('pubsweet-server')
 
