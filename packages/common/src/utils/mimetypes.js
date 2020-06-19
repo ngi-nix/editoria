@@ -26,6 +26,7 @@ const imageExtensions = [
 ]
 const templateFileExtensions = '.css, .otf, .woff, .woff2, .ttf'
 const templateThumbnailExtensions = '.png, .jpg, .jpeg'
+const assetManagerFileExtensions = '.png, .jpg, .jpeg, .svg, .tiff, .tif, .bmp'
 
 const isSupportedAsset = (mimetype, scope = undefined) => {
   if (scope === 'images') {
@@ -62,4 +63,5 @@ module.exports = {
   templateFileExtensions,
   templateThumbnailExtensions,
   isSupportedAsset,
+  assetManagerFileExtensions,
 }

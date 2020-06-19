@@ -1,6 +1,9 @@
 import React from 'react'
+import { mimetypeHelpers } from 'editoria-common'
+
 import UploadButton from './UploadButton'
 
+const { assetManagerFileExtensions } = mimetypeHelpers
 class UploadFilesButton extends React.Component {
   constructor(props) {
     super(props)
@@ -31,6 +34,7 @@ class UploadFilesButton extends React.Component {
 
     return (
       <UploadButton
+        accept={assetManagerFileExtensions}
         disabled={uploading}
         id="assets"
         label={labelText}
