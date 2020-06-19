@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.12.0"></a>
+# [0.12.0](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.11.11...pubsweet-component-wax@0.12.0) (2020-06-19)
+
+
+### Features
+
+* **platform:** asset manager and file hosting ([81c9d29](https://gitlab.coko.foundation/editoria/editoria/commit/81c9d29))
+
+
+
+
 <a name="0.11.11"></a>
 ## [0.11.11](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.11.10...pubsweet-component-wax@0.11.11) (2020-05-22)
 

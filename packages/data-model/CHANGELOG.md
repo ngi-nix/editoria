@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.3.3...editoria-data-model@0.4.0) (2020-06-19)
+
+
+### Features
+
+* **platform:** asset manager and file hosting ([81c9d29](https://gitlab.coko.foundation/editoria/editoria/commit/81c9d29))
+
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-data-model@0.3.2...editoria-data-model@0.3.3) (2020-03-03)
 

@@ -1,6 +1,6 @@
 {
   "name": "editoria-api",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "GraphQl API for Editoria",
   "main": "index.js",
   "keywords": [
@@ -18,7 +18,7 @@
     "aws-sdk": "^2.610.0",
     "cheerio": "^1.0.0-rc.2",
     "css-tree": "^1.0.0-alpha.39",
-    "editoria-data-model": "^0.3.3",
+    "editoria-data-model": "^0.4.0",
     "fs-extra": "^8.1.0",
     "highlight.js": "^9.13.1",
     "js-beautify": "^1.11.0",

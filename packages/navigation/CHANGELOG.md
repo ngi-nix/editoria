@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.3.4"></a>
+## [0.3.4](https://gitlab.coko.foundation/editoria/editoria-navigation/compare/pubsweet-component-editoria-navigation@0.3.3...pubsweet-component-editoria-navigation@0.3.4) (2020-06-19)
+
+
+
+
+**Note:** Version bump only for package pubsweet-component-editoria-navigation
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://gitlab.coko.foundation/editoria/editoria-navigation/compare/pubsweet-component-editoria-navigation@0.3.2...pubsweet-component-editoria-navigation@0.3.3) (2020-03-03)
 

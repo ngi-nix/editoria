@@ -1,7 +1,7 @@
 {
   "name": "pubsweet-component-wax",
   "description": "PubSweet component for the Wax collaborative document editor",
-  "version": "0.11.11",
+  "version": "0.12.0",
   "main": "index.js",
   "keywords": [
     "wax",
@@ -13,7 +13,7 @@
     "@apollo/react-components": "^3.1.3",
     "@pubsweet/ui-toolkit": "^2.2.19",
     "config": "^3.1.0",
-    "editoria-common": "^0.2.3",
+    "editoria-common": "^0.2.4",
     "lodash": "4.17.15",
     "react": "^16.12.0",
     "react-adopt": "^0.6.0",
