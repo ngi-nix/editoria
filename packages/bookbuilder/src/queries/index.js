@@ -27,6 +27,9 @@ export {
   runningHeadersUpdatedSubscription,
   uploadingUpdatedSubscription,
 } from './bookBuilderSubscriptions'
+
+export { templateUpdatedForPagedStyledSubscription } from './templateUpdatedSubscription'
+
 export { default as findUserMutation } from './findUsers'
 export { default as updateTeamMutation } from './updateTeam'
 export { default as ingestWordFilesMutation } from './ingestWordFile'

@@ -1,3 +1,22 @@
+const cheerio = require('cheerio')
+
+const imageFinder = (content, fileId) => {
+  let found = false
+  if (content && content.length > 0) {
+    const $ = cheerio.load(content)
+
+    $('img').each((i, elem) => {
+      const $elem = $(elem)
+      const _fileId = $elem.attr('data-fileid')
+      if (_fileId === fileId) {
+        found = true
+      }
+    })
+  }
+
+  return found
+}
+
 const utils = {}
 
 utils.reorderArray = (array, item, to, from = undefined) => {
@@ -26,5 +45,7 @@ utils.isEmpty = data => {
 
   return isEmpty
 }
+
+utils.imageFinder = imageFinder
 
 module.exports = utils

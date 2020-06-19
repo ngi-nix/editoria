@@ -1,9 +1,8 @@
 import React from 'react'
-import { forEach, sortBy, map, find, filter } from 'lodash'
+import { mimetypeHelpers } from 'editoria-common'
 import UploadButton from './UploadButton'
-import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 
+const { templateFileExtensions } = mimetypeHelpers
 class UploadFilesButton extends React.Component {
   constructor(props) {
     super(props)
@@ -22,10 +21,10 @@ class UploadFilesButton extends React.Component {
   render() {
     const icon = (
       <svg
-        width="16"
+        fill="none"
         height="16"
         viewBox="0 0 16 16"
-        fill="none"
+        width="16"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
@@ -34,18 +33,18 @@ class UploadFilesButton extends React.Component {
           id="circle"
         />
         <path
-          fillRule="evenodd"
           clipRule="evenodd"
-          id="cross"
           d="M8 0C3.5888 0 0 3.5888 0 8C0 12.4112 3.5888 16 8 16C12.4112 16 16 12.4112 16 8C16 3.5888 12.4112 0 8 0ZM8 14.4C4.4712 14.4 1.6 11.5288 1.6 8C1.6 4.4712 4.4712 1.6 8 1.6C11.5288 1.6 14.4 4.4712 14.4 8C14.4 11.5288 11.5288 14.4 8 14.4Z"
           fill="#828282"
+          fillRule="evenodd"
+          id="cross"
         />
       </svg>
     )
 
     return (
       <UploadButton
-        accept=".css, .otf, .woff, .woff2, .ttf"
+        accept={templateFileExtensions}
         icon={icon}
         id="files"
         label="add files"

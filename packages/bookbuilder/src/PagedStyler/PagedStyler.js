@@ -6,34 +6,34 @@ import 'codemirror/lib/codemirror.css'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 
 const Wrapper = styled.div`
-  display: flex;
   align-items: flex-start;
+  display: flex;
   height: 100%;
   justify-content: flex-start;
   padding: 8px;
 `
 const CodeEditorWrapper = styled.div`
   display: flex;
+  flex-basis: 100%;
   flex-direction: column;
+  height: 100%;
   max-width: 50%;
   width: 50%;
-  flex-basis: 100%;
-  height: 100%;
 `
 const EditorToolbar = styled.div`
   display: flex;
-  justify-content: flex-end;
   height: 5%;
+  justify-content: flex-end;
 `
 const Actions = styled.button`
   background: none;
-  color: #0d78f2;
   border: none;
-  padding: 0;
-  font: inherit;
+  color: #0d78f2;
   cursor: pointer;
-  outline: inherit;
+  font: inherit;
   margin-right: 20px;
+  outline: inherit;
+  padding: 0;
 `
 const EditorArea = styled.div`
   flex-grow: 1;
@@ -46,12 +46,12 @@ const EditorArea = styled.div`
   }
 `
 const PreviewArea = styled.div`
+  height: 100%;
   max-width: 50%;
   width: 50%;
-  height: 100%;
   iframe {
-    width: 100%;
     height: 100%;
+    width: 100%;
   }
 `
 
@@ -84,15 +84,16 @@ const PagedStyler = ({
   const [random, setRandom] = useState('')
   const { id } = template
   const templateFile = getCssFile(template)
-
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/${templateFile.source}`)
+      const response = await fetch(
+        `/uploads/paged/${hashed}/${templateFile.name}.${templateFile.extension}`,
+      )
       const file = await response.text()
       setCssFile(file)
     }
     fetchData()
-  }, [id])
+  }, [hashed, id])
 
   return (
     <Wrapper>
@@ -139,13 +140,12 @@ const PagedStyler = ({
       </CodeEditorWrapper>
       <PreviewArea>
         <iframe
-          // className={classes.previewerContainer}
           frameBorder="0"
           id="printBook"
           key={random}
           src={`/paged/previewer/index.html?url=/uploads/paged/${hashed}/index.html&stylesheet=/uploads/paged/${hashed}/${
             getCssFile(template).name
-          }`}
+          }.${getCssFile(template).extension}`}
           title="PagedJS"
         />
       </PreviewArea>

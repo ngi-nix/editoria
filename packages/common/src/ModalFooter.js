@@ -6,10 +6,11 @@ import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
 const Wrapper = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 0 calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2);
+  padding: 0 calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2)
+    calc(${th('gridUnit')} * 2);
 `
 
 const Footer = props => {

@@ -5,15 +5,19 @@ const builder = require('xmlbuilder')
 const fs = require('fs-extra')
 const tidy = require('libtidy-updated')
 const mime = require('mime-types')
-const url = require('url')
 const config = require('config')
 const get = require('lodash/get')
 const map = require('lodash/map')
 const filter = require('lodash/filter')
 const { writeFile, readFile } = require('./filesystem')
 const beautify = require('js-beautify').html
-// const csstree = require('css-tree')
 const { epubDecorator, fixFontFaceUrls } = require('./converters')
+const {
+  useCaseFetchRemoteFileLocally,
+  useCaseSignURL,
+} = require('../../useCases')
+const { imageGatherer } = require('./gatherImages')
+const { objectKeyExtractor } = require('editoria-common')
 
 let images = []
 let stylesheets = []
@@ -62,26 +66,6 @@ const createMimetype = async rootPath => {
   }
 }
 
-// const fixFontFaceUrls = (stylesheet, fonts) => {
-//   const ast = csstree.parse(stylesheet.content)
-//   const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
-//   const regex = new RegExp(
-//     `([a-zA-Z0-9\s_\\.\-:])+(${allowedFiles.join('|')})$`,
-//   )
-
-//   csstree.walk(ast, node => {
-//     if (node.type === 'Url' && regex.test(node.value.value)) {
-//       const temp = node.value.value
-//       for (let i = 0; i < fonts.length; i += 1) {
-//         if (new RegExp(fonts[i].basename).test(temp)) {
-//           node.value.value = `../Fonts/${fonts[i].basename}`
-//         }
-//       }
-//     }
-//   })
-//   stylesheet.content = csstree.generate(ast)
-// }
-
 const createContainer = async metaInfPath => {
   try {
     const container = builder
@@ -110,34 +94,29 @@ const createContainer = async metaInfPath => {
 }
 const gatherAssets = async (book, templateFiles, epubFolder) => {
   for (let i = 0; i < templateFiles.length; i += 1) {
-    const { id: dbId, source: uri } = templateFiles[i]
-    const source = url.resolve(`${process.cwd()}/`, uri)
-    const extension = path.extname(uri)
-    const basename = path.basename(uri)
-    const filename = path.basename(uri, extension)
-    const mimetype = mime.lookup(uri)
+    const { id: dbId, objectKey, mimetype, extension, name } = templateFiles[i]
+    const originalFilename = `${name}.${extension}`
+
     if (templateFiles[i].mimetype === 'text/css') {
-      const target = `${epubFolder.styles}/${basename}`
+      const target = `${epubFolder.styles}/${originalFilename}`
       const id = `stylesheet-${dbId}-${i}`
       stylesheets.push({
         id,
-        source,
+        objectKey,
         target,
         mimetype,
-        basename,
-        filename,
+        originalFilename,
         extension,
       })
     } else {
-      const target = `${epubFolder.fonts}/${basename}`
+      const target = `${epubFolder.fonts}/${originalFilename}`
       const id = `font-${dbId}-${i}`
       fonts.push({
         id,
-        source,
+        objectKey,
         target,
         mimetype,
-        basename,
-        filename,
+        originalFilename,
         extension,
       })
     }
@@ -147,9 +126,20 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
       'No stylesheet file exists in the selected template, export aborted',
     )
   }
-  stylesheets[0].content = await readFile(stylesheets[0].source)
 
-  fixFontFaceUrls(stylesheets[0], fonts, '../Fonts')
+  const gatheredImages = imageGatherer(book)
+  const freshImageLinkMapper = {}
+
+  await Promise.all(
+    map(gatheredImages, async image => {
+      const { currentObjectKey } = image
+      freshImageLinkMapper[currentObjectKey] = await useCaseSignURL(
+        'getObject',
+        currentObjectKey,
+      )
+      return true
+    }),
+  )
 
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
@@ -159,26 +149,23 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
       $('img[src]').each((index, node) => {
         const $node = $(node)
         const constructedId = `image-${id}-${index}`
-
-        const uri = $node.attr('src').replace(/^\//, '') // ensure no leading slash
-        const source = url.resolve(`${process.cwd()}/`, uri)
-        const extension = path.extname(uri)
-        const basename = path.basename(uri)
-        const filename = path.basename(uri, extension)
-        const mimetype = mime.lookup(uri)
-        const target = `${epubFolder.images}/${basename}`
+        const url = $node.attr('src')
+        const objectKey = objectKeyExtractor(url)
+        const extension = path.extname(objectKey)
+        const mimetype = mime.lookup(objectKey)
+        const target = `${epubFolder.images}/${objectKey}`
 
         images.push({
           id: constructedId,
-          source,
+          objectKey,
           target,
           mimetype,
-          basename,
-          filename,
           extension,
         })
-        $node.attr('src', `../Images/${basename}`)
+
+        $node.attr('src', `../Images/${objectKey}`)
       })
+
       $('figure').each((index, node) => {
         const $node = $(node)
         const srcExists = $node.attr('src')
@@ -186,6 +173,7 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
           $node.removeAttr('src')
         }
       })
+
       bookComponent.content = $.html('body')
     })
   })
@@ -195,22 +183,25 @@ const transferAssets = async (images, stylesheets, fonts) => {
   try {
     await Promise.all(
       map(images, async image => {
-        const { source, target } = image
-        return fs.copy(source, target)
+        const { objectKey, target } = image
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
     await Promise.all(
       map(stylesheets, async stylesheet => {
-        const { content, target } = stylesheet
-        return writeFile(target, content)
+        const { objectKey, target } = stylesheet
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
     await Promise.all(
       map(fonts, async font => {
-        const { source, target } = font
-        return fs.copy(source, target)
+        const { objectKey, target } = font
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
+    const stylesheetContent = await readFile(stylesheets[0].target)
+    const fixedCSS = fixFontFaceUrls(stylesheetContent, fonts, '../Fonts')
+    await writeFile(`${stylesheets[0].target}`, fixedCSS)
   } catch (e) {
     throw new Error(e)
   }
@@ -223,7 +214,7 @@ const decorateText = async (book, hasEndnotes) => {
   if (hasEndnotes) {
     endnotesComponent = backDivision.bookComponents.get('endnotes')
     if (endnotesComponent) {
-      // for the case where there isn't any notes inside the of book
+      // for the case where there isn't any notes inside of the book
       id = endnotesComponent.id
     }
   }
@@ -362,21 +353,21 @@ const generateContentOPF = async (book, epubFolder) => {
   })
   for (let i = 0; i < images.length; i += 1) {
     manifestData.push({
-      '@href': `Images/${images[i].basename}`,
+      '@href': `Images/${images[i].objectKey}`,
       '@id': `${images[i].id}`,
       '@media-type': `${images[i].mimetype}`,
     })
   }
   for (let i = 0; i < fonts.length; i += 1) {
     manifestData.push({
-      '@href': `Fonts/${fonts[i].basename}`,
+      '@href': `Fonts/${fonts[i].originalFilename}`,
       '@id': `${fonts[i].id}`,
       '@media-type': `${fonts[i].mimetype}`,
     })
   }
   for (let i = 0; i < stylesheets.length; i += 1) {
     manifestData.push({
-      '@href': `Styles/${stylesheets[i].basename}`,
+      '@href': `Styles/${stylesheets[i].originalFilename}`,
       '@id': `${stylesheets[i].id}`,
       '@media-type': `${stylesheets[i].mimetype}`,
     })

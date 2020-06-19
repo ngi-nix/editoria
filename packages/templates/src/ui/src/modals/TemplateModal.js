@@ -33,23 +33,23 @@ const StyledModal = styled(ModalBody)`
   justify-content: center;
 `
 const Input = styled.input`
-  width: 100%;
-  line-height: ${th('lineHeightBase')};
-  font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeBase')};
   border: 0;
-  padding: 0;
-  outline: 0;
   border-bottom: 1px dashed
     ${({ errors, errorId, touched }) => {
       return errors[errorId] && touched[errorId]
         ? th('colorError')
         : th('colorText')
     }};
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  outline: 0;
+  padding: 0;
+  width: 100%;
 
   &:focus {
-    outline: 0;
     border-bottom: 1px dashed ${th('colorPrimary')};
+    outline: 0;
   }
   &:placeholder-shown {
     font-size: ${th('fontSizeBase')};
@@ -57,36 +57,40 @@ const Input = styled.input`
   }
 `
 const Text = styled.div`
-  font-family: 'Fira Sans Condensed';
-  margin-right: calc(3 * ${th('gridUnit')});
-  line-height: ${th('lineHeightBase')};
-  min-width: 55px;
-  font-size: ${th('fontSizeBase')};
   color: #404040;
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  line-height: ${th('lineHeightBase')};
+  margin-right: calc(3 * ${th('gridUnit')});
+  min-width: 55px;
 `
 const Error = styled.div`
-  font-family: 'Fira Sans Condensed';
-  height: ${th('lineHeightBase')};
-  min-height: ${th('lineHeightBase')};
-  line-height: ${th('lineHeightBase')};
-  width: 100%;
-  font-size: ${th('fontSizeBase')};
   color: ${th('colorError')};
+  font-family: 'Fira Sans Condensed';
+  font-size: ${th('fontSizeBase')};
+  height: ${th('lineHeightBase')};
+  line-height: ${th('lineHeightBase')};
+  min-height: ${th('lineHeightBase')};
+  width: 100%;
 `
 
 const ConfirmButton = styled.button`
   align-items: center;
-  cursor: pointer;
   background: ${th('colorPrimary')};
   border: none;
   color: white;
+  cursor: pointer;
   display: flex;
-  margin-bottom:8px;
-  padding: calc(${th('gridUnit')}/2) calc(3 * ${th('gridUnit')});
-  /* border-bottom: 1px solid ${th('colorBackground')}; */
+  margin-bottom: 8px;
+  padding: calc(${th('gridUnit')} / 2) calc(3 * ${th('gridUnit')});
+
   &:disabled {
-    background:#ccc;
+    background: #ccc;
     cursor: not-allowed;
+  }
+  &:focus {
+    background: ${darken('colorPrimary', 10)};
+    outline: 0;
   }
   &:not(:disabled):hover {
     background: ${lighten('colorPrimary', 10)};
@@ -96,47 +100,43 @@ const ConfirmButton = styled.button`
     border: none;
     outline: none;
   }
-  &:focus {
-    background: ${darken('colorPrimary', 10)};
-    outline: 0;
-  }
 `
 const CancelButton = styled.button`
   align-items: center;
-  cursor: pointer;
   background: none;
   border: none;
+  border-bottom: 1px solid ${th('colorBackground')};
   color: #828282;
+  cursor: pointer;
   display: flex;
   padding: 0;
-  border-bottom: 1px solid ${th('colorBackground')};
 
+  &:focus {
+    outline: 0;
+  }
   &:not(:disabled):hover {
     color: ${th('colorPrimary')};
   }
   &:not(:disabled):active {
     border: none;
+    border-bottom: 1px solid ${th('colorPrimary')};
     color: ${th('colorPrimary')};
     outline: none;
-    border-bottom: 1px solid ${th('colorPrimary')};
-  }
-  &:focus {
-    outline: 0;
   }
 `
 const Label = styled.span`
   font-family: 'Fira Sans Condensed';
   font-size: ${th('fontSizeBase')};
-  line-height: ${th('lineHeightBase')};
   font-weight: normal;
+  line-height: ${th('lineHeightBase')};
 `
 
 const Container = styled.div`
-  display: flex;
   align-items: flex-start;
+  display: flex;
+  flex-basis: 80%;
   height: 97%;
   justify-content: space-between;
-  flex-basis: 80%;
 `
 const Side1 = styled.div`
   display: flex;
@@ -353,7 +353,9 @@ class TemplateModal extends React.Component {
     }
     return files.map((file, index) => (
       <FormField key={`${file.name}-${index}`}>
-        <Filename>{file.name}</Filename>
+        <Filename>
+          {file.extension ? `${file.name}.${file.extension}` : `${file.name}`}
+        </Filename>
         <ButtonWithoutLabel
           icon={deleteIcon}
           onClick={e => {
@@ -406,7 +408,15 @@ class TemplateModal extends React.Component {
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
-          const { name, author, trimSize, files, thumbnail, target, notes } = values
+          const {
+            name,
+            author,
+            trimSize,
+            files,
+            thumbnail,
+            target,
+            notes,
+          } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
 
           let data
@@ -480,8 +490,8 @@ class TemplateModal extends React.Component {
                 <Side1>
                   {!thumbnailPreview && (
                     <UploadThumbnail
-                      setFieldValue={setFieldValue}
                       setFieldTouched={setFieldTouched}
+                      setFieldValue={setFieldValue}
                       updateThumbnail={this.updateThumbnail}
                       withIcon
                     />
@@ -494,8 +504,8 @@ class TemplateModal extends React.Component {
                         src={thumbnailPreview}
                       />
                       <UploadThumbnail
-                        setFieldValue={setFieldValue}
                         setFieldTouched={setFieldTouched}
+                        setFieldValue={setFieldValue}
                         updateThumbnail={this.updateThumbnail}
                       />
                       <DefaultButton
@@ -515,14 +525,14 @@ class TemplateModal extends React.Component {
                       <Input
                         errorId="name"
                         errors={errors}
-                        touched={touched}
-                        onKeyPress={e => {
-                          e.key === 'Enter' && e.preventDefault()
-                        }}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         placeholder="eg. Booksprints"
+                        touched={touched}
                         type="text"
                         value={values.name}
                       />
@@ -535,14 +545,14 @@ class TemplateModal extends React.Component {
                       <Input
                         errorId="author"
                         errors={errors}
-                        touched={touched}
-                        onKeyPress={e => {
-                          e.key === 'Enter' && e.preventDefault()
-                        }}
                         name="author"
                         onBlur={handleBlur}
                         onChange={handleChange}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         placeholder="eg. John Smith"
+                        touched={touched}
                         type="text"
                         value={values.author}
                       />
@@ -554,15 +564,15 @@ class TemplateModal extends React.Component {
                     <FormFieldContainer>
                       <Input
                         errorId="trimSize"
-                        touched={touched}
-                        onKeyPress={e => {
-                          e.key === 'Enter' && e.preventDefault()
-                        }}
                         errors={errors}
                         name="trimSize"
                         onBlur={handleBlur}
                         onChange={handleChange}
+                        onKeyPress={e => {
+                          e.key === 'Enter' && e.preventDefault()
+                        }}
                         placeholder="eg. 181 x 111 mm"
+                        touched={touched}
                         type="text"
                         value={values.trimSize}
                       />
@@ -587,11 +597,11 @@ class TemplateModal extends React.Component {
                     <Text>Notes</Text>
                     <FormFieldContainer>
                       <Select
+                        defaultValue={noteSelectOptions[0]}
                         onChange={selected => {
                           this.handleSelectNotes(selected)
                           setFieldValue('notes', selected)
                         }}
-                        defaultValue={noteSelectOptions[0]}
                         options={noteSelectOptions}
                         value={this.state.notes}
                       />

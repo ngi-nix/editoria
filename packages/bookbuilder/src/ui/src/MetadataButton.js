@@ -1,33 +1,7 @@
 import React from 'react'
-import config from 'config'
 import { ButtonWithIcon } from './Button'
 
-const MetadataButton = ({ book, onMetadataAdd, onError }) => {
-  let converter
-  if (config['pubsweet-client'] && config['pubsweet-client'].converter) {
-    converter = config['pubsweet-client'].converter
-  }
-
-  const handleDownload = () => {
-    htmlToEpub({
-      variables: {
-        bookId: book.id,
-        destination: 'attachment',
-        converter: !converter ? 'default' : `${converter}`,
-        style: 'epub.css',
-      },
-    })
-      .then(res => {
-        const { data } = res
-        const { exportBook } = data
-        window.location.replace(exportBook)
-      })
-      .catch(error => {
-        console.error('er', error)
-        onError(error)
-      })
-  }
-
+const MetadataButton = ({ onMetadataAdd }) => {
   const icon = (
     <svg
       width="28"

@@ -98,8 +98,6 @@ extend type Query {
   getBookComponent(id: ID!): BookComponent!
 }
 
-
-
 extend type Mutation {
   ingestWordFile(bookComponentFiles: [IngestWordFiles!]): [BookComponent!]
   addBookComponent(input: BookComponentInput): BookComponent!

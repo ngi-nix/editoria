@@ -1,7 +1,8 @@
 const csstree = require('css-tree')
+const beautifulCSS = require('js-beautify').css
 
-module.exports = (stylesheet, fonts, where) => {
-  const ast = csstree.parse(stylesheet.content)
+module.exports = (content, fonts, where) => {
+  const ast = csstree.parse(content)
   const allowedFiles = ['.otf', '.woff', '.woff2', '.ttf']
   const regex = new RegExp(
     `([a-zA-Z0-9\s_\\.\-:])+(${allowedFiles.join('|')})$`,
@@ -11,11 +12,11 @@ module.exports = (stylesheet, fonts, where) => {
     if (node.type === 'Url' && regex.test(node.value.value)) {
       const temp = node.value.value
       for (let i = 0; i < fonts.length; i += 1) {
-        if (new RegExp(fonts[i].basename).test(temp)) {
-          node.value.value = `${where}/${fonts[i].basename}`
+        if (new RegExp(fonts[i].originalFilename).test(temp)) {
+          node.value.value = `${where}/${fonts[i].originalFilename}`
         }
       }
     }
   })
-  stylesheet.content = csstree.generate(ast)
+  return beautifulCSS(csstree.generate(ast))
 }

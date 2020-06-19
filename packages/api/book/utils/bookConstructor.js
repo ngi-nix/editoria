@@ -132,7 +132,6 @@ module.exports = async (bookId, templateHasEndnotes, ctx) => {
     authors: authors.length > 0 ? authors : null,
   }
 
-  // const bookDivisions = []
   const bookDivisions = new Map()
 
   for (let i = 0; i < book.divisions.length; i += 1) {
@@ -140,48 +139,22 @@ module.exports = async (bookId, templateHasEndnotes, ctx) => {
     const tempDivision = {
       label: division.label,
       type: divisionTypeMapper[division.label],
-      // bookComponents: [],
       bookComponents: new Map(),
     }
 
     forEach(division.bookComponents, bookComponentId => {
-      // tempDivision.bookComponents.push(
-      //   find(bookComponentsWithNumber, { id: bookComponentId }),
-      // )
       const bookComponent = find(bookComponentsWithNumber, {
         id: bookComponentId,
       })
       if (bookComponent.componentType === 'toc') {
         tempDivision.bookComponents.set('toc', bookComponent)
-
-        // } else if (
-        //   templateHasEndnotes &&
-        //   bookComponent.componentType === 'endnotes'
-        // ) {
-        //   tempDivision.bookComponents.set('endnotes', bookComponent)
       } else if (bookComponent.componentType === 'endnotes') {
         tempDivision.bookComponents.set('endnotes', bookComponent)
       } else {
         tempDivision.bookComponents.set(bookComponentId, bookComponent)
       }
     })
-    // if (division.label === 'Backmatter' && templateHasEndnotes) {
-    //   const notesComponent = {
-    //     id: 'notes0',
-    //     divisionId: division.id,
-    //     content: null,
-    //     title: 'Notes',
-    //     componentType: 'endnotes',
-    //     includeInTOC: true,
-    //     runningHeadersRight: 'Notes',
-    //     runningHeadersLeft: 'Notes',
-    //     pagination: { left: false, right: true },
-    //     division: 'back',
-    //     number: 1,
-    //   }
-    //   tempDivision.bookComponents.set('endnotes', notesComponent)
-    // }
-    // bookDivisions.push(tempDivision)
+
     bookDivisions.set(divisionTypeMapper[division.label], tempDivision)
   }
   finalBook.title = bookTranslation[0].title

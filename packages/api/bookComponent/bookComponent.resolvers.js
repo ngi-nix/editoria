@@ -6,7 +6,11 @@ const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
-const { convertDocx, extractFragmentProperties } = require('./util')
+const {
+  convertDocx,
+  extractFragmentProperties,
+  replaceImageSrc,
+} = require('./util')
 
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
@@ -621,6 +625,11 @@ module.exports = {
       const bookComponentTranslation = await BookComponentTranslation.query()
         .where('bookComponentId', bookComponent.id)
         .andWhere('languageIso', 'en')
+      const content = bookComponentTranslation[0].content || ''
+      const hasContent = content.trim().length > 0
+      if (hasContent) {
+        return replaceImageSrc(bookComponentTranslation[0].content)
+      }
       return bookComponentTranslation[0].content
     },
     async trackChangesEnabled(bookComponent, _, ctx) {

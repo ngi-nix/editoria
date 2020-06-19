@@ -27,6 +27,7 @@ export class WaxPubsweet extends React.Component {
     this.onUnload = this.onUnload.bind(this)
     this.unlock = this.unlock.bind(this)
     this.lock = this.lock.bind(this)
+    this.handleAssetManager = this.handleAssetManager.bind(this)
   }
 
   componentWillMount(nextProps) {
@@ -69,7 +70,7 @@ export class WaxPubsweet extends React.Component {
       bookComponent: { id },
       editing,
     } = this.props
-    console.log('in unmount')
+
     if (editing === 'preview' || editing === 'selection') return
     this.unlock(id)
   }
@@ -108,6 +109,11 @@ export class WaxPubsweet extends React.Component {
         },
       },
     })
+  }
+
+  handleAssetManager() {
+    const { bookId, onAssetManager } = this.props
+    return onAssetManager(bookId)
   }
 
   // TODO -- Theoretically, we shouldn't lock when the editor is in read only
@@ -181,6 +187,7 @@ export class WaxPubsweet extends React.Component {
         },
       })
     }
+
     // const { actions, book, fragment, history } = this.props
     // const { updateFragment } = actions
 
@@ -328,10 +335,11 @@ export class WaxPubsweet extends React.Component {
     // see trackChanges hack in mapStateToProps
     // const content = get(bookComponent, 'content')
     let { content } = bookComponent
-
+    
     if (content === null) {
       content = ''
     }
+
     const trackChangesEnabled = get(bookComponent, 'trackChangesEnabled')
 
     let chapterNumber
@@ -343,6 +351,7 @@ export class WaxPubsweet extends React.Component {
       <Container>
         <WaxHeader bookComponent={bookComponent} />
         <Wax
+          assetManager={this.handleAssetManager}
           autoSave={autoSave === undefined ? false : autoSave}
           chapterNumber={chapterNumber}
           checkSpell={checkSpell}

@@ -5,12 +5,18 @@ const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
 const mime = require('mime-types')
-const url = require('url')
 const map = require('lodash/map')
 
 const { writeFile } = require('./filesystem')
 
+const {
+  useCaseFetchRemoteFileLocally,
+  useCaseGetFile,
+} = require('../../useCases')
+
 const { generatePagedjsContainer } = require('./htmlGenerators')
+const { objectKeyExtractor } = require('editoria-common')
+const { imageGatherer } = require('./gatherImages')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 
@@ -21,7 +27,18 @@ const icmlPreparation = async book => {
     const tempDir = `${process.cwd()}/${uploadsDir}/temp`
     const tempDestination = path.join(tempDir, `${hash}`)
     await fs.ensureDir(tempDestination)
+    const gatheredImages = imageGatherer(book)
+    const originalImageLinkMapper = {}
 
+    await Promise.all(
+      map(gatheredImages, async image => {
+        const { currentObjectKey, fileId } = image
+        const file = await useCaseGetFile(fileId)
+        const { objectKey } = file
+        originalImageLinkMapper[currentObjectKey] = objectKey
+        return true
+      }),
+    )
     book.divisions.forEach((division, divisionId) => {
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
         const { content, id } = bookComponent
@@ -31,25 +48,21 @@ const icmlPreparation = async book => {
           const $node = $(node)
           const constructedId = `image-${id}-${index}`
 
-          const uri = $node.attr('src').replace(/^\//, '') // ensure no leading slash
-          const source = url.resolve(`${process.cwd()}/`, uri)
-          const extension = path.extname(uri)
-          const basename = path.basename(uri)
-          const filename = path.basename(uri, extension)
-          const mimetype = mime.lookup(uri)
-          const target = `${tempDestination}/${basename}`
+          const url = $node.attr('src')
+          const objectKey = objectKeyExtractor(url)
+          const extension = path.extname(objectKey)
+          const mimetype = mime.lookup(objectKey)
+          const target = `${tempDestination}/${originalImageLinkMapper[objectKey]}`
 
           images.push({
             id: constructedId,
-            source,
+            objectKey: originalImageLinkMapper[objectKey],
             target,
             mimetype,
-            basename,
-            filename,
             extension,
           })
 
-          $node.attr('src', `./${basename}`)
+          $node.attr('src', `./${originalImageLinkMapper[objectKey]}`)
         })
         $('figure').each((index, node) => {
           const $node = $(node)
@@ -64,8 +77,8 @@ const icmlPreparation = async book => {
 
     await Promise.all(
       map(images, async image => {
-        const { source, target } = image
-        return fs.copy(source, target)
+        const { objectKey, target } = image
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
     const output = cheerio.load(generatePagedjsContainer(book.title))
@@ -77,7 +90,6 @@ const icmlPreparation = async book => {
     })
 
     await writeFile(`${tempDestination}/index.html`, output.html())
-    // return pagedDestination
     return { path: tempDestination, hash }
   } catch (e) {
     throw new Error(e)

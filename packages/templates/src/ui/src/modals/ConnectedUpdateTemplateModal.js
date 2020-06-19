@@ -8,31 +8,28 @@ const mapper = {
   getTemplateQuery,
 }
 
-const mapProps = args => {
-  return {
-    template: get(args.getTemplateQuery, 'data.getTemplate'),
-    loadingTemplate: args.getTemplateQuery.networkStatus === 1,
-  }
-}
+const mapProps = args => ({
+  template: get(args.getTemplateQuery, 'data.getTemplate'),
+  loadingTemplate: args.getTemplateQuery.networkStatus === 1,
+})
 
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  
-  // const { data, isOpen } = props
   const { data, isOpen, hideModal } = props
   const { templateId } = data
+
   return (
     <Composed templateId={templateId}>
       {({ template, loadingTemplate }) => {
         if (loadingTemplate || !template) return null
         return (
           <TemplateModal
-            template={template}
-            key={template.id}
-            isOpen={isOpen}
             data={data}
             hideModal={hideModal}
+            isOpen={isOpen}
+            key={template.id}
+            template={template}
           />
         )
       }}

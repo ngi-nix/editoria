@@ -1,7 +1,6 @@
 const pubsweetServer = require('pubsweet-server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
-const pick = require('lodash/pick')
 const assign = require('lodash/assign')
 const omitBy = require('lodash/omitBy')
 const isNil = require('lodash/isNil')

@@ -5,7 +5,11 @@ const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
 const mime = require('mime-types')
-const url = require('url')
+const {
+  useCaseFetchRemoteFileLocally,
+  useCaseSignURL,
+} = require('../../useCases')
+const { imageGatherer } = require('./gatherImages')
 const map = require('lodash/map')
 
 const { readFile, writeFile } = require('./filesystem')
@@ -13,6 +17,8 @@ const { readFile, writeFile } = require('./filesystem')
 const { fixFontFaceUrls } = require('./converters')
 
 const { generatePagedjsContainer } = require('./htmlGenerators')
+
+const { objectKeyExtractor } = require('editoria-common')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 
@@ -28,34 +34,31 @@ const pagednation = async (book, template, pdf = false) => {
     await fs.ensureDir(pagedDestination)
 
     for (let i = 0; i < templateFiles.length; i += 1) {
-      const { id: dbId, source: uri } = templateFiles[i]
-      const source = url.resolve(`${process.cwd()}/`, uri)
-      const extension = path.extname(uri)
-      const basename = path.basename(uri)
-      const filename = path.basename(uri, extension)
-      const mimetype = mime.lookup(uri)
+      const { id: dbId, objectKey, mimetype, extension, name } = templateFiles[
+        i
+      ]
+      const originalFilename = `${name}.${extension}`
+
       if (templateFiles[i].mimetype === 'text/css') {
-        const target = `${pagedDestination}/${filename}.css`
+        const target = `${pagedDestination}/${originalFilename}`
         const id = `stylesheet-${dbId}-${i}`
         stylesheets.push({
           id,
-          source,
+          objectKey,
           target,
           mimetype,
-          basename,
-          filename,
+          originalFilename,
           extension,
         })
       } else {
-        const target = `${pagedDestination}/${basename}`
+        const target = `${pagedDestination}/${originalFilename}`
         const id = `font-${dbId}-${i}`
         fonts.push({
           id,
-          source,
+          objectKey,
           target,
           mimetype,
-          basename,
-          filename,
+          originalFilename,
           extension,
         })
       }
@@ -65,8 +68,19 @@ const pagednation = async (book, template, pdf = false) => {
         'No stylesheet file exists in the selected template, export aborted',
       )
     }
-    stylesheets[0].content = await readFile(stylesheets[0].source)
+    const gatheredImages = imageGatherer(book)
+    const freshImageLinkMapper = {}
 
+    await Promise.all(
+      map(gatheredImages, async image => {
+        const { currentObjectKey } = image
+        freshImageLinkMapper[currentObjectKey] = await useCaseSignURL(
+          'getObject',
+          currentObjectKey,
+        )
+        return true
+      }),
+    )
     book.divisions.forEach((division, divisionId) => {
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
         const { content, id } = bookComponent
@@ -75,28 +89,24 @@ const pagednation = async (book, template, pdf = false) => {
         $('img[src]').each((index, node) => {
           const $node = $(node)
           const constructedId = `image-${id}-${index}`
-
-          const uri = $node.attr('src').replace(/^\//, '') // ensure no leading slash
-          const source = url.resolve(`${process.cwd()}/`, uri)
-          const extension = path.extname(uri)
-          const basename = path.basename(uri)
-          const filename = path.basename(uri, extension)
-          const mimetype = mime.lookup(uri)
-          const target = `${pagedDestination}/${basename}`
+          const url = $node.attr('src')
+          const objectKey = objectKeyExtractor(url)
+          const extension = path.extname(objectKey)
+          const mimetype = mime.lookup(objectKey)
+          const target = `${pagedDestination}/${objectKey}`
 
           images.push({
             id: constructedId,
-            source,
+            objectKey,
             target,
             mimetype,
-            basename,
-            filename,
             extension,
           })
+
           if (pdf) {
-            $node.attr('src', `./${basename}`)
+            $node.attr('src', `./${objectKey}`)
           } else {
-            $node.attr('src', `/uploads/${basename}`)
+            $node.attr('src', freshImageLinkMapper[objectKey])
           }
         })
         $('figure').each((index, node) => {
@@ -109,27 +119,30 @@ const pagednation = async (book, template, pdf = false) => {
         bookComponent.content = $.html('body')
       })
     })
-
-    fixFontFaceUrls(stylesheets[0], fonts, '.')
     await Promise.all(
       map(images, async image => {
-        const { source, target } = image
-        return fs.copy(source, target)
+        const { objectKey, target } = image
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
     await Promise.all(
       map(stylesheets, async stylesheet => {
-        const { content, target } = stylesheet
-        return writeFile(target, content)
+        const { objectKey, target } = stylesheet
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
     await Promise.all(
       map(fonts, async font => {
-        const { source, target } = font
-        return fs.copy(source, target)
+        const { objectKey, target } = font
+        return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
+
+    const stylesheetContent = await readFile(stylesheets[0].target)
+    const fixedCSS = fixFontFaceUrls(stylesheetContent, fonts, '.')
+    await writeFile(`${stylesheets[0].target}`, fixedCSS)
     const output = cheerio.load(generatePagedjsContainer(book.title))
+
     book.divisions.forEach((division, divisionId) => {
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
         const { content } = bookComponent
@@ -138,13 +151,12 @@ const pagednation = async (book, template, pdf = false) => {
     })
     if (pdf) {
       output('<link/>')
-        .attr('href', `./${stylesheets[0].filename}.css`)
+        .attr('href', `./${stylesheets[0].originalFilename}`)
         .attr('type', 'text/css')
         .attr('rel', 'stylesheet')
         .appendTo('head')
     }
     await writeFile(`${pagedDestination}/index.html`, output.html())
-    // return pagedDestination
     return { clientPath: `${hash}/template/${template.id}`, hash }
   } catch (e) {
     throw new Error(e)

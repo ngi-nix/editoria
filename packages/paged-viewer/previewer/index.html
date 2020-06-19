@@ -46,6 +46,7 @@
 
       // Add a stylesheet url in params
       let stylesheet = params && params.get("stylesheet") && decodeURIComponent(params.get("stylesheet"));
+      console.log('style', stylesheet)
       if (stylesheet) {
         hrefs.push(stylesheet);
       }

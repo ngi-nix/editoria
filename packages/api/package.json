@@ -17,18 +17,17 @@
     "archiver": "^3.1.1",
     "aws-sdk": "^2.610.0",
     "cheerio": "^1.0.0-rc.2",
-    "css-tree": "^1.0.0-alpha.35",
+    "css-tree": "^1.0.0-alpha.39",
     "editoria-data-model": "^0.3.3",
     "fs-extra": "^8.1.0",
     "highlight.js": "^9.13.1",
-    "js-beautify": "^1.10.2",
+    "js-beautify": "^1.11.0",
     "libtidy-updated": "0.4.1",
     "list-contents": "^4.0.2",
     "lodash": "4.17.15",
     "mime-types": "^2.1.24",
     "mkdirp": "^0.5.1",
-    "pagedjs": "0.1.34",
-    "pagedjs-cli": "0.0.9",
+    "sharp": "^0.25.2",
     "xmlbuilder": "^13.0.2"
   }
 }

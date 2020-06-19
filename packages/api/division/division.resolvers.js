@@ -49,7 +49,6 @@ const updateBookComponentOrder = async (
         pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
           bookComponentOrderUpdated: book,
         })
-        
       } else {
         sourceDivision.bookComponents.splice(found, 1)
         await Division.query().patchAndFetchById(sourceDivision.id, {
@@ -78,12 +77,11 @@ const updateBookComponentOrder = async (
         pubsub.publish(BOOK_COMPONENT_ORDER_UPDATED, {
           bookComponentOrderUpdated: book,
         })
-        
       }
       return Book.findById(bookComponent.bookId)
     },
   )
-    
+
   return bookTransaction
 }
 

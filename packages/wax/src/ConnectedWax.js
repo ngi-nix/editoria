@@ -14,6 +14,7 @@ import {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  getSpecificFilesQuery,
   spellCheckerQuery,
   updateCustomTagMutation,
   addCustomTagMutation,
@@ -36,6 +37,7 @@ const mapper = {
   getCustomTagsQuery,
   getWaxRulesQuery,
   getUserTeamsQuery,
+  getSpecificFilesQuery,
   spellCheckerQuery,
   trackChangeSubscription,
   lockChangeSubscription,
@@ -76,6 +78,32 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+  onAssetManager: bookId =>
+    new Promise((resolve, reject) => {
+      const { withModal } = args
+
+      const { showModal, hideModal } = withModal
+
+      const handleImport = async selectedFileIds => {
+        const {
+          getSpecificFilesQuery: { client, query },
+        } = args
+        const { data } = await client.query({
+          query,
+          variables: { ids: selectedFileIds },
+        })
+        const { getSpecificFiles } = data
+
+        hideModal()
+        resolve(getSpecificFiles)
+      }
+
+      showModal('assetManagerEditor', {
+        bookId,
+        withImport: true,
+        handleImport,
+      })
+    }),
   checkSpell: (language, text) => {
     const {
       spellCheckerQuery: { client, query },
@@ -122,6 +150,7 @@ const Connected = props => {
         checkSpell,
         tags,
         setState,
+        onAssetManager,
         onUnlocked,
         rules,
         teams,
@@ -162,6 +191,7 @@ const Connected = props => {
             addCustomTags={addCustomTags}
             bookComponent={bookComponent}
             bookComponentId={bookComponentId}
+            bookId={bookId}
             checkSpell={checkSpell}
             config={config}
             editing={editing}
@@ -169,6 +199,7 @@ const Connected = props => {
             key={bookComponent.id}
             loading={loading}
             lockBookComponent={lockBookComponent}
+            onAssetManager={onAssetManager}
             onUnlocked={onUnlocked}
             renameBookComponent={renameBookComponent}
             rules={rules}

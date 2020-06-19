@@ -10,15 +10,30 @@ const Centered = styled.div`
   align-items: ${({ notCentered }) => (notCentered ? 'flex-start' : 'center')};
   display: flex;
   height: 100%;
-  justify-content: center;
+  justify-content: ${({ notCentered }) =>
+    notCentered ? 'flex-start' : 'center'};
   text-align: center;
 `
 
 const DialogModal = props => {
-  const { children, headerText, notCentered, disableConfirm, buttonLabel, ...rest } = props
+  const {
+    children,
+    headerText,
+    notCentered,
+    disableConfirm,
+    buttonLabel,
+    textCancel,
+    ...rest
+  } = props
 
   const Header = <ModalHeader text={headerText} />
-  const Footer = <ModalFooterDialog disableConfirm={disableConfirm} buttonLabel={buttonLabel} />
+  const Footer = (
+    <ModalFooterDialog
+      buttonLabel={buttonLabel}
+      disableConfirm={disableConfirm}
+      textCancel={textCancel}
+    />
+  )
 
   return (
     <ModalRoot

@@ -6,9 +6,8 @@ import {
   TeamManagerButton,
   Header,
   UploadFilesButton,
-  DownloadEpubButton,
   MetadataButton,
-  // BookExporter,
+  AssetManagerButton,
   BookExporterButton,
   DivisionsArea,
   BookSettingsButton,
@@ -22,8 +21,8 @@ import {
 // import './styles/fontAwesome.scss'
 
 const Container = styled.div`
-  display: block;
   clear: both;
+  display: block;
   float: none;
   margin: 0 auto;
   width: 76%;
@@ -88,6 +87,7 @@ export class BookBuilder extends React.Component {
       updateComponentType,
       uploadBookComponent,
       onDeleteBookComponent,
+      onAssetManager,
       onAdminUnlock,
       refetching,
       refetchingBookBuilderRules,
@@ -111,7 +111,12 @@ export class BookBuilder extends React.Component {
     const productionEditorActions = []
 
     const headerActions = [
-      <MetadataButton book={book} onMetadataAdd={() => onMetadataAdd(book)} />,
+      <MetadataButton
+        book={book}
+        key={0}
+        onMetadataAdd={() => onMetadataAdd(book)}
+      />,
+      <AssetManagerButton key={1} onAssetManager={() => onAssetManager(book.id)} />,
       // <BookExporter
       //   book={book}
       //   history={history}
@@ -119,10 +124,12 @@ export class BookBuilder extends React.Component {
       //   onError={onError}
       // />,
       <BookExporterButton
+        key={2}
         onClick={() => onExportBook(book, book.title, history)}
         onError={onError}
       />,
       <BookSettingsButton
+        key={3}
         label="Book Settings"
         onClick={() => onBookSettings(book)}
       />,
@@ -130,6 +137,7 @@ export class BookBuilder extends React.Component {
     if (canViewTeamManager) {
       headerActions.unshift(
         <TeamManagerButton
+          key={4}
           label="Team Manager"
           onClick={() => onTeamManager(book.id)}
         />,
@@ -140,6 +148,7 @@ export class BookBuilder extends React.Component {
       headerActions.unshift(
         <UploadFilesButton
           book={book}
+          key={5}
           onWarning={onWarning}
           uploadBookComponent={uploadBookComponent}
           // updateUploadStatus={updateBookComponentUploading}
@@ -156,8 +165,6 @@ export class BookBuilder extends React.Component {
         <Header actions={headerActions} bookTitle={book.title} />
         <DivisionsArea
           addBookComponent={addBookComponent}
-          refetching={refetching}
-          refetchingBookBuilderRules={refetchingBookBuilderRules}
           applicationParameter={applicationParameter}
           bookId={book.id}
           currentUser={currentUser}
@@ -169,6 +176,8 @@ export class BookBuilder extends React.Component {
           onEndNoteModal={onEndNoteModal}
           onWarning={onWarning}
           onWorkflowUpdate={onWorkflowUpdate}
+          refetching={refetching}
+          refetchingBookBuilderRules={refetchingBookBuilderRules}
           rules={rules}
           setState={setState}
           toggleIncludeInTOC={toggleIncludeInTOC}

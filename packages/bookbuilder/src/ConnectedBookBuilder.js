@@ -242,6 +242,16 @@ const mapProps = args => ({
       book,
     })
   },
+  onAssetManager: bookId => {
+    const { withModal } = args
+
+    const { showModal } = withModal
+
+    showModal('assetManagerModal', {
+      bookId,
+      withImport: false,
+    })
+  },
   onExportBook: (book, bookTitle, history) => {
     const { exportBookMutation, withModal } = args
     const { exportBook } = exportBookMutation
@@ -434,6 +444,7 @@ const Connected = props => {
         onWarning,
         onMetadataAdd,
         uploadBookComponent,
+        onAssetManager,
         updateBookComponentUploading,
         ingestWordFiles,
         onDeleteBookComponent,
@@ -459,6 +470,7 @@ const Connected = props => {
           loading={loading}
           loadingRules={loadingRules}
           onAdminUnlock={onAdminUnlock}
+          onAssetManager={onAssetManager}
           onBookSettings={onBookSettings}
           onDeleteBookComponent={onDeleteBookComponent}
           onEndNoteModal={onEndNoteModal}

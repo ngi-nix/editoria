@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ButtonWithIcon, ButtonWithoutLabel, DefaultButton } from './Button'
-import { th } from '@pubsweet/ui-toolkit'
 
 const Input = styled.input`
   display: none !important;
@@ -53,8 +52,10 @@ const UploadButton = ({
         accept={accept}
         id={`${id}-upload-btn`}
         multiple={multiple}
-        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
         onChange={onChange}
+        onKeyPress={e => {
+          e.key === 'Enter' && e.preventDefault()
+        }}
         type="file"
       />
     </React.Fragment>

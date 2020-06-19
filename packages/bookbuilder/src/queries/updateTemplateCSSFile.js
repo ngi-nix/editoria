@@ -5,10 +5,8 @@ import gql from 'graphql-tag'
 const UPDATE_TEMPLATE_CSS_FILE = gql`
   mutation UpdateTemplateCSSFile($input: UpdateTemplateCSSFileInput!) {
     updateTemplateCSSFile(input: $input) {
-      id
-      name
-      mimetype
-      source
+      path
+      validationResult
     }
   }
 `

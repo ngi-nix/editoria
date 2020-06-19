@@ -42,6 +42,7 @@ input UpdateTemplateInput {
 
 input UpdateTemplateCSSFileInput {
   id: ID!
+  bookId: ID
   name: String
   source: String
   mimetype: String
@@ -58,7 +59,7 @@ extend type Mutation {
   createTemplate(input: CreateTemplateInput): Template!
   cloneTemplate(input: ClonedTemplateInput): ExportResult!
   updateTemplate(input: UpdateTemplateInput): Template!
-  updateTemplateCSSFile(input: UpdateTemplateCSSFileInput!): File!
+  updateTemplateCSSFile(input: UpdateTemplateCSSFileInput!): ExportResult!
   deleteTemplate(id: ID!): ID!
 }
 

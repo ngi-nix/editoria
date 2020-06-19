@@ -262,6 +262,7 @@ const schema = {
       'language',
       'lock',
       'sponsor',
+      'template',
     ],
   },
   id: {

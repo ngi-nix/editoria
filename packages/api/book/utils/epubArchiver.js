@@ -2,16 +2,12 @@ const archiver = require('archiver')
 const fs = require('fs')
 const path = require('path')
 const fse = require('fs-extra')
-const config = require('config')
-const get = require('lodash/get')
 const map = require('lodash/map')
 const crypto = require('crypto')
 const { dirContents } = require('./filesystem')
 
 const epubArchiver = async (tempFolder, target) => {
   try {
-    // const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
-    // const epubDir = `${process.cwd()}/${uploadsDir}/epubs`
     await fse.ensureDir(target)
     const epubFiles = await dirContents(tempFolder)
     return new Promise((resolve, reject) => {
@@ -24,7 +20,6 @@ const epubArchiver = async (tempFolder, target) => {
       const appendFile = item =>
         new Promise((resolve, reject) => {
           const absoluteFilePath = path.join(tempFolder, item)
-          // const fileContent = await readFile(absoluteFilePath)
 
           const stream = fs.createReadStream(absoluteFilePath)
           stream.on('error', onError)
@@ -56,24 +51,6 @@ const epubArchiver = async (tempFolder, target) => {
         })
         .catch(reject)
 
-      // for (let i = 0; epubFiles.length; i += 1) {
-      //   const absoluteFilePath = path.join(tempFolder, epubFiles[i])
-      //   const fileContent = await readFile(absoluteFilePath)
-      //   if (epubFiles[i] === 'mimetype') {
-      //     archive.append(readFile(absoluteFilePath), {
-      //       name: epubFiles[i],
-      //       store: true,
-      //     })
-      //   } else {
-      //     archive.append(readFile(absoluteFilePath), {
-      //       name: epubFiles[i],
-      //     })
-      //   }
-      // }
-      // archive.directory(tempFolder, false)
-      // archive.finalize()
-
-      // output.on('close', () => resolve(destination))
       archive.on('error', err => reject(err))
     })
   } catch (e) {
