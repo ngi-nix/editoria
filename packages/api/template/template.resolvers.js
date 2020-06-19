@@ -14,7 +14,7 @@ const mime = require('mime-types')
 const uploadsPath = config.get('pubsweet-server').uploads
 const { Template, File } = require('editoria-data-model/src').models
 
-const { mimetypeHelpers } = require('../../common')
+const { mimetypeHelpers } = require('editoria-common')
 
 const { isSupportedAsset } = mimetypeHelpers
 
