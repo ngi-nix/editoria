@@ -14,8 +14,9 @@ const replaceImageSrc = async content => {
   $('img').each((i, elem) => {
     const $elem = $(elem)
     const fileId = $elem.attr('data-fileid')
-
-    fileIds.push(fileId)
+    if (fileId) {
+      fileIds.push(fileId)
+    }
   })
 
   if (fileIds.length > 0) {
