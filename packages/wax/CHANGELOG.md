@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.12.2"></a>
+## [0.12.2](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.12.1...pubsweet-component-wax@0.12.2) (2020-07-14)
+
+
+### Bug Fixes
+
+* **api:** fix broken images when migrating from previous Editoria versions ([62553ec](https://gitlab.coko.foundation/editoria/editoria/commit/62553ec))
+
+
+
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.12.0...pubsweet-component-wax@0.12.1) (2020-06-19)
 
