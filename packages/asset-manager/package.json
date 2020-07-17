@@ -1,6 +1,6 @@
 {
   "name": "editoria-asset-manager",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Asset manager component for Editoria",
   "main": "index.js",
   "keywords": [

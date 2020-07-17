@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.6.4"></a>
+## [0.6.4](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.6.3...editoria-api@0.6.4) (2020-07-17)
+
+
+### Bug Fixes
+
+* **asset manager:** optimise get files query ([8d403de](https://gitlab.coko.foundation/editoria/editoria/commit/8d403de))
+
+
+
+
 <a name="0.6.3"></a>
 ## [0.6.3](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.6.2...editoria-api@0.6.3) (2020-07-14)
 
