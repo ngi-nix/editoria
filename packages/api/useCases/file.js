@@ -255,23 +255,28 @@ const getContentFiles = async fileIds => {
 
 const isFileInUse = async (bookId, fileId) => {
   try {
-    const bookComponentsOfBook = await BookComponent.query()
-      .where({ bookId })
-      .andWhere({ deleted: false })
     const foundIn = []
-    await Promise.all(
-      map(bookComponentsOfBook, async bookComponent => {
-        const { id } = bookComponent
-        const translation = await BookComponentTranslation.query()
-          .where('bookComponentId', id)
-          .andWhere('languageIso', 'en')
 
-        if (imageFinder(translation[0].content, fileId)) {
-          foundIn.push(id)
-        }
-        return translation
-      }),
-    )
+    const bookComponentsOfBook = await BookComponent.query()
+      .select('book_component.id', 'book_component_translation.content')
+      .leftJoin(
+        'book_component_translation',
+        'book_component.id',
+        'book_component_translation.book_component_id',
+      )
+      .where({
+        'book_component.book_id': bookId,
+        'book_component.deleted': false,
+        languageIso: 'en',
+      })
+
+    forEach(bookComponentsOfBook, bookComponent => {
+      const { content, id } = bookComponent
+      if (imageFinder(content, fileId)) {
+        foundIn.push(id)
+      }
+    })
+
     return foundIn
   } catch (e) {
     logger.error(e.message)

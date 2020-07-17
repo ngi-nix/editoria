@@ -9,7 +9,7 @@ type File {
   mimetype(target: ImageTarget): String!
   metadata: Metadata
   extension: String!
-  inUse: Boolean
+  inUse: Boolean!
   size: Int
 }
 
@@ -58,14 +58,15 @@ input EntityFilesInput {
   entityId: ID!
   entityType: String!
   sortingParams: [SortingParams]
+  includeInUse: Boolean
 }
 
 extend type Query {
   getFiles: [File]!
   getFile(id: ID!): File!
   getSignedURL(operation: String!, filename: String!): SignedURLPayload!
-  getEntityFiles(input: EntityFilesInput): [File]!
-  getSpecificFiles(ids:[ID]!):[File]!
+  getEntityFiles(input: EntityFilesInput): [File!]!
+  getSpecificFiles(ids: [ID!]!): [File!]!
 }
 extend type Mutation {
   uploadFiles(files: [Upload]!, entityType: String, entityId: ID): [File]!

@@ -54,6 +54,7 @@ const mapProps = args => ({
         entityId: bookId,
         entityType: 'book',
         sortingParams,
+        includeInUse: true,
       },
     })
   },

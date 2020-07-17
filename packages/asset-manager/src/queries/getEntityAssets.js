@@ -39,6 +39,7 @@ const getEntityFilesQuery = props => {
             { key: 'name', order: 'asc' },
             { key: 'updated', order: 'asc' },
           ],
+          includeInUse: true,
         },
       }}
     >

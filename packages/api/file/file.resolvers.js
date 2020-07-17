@@ -1,6 +1,9 @@
 const logger = require('@pubsweet/logger')
 const map = require('lodash/map')
-const { FileTranslation } = require('editoria-data-model/src').models
+const {
+  FileTranslation,
+  BookComponent,
+} = require('editoria-data-model/src').models
 const pubsweetServer = require('pubsweet-server')
 
 const {
@@ -13,7 +16,7 @@ const {
   useCaseGetFile,
   useCaseSignURL,
   useCaseDeleteDBFiles,
-  useCaseIsFileInUse,
+  // useCaseIsFileInUse,
 } = require('../useCases')
 
 const { FILES_UPLOADED, FILE_UPDATED, FILES_DELETED } = require('./consts')
@@ -22,8 +25,40 @@ const { pubsubManager } = pubsweetServer
 
 const getEntityFiles = async (_, { input }, ctx) => {
   try {
-    const { entityId, entityType, sortingParams } = input
-    return useCaseGetEntityFiles(entityId, entityType, sortingParams)
+    const { entityId, entityType, sortingParams, includeInUse = false } = input
+    // return useCaseGetEntityFiles(entityId, entityType, sortingParams)
+    const files = await useCaseGetEntityFiles(
+      entityId,
+      entityType,
+      sortingParams,
+    )
+    if (includeInUse) {
+      const bookComponentsOfBook = await BookComponent.query()
+        .select('book_component.id', 'book_component_translation.content')
+        .leftJoin(
+          'book_component_translation',
+          'book_component.id',
+          'book_component_translation.book_component_id',
+        )
+        .where({
+          'book_component.book_id': entityId,
+          'book_component.deleted': false,
+          languageIso: 'en',
+        })
+
+      files.forEach(file => {
+        const foundIn = []
+        bookComponentsOfBook.forEach(bookComponent => {
+          const { content, id } = bookComponent
+          if (imageFinder(content, file.id)) {
+            foundIn.push(id)
+          }
+        })
+        file.inUse = foundIn.length > 0
+      })
+    }
+
+    return files
   } catch (e) {
     logger.error(e)
     throw new Error(e)
@@ -166,13 +201,16 @@ module.exports = {
       }
       return mimetype
     },
-    async inUse({ id, mimetype, bookId }, _, ctx) {
-      let inUse = []
-      if (mimetype.match(/^image\//)) {
-        inUse = await useCaseIsFileInUse(bookId, id)
-      }
-      return inUse.length > 0
-    },
+    // ## for now in use will be computed in the parent query
+    // ## as a workaround of the connection pool timeouts
+    // ## this is not permantent
+    // async inUse({ id, mimetype, bookId }, _, ctx) {
+    //   let inUse = []
+    //   if (mimetype.match(/^image\//)) {
+    //     inUse = await useCaseIsFileInUse(bookId, id)
+    //   }
+    //   return inUse.length > 0
+    // },
   },
   Subscription: {
     filesUploaded: {
