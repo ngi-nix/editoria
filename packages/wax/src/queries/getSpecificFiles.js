@@ -3,7 +3,7 @@ import { ApolloConsumer } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const GET_SPECIFIC_FILES = gql`
-  query GetSpecificFilesQuery($ids: [ID]!) {
+  query GetSpecificFilesQuery($ids: [ID!]!) {
     getSpecificFiles(ids: $ids) {
       id
       alt
