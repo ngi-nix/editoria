@@ -19,6 +19,8 @@ const {
   // useCaseIsFileInUse,
 } = require('../useCases')
 
+const { imageFinder } = require('../helpers/utils')
+
 const { FILES_UPLOADED, FILE_UPDATED, FILES_DELETED } = require('./consts')
 
 const { pubsubManager } = pubsweetServer

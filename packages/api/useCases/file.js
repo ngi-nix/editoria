@@ -1,5 +1,6 @@
 const pickBy = require('lodash/pickBy')
 const map = require('lodash/map')
+const forEach = require('lodash/forEach')
 const {
   File,
   FileTranslation,
