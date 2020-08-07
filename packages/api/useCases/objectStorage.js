@@ -11,7 +11,7 @@ const { accessKeyId, secretAccessKey, bucket, endpoint, port } = config.get(
 
 const AWS = require('aws-sdk')
 
-const url = `${endpoint}:${port}`
+const url = port ? `${endpoint}:${port}` : `${endpoint}`
 // Initializing Storage Interface
 const s3 = new AWS.S3({
   accessKeyId,
