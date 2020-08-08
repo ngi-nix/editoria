@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.12.4"></a>
+## [0.12.4](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.12.3...pubsweet-component-wax@0.12.4) (2020-08-08)
+
+
+### Bug Fixes
+
+* **wax:** performance fix ([ea06507](https://gitlab.coko.foundation/editoria/editoria/commit/ea06507))
+
+
+
+
 <a name="0.12.3"></a>
 ## [0.12.3](https://gitlab.coko.foundation/editoria/editoria/compare/pubsweet-component-wax@0.12.2...pubsweet-component-wax@0.12.3) (2020-07-20)
 
