@@ -9,5 +9,19 @@ module.exports = content => {
     }
   })
 
+  $('ul').each((i, elem) => {
+    const $elem = $(elem)
+    if ($elem.attr('custom') || $elem.attr('custom', '')) {
+      $elem.removeAttr('custom')
+    }
+  })
+
+  $('ol').each((i, elem) => {
+    const $elem = $(elem)
+    if ($elem.attr('custom') || $elem.attr('custom', '')) {
+      $elem.removeAttr('custom')
+    }
+  })
+
   return $.html('body')
 }
