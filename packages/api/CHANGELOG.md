@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.6.7"></a>
+## [0.6.7](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.6.6...editoria-api@0.6.7) (2020-08-26)
+
+
+### Bug Fixes
+
+* **api:** exporter cleans custom attr from lists ([cca192c](https://gitlab.coko.foundation/editoria/editoria/commit/cca192c))
+
+
+
+
 <a name="0.6.6"></a>
 ## [0.6.6](https://gitlab.coko.foundation/editoria/editoria/compare/editoria-api@0.6.5...editoria-api@0.6.6) (2020-08-07)
 
