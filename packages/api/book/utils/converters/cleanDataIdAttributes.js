@@ -16,5 +16,12 @@ module.exports = content => {
     }
   })
 
+  $('ol').each((i, elem) => {
+    const $elem = $(elem)
+    if ($elem.attr('custom') || $elem.attr('custom', '')) {
+      $elem.removeAttr('custom')
+    }
+  })
+
   return $.html('body')
 }
