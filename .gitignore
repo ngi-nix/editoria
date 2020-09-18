@@ -12,7 +12,7 @@ logs
 config/*.env
 node_modules/
 npm-debug.log
-# _build/*
+_build/*
 config/local*
 logs/*
 pubsweet.log
