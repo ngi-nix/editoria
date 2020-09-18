@@ -10,7 +10,7 @@ const Text = styled.div`
   font-size: ${th('fontSizeBase')};
   color: #404040;
 `
-const WarningModal = props => {
+const UnlockedModal = props => {
   const { isOpen, hideModal, data } = props
   const { onConfirm, warning } = data
 
@@ -28,4 +28,4 @@ const WarningModal = props => {
   )
 }
 
-export default WarningModal
+export default UnlockedModal

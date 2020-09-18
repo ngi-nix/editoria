@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import DialogModal from 'editoria-common/src/DialogModal'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
+
+import DialogModal from '../../../../../common/src/DialogModal'
+
 const Text = styled.div`
   font-family: 'Fira Sans Condensed';
   text-align: center;
@@ -10,7 +12,7 @@ const Text = styled.div`
   font-size: ${th('fontSizeBase')};
   color: #404040;
 `
-const UnlockModal = props => {
+const UnlockModal = (props) => {
   const { isOpen, hideModal, data } = props
   const { componentType, title, onConfirm } = data
 
@@ -22,8 +24,9 @@ const UnlockModal = props => {
       onConfirm={onConfirm}
     >
       <Text>
-        {`Are you sure you want to unlock this ${componentType} with title ${title ||
-          'Untitled'}?`}
+        {`Are you sure you want to unlock this ${componentType} with title ${
+          title || 'Untitled'
+        }?`}
       </Text>
     </DialogModal>
   )
