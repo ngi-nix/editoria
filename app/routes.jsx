@@ -3,13 +3,13 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { createGlobalStyle } from 'styled-components'
 
 // Users and Teams
+import PasswordReset from '@pubsweet/component-password-reset-client'
 import GlobalTeamsManager from './components/globalTeamsManager/src/ConnectedGlobalTeams'
 
 // Authentication
 import Login from './components/Login/src/LoginContainer'
 import Signup from './components/Signup/src/SignupContainer'
 import UserProfile from './components/userProfile/src/ConnectedUserProfile'
-import PasswordReset from '@pubsweet/component-password-reset-client'
 
 // Editor
 import Wax from './components/wax/src/ConnectedWax'
@@ -33,7 +33,7 @@ const Editor = WithConfig(Wax, {
   layout: 'editoria',
   lockWhenEditing: true,
   pollingTimer: 1500,
-  autoSave: false,
+  autoSave: true,
   menus: {
     topToolBar: 'topDefault',
     sideToolBar: 'sideDefault',
