@@ -39,6 +39,7 @@
     "url": "git@gitlab.coko.foundation:editoria/editoria.git"
   },
   "scripts": {
+    "postinstall": "node ./server/paged-viewer/install.js && node ./server/vivliostyle/install.js",
     "setupdb": "pubsweet migrate && npm run seed",
     "server": "pubsweet start",
     "migrate": "pubsweet migrate",

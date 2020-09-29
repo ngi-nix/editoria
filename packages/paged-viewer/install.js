@@ -11,19 +11,13 @@
     const distExistsLocally = await fs.pathExists(pagedjsDistPath)
 
     if (distExistsLocally) {
-      await fs.ensureDir(path.join(`${process.cwd()}/`, 'lib'))
-      await fs.copy(
-        pagedjsDistPath,
-        path.join(`${process.cwd()}/`, 'lib/paged.js'),
-      )
+      await fs.ensureDir(path.join(`${__dirname}/`, 'lib'))
+      await fs.copy(pagedjsDistPath, path.join(`${__dirname}/`, 'lib/paged.js'))
     } else {
-      await fs.ensureDir(path.join(`${process.cwd()}/`, 'lib'))
+      await fs.ensureDir(path.join(`${__dirname}/`, 'lib'))
       await fs.copy(
-        path.join(
-          `${process.cwd()}/`,
-          '../../node_modules/pagedjs/dist/paged.js',
-        ),
-        path.join(`${process.cwd()}/`, 'lib/paged.js'),
+        path.join(`${process.cwd()}`, '/node_modules/pagedjs/dist/paged.js'),
+        path.join(`${__dirname}/`, 'lib/paged.js'),
       )
     }
   } catch (e) {
