@@ -97,7 +97,7 @@ module.exports = (
 
     const h1 = $('<h1/>')
       .attr('class', className)
-      .text($elem.text())
+      .html($elem.html())
 
     $elem.replaceWith(h1)
     if (className === 'ct') {
@@ -165,10 +165,35 @@ module.exports = (
     const sanitized = `[note ${number}]`
     $elem.replaceWith(sanitized)
   })
-  const hasNotes = $('note').length > 0
 
-  if (hasNotes) {
+  const hasNotesOuter = outerContainer('note').length > 0
+  const hasNotesInner = $('note').length > 0
+
+  if (hasNotesInner) {
     if (notesType === 'footnotes') {
+      if (hasNotesOuter) {
+        // if notes exist in header area. this  should be done in a better way
+        outerContainer('note').each((i, elem) => {
+          const $elem = $(elem)
+
+          const id = $elem.attr('data-id')
+          const noteNumber = `${i + 1}`
+          const element = $('#notes').find($(`#container-${id}`))
+          let content = ''
+
+          for (let i = 0; i < element.children().length; i += 1) {
+            const currentElement = $(element.children().get(i))
+            content += `${currentElement.html()}`
+          }
+
+          const callout = outerContainer(
+            `<a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a><span class="footnote" id="${bookComponent.id}-${id}">${content}</span>`,
+          )
+
+          $elem.replaceWith(callout)
+        })
+      }
+
       $('note').each((i, elem) => {
         const $elem = $(elem)
 
@@ -195,6 +220,36 @@ module.exports = (
       endnotes('section').append(notesSectionHeader)
       const notesList = endnotes('<ol/>').attr('class', 'end-notes')
       // replace inline notes with endnotes
+
+      if (hasNotesOuter) {
+        // if notes exist in header area. this should be done in a better way
+        outerContainer('note').each((i, elem) => {
+          const $elem = $(elem)
+
+          const id = $elem.attr('data-id')
+          const noteNumber = `${i + 1}`
+          const element = $('#notes').find($(`#container-${id}`))
+          let content = ''
+
+          for (let i = 0; i < element.children().length; i += 1) {
+            const currentElement = $(element.children().get(i))
+            if (i < element.children().length - 1) {
+              content += `${currentElement.html()}<br>`
+            } else {
+              content += `${currentElement.html()}`
+            }
+          }
+          const li = endnotes('<li/>').html(content)
+          li.attr('id', `${bookComponent.id}-${id}`)
+          notesList.append(li)
+          const callout = outerContainer(
+            `<a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a>`,
+          )
+
+          $elem.replaceWith(callout)
+        })
+      }
+
       $('note').each((i, elem) => {
         const $elem = $(elem)
 
@@ -227,7 +282,35 @@ module.exports = (
         'class',
         `${componentType}-notes`,
       )
-      // replace inline notes with endnotes
+
+      if (hasNotesOuter) {
+        outerContainer('note').each((i, elem) => {
+          const $elem = $(elem)
+
+          const id = $elem.attr('data-id')
+          const noteNumber = `${i + 1}`
+          const element = $('#notes').find($(`#container-${id}`))
+          let content = ''
+
+          for (let i = 0; i < element.children().length; i += 1) {
+            const currentElement = $(element.children().get(i))
+            if (i < element.children().length - 1) {
+              content += `${currentElement.html()}`
+            } else {
+              content += `${currentElement.html()}`
+            }
+          }
+          const li = chapterEndnotes('<li/>').html(content)
+          li.attr('id', `${bookComponent.id}-${id}`)
+          notesList.append(li)
+          const callout = outerContainer(
+            `<a class="note-callout" href="#${bookComponent.id}-${id}">${noteNumber}</a>`,
+          )
+
+          $elem.replaceWith(callout)
+        })
+      }
+
       $('note').each((i, elem) => {
         const $elem = $(elem)
 
