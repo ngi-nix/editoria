@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package prefix="rendition: http://www.idpf.org/vocab/rendition/# schema: http://schema.org/ ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/ a11y: http://www.idpf.org/epub/vocab/package/a11y/#" xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="BookId">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ibooks="http://apple.com/ibooks/html-extensions">
+    <dc:title>sdafasdfasdf</dc:title>
+    <dc:language>en</dc:language>
+    <meta property="dcterms:modified">2020-09-29T11:37:52Z</meta>
+    <dc:identifier id="BookId">urn:uuid:deca3607-961d-4592-9e2f-4a20df62c13e</dc:identifier>
+  </metadata>
+  <manifest>
+    <item href="Text/comp-number-6b00f4f2-005a-4bc1-915c-865dc9d1cb13.xhtml" id="comp-number-6b00f4f2-005a-4bc1-915c-865dc9d1cb13" media-type="application/xhtml+xml" properties="nav"/>
+    <item href="Text/comp-number-a57d0559-680e-40f4-9ac4-ccfe35b77877.xhtml" id="comp-number-a57d0559-680e-40f4-9ac4-ccfe35b77877" media-type="application/xhtml+xml"/>
+    <item href="Styles/blank.css" id="stylesheet-4635e3a9-56bf-470a-abbd-f755908a066b-0" media-type="text/css"/>
+    <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="comp-number-6b00f4f2-005a-4bc1-915c-865dc9d1cb13"/>
+    <itemref idref="comp-number-a57d0559-680e-40f4-9ac4-ccfe35b77877"/>
+  </spine>
+</package>
