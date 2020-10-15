@@ -23,4 +23,4 @@ We are also in discussions about redesigning parts of the app. You can keep trac
 
 ## I want to try it
 
-In order to try the application, you should follow the instruction of our [install](https://gitlab.coko.foundation/editoria/editoria/blob/master/INSTALL.md) document. Also, for any question you could check if there is already an answer in our [FAQ](https://gitlab.coko.foundation/editoria/editoria/blob/master/FAQ.md) document.
+In order to try the application, you should follow the instruction of our [installation](https://gitlab.coko.foundation/editoria/editoria/blob/master/INSTALL.md) document. Also, for any question you could check if there is already an answer in our [FAQ](https://gitlab.coko.foundation/editoria/editoria/blob/master/FAQ.md) document.
