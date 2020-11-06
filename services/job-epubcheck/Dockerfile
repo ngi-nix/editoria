@@ -17,12 +17,12 @@ RUN add-apt-repository 'deb http://http.debian.net/debian stretch-backports main
 
 
 # Install JS dependencies
-COPY packages/job-epubcheck/package.json .
+COPY services/job-epubcheck/package.json .
 RUN yarn cache clean
 RUN yarn
 
 
-COPY packages/job-epubcheck .
+COPY services/job-epubcheck .
 RUN chmod +x src/wait-for-it.sh
 RUN chmod +x src/service_run.sh
 

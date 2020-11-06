@@ -68,12 +68,12 @@ USER node
 WORKDIR /home/node
 
 
-COPY --chown=node:node packages/job-pdf/package.json .
+COPY --chown=node:node services/job-pdf/package.json .
 RUN npm install
 RUN npm install ghostscript4js
 
 
-COPY --chown=node:node packages/job-pdf .
+COPY --chown=node:node services/job-pdf .
 
 RUN chmod +x src/wait-for-it.sh
 RUN chmod +x src/service_run.sh
