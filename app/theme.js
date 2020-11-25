@@ -1,7 +1,11 @@
-/* eslint-disable import/extensions */
-// import 'typeface-fira-sans'
-import theme from '@pubsweet/coko-theme'
 import { clone } from 'lodash'
+
+import 'fontsource-fira-sans'
+import 'fontsource-fira-sans-condensed'
+import 'fontsource-vollkorn'
+
+import { theme } from '@coko/client'
+
 import {
   FormContainer,
   TextField,
@@ -13,7 +17,11 @@ import {
 } from './elements'
 
 const editoriaTheme = clone(theme)
+
 editoriaTheme.fontInterface = 'Fira Sans'
+editoriaTheme.fontHeading = 'Fira Sans Condensed'
+editoriaTheme.fontReading = 'Vollkorn'
+
 editoriaTheme.cssOverrides = {
   ui: {
     TextField,
