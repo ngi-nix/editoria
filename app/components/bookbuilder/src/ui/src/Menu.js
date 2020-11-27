@@ -1,3 +1,5 @@
+/* eslint-disable react/sort-comp */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -9,9 +11,10 @@ import { forEach } from 'lodash'
 const Root = styled.div``
 
 const Label = styled.label`
+  display: block;
   font-size: ${th('fontSizeBaseSmall')};
   line-height: ${th('lineHeightBaseSmall')};
-  display: block;
+
   ${override('ui.Label')};
   ${override('ui.Menu.Label')};
 `
@@ -19,51 +22,45 @@ const Label = styled.label`
 const Opener = styled.button.attrs({
   type: 'button',
 })`
+  align-items: center;
   background: transparent;
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-radius: ${th('borderRadius')};
   cursor: pointer;
+  display: flex;
   font-family: inherit;
-
-  width: 100%;
   height: calc(${th('gridUnit')} * 6);
   padding: 0;
-
-  display: flex;
-  align-items: center;
+  width: 100%;
 
   &:hover {
     border-color: ${th('colorPrimary')};
   }
-
-  ${override('ui.Menu.Opener')};
 `
 
 const Value = styled.span`
   border-right: ${th('borderWidth')} ${th('borderStyle')}
     ${th('colorFurniture')};
-
-  flex-grow: 1;
-  white-space: nowrap;
-  flex-wrap: wrap;
   display: flex;
-  text-align: left;
+  flex-grow: 1;
+  flex-wrap: wrap;
   line-height: ${th('gridUnit')};
   padding: 0 ${th('gridUnit')};
+  text-align: left;
   white-space: nowrap;
+
   &:hover {
     color: ${th('colorPrimary')};
   }
-
-  ${override('ui.Menu.Value')};
 `
 
 const MultipleValue = styled.span`
-  text-align: left;
-  padding: 0 calc(${th('gridUnit')} / 2);
-  color: ${th('colorPrimary')};
   background-color: ${th('colorSecondary')};
+  color: ${th('colorPrimary')};
   margin: calc(${th('gridUnit')} / 6);
+  padding: 0 calc(${th('gridUnit')} / 2);
+  text-align: left;
+
   button {
     margin-left: calc(${th('gridUnit')} / 2);
     min-width: 0px;
@@ -75,58 +72,45 @@ const Placeholder = styled(Value)`
   color: ${th('colorTextPlaceholder')};
   font-style: italic;
   padding: calc(${th('gridUnit')} * 2);
-
-  ${override('ui.Menu.Placeholder')};
 `
 
 const ArrowContainer = styled.span`
-  width: calc(${th('gridUnit')} * 2);
-  height: calc(${th('gridUnit')} * 2 - ${th('borderWidth')} * 2);
-
-  display: flex;
   align-items: center;
+  display: flex;
+  height: calc(${th('gridUnit')} * 2 - ${th('borderWidth')} * 2);
   justify-content: center;
   padding: calc(${th('gridUnit')} * 2);
-  ${override('ui.Menu.ArrowContainer')};
+  width: calc(${th('gridUnit')} * 2);
 `
 
 const Arrow = styled.span`
   font-size: 50%;
-  transition: transform 0.2s;
   transform: scaleX(2) scaleY(${props => (props.open ? -1.2 : 1.2)});
-
-  ${override('ui.Menu.Arrow')};
+  transition: transform 0.2s;
 `
 
 const Main = styled.div.attrs({
   role: 'listbox',
 })`
   position: relative;
-
-  ${override('ui.Menu.Main')};
 `
 
 const OptionsContainer = styled.div`
-  position: absolute;
   left: 0;
+  position: absolute;
   right: 0;
-
-  ${override('ui.Menu.OptionsContainer')};
 `
 
 const Options = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-
   background-color: ${th('colorBackground')};
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-radius: ${th('borderRadius')};
+  left: 0;
   overflow-y: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
   z-index: 100;
-
-  ${override('ui.Menu.Options')};
 `
 
 const Option = styled.div.attrs({
@@ -134,14 +118,14 @@ const Option = styled.div.attrs({
   tabIndex: '0',
   'aria-selected': props => props.active,
 })`
-  color: ${props => (props.active ? props.theme.textColor : '#444')};
-  font-weight: ${props => (props.active ? '600' : 'inherit')};
-  cursor: pointer;
-  font-family: ${th('fontAuthor')};
-  padding: calc(${th('gridUnit')} - ${th('borderWidth')} * 2)
-    calc(${th('gridUnit')} * 2);
   border: ${th('borderWidth')} ${th('borderStyle')} transparent;
   border-width: ${th('borderWidth')} 0 ${th('borderWidth')} 0;
+  color: ${props => (props.active ? props.theme.textColor : '#444')};
+  cursor: pointer;
+  font-family: ${th('fontInterface')};
+  font-weight: ${props => (props.active ? '600' : 'inherit')};
+  padding: calc(${th('gridUnit')} - ${th('borderWidth')} * 2)
+    calc(${th('gridUnit')} * 2);
   white-space: nowrap;
 
   &:hover {
@@ -156,8 +140,6 @@ const Option = styled.div.attrs({
   &:last-child:hover {
     border-bottom-color: ${th('colorBackgroundHue')};
   }
-
-  ${override('ui.Menu.Option')};
 `
 // #endregion
 
