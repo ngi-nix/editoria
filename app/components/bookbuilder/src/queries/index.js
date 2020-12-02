@@ -1,4 +1,5 @@
 export { default as getBookQuery } from './getBook'
+export { default as getPagedPreviewLinkQuery } from './getPagedPreviewLink'
 export { default as getTemplatesQuery } from './getTemplates'
 export { default as getBookBuilderRulesQuery } from './getBookBuilderRules'
 export { default as getBookTeamsQuery } from './getBookTeams'

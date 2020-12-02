@@ -7,7 +7,7 @@ const find = require('lodash/find')
 
 const { useCaseGetContentFiles } = require('../useCases')
 
-const replaceImageSrc = async (content) => {
+const replaceImageSrc = async content => {
   const $ = cheerio.load(content)
   const fileIds = []
 
@@ -54,7 +54,7 @@ module.exports = {
       const fileStream = await new Promise((resolve, reject) => {
         const chunks = []
 
-        stream.on('data', (chunk) => {
+        stream.on('data', chunk => {
           chunks.push(chunk)
         })
 
@@ -62,7 +62,7 @@ module.exports = {
           resolve(Buffer.concat(chunks))
         })
 
-        stream.on('error', (e) => {
+        stream.on('error', e => {
           reject(e)
         })
       })
@@ -101,7 +101,7 @@ module.exports = {
       throw new Error(e)
     }
   },
-  extractFragmentProperties: (fileName) => {
+  extractFragmentProperties: fileName => {
     const nameSpecifier = fileName.slice(0, 1)
 
     let label

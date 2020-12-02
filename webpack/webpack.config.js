@@ -17,15 +17,33 @@ const plugins = require('./plugins')
 module.exports = webpackEnv => {
   const isEnvDevelopment = webpackEnv === 'development'
   const isEnvProduction = webpackEnv === 'production'
+
+  const serverProtocol = process.env.SERVER_PROTOCOL
+  const serverHost = process.env.SERVER_HOST
+  const serverPort = process.env.SERVER_PORT
+  const serverUrl = `${serverHost}${serverPort ? `:${serverPort}` : ''}`
+  const serverUrlWithProtocol = `${serverProtocol}://${serverUrl}`
+
+  const devServerHost = process.env.CLIENT_HOST
+  const devServerPort = process.env.CLIENT_PORT
+
   return {
     devServer: {
-      port: 3050,
+      port: devServerPort,
+      disableHostCheck: true,
+      host: devServerHost,
       hot: true,
       contentBase: path.join(contentBase, 'public'),
       publicPath: '/',
       proxy: {
-        '/api': 'http://localhost:3050',
-        '/graphql': 'http://localhost:3050',
+        '/api': serverUrlWithProtocol,
+        '/auth': serverUrlWithProtocol,
+        '/graphql': serverUrlWithProtocol,
+        '/subscriptions': {
+          target: `ws://${serverUrl}`,
+          ws: true,
+        },
+        '/uploads': serverUrlWithProtocol,
       },
       historyApiFallback: true,
     },
@@ -58,7 +76,7 @@ module.exports = webpackEnv => {
         joi: 'joi-browser',
         config: clientConfigPath,
       },
-      extensions: ['.js', '.jsx', '.json', '.scss'],
+      extensions: ['.mjs', '.js', '.jsx', '.json', '.scss'],
       enforceExtension: false,
     },
     plugins: plugins({

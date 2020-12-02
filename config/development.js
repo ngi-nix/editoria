@@ -7,6 +7,8 @@ const logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
       colorize: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
     }),
     new winston.transports.DailyRotateFile({
       filename: 'app-%DATE%.log',

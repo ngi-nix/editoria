@@ -5,10 +5,10 @@ const fse = require('fs-extra')
 const crypto = require('crypto')
 const { dirContents } = require('./filesystem')
 
-const icmlArchiver = async (tempFolder, target) => {
+const pagedArchiver = async (tempFolder, target) => {
   try {
     await fse.ensureDir(target)
-    const icmlFiles = await dirContents(tempFolder)
+    const bookFiles = await dirContents(tempFolder)
     return new Promise((resolve, reject) => {
       const destination = path.join(
         target,
@@ -19,7 +19,7 @@ const icmlArchiver = async (tempFolder, target) => {
       // pipe archive data to the file
       archive.pipe(output)
 
-      icmlFiles.forEach(item => {
+      bookFiles.forEach(item => {
         const absoluteFilePath = path.join(tempFolder, item)
         archive.append(fs.createReadStream(absoluteFilePath), { name: item })
       })
@@ -35,4 +35,4 @@ const icmlArchiver = async (tempFolder, target) => {
   }
 }
 
-module.exports = { icmlArchiver }
+module.exports = { pagedArchiver }

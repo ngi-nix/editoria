@@ -5,7 +5,12 @@ const startsWith = require('lodash/startsWith')
 
 const { User } = require('@pubsweet/models')
 
+const isValidUser = ({ surname, givenName }) => surname && givenName
+
 const findUser = async (_, { search, exclude }, ctx, info) => {
+  if (!search) {
+    return []
+  }
   const allUsers = await ctx.connectors.User.model.all()
   const searchLow = search.toLowerCase()
   const res = []
@@ -13,9 +18,17 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
   if (searchLow.length <= 3) {
     forEach(allUsers, user => {
       if (user.admin) return
-      if (
+      if (isValidUser(user)) {
+        if (
+          (startsWith(get(user, 'username', '').toLowerCase(), searchLow) ||
+            startsWith(get(user, 'surname', '').toLowerCase(), searchLow) ||
+            startsWith(get(user, 'email', '').toLowerCase(), searchLow)) &&
+          !includes(exclude, user.id)
+        ) {
+          res.push(user)
+        }
+      } else if (
         (startsWith(get(user, 'username', '').toLowerCase(), searchLow) ||
-          startsWith(get(user, 'surname', '').toLowerCase(), searchLow) ||
           startsWith(get(user, 'email', '').toLowerCase(), searchLow)) &&
         !includes(exclude, user.id)
       ) {
@@ -25,18 +38,30 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
   } else if (searchLow.length > 3) {
     forEach(allUsers, user => {
       if (user.admin) return
-      const fullname = `${user.givenName} ${user.surname}`
-      if (
+      if (isValidUser(user)) {
+        const fullname = `${user.givenName} ${user.surname}`
+        if (
+          (get(user, 'username', '')
+            .toLowerCase()
+            .includes(searchLow) ||
+            get(user, 'surname', '')
+              .toLowerCase()
+              .includes(searchLow) ||
+            get(user, 'email', '')
+              .toLowerCase()
+              .includes(searchLow) ||
+            fullname.toLowerCase().includes(searchLow)) &&
+          !includes(exclude, user.id)
+        ) {
+          res.push(user)
+        }
+      } else if (
         (get(user, 'username', '')
           .toLowerCase()
           .includes(searchLow) ||
-          get(user, 'surname', '')
-            .toLowerCase()
-            .includes(searchLow) ||
           get(user, 'email', '')
             .toLowerCase()
-            .includes(searchLow) ||
-          fullname.toLowerCase().includes(searchLow)) &&
+            .includes(searchLow)) &&
         !includes(exclude, user.id)
       ) {
         res.push(user)
@@ -46,6 +71,7 @@ const findUser = async (_, { search, exclude }, ctx, info) => {
 
   return res
 }
+
 const createEditoriaUser = async (_, { input }, ctx, info) => {
   const allUsers = await ctx.connectors.User.model.all()
   const { username, givenName, surname, email } = input

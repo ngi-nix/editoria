@@ -2,7 +2,6 @@
   "@pubsweet/model-user",
   "@pubsweet/model-team",
   "@pubsweet/component-password-reset-server",
-  "./server/paged-viewer",
   "./server/vivliostyle",
   "./server/data-model/src/applicationParameter",
   "./server/data-model/src/book",

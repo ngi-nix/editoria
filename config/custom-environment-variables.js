@@ -1,6 +1,13 @@
 module.exports = {
   flavour: 'EDITORIA_FLAVOUR',
+  'pubsweet-client': {
+    protocol: 'CLIENT_PROTOCOL',
+    host: 'CLIENT_HOST',
+    port: 'CLIENT_PORT',
+  },
   'pubsweet-server': {
+    host: 'SERVER_HOST',
+    port: 'SERVER_PORT',
     secret: 'PUBSWEET_SECRET',
     db: {
       user: 'POSTGRES_USER',
@@ -9,7 +16,28 @@ module.exports = {
       database: 'POSTGRES_DB',
       port: 'POSTGRES_PORT',
     },
-    port: 'SERVER_PORT',
+  },
+  services: {
+    'epub-checker': {
+      clientId: 'SERVICE_EPUB_CHECKER_CLIENT_ID',
+      clientSecret: 'SERVICE_EPUB_CHECKER_SECRET',
+      url: 'SERVICE_EPUB_CHECKER_URL',
+    },
+    icml: {
+      clientId: 'SERVICE_ICML_CLIENT_ID',
+      clientSecret: 'SERVICE_ICML_SECRET',
+      url: 'SERVICE_ICML_URL',
+    },
+    pagedjs: {
+      clientId: 'SERVICE_PAGEDJS_CLIENT_ID',
+      clientSecret: 'SERVICE_PAGEDJS_SECRET',
+      url: 'SERVICE_PAGEDJS_URL',
+    },
+    xsweet: {
+      clientId: 'SERVICE_XSWEET_CLIENT_ID',
+      clientSecret: 'SERVICE_XSWEET_SECRET',
+      url: 'SERVICE_XSWEET_URL',
+    },
   },
   'file-server': {
     accessKeyId: 'S3_ACCESS_KEY_ID_USER',

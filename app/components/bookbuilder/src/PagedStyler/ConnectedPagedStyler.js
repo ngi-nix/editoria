@@ -15,6 +15,7 @@ import statefull from '../Statefull'
 import {
   updateTemplateCSSFileMutation,
   getBookQuery,
+  getPagedPreviewLinkQuery,
   templateUpdatedForPagedStyledSubscription,
 } from '../queries'
 
@@ -23,6 +24,7 @@ const mapper = {
   withModal,
   getTemplateQuery,
   getBookQuery,
+  getPagedPreviewLinkQuery,
   cloneTemplateMutation,
   updateTemplateCSSFileMutation,
   templateUpdatedForPagedStyledSubscription,
@@ -33,14 +35,22 @@ const mapProps = args => ({
   setState: args.statefull.setState,
   template: get(args.getTemplateQuery, 'data.getTemplate'),
   book: get(args.getBookQuery, 'data.getBook'),
+  previewerLink: get(
+    args.getPagedPreviewLinkQuery,
+    'data.getPagedPreviewerLink.link',
+  ),
   cloneTemplate: args.cloneTemplateMutation.cloneTemplate,
   updateTemplateCSSFile:
     args.updateTemplateCSSFileMutation.updateTemplateCSSFile,
   loadingBook: args.getBookQuery.networkStatus === 1,
+  loadingPreviewerLink: args.getPagedPreviewLinkQuery.networkStatus === 1,
   loading: args.getTemplateQuery.networkStatus === 1,
   refetching:
     args.getTemplateQuery.networkStatus === 4 ||
     args.getTemplateQuery.networkStatus === 2, // possible apollo bug
+  refetchingPreviewerLink:
+    args.getPagedPreviewLinkQuery.networkStatus === 4 ||
+    args.getPagedPreviewLinkQuery.networkStatus === 2, // possible apollo bug
   onWarningModal: (
     bookId,
     bookTitle,
@@ -92,7 +102,6 @@ const mapProps = args => ({
           },
         }).then(res => {
           const { data } = res
-          console.log('d', data)
           const { updateTemplateCSSFile } = data
           const { path } = updateTemplateCSSFile
           history.replace(`/books/${bookId}/pagedPreviewer/paged/${path}`)
@@ -120,9 +129,18 @@ const Connected = props => {
     history,
   } = props
   return (
-    <Composed bookId={id} templateId={templateId}>
-      {({ book, template, onWarningModal, loading, loadingBook }) => {
-        if (loading || loadingBook) return <p>Loading ...</p>
+    <Composed bookId={id} hash={hashed} templateId={templateId}>
+      {({
+        book,
+        template,
+        onWarningModal,
+        loading,
+        loadingBook,
+        previewerLink,
+        loadingPreviewerLink,
+      }) => {
+        if (loading || loadingBook || loadingPreviewerLink)
+          return <p>Loading ...</p>
         return (
           <PagedStyler
             bookId={book.id}
@@ -130,6 +148,7 @@ const Connected = props => {
             hashed={hashed}
             history={history}
             onWarningModal={onWarningModal}
+            previewerLink={previewerLink}
             template={template}
           />
         )
