@@ -16,7 +16,7 @@ module.exports = (opts = {}) => {
     plugins.push(
       new HtmlWebpackPlugin({
         title: 'Editoria',
-        template: '../app/index.ejs', // Load a custom template
+        template: './index.ejs', // Load a custom template
       }),
     )
   }
@@ -56,7 +56,7 @@ module.exports = (opts = {}) => {
   }
 
   plugins.push(
-    new CopyWebpackPlugin([{ from: '../public' }]),
+    new CopyWebpackPlugin([{ from: './public' }]),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new CompressionPlugin(),

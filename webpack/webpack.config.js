@@ -4,12 +4,14 @@ const config = require('config')
 const { pick } = require('lodash')
 const rules = require('./common-rules')
 
-const contentBase = path.resolve(__dirname, '..', '_build', 'assets')
+// const contentBase = path.resolve(__dirname, '..', '_build', 'assets')
+const entryPoint = path.join(process.cwd(), 'app')
+const output = path.join(process.cwd(), '_build', 'assets')
 
 // can't use node-config in webpack so save whitelisted client config into the build and alias it below
 const clientConfig = pick(config, config.publicKeys)
-fs.ensureDirSync(contentBase)
-const clientConfigPath = path.join(contentBase, 'client-config.json')
+fs.ensureDirSync(output)
+const clientConfigPath = path.join(output, 'client-config.json')
 fs.writeJsonSync(clientConfigPath, clientConfig, { spaces: 2 })
 
 const plugins = require('./plugins')
@@ -33,12 +35,13 @@ module.exports = webpackEnv => {
       disableHostCheck: true,
       host: devServerHost,
       hot: true,
-      contentBase: path.join(contentBase, 'public'),
+      contentBase: path.join(output, 'public'),
       publicPath: '/',
       proxy: {
         '/api': serverUrlWithProtocol,
         '/auth': serverUrlWithProtocol,
         '/graphql': serverUrlWithProtocol,
+        '/vivliostyle': serverUrlWithProtocol,
         '/subscriptions': {
           target: `ws://${serverUrl}`,
           ws: true,
@@ -47,16 +50,16 @@ module.exports = webpackEnv => {
       },
       historyApiFallback: true,
     },
-    name: 'client application',
+    name: 'Editoria app',
     target: 'web',
     mode: webpackEnv,
-    context: path.join(__dirname, '..', 'app'),
+    context: entryPoint,
     entry: {
       app: isEnvDevelopment ? ['react-hot-loader/patch', './app'] : ['./app'],
     },
     output: {
-      path: contentBase,
-      publicPath: '/assets/',
+      path: output,
+      publicPath: '/',
       filename: isEnvProduction
         ? 'js/[name].[contenthash:8].js'
         : isEnvDevelopment && 'js/bundle.js',

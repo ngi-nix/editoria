@@ -70,11 +70,11 @@ export default (
       <Redirect exact path="/" to="/books" />
       <Route
         path="/login"
-        render={props => <Login {...props} logo="/assets/editoria.png" />}
+        render={props => <Login {...props} logo="editoria.png" />}
       />
       <Route
         path="/signup"
-        render={props => <Signup {...props} logo="/assets/editoria.png" />}
+        render={props => <Signup {...props} logo="editoria.png" />}
       />
       <Route component={PasswordReset} path="/password-reset" />
       <PageLayout>

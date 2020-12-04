@@ -20,7 +20,6 @@ const s3 = new AWS.S3({
   s3ForcePathStyle: true,
   endpoint: url,
 })
-
 const createImageVersions = async (buffer, tempRoot, fileNameHashed) => {
   try {
     const originalImage = sharp(buffer)

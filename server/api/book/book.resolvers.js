@@ -29,6 +29,8 @@ const {
   BookComponentTranslation,
 } = require('../../data-model/src').models
 
+const { useCaseGetPreviewerLink } = require('../useCases')
+
 const eager = '[members.[user, alias]]'
 
 const getBook = async (_, { id }, ctx, info) => {
@@ -63,7 +65,7 @@ const createBook = async (_, { input }, ctx) => {
     const roles = keys(config.authsome.teams)
     await Promise.all(
       map(roles, async role => {
-        const newTeam = await ctx.connectors.Team.create(
+        await ctx.connectors.Team.create(
           {
             name: config.authsome.teams[role].name,
             objectId: book.id,
@@ -408,9 +410,19 @@ const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
   }
 }
 
+const getPagedPreviewerLink = async (_, { hash }, ctx) => {
+  try {
+    return useCaseGetPreviewerLink(hash)
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   Query: {
     getBook,
+    getPagedPreviewerLink,
   },
   Mutation: {
     archiveBook,

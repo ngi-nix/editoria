@@ -27,11 +27,18 @@ module.exports = {
   },
   'password-reset': {
     url: 'http://localhost:3000/password-reset',
-    sender: 'dev@example.com',
+    sender: 'info@editoria.com',
   },
   mailer: {
     from: 'info@editoria.com',
     path: path.join(__dirname, 'mailer'),
+    // transport: {
+    //   host: 'smtp_server_placeholder',
+    //   auth: {
+    //     user: 'username_placeholder',
+    //     pass: 'super_password',
+    //   },
+    // },
   },
   publicKeys: [
     'authsome',

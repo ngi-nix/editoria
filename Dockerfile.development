@@ -4,7 +4,7 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y ranger vim
 
-WORKDIR /home/node/app
+WORKDIR /home/node/editoria
 
 COPY package.json .
 COPY server/vivliostyle ./server/vivliostyle

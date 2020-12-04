@@ -1,4 +1,4 @@
-const { startServer } = require('@coko/server')
+const { startServer } = require('pubsweet-server')
 
 try {
   startServer()
