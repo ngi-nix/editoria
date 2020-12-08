@@ -2,7 +2,11 @@ const includes = require('lodash/includes')
 const forEach = require('lodash/forEach')
 const get = require('lodash/get')
 const startsWith = require('lodash/startsWith')
-
+const querystring = require('querystring')
+const config = require('config')
+const crypto = require('crypto')
+const { send: sendMail } = require('@pubsweet/component-send-email')
+const logger = require('@pubsweet/logger')
 const { User } = require('@pubsweet/models')
 
 const isValidUser = ({ surname, givenName }) => surname && givenName
@@ -146,6 +150,47 @@ const updateUsername = async (_, { input }, ctx) => {
 
   return updateUser
 }
+const sendPasswordResetEmail = async (_, { username }, ctx) => {
+  // // fail early if these configs are missing
+  const servesClient = config.get('pubsweet-server.servesClient')
+  let url = config.get('pubsweet-server.baseUrl')
+  if (servesClient !== 'true') {
+    const { protocol, host, port } = config.get('pubsweet-client')
+    url = `${protocol}://${host}${port ? `:${port}` : ''}`
+  }
+  const configSender = config.get('mailer.from')
+
+  const pathToPage = config.has('password-reset.path')
+    ? config.get('password-reset.path')
+    : '/password-reset'
+  const tokenLength = config.has('password-reset.token-length')
+    ? config.get('password-reset.token-length')
+    : 32
+
+  const user = await ctx.connectors.User.model.query().findOne({ username })
+
+  user.passwordResetToken = crypto.randomBytes(tokenLength).toString('hex')
+  user.passwordResetTimestamp = new Date()
+
+  await user.save()
+
+  const token = querystring.encode({
+    username,
+    token: user.passwordResetToken,
+  })
+  const passwordResetURL = `${url}/${pathToPage}?${token}`
+
+  logger.info(`Sending password reset email to ${user.email}`)
+
+  await sendMail({
+    from: configSender,
+    to: user.email,
+    subject: 'Password reset',
+    text: `Reset your password: ${passwordResetURL}`,
+    html: `<p><a href="${passwordResetURL}">Reset your password</a></p>`,
+  })
+  return true
+}
 
 module.exports = {
   Mutation: {
@@ -155,5 +200,6 @@ module.exports = {
     updatePassword,
     updatePersonalInformation,
     updateUsername,
+    sendPasswordResetEmail,
   },
 }

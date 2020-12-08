@@ -26,16 +26,11 @@ const logger = new winston.Logger({
 module.exports = {
   'pubsweet-server': {
     baseUrl: deferConfig(
-      cfg => `http://localhost:${cfg['pubsweet-server'].port}`,
+      cfg =>
+        `${cfg['pubsweet-server'].protocol}://${cfg['pubsweet-server'].host}${
+          cfg['pubsweet-server'].port ? `:${cfg['pubsweet-server'].port}` : ''
+        }`,
     ),
     logger,
-  },
-  'pubsweet-component-ink-backend': {
-    inkEndpoint: 'http://dummyURL.com/',
-    email: 'user@example.com',
-    password: 'somepassword',
-    recipes: {
-      'editoria-typescript': '2',
-    },
   },
 }

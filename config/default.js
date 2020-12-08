@@ -26,19 +26,11 @@ module.exports = {
     fontsPath: '/uploads/fonts',
   },
   'password-reset': {
-    url: 'http://localhost:3000/password-reset',
-    sender: 'info@editoria.com',
+    path: 'password-reset',
   },
   mailer: {
     from: 'info@editoria.com',
     path: path.join(__dirname, 'mailer'),
-    // transport: {
-    //   host: 'smtp_server_placeholder',
-    //   auth: {
-    //     user: 'username_placeholder',
-    //     pass: 'super_password',
-    //   },
-    // },
   },
   publicKeys: [
     'authsome',
@@ -59,15 +51,20 @@ module.exports = {
     routes: 'app/routes.jsx',
     theme: 'ThemeEditoria',
     converter: 'ucp',
+    port: 3000,
+    protocol: 'http',
+    host: 'localhost',
   },
   'pubsweet-server': {
     db: {},
     enableExperimentalGraphql: true,
     graphiql: true,
     tokenExpiresIn: '360 days',
-    sse: true,
+    servesClient: true,
     logger,
     port: 3000,
+    protocol: 'http',
+    host: 'localhost',
     uploads: 'uploads',
     pool: { min: 0, max: 10, idleTimeoutMillis: 1000 },
   },

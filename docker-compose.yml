@@ -4,7 +4,7 @@ services:
   client:
     build:
       context: .
-      dockerfile: ./Dockerfile.development
+      dockerfile: ./Dockerfile-development
     depends_on:
       - server
     command:
@@ -28,7 +28,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: ./Dockerfile.development
+      dockerfile: ./Dockerfile-development
     depends_on:
       - db
     entrypoint:
@@ -55,14 +55,13 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - EDITORIA_FLAVOUR=${EDITORIA_FLAVOUR:-VANILLA}
+      - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
+      - SERVES_CLIENT=${SERVES_CLIENT:-false}
       - POSTGRES_USER=${POSTGRES_USER:-editoria_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secretpassword}
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
       - POSTGRES_HOST=${POSTGRES_HOST:-db}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
-      - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
-      - LANGUAGE_PORT=${LANGUAGE_PORT:-8010}
-      - LANGUAGE_ENDPOINT=${LANGUAGE_ENDPOINT:-http://language-tool}
       - SERVER_PORT=${SERVER_PORT:-3000}
       - CLIENT_PROTOCOL=${CLIENT_PROTOCOL:-http}
       - CLIENT_HOST=${CLIENT_HOST:-0.0.0.0}
@@ -71,27 +70,38 @@ services:
       - MAILER_PASSWORD=${MAILER_PASSWORD}
       - MAILER_SENDER=${MAILER_SENDER:-dev@example.com}
       - MAILER_HOSTNAME=${MAILER_HOSTNAME}
-      - PASSWORD_RESET_URL=${PASSWORD_RESET_URL:-http://${SERVER_HOST}:${CLIENT_PORT}/password-reset}
-      - PASSWORD_RESET_SENDER=${PASSWORD_RESET_SENDER:-dev@example.com}
-      - S3_ENDPOINT=http://${S3_ENDPOINT:-file_hosting}
+      - PASSWORD_RESET_PATH=${PASSWORD_RESET_PATH:-password-reset}
+      - S3_PROTOCOL=${S3_PROTOCOL:-http}
+      - S3_HOST=${S3_HOST:-file_hosting}
       - S3_PORT=${S3_PORT:-9000}
       - S3_ACCESS_KEY_ID_ADMIN=${S3_ACCESS_KEY_ID_ADMIN:-admin}
       - S3_SECRET_ACCESS_KEY_ADMIN=${S3_SECRET_ACCESS_KEY_ADMIN:-superSecretAdminPassword}
       - S3_ACCESS_KEY_ID_USER=${S3_ACCESS_KEY_ID_USER:-editoria}
       - S3_SECRET_ACCESS_KEY_USER=${S3_SECRET_ACCESS_KEY_USER:-superSecretUserPassword}
       - S3_BUCKET=${S3_BUCKET:-uploads}
+      - LANGUAGE_PROTOCOL=${LANGUAGE_PROTOCOL:-http}
+      - LANGUAGE_HOST=${LANGUAGE_HOST:-language-tool}
+      - LANGUAGE_PORT=${LANGUAGE_PORT:-8010}
       - SERVICE_EPUB_CHECKER_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
       - SERVICE_EPUB_CHECKER_SECRET=asldkjLKJLaslkdf897kjhKUJH
-      - SERVICE_EPUB_CHECKER_URL=http://${SERVICE_EPUB_CHECKER_URL:-epubchecker}:${SERVICE_EPUB_CHECKER_PORT:-3001}
+      - SERVICE_EPUB_CHECKER_PROTOCOL=${SERVICE_EPUB_CHECKER_PROTOCOL:-http}
+      - SERVICE_EPUB_CHECKER_HOST=${SERVICE_EPUB_CHECKER_HOST:-epubchecker}
+      - SERVICE_EPUB_CHECKER_PORT=${SERVICE_EPUB_CHECKER_PORT:-3001}
       - SERVICE_ICML_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
       - SERVICE_ICML_SECRET=asldkjLKJLaslkdf897kjhKUJH
-      - SERVICE_ICML_URL=http://${SERVICE_ICML_URL:-icml}:${SERVICE_ICML_PORT:-3002}
+      - SERVICE_ICML_PROTOCOL=${SERVICE_ICML_PROTOCOL:-http}
+      - SERVICE_ICML_HOST=${SERVICE_ICML_HOST:-icml}
+      - SERVICE_ICML_PORT=${SERVICE_ICML_PORT:-3002}
       - SERVICE_PAGEDJS_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
       - SERVICE_PAGEDJS_SECRET=asldkjLKJLaslkdf897kjhKUJH
-      - SERVICE_PAGEDJS_URL=http://${SERVICE_PAGEDJS_URL:-pagedjs}:${SERVICE_PAGEDJS_PORT:-3003}
+      - SERVICE_PAGEDJS_PROTOCOL=${SERVICE_PAGEDJS_PROTOCOL:-http}
+      - SERVICE_PAGEDJS_HOST=${SERVICE_PAGEDJS_HOST:-pagedjs}
+      - SERVICE_PAGEDJS_PORT=${SERVICE_PAGEDJS_PORT:-3003}
       - SERVICE_XSWEET_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
       - SERVICE_XSWEET_SECRET=asldkjLKJLaslkdf897kjhKUJH
-      - SERVICE_XSWEET_URL=http://${SERVICE_XSWEET_URL:-xsweet}:${SERVICE_XSWEET_PORT:-3004}
+      - SERVICE_XSWEET_PROTOCOL=${SERVICE_XSWEET_PROTOCOL:-http}
+      - SERVICE_XSWEET_HOST=${SERVICE_XSWEET_HOST:-xsweet}
+      - SERVICE_XSWEET_PORT=${SERVICE_XSWEET_PORT:-3004}
 
     volumes:
       - ./config:/home/node/editoria/config
@@ -271,7 +281,7 @@ services:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add editoria http://${S3_ENDPOINT:-file_hosting}:${S3_PORT:-9000} ${S3_ACCESS_KEY_ID_ADMIN:-admin} ${S3_SECRET_ACCESS_KEY_ADMIN:-adminSuperPassword};
+      /usr/bin/mc config host add editoria ${S3_PROTOCOL:-http}://${S3_HOST:-file_hosting}:${S3_PORT:-9000} ${S3_ACCESS_KEY_ID_ADMIN:-admin} ${S3_SECRET_ACCESS_KEY_ADMIN:-adminSuperPassword};
       /usr/bin/mc admin user add editoria/ ${S3_ACCESS_KEY_ID_USER:-editoria} ${S3_SECRET_ACCESS_KEY_USER:-editoriaSuperPassword};
       /usr/bin/mc admin user enable editoria/ ${S3_ACCESS_KEY_ID_USER:-editoria};
       /usr/bin/mc mb editoria/${S3_BUCKET:-uploads};

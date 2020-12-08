@@ -37,14 +37,16 @@ const serviceHandshake = async which => {
     throw new Error(`service ${which} configuration is undefined `)
   }
 
-  const { clientId, clientSecret, url } = service
+  const { clientId, clientSecret, port, protocol, host } = service
   const buff = Buffer.from(`${clientId}:${clientSecret}`, 'utf8')
   const base64data = buff.toString('base64')
+
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
 
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/auth`,
+      url: `${serverUrl}/api/auth`,
       headers: { authorization: `Basic ${base64data}` },
     })
       .then(({ data }) => {
@@ -67,15 +69,16 @@ const epubcheckerHandler = async epubPath => {
     await serviceHandshake(EPUBCHECKER)
   }
   const service = get(services, EPUBCHECKER)
-  const { url } = service
-
+  const { port, protocol, host } = service
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
   const form = new FormData()
+
   form.append('epub', fs.createReadStream(epubPath))
 
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/epubchecker`,
+      url: `${serverUrl}/api/epubchecker`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${EPUBCHECKER}`)}`,
         ...form.getHeaders(),
@@ -102,7 +105,8 @@ const icmlHandler = async icmlTempPath => {
     await serviceHandshake(ICML)
   }
   const service = get(services, ICML)
-  const { url } = service
+  const { port, protocol, host } = service
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
 
   const form = new FormData()
   form.append('html', fs.createReadStream(`${icmlTempPath}/index.html`))
@@ -110,7 +114,7 @@ const icmlHandler = async icmlTempPath => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/htmlToICML`,
+      url: `${serverUrl}/api/htmlToICML`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${ICML}`)}`,
         ...form.getHeaders(),
@@ -139,7 +143,8 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
     await serviceHandshake(PAGEDJS)
   }
   const service = get(services, PAGEDJS)
-  const { url } = service
+  const { port, protocol, host } = service
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
 
   const form = new FormData()
   form.append('zip', fs.createReadStream(`${zipPath}`))
@@ -147,7 +152,7 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/htmlToPDF`,
+      url: `${serverUrl}/api/htmlToPDF`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${PAGEDJS}`)}`,
         ...form.getHeaders(),
@@ -182,7 +187,8 @@ const xsweetHandler = async filePath => {
     await serviceHandshake(XSWEET)
   }
   const service = get(services, XSWEET)
-  const { url } = service
+  const { port, protocol, host } = service
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
 
   const form = new FormData()
   form.append('docx', fs.createReadStream(filePath))
@@ -190,7 +196,7 @@ const xsweetHandler = async filePath => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/docxToHTML`,
+      url: `${serverUrl}/api/docxToHTML`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${XSWEET}`)}`,
         ...form.getHeaders(),
@@ -223,7 +229,8 @@ const pagedPreviewerLinkHandler = async dirPath => {
     await serviceHandshake(PAGEDJS)
   }
   const service = get(services, PAGEDJS)
-  const { url } = service
+  const { port, protocol, host } = service
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
   const zipPath = await zipper(
     path.join(`${process.cwd()}`, uploadsDir, 'paged', dirPath),
   )
@@ -233,7 +240,7 @@ const pagedPreviewerLinkHandler = async dirPath => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${url}/api/getPreviewerLink`,
+      url: `${serverUrl}/api/getPreviewerLink`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${PAGEDJS}`)}`,
         ...form.getHeaders(),
