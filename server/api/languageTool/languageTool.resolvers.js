@@ -1,17 +1,13 @@
 const fetch = require('node-fetch')
 const logger = require('@pubsweet/logger')
 const config = require('config')
-const get = require('lodash/get')
 
 const spellChecker = async (_, { language, text }, ctx) => {
-  const languagePort = get(config, ['language-tools', 'port'], '8010')
-  const languageEndpoint = get(
-    config,
-    ['language-tools', 'endpoint'],
-    'localhost',
-  )
+  const languageConfig = config.get('language-tools')
+  const { port, protocol, host } = languageConfig
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
   const messageData = await fetch(
-    `${languageEndpoint}:${languagePort}/v2/check?language=${language}&text=${text}`,
+    `${serverUrl}/v2/check?language=${language}&text=${text}`,
     {
       method: 'POST',
     },

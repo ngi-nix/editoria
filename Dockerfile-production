@@ -1,0 +1,51 @@
+# IMAGE FOR BUILDING
+FROM node:12.20-alpine as build
+
+RUN apk add --no-cache git python make g++
+
+WORKDIR /home/node/editoria
+
+COPY package.json .
+COPY server/vivliostyle ./server/vivliostyle
+COPY yarn.lock .
+
+# Install production node modules for server use
+RUN yarn install --frozen-lockfile --production=true
+# Copy to another folder for later use
+RUN mv node_modules production_node_modules
+
+# Install development node modules for building webpack bundle
+RUN yarn install --frozen-lockfile --production=false
+
+COPY . .
+
+ARG node_env
+ARG server_protocol
+ARG server_host
+ARG server_port
+
+ENV NODE_ENV=$node_env
+ENV SERVER_PROTOCOL=$server_protocol
+ENV SERVER_HOST=$server_host
+ENV SERVER_PORT=$server_port
+
+RUN yarn pubsweet build
+
+# IMAGE FOR RUNNING
+FROM node:12.20-alpine as server
+
+WORKDIR /home/node/editoria
+
+RUN chown -R node:node .
+USER node
+
+COPY --chown=node:node ./config ./config
+COPY --chown=node:node ./scripts ./scripts
+COPY --chown=node:node ./server ./server
+
+COPY --from=build /home/node/editoria/_build/assets ./_build/assets
+COPY --from=build /home/node/editoria/production_node_modules ./node_modules
+
+ENTRYPOINT ["sh", "./scripts/setupProdServer.sh"]
+
+CMD ["node", "./server/startServer.js"]

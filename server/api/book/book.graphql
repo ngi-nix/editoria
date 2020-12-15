@@ -32,9 +32,15 @@ input ExportBookInput {
   icmlNotes: String
 }
 
+type PagedPreviewerLink {
+  link: String!
+}
+
 extend type Query {
   getBook(id: ID!): Book!
+  getPagedPreviewerLink(hash: String!): PagedPreviewerLink!
 }
+
 input MetadataInput {
   id: ID!
   publicationDate: Date

@@ -6,11 +6,11 @@ const flattenDeep = require('lodash/flattenDeep')
 const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
-const {
-  convertDocx,
-  extractFragmentProperties,
-  replaceImageSrc,
-} = require('./util')
+const path = require('path')
+const { extractFragmentProperties, replaceImageSrc } = require('./util')
+
+const { writeLocallyFromReadStream } = require('../helpers/utils')
+const fs = require('fs-extra')
 
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
@@ -42,10 +42,7 @@ const {
   BOOK_COMPONENT_TOC_UPDATED,
 } = require('./consts')
 
-const {
-  pubsubManager,
-  jobs: { connectToJobQueue },
-} = pubsweetServer
+const { pubsubManager } = pubsweetServer
 
 const {
   useCaseAddBookComponent,
@@ -60,9 +57,10 @@ const {
   useCaseUpdateWorkflowState,
   useCaseDeleteBookComponent,
   useCaseRenameBookComponent,
+  useCaseXSweet,
 } = require('../useCases')
 
-const DOCX_TO_HTML = 'DOCX_TO_HTML'
+// const DOCX_TO_HTML = 'DOCX_TO_HTML'
 
 const getOrderedBookComponents = async bookComponent => {
   const divisions = await Division.findByField(
@@ -87,18 +85,25 @@ const getBookComponent = async (_, { id }, ctx) => {
 }
 
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
-  const jobQueue = await connectToJobQueue()
+  // const jobQueue = await connectToJobQueue()
   const pubsub = await getPubsub()
 
   const bookComponents = await Promise.all(
     bookComponentFiles.map(async bookComponentFile => {
       const { file, bookComponentId, bookId } = await bookComponentFile
-      const { filename } = await file
+      const { createReadStream, filename } = await file
       const title = filename.split('.')[0]
+      const readerStream = createReadStream()
 
-      const jobId = crypto.randomBytes(3).toString('hex')
-      const pubsubChannel = `${DOCX_TO_HTML}.${ctx.user}.${jobId}`
-
+      const tempFilePath = path.join(`${process.cwd()}`, 'uploads', 'tmp')
+      const randomFilename = `${crypto.randomBytes(32).toString('hex')}.docx`
+      fs.ensureDir(tempFilePath)
+      await writeLocallyFromReadStream(
+        tempFilePath,
+        randomFilename,
+        readerStream,
+        'utf-8',
+      )
       let componentId = bookComponentId
 
       if (!bookComponentId) {
@@ -158,16 +163,16 @@ const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
         bookComponentUploadingUpdated: updatedBookComponent,
       })
 
-      const content = await convertDocx(file, pubsubChannel, pubsub, jobQueue)
+      useCaseXSweet(`${tempFilePath}/${randomFilename}`).then(async content => {
+        await useCaseUpdateBookComponentContent(componentId, content, 'en')
 
-      await useCaseUpdateBookComponentContent(componentId, content, 'en')
+        uploading = false
 
-      uploading = false
+        await useCaseUpdateUploading(componentId, uploading)
 
-      await useCaseUpdateUploading(componentId, uploading)
-
-      pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-        bookComponentUploadingUpdated: updatedBookComponent,
+        pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+          bookComponentUploadingUpdated: updatedBookComponent,
+        })
       })
 
       return updatedBookComponent

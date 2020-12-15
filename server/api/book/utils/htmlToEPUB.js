@@ -17,7 +17,7 @@ const {
   useCaseSignURL,
 } = require('../../useCases')
 const { imageGatherer } = require('./gatherImages')
-const { objectKeyExtractor } = require('../../../../app/components/common')
+const { objectKeyExtractor } = require('../../../common')
 
 let images = []
 let stylesheets = []

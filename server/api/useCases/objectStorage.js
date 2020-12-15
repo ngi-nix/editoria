@@ -5,22 +5,27 @@ const sharp = require('sharp')
 const crypto = require('crypto')
 const path = require('path')
 
-const { accessKeyId, secretAccessKey, bucket, endpoint, port } = config.get(
-  'file-server',
-)
+const {
+  accessKeyId,
+  secretAccessKey,
+  bucket,
+  protocol,
+  host,
+  port,
+} = config.get('file-server')
 
 const AWS = require('aws-sdk')
 
-const url = port ? `${endpoint}:${port}` : `${endpoint}`
+const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
+
 // Initializing Storage Interface
 const s3 = new AWS.S3({
   accessKeyId,
   signatureVersion: 'v4',
   secretAccessKey,
   s3ForcePathStyle: true,
-  endpoint: url,
+  endpoint: serverUrl,
 })
-
 const createImageVersions = async (buffer, tempRoot, fileNameHashed) => {
   try {
     const originalImage = sharp(buffer)

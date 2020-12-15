@@ -13,6 +13,8 @@ const logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
       colorize: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
     }),
   ],
 })
@@ -26,8 +28,7 @@ module.exports = {
     fontsPath: '/uploads/fonts',
   },
   'password-reset': {
-    url: 'http://localhost:3000/password-reset',
-    sender: 'dev@example.com',
+    path: 'password-reset',
   },
   mailer: {
     from: 'info@editoria.com',
@@ -52,15 +53,20 @@ module.exports = {
     routes: 'app/routes.jsx',
     theme: 'ThemeEditoria',
     converter: 'ucp',
+    port: 3000,
+    protocol: 'http',
+    host: 'localhost',
   },
   'pubsweet-server': {
     db: {},
     enableExperimentalGraphql: true,
     graphiql: true,
     tokenExpiresIn: '360 days',
-    sse: true,
+    servesClient: true,
     logger,
     port: 3000,
+    protocol: 'http',
+    host: 'localhost',
     uploads: 'uploads',
     pool: { min: 0, max: 10, idleTimeoutMillis: 1000 },
   },

@@ -1,14 +1,13 @@
 const archiver = require('archiver')
-const fs = require('fs')
 const path = require('path')
-const fse = require('fs-extra')
+const fs = require('fs-extra')
 const map = require('lodash/map')
 const crypto = require('crypto')
 const { dirContents } = require('./filesystem')
 
 const epubArchiver = async (tempFolder, target) => {
   try {
-    await fse.ensureDir(target)
+    await fs.ensureDir(target)
     const epubFiles = await dirContents(tempFolder)
     return new Promise((resolve, reject) => {
       const destination = path.join(
@@ -17,41 +16,44 @@ const epubArchiver = async (tempFolder, target) => {
       )
       const output = fs.createWriteStream(destination)
       const archive = archiver('zip')
-      const appendFile = item =>
-        new Promise((resolve, reject) => {
-          const absoluteFilePath = path.join(tempFolder, item)
 
-          const stream = fs.createReadStream(absoluteFilePath)
-          stream.on('error', onError)
-          stream.on('readable', onReadable)
+      // listen for all archive data to be written
+      // 'close' event is fired only when a file descriptor is involved
+      output.on('close', () => {
+        resolve(destination)
+      })
 
-          function onError(err) {
-            reject(err)
-          }
+      // good practice to catch warnings (ie stat failures and other non-blocking errors)
+      archive.on('warning', err => {
+        if (err.code === 'ENOENT') {
+          // log warning
+        } else {
+          // throw error
+          throw err
+        }
+      })
 
-          function onReadable() {
-            stream.removeListener('readable', onReadable)
-            stream.removeListener('error', onError)
-
-            archive.append(stream, {
-              name: item,
-            })
-
-            resolve()
-          }
-        })
+      // good practice to catch this error explicitly
+      archive.on('error', err => {
+        throw err
+      })
 
       // pipe archive data to the file
       archive.pipe(output)
       archive.append('application/epub+zip', { name: 'mimetype', store: true })
-      Promise.all(map(epubFiles, file => appendFile(file)))
-        .then(() => {
-          archive.finalize()
-          resolve(destination)
-        })
-        .catch(reject)
 
-      archive.on('error', err => reject(err))
+      const appendFile = item => {
+        const absoluteFilePath = path.join(tempFolder, item)
+
+        const stream = fs.createReadStream(absoluteFilePath)
+
+        return archive.append(stream, {
+          name: item,
+        })
+      }
+
+      map(epubFiles, file => appendFile(file))
+      archive.finalize()
     })
   } catch (e) {
     throw new Error(e)

@@ -1,6 +1,7 @@
 const bookComponent = require('./bookComponent')
 const objectStorage = require('./objectStorage')
 const file = require('./file')
+const services = require('./services')
 
 module.exports = {
   useCaseAddBookComponent: bookComponent.addBookComponent,
@@ -33,4 +34,9 @@ module.exports = {
   useCaseGetFileURL: file.getFileURL,
   useCaseGetContentFiles: file.getContentFiles,
   useCaseIsFileInUse: file.isFileInUse,
+  useCaseEPUBChecker: services.epubcheckerHandler,
+  useCaseICML: services.icmlHandler,
+  useCaseXSweet: services.xsweetHandler,
+  useCasePDF: services.pdfHandler,
+  useCaseGetPreviewerLink: services.pagedPreviewerLinkHandler,
 }

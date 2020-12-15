@@ -1,15 +1,10 @@
 const cheerio = require('cheerio')
-const pubsweetServer = require('pubsweet-server')
-const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
 const { epubArchiver } = require('./epubArchiver')
 const fs = require('fs-extra')
 const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
-const waait = require('waait')
-const { db } = require('@pubsweet/db-manager')
-const logger = require('@pubsweet/logger')
 
 const {
   substanceToHTML,
@@ -24,12 +19,17 @@ const bookConstructor = require('./bookConstructor')
 const { pagednation } = require('./pagednation')
 const { icmlArchiver } = require('./icmlArchiver')
 const { icmlPreparation } = require('./icmlPreparation')
+const { pagedArchiver } = require('./pagedArchiver')
+
 const { Template } = require('../../../data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
+
 const {
-  jobs: { connectToJobQueue },
-} = pubsweetServer
+  useCaseEPUBChecker,
+  useCaseICML,
+  useCasePDF,
+} = require('../../useCases')
 
 const EpubBackend = async (
   bookId,
@@ -44,8 +44,6 @@ const EpubBackend = async (
     let template
     let notesType
     let templateHasEndnotes
-    const jobQueue = await connectToJobQueue()
-    const pubsub = await getPubsub()
 
     if (fileExtension !== 'icml') {
       template = await Template.findById(templateId)
@@ -57,7 +55,7 @@ const EpubBackend = async (
     }
     let resultPath
 
-    // The produced representation of the book holds two map data types one
+    // The produced representation of the book holds two Map data types one
     // for the division and one for the book components of each division to
     // ensure the order of things
     const book = await bookConstructor(bookId, templateHasEndnotes, ctx)
@@ -121,45 +119,16 @@ const EpubBackend = async (
           })
         })
       }
+
       const tempFolder = await htmlToEPUB(book, template)
       const epubFilePath = await epubArchiver(
         tempFolder,
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
+      const { outcome, messages } = await useCaseEPUBChecker(epubFilePath)
 
-      // Init Job epubcheck
-
-      const jobIdEpub = crypto.randomBytes(3).toString('hex')
-      const pubsubChannelEpub = `EPUBCHECK.${ctx.user}.${jobIdEpub}`
-      const epubJobId = await jobQueue.publish('epubcheck', {
-        filename: path.basename(epubFilePath),
-        pubsubChannelEpub,
-      })
-
-      const validationResponse = new Promise((resolve, reject) => {
-        pubsub.subscribe(
-          pubsubChannelEpub,
-          async ({ epubcheckJob: { status } }) => {
-            logger.info(pubsubChannelEpub, status)
-            if (status === 'Validation complete') {
-              await waait(1000)
-              const job = await db(
-                'pgboss.job',
-              ).whereRaw("data->'request'->>'id' = ?", [epubJobId])
-
-              resolve(job[0].data.response)
-            }
-          },
-        )
-      })
-
-      const validationResult = await validationResponse
-
-      const { error } = validationResult
-      // End
-
-      if (error) {
-        throw new Error(error)
+      if (outcome === 'not valid') {
+        throw new Error(messages)
       }
 
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')
@@ -186,34 +155,18 @@ const EpubBackend = async (
         const path = require('path')
 
         await fs.emptyDir(`${process.cwd()}/uploads/pdfs`)
-        const pdf = path.join(`${process.cwd()}/`, `uploads/pdfs/${hash}.pdf`)
-
-        const jobIdPDF = crypto.randomBytes(3).toString('hex')
-        const pubsubChannelPdf = `PDF.${ctx.user}.${jobIdPDF}`
-        const pdfId = await jobQueue.publish('pdf', {
-          filePath: `/uploads/paged/${hash}/index.html`,
-          outputPath: `/uploads/pdfs/${hash}.pdf`,
-          pubsubChannelPdf,
-        })
-
-        const pdfResponse = new Promise((resolve, reject) => {
-          pubsub.subscribe(pubsubChannelPdf, async ({ pdfJob: { status } }) => {
-            logger.info(pubsubChannelPdf, status)
-            if (status === 'PDF creation completed') {
-              await waait(1000)
-              const job = await db(
-                'pgboss.job',
-              ).whereRaw("data->'request'->>'id' = ?", [pdfId])
-
-              resolve(job[0].data.response)
-            }
-          })
-        })
-
-        await pdfResponse
+        await fs.ensureDir(`${process.cwd()}/uploads/tmp/${hash}/`)
+        const pdfPath = path.join(`${process.cwd()}/`, `uploads/pdfs`)
+        const zipFilePath = await pagedArchiver(
+          `${process.cwd()}/uploads/paged/${hash}/`,
+          `${process.cwd()}/uploads/tmp/${hash}/`,
+        )
+        await useCasePDF(zipFilePath, pdfPath, `${hash}.pdf`)
+        await fs.remove(`${process.cwd()}/uploads/tmp/${hash}/`)
+        await fs.remove(`${process.cwd()}/uploads/paged/${hash}/`)
         // pagedjs-cli
         return {
-          path: pdf.replace(`${process.cwd()}`, ''),
+          path: `${pdfPath}/${hash}.pdf`.replace(`${process.cwd()}`, ''),
           validationResult: undefined,
         }
       }
@@ -222,36 +175,8 @@ const EpubBackend = async (
     }
 
     if (fileExtension === 'icml') {
-      const { path: icmlTempFolder, hash } = await icmlPreparation(book)
-
-      // Init Job pandoc
-      const jobIdIcml = crypto.randomBytes(3).toString('hex')
-      const pubsubChannelIcml = `ICML.${ctx.user}.${jobIdIcml}`
-      const icmlId = await jobQueue.publish('pandoc', {
-        filepath: hash,
-        pubsubChannelIcml,
-      })
-
-      const pandocResponse = new Promise((resolve, reject) => {
-        pubsub.subscribe(
-          pubsubChannelIcml,
-          async ({ pandocJob: { status } }) => {
-            logger.info(pubsubChannelIcml, status)
-            if (status === 'ICML creation completed') {
-              await waait(1000)
-              const job = await db(
-                'pgboss.job',
-              ).whereRaw("data->'request'->>'id' = ?", [icmlId])
-
-              resolve(job[0].data.response)
-            }
-          },
-        )
-      })
-
-      await pandocResponse
-      // End
-
+      const { path: icmlTempFolder } = await icmlPreparation(book)
+      await useCaseICML(icmlTempFolder)
       await fs.remove(`${icmlTempFolder}/index.html`)
       const icmlFilePath = await icmlArchiver(
         icmlTempFolder,
@@ -263,6 +188,7 @@ const EpubBackend = async (
         validationResult: undefined,
       }
     }
+    return null
   } catch (e) {
     throw new Error(e)
   }

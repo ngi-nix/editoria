@@ -1,16 +1,15 @@
 extend type User {
-    givenName: String
-    surname: String
-  }
+  givenName: String
+  surname: String
+}
 
 input EditoriaUserInput {
-    username: String!
-    email: String!
-    password: String!
-    surname: String!
-    givenName: String!
-  }
-
+  username: String!
+  email: String!
+  password: String!
+  surname: String!
+  givenName: String!
+}
 
 input UpdatePersonalInformationInput {
   givenName: String!
