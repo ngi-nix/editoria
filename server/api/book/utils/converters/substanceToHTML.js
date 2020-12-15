@@ -55,8 +55,10 @@ module.exports = (
   const replaceWithPre = className => (i, elem) => {
     const $elem = $(elem)
     const { source } = $elem[0].attribs
-    const { language } = $elem[0].attribs
-
+    let { language } = $elem[0].attribs
+    if (language === 'htmlmixed') {
+      language = 'html'
+    }
     const highLighter = hljs.highlight(language, source)
     const pre = $(`<pre class="${language}"/>`).append(highLighter.value)
 
