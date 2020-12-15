@@ -5,6 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 module.exports = (opts = {}) => {
   const plugins = []
 
@@ -16,7 +18,7 @@ module.exports = (opts = {}) => {
     plugins.push(
       new HtmlWebpackPlugin({
         title: 'Editoria',
-        template: './index.ejs', // Load a custom template
+        template: '../app/index.ejs', // Load a custom template
       }),
     )
   }
@@ -55,8 +57,13 @@ module.exports = (opts = {}) => {
     )
   }
 
+  if (isDevelopment) {
+    plugins.push(new CopyWebpackPlugin([{ from: '../public', to: 'assets/' }]))
+  } else {
+    plugins.push(new CopyWebpackPlugin([{ from: '../public' }]))
+  }
+
   plugins.push(
-    new CopyWebpackPlugin([{ from: './public' }]),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new CompressionPlugin(),

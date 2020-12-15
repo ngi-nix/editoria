@@ -18,7 +18,7 @@ const { fixFontFaceUrls } = require('./converters')
 
 const { generatePagedjsContainer } = require('./htmlGenerators')
 
-const { objectKeyExtractor } = require('../../../../app/components/common')
+const { objectKeyExtractor } = require('../../../common')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 

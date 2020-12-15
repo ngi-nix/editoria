@@ -14,7 +14,7 @@ const mime = require('mime-types')
 const uploadsPath = config.get('pubsweet-server').uploads
 const { Template, File } = require('../../data-model/src').models
 
-const { mimetypeHelpers } = require('../../../app/components/common')
+const { mimetypeHelpers } = require('../../common')
 
 const { isSupportedAsset } = mimetypeHelpers
 

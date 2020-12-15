@@ -40,12 +40,10 @@ RUN chown -R node:node .
 USER node
 
 COPY --chown=node:node ./config ./config
-COPY --chown=node:node ./public ./public
 COPY --chown=node:node ./scripts ./scripts
 COPY --chown=node:node ./server ./server
-COPY --chown=node:node ./startServer.js .
 
-COPY --from=build /home/node/editoria/_build/assets ./_build
+COPY --from=build /home/node/editoria/_build/assets ./_build/assets
 COPY --from=build /home/node/editoria/production_node_modules ./node_modules
 
 ENTRYPOINT ["sh", "./scripts/setupProdServer.sh"]

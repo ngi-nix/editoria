@@ -1,5 +1,5 @@
 const cheerio = require('cheerio')
-const { objectKeyExtractor } = require('../../../../app/components/common')
+const { objectKeyExtractor } = require('../../../common')
 
 const imageGatherer = book => {
   const images = []

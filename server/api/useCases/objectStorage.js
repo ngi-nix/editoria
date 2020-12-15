@@ -17,6 +17,7 @@ const {
 const AWS = require('aws-sdk')
 
 const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
+
 // Initializing Storage Interface
 const s3 = new AWS.S3({
   accessKeyId,

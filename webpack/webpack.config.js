@@ -5,8 +5,9 @@ const { pick } = require('lodash')
 const rules = require('./common-rules')
 
 // const contentBase = path.resolve(__dirname, '..', '_build', 'assets')
-const entryPoint = path.join(process.cwd(), 'app')
-const output = path.join(process.cwd(), '_build', 'assets')
+// const entryPoint = path.join(process.cwd(), 'app')
+const context = path.resolve(__dirname, '..', 'app')
+const output = path.resolve(__dirname, '..', '_build', 'assets')
 
 // can't use node-config in webpack so save whitelisted client config into the build and alias it below
 const clientConfig = pick(config, config.publicKeys)
@@ -35,7 +36,7 @@ module.exports = webpackEnv => {
       disableHostCheck: true,
       host: devServerHost,
       hot: true,
-      contentBase: path.join(output, 'public'),
+      // contentBase: path.join(output, 'public'),
       publicPath: '/',
       proxy: {
         '/api': serverUrlWithProtocol,
@@ -53,13 +54,13 @@ module.exports = webpackEnv => {
     name: 'Editoria app',
     target: 'web',
     mode: webpackEnv,
-    context: entryPoint,
+    context,
     entry: {
       app: isEnvDevelopment ? ['react-hot-loader/patch', './app'] : ['./app'],
     },
     output: {
       path: output,
-      publicPath: '/',
+      publicPath: isEnvDevelopment ? '/' : '/assets/',
       filename: isEnvProduction
         ? 'js/[name].[contenthash:8].js'
         : isEnvDevelopment && 'js/bundle.js',
