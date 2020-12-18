@@ -13,8 +13,8 @@ The following are our goals until the end of the year:
 
 - ~~Move everything to a single repo~~
 - ~~Figure out and implement the simplest way to authenticate between services~~
-- Separate services (pagedjs & epubcheck) from the app and remove filesystem dependencies in favour of sending files over http
-- Dockerize the app
+- ~~Separate services (pagedjs & epubcheck) from the app and remove filesystem dependencies in favour of sending files over http
+- ~~Dockerize the app
 - UI improvements
 
 You can track the above plan in more detail in its [milestone](https://gitlab.coko.foundation/editoria/editoria/-/milestones/12).
