@@ -2336,10 +2336,10 @@
     "@pubsweet/ui-toolkit" "^2.3.2"
     styled-components "^5.2.1"
 
-"@coko/storybook@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@coko/storybook/-/storybook-0.1.6.tgz#4547b78065b4a610af706506805db9ab849f1b97"
-  integrity sha512-InEOokuz9NSNR2r+gKqCeqk3AB4Llx7dfdDiypdAatrV15HJT2OA+OzS8PGqU/Je57yLxEHi+phNO0scRSpjwQ==
+"@coko/storybook@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@coko/storybook/-/storybook-1.0.0.tgz#9181aad7610de4edc9d2cceea919d138b75a273b"
+  integrity sha512-HXnb4pVNxUEIrmpQo4i3Wh+SfrlYWbiFWmz/ihz2Sw1tCxzJYGgI68ugGBt/Sl33RhrkgTSyHl/qJSDqRawIiA==
   dependencies:
     "@babel/core" "^7.10.4"
     "@storybook/addon-essentials" "^6.0.27"
