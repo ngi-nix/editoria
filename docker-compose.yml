@@ -57,11 +57,11 @@ services:
       - EDITORIA_FLAVOUR=${EDITORIA_FLAVOUR:-VANILLA}
       - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
       - SERVES_CLIENT=${SERVES_CLIENT:-false}
-      - POSTGRES_USER=${POSTGRES_USER:-editoria_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secretpassword}
-      - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
+      - POSTGRES_USER=${POSTGRES_USER:-dev}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
       - SERVER_PORT=${SERVER_PORT:-3000}
       - CLIENT_PROTOCOL=${CLIENT_PROTOCOL:-http}
       - CLIENT_HOST=${CLIENT_HOST:-0.0.0.0}
@@ -228,9 +228,9 @@ services:
     ports:
       - ${POSTGRES_PORT:-5432}:5432
     environment:
-      - POSTGRES_USER
-      - POSTGRES_DB
-      - POSTGRES_PASSWORD
+      - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
+      - POSTGRES_USER=${POSTGRES_USER:-dev}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
 
   db-epubchecker:
     image: postgres:12-alpine
