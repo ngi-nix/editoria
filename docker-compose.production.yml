@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  server:
+  app:
     build:
       context: .
       dockerfile: ./Dockerfile-production

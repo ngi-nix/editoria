@@ -16,7 +16,7 @@ services:
     ports:
       - ${CLIENT_PORT:-4000}:8080
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=development
       - CLIENT_HOST=0.0.0.0
       - SERVER_PROTOCOL=${SERVER_PROTOCOL:-http}
       - SERVER_HOST=${SERVER_HOST:-server}
@@ -53,15 +53,15 @@ services:
     ports:
       - ${SERVER_PORT:-3000}:${SERVER_PORT:-3000}
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=development
       - EDITORIA_FLAVOUR=${EDITORIA_FLAVOUR:-VANILLA}
       - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
       - SERVES_CLIENT=${SERVES_CLIENT:-false}
-      - POSTGRES_USER=${POSTGRES_USER:-editoria_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secretpassword}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
-      - POSTGRES_HOST=${POSTGRES_HOST:-db}
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER:-dev}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
       - SERVER_PORT=${SERVER_PORT:-3000}
       - CLIENT_PROTOCOL=${CLIENT_PROTOCOL:-http}
       - CLIENT_HOST=${CLIENT_HOST:-0.0.0.0}
@@ -102,7 +102,6 @@ services:
       - SERVICE_XSWEET_PROTOCOL=${SERVICE_XSWEET_PROTOCOL:-http}
       - SERVICE_XSWEET_HOST=${SERVICE_XSWEET_HOST:-xsweet}
       - SERVICE_XSWEET_PORT=${SERVICE_XSWEET_PORT:-3004}
-
     volumes:
       - ./config:/home/node/editoria/config
       - ./server:/home/node/editoria/server
@@ -111,6 +110,7 @@ services:
     image: silviof/docker-languagetool
     ports:
       - ${LANGUAGE_PORT:-8010}:8010
+
   epubchecker:
     depends_on:
       - db-epubchecker
@@ -137,6 +137,7 @@ services:
         'scripts/setupDevServer.sh',
       ]
     command: ['node', './server/startServer.js']
+
   icml:
     depends_on:
       - db-icml
@@ -163,6 +164,7 @@ services:
         'scripts/setupDevServer.sh',
       ]
     command: ['node', './server/startServer.js']
+
   pagedjs:
     depends_on:
       - db-pagedjs
@@ -193,6 +195,7 @@ services:
         'scripts/setupDevServer.sh',
       ]
     command: ['node', './server/startServer.js']
+
   xsweet:
     depends_on:
       - db-xsweet
@@ -219,38 +222,44 @@ services:
         'scripts/setupDevServer.sh',
       ]
     command: ['node', './server/startServer.js']
+
   db:
     image: postgres:12-alpine
     ports:
       - ${POSTGRES_PORT:-5432}:5432
     environment:
-      - POSTGRES_USER
-      - POSTGRES_DB
-      - POSTGRES_PASSWORD
+      - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
+      - POSTGRES_USER=${POSTGRES_USER:-dev}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+
   db-epubchecker:
     image: postgres:12-alpine
     environment:
       - POSTGRES_USER=epubchecker_user_dev
       - POSTGRES_DB=epubchecker_dev
       - POSTGRES_PASSWORD=epubchecker_user_password
+
   db-icml:
     image: postgres:12-alpine
     environment:
       - POSTGRES_USER=icml_user_dev
       - POSTGRES_DB=icml_dev
       - POSTGRES_PASSWORD=icml_user_password
+
   db-pagedjs:
     image: postgres:12-alpine
     environment:
       - POSTGRES_USER=pagedjs_user_dev
       - POSTGRES_DB=pagedjs_dev
       - POSTGRES_PASSWORD=pagedjs_user_password
+
   db-xsweet:
     image: postgres:12-alpine
     environment:
       - POSTGRES_USER=xsweet_user_dev
       - POSTGRES_DB=xsweet_dev
       - POSTGRES_PASSWORD=xsweet_user_password
+
   file_hosting:
     image: minio/minio
     ports:
