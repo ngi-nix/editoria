@@ -27,7 +27,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = WrappedComponent => props => (
   <Composed>
     {({ loading, currentUser, applicationParameter, client }) => {
-      if (loading) return 'Loading...'
+      if (loading) return null
 
       return (
         <WrappedComponent

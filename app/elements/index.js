@@ -1,7 +1,7 @@
 export { default as Action } from './Action'
-export { default as AppBar } from './AppBar'
 export { default as FormContainer } from './FormContainer'
 export { default as TextField } from './TextField'
 export { default as Heading } from './Heading'
 export { default as Button } from './Button'
 export { default as Logo } from './Logo'
+export { default as LogoLink } from './LogoLink'

@@ -47,11 +47,10 @@ const Title = styled(H3)`
 const InnerWrapper = styled.div`
   flex-basis: 76%;
   display: flex;
-  border-bottom: solid 1px black;
 `
 
 const TemplatesHeader = props => {
-  const { onChangeSort, title, collectionId, onAddBook, canAddTemplates, onCreateTemplate } = props
+  const { onChangeSort, title, canAddTemplates, onCreateTemplate } = props
   const handleClick = () => {
     onCreateTemplate()
   }

@@ -2,19 +2,20 @@ import { isEmpty } from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Loading from '../../../ui/Loading'
 
 import Book from './Book'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 `
 
 const BookList = props => {
   const {
     books,
-    refetching,
-    refetchingRules,
+    loading,
     renameBook,
     remove,
     archiveBook,
@@ -23,8 +24,7 @@ const BookList = props => {
     bookRules,
   } = props
 
-  // if (refetching) return 'Refetching...'
-  if (refetching || refetchingRules) return 'Refetching...'
+  if (loading) return <Loading vertical="center" />
 
   if (isEmpty(books)) {
     return <div>There are no books to display.</div>
@@ -36,12 +36,12 @@ const BookList = props => {
         <Book
           archiveBook={archiveBook}
           book={book}
+          bookRule={bookRules.find(bookRule => bookRule.id === book.id)}
           key={book.id}
+          onArchiveBook={onArchiveBook}
+          onDeleteBook={onDeleteBook}
           remove={remove}
           renameBook={renameBook}
-          onDeleteBook={onDeleteBook}
-          onArchiveBook={onArchiveBook}
-          bookRule={bookRules.find(bookRule => bookRule.id === book.id)}
         />
       ))}
     </Wrapper>

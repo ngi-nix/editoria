@@ -6,6 +6,8 @@ import Select from 'react-select'
 import sortBy from 'lodash/sortBy'
 import keys from 'lodash/keys'
 import omit from 'lodash/omit'
+import { th } from '@pubsweet/ui-toolkit'
+import { Loading } from '../../../ui'
 
 const TeamHeadingWrapper = styled.h4`
   border-bottom: 1px solid black;
@@ -58,7 +60,8 @@ const StyledSelect = styled(Select)`
 `
 
 const PageHeading = styled.h2`
-  font-size: 36px;
+  font-size: ${th('fontSizeHeading2')};
+  line-height: ${th('lineHeightHeading2')};
   margin: 0;
   padding: 0 calc(8px * 2);
 `
@@ -163,14 +166,14 @@ class GlobalTeamsManager extends Component {
       return team
     })
 
-    const promises = data.map(team => {
-      return updateGlobalTeam({
+    const promises = data.map(team =>
+      updateGlobalTeam({
         variables: {
           id: team.id,
           input: omit(team, ['id', '__typename', 'type']),
         },
-      })
-    })
+      }),
+    )
 
     Promise.all(promises).then(res => {
       this.showRibbon()
@@ -197,7 +200,7 @@ class GlobalTeamsManager extends Component {
     const { users, teams, loading } = this.props
     const { hideRibbon } = this.state
 
-    if (loading) return 'Loading...'
+    if (loading) return <Loading vertical="center" />
 
     let globalTeams = (teams || []).filter(team => team.global)
     const infoMessage = 'Your teams have been successfully updated'

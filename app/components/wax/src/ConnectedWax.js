@@ -6,6 +6,7 @@ import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
 import withModal from '../../common/src/withModal'
+import { Loading } from '../../../ui'
 
 import WaxPubsweet from './WaxPubsweet'
 import statefull from './Statefull'
@@ -170,7 +171,8 @@ const Connected = props => {
         const user = Object.assign({}, currentUser, {
           color: getUserWithColor(teams),
         })
-        if (loading || waxLoading || teamsLoading || tagsLoading) return null
+        if (loading || waxLoading || teamsLoading || tagsLoading)
+          return <Loading vertical="center" />
 
         let editing
         const lock = get(bookComponent, 'lock')

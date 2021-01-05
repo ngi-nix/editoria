@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import DashboardHeader from './DashboardHeader'
 import BookList from './BookList'
+import Loading from '../../../ui/Loading'
 
 const Container = styled.div`
   display: block;
@@ -9,6 +10,7 @@ const Container = styled.div`
   float: none;
   margin: 0 auto;
   max-width: 100%;
+  height: 100%;
 `
 const InnerWrapper = styled.div`
   display: block;
@@ -16,57 +18,54 @@ const InnerWrapper = styled.div`
   float: none;
   margin: 0 auto;
   max-width: 76%;
+  height: calc(100% - 72px);
 `
-export class Dashboard extends Component {
-  render() {
-    const {
-      collections,
-      archiveBook,
-      rules,
-      loadingRules,
-      deleteBook,
-      loading,
-      onChangeSort,
-      refetching,
-      renameBook,
-      refetchingRules,
-      onAddBook,
-      onDeleteBook,
-      onArchiveBook,
-    } = this.props
+const Dashboard = ({
+  collections,
+  archiveBook,
+  rules,
+  loadingRules,
+  deleteBook,
+  loading,
+  onChangeSort,
+  refetching,
+  renameBook,
+  refetchingRules,
+  onAddBook,
+  onDeleteBook,
+  onArchiveBook,
+}) => {
+  if (loading || loadingRules) return <Loading vertical="center" />
 
-    if (loading || loadingRules) return 'Loading...'
-    
-
-    return (
-      <Container>
-        {collections.map(collection => (
-          <Fragment>
-            <DashboardHeader
-              onChangeSort={onChangeSort}
-              canAddBooks={rules.canAddBooks}
-              collectionId={collection.id}
-              title={collection.title}
-              onAddBook={onAddBook}
+  return (
+    <Container>
+      {collections.map(collection => (
+        <Fragment>
+          <DashboardHeader
+            canAddBooks={rules.canAddBooks}
+            collectionId={collection.id}
+            onAddBook={onAddBook}
+            onChangeSort={onChangeSort}
+            title={collection.title}
+          />
+          <InnerWrapper>
+            <BookList
+              archiveBook={archiveBook}
+              bookRules={rules.bookRules}
+              books={collection.books}
+              loading={loading || loadingRules || refetching || refetchingRules}
+              onArchiveBook={onArchiveBook}
+              onDeleteBook={onDeleteBook}
+              refetching={refetching}
+              refetchingRules={refetchingRules}
+              remove={deleteBook}
+              renameBook={renameBook}
             />
-            <InnerWrapper>
-              <BookList
-                books={collection.books}
-                bookRules={rules.bookRules}
-                refetching={refetching}
-                refetchingRules={refetchingRules}
-                onDeleteBook={onDeleteBook}
-                onArchiveBook={onArchiveBook}
-                remove={deleteBook}
-                renameBook={renameBook}
-                archiveBook={archiveBook}
-              />
-            </InnerWrapper>
-          </Fragment>
-        ))}
-      </Container>
-    )
-  }
+          </InnerWrapper>
+        </Fragment>
+      ))}
+    </Container>
+  )
 }
 
 export default Dashboard

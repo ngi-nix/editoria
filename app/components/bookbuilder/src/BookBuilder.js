@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Loading } from '../../../ui'
 
 import {
   ProductionEditorsArea,
@@ -104,7 +105,7 @@ export class BookBuilder extends React.Component {
       onBookSettings,
     } = this.props
 
-    if (loading || loadingRules) return 'Loading...'
+    if (loading || loadingRules) return <Loading vertical="center" />
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 
@@ -116,7 +117,10 @@ export class BookBuilder extends React.Component {
         key={0}
         onMetadataAdd={() => onMetadataAdd(book)}
       />,
-      <AssetManagerButton key={1} onAssetManager={() => onAssetManager(book.id)} />,
+      <AssetManagerButton
+        key={1}
+        onAssetManager={() => onAssetManager(book.id)}
+      />,
       // <BookExporter
       //   book={book}
       //   history={history}

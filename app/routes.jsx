@@ -22,6 +22,7 @@ import Templates from './components/templates/src/ConnectedTemplates'
 
 import PagedStyler from './components/bookbuilder/src/PagedStyler/ConnectedPagedStyler'
 import Navigation from './components/navigation/src/Navigation'
+// import { NavBar } from './ui'
 import PrivateRoute from './components/navigation/src/PrivateRoute'
 
 import Connected from './components/navigation/src/ConnectedNavigation'

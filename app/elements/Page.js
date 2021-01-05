@@ -3,10 +3,10 @@ import { fadeIn, th } from '@pubsweet/ui-toolkit'
 
 const Page = styled.div`
   flex: auto;
-  /* font-family: ${th('fontInterface')}; */
-  height: 100%;
+  font-family: ${th('fontInterface')};
+  height: calc(100% - 45px);
   overflow-y: auto;
-  /* padding: calc(${th('gridUnit')} * 2); */
+  padding: 0;
 
   > div {
     animation: ${fadeIn} 0.5s;

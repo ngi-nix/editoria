@@ -2042,7 +2042,7 @@
   dependencies:
     "@pubsweet/logger" "^0.2.49"
 
-"@pubsweet/ui-toolkit@^2.2.19", "@pubsweet/ui-toolkit@^2.3.2":
+"@pubsweet/ui-toolkit@^2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@pubsweet/ui-toolkit/-/ui-toolkit-2.3.2.tgz#44b9b97b399027ef90bf0c30768475284f437fb4"
   integrity sha512-VJ9zZI1uDOCicmuJV7uv98kK0J5hGpJKIeXpOSrgPgFw3dDFRjuuLa4W8L5aFa+FG42ZDZEj2CaOnfuZyB4HGA==
@@ -2051,12 +2051,44 @@
     lodash "^4.17.4"
     styled-components "^4.1.1"
 
-"@pubsweet/ui@^12.3.1", "@pubsweet/ui@^12.6.0":
+"@pubsweet/ui-toolkit@^2.3.5", "@pubsweet/ui-toolkit@^2.3.6":
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/@pubsweet/ui-toolkit/-/ui-toolkit-2.3.6.tgz#86ef12620167731af608e022ac06cee2f80d3c9c"
+  integrity sha512-eNum2oSJQPw3Ea7Rrr7e0PhwDPKHz8y37NYMqfGe2/bJlIA15Qsh9w3ab0qGn2zjjL/iEPdh44XVY8xQ0Je+aQ==
+  dependencies:
+    color "^3.0.0"
+    lodash "^4.17.4"
+    styled-components "^4.1.1"
+
+"@pubsweet/ui@^12.6.0":
   version "12.6.0"
   resolved "https://registry.yarnpkg.com/@pubsweet/ui/-/ui-12.6.0.tgz#52f304b3ac4824fe48a310177769549d019e270c"
   integrity sha512-QYng7wVCB1ZoJ2AGVvNvf/BizgzEA60cgJXeeUiRykk0AQFqdpF+V/Skh7A8nwdl21knz6Xgoa84BbDQhNBSWQ==
   dependencies:
     "@pubsweet/ui-toolkit" "^2.3.2"
+    enzyme "^3.7.0"
+    enzyme-adapter-react-16 "^1.12.1"
+    formik "^1.4.2"
+    invariant "^2.2.3"
+    lodash "^4.17.4"
+    moment "^2.22.1"
+    prop-types "^15.5.10"
+    react "^16.9.0"
+    react-dom "^16.9.0"
+    react-feather "^1.0.8"
+    react-router-dom "^5.0.0"
+    react-select "^3.0.8"
+    react-tag-autocomplete "^5.5.0"
+    react-uid "^2.2.0"
+    recompose "^0.30.0"
+    styled-components "^4.1.1"
+
+"@pubsweet/ui@^12.6.3":
+  version "12.6.4"
+  resolved "https://registry.yarnpkg.com/@pubsweet/ui/-/ui-12.6.4.tgz#f448f97c23bc68fbac3f121828911830fe66fb34"
+  integrity sha512-XhiLLnhILpMafY8lYu46ExmT4MPM0oTOGqqov3OtyWfEaLaeAvKsbEInueN3x4Gk8V2ZM4IA9mRZAWcEfDasPA==
+  dependencies:
+    "@pubsweet/ui-toolkit" "^2.3.6"
     enzyme "^3.7.0"
     enzyme-adapter-react-16 "^1.12.1"
     formik "^1.4.2"
