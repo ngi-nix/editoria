@@ -1,13 +1,16 @@
-import React, { Component, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 
-import { UploadFilesButton, TemplatesHeader, TemplatesGrid } from './ui'
+import { TemplatesHeader, TemplatesGrid } from './ui'
+
+import { Loading } from '../../../ui'
 
 const Container = styled.div`
   display: block;
   clear: both;
   float: none;
   margin: 0 auto;
+  height: 100%;
   max-width: 100%;
 `
 const InnerWrapper = styled.div`
@@ -16,40 +19,37 @@ const InnerWrapper = styled.div`
   float: none;
   margin: 0 auto;
   max-width: 76%;
+  height: calc(100% - 72px);
 `
-export class Template extends Component {
-  render() {
-    const {
-      templates,
-      onCreateTemplate,
-      onUpdateTemplate,
-      onDeleteTemplate,
-      onChangeSort,
-      loading,
-    } = this.props
+const Template = ({
+  templates,
+  onCreateTemplate,
+  onUpdateTemplate,
+  onDeleteTemplate,
+  onChangeSort,
+  loading,
+}) => {
+  if (loading) return <Loading vertical="center" />
 
-    if (loading) return 'Loading...'
-
-    return (
-      <Container>
-        <Fragment>
-          <TemplatesHeader
-            canAddTemplates
-            onChangeSort={onChangeSort}
-            onCreateTemplate={onCreateTemplate}
-            title="Templates"
+  return (
+    <Container>
+      <Fragment>
+        <TemplatesHeader
+          canAddTemplates
+          onChangeSort={onChangeSort}
+          onCreateTemplate={onCreateTemplate}
+          title="Templates"
+        />
+        <InnerWrapper>
+          <TemplatesGrid
+            onDeleteTemplate={onDeleteTemplate}
+            onUpdateTemplate={onUpdateTemplate}
+            templates={templates}
           />
-          <InnerWrapper>
-            <TemplatesGrid
-              onDeleteTemplate={onDeleteTemplate}
-              onUpdateTemplate={onUpdateTemplate}
-              templates={templates}
-            />
-          </InnerWrapper>
-        </Fragment>
-      </Container>
-    )
-  }
+        </InnerWrapper>
+      </Fragment>
+    </Container>
+  )
 }
 
 export default Template

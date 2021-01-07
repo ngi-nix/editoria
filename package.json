@@ -10,35 +10,39 @@
   "license": "MIT",
   "author": "Yannis Barlas, Alexandros Georgantas",
   "scripts": {
-    "postinstall": "node ./server/vivliostyle/install.js",
-    "setupdb": "pubsweet migrate && npm run seed",
-    "server": "pubsweet start",
-    "migrate": "pubsweet migrate",
-    "cypress": "cypress open",
-    "resetdb": "node ./scripts/truncateDB.js && npm run seed",
-    "start:services": "docker-compose up language-tool db-epubchecker db-xsweet db-icml db-pagedjs epubchecker xsweet icml pagedjs",
-    "start:file-server": "docker-compose up file_hosting",
-    "create:file-bucket": "docker-compose up createbucket",
-    "start:db": "docker-compose up db",
-    "seed": "node ./scripts/seedsRunner.js",
-    "seed:createBooksWithUsersAndTeams": "node ./scripts/createBooksWithUsersAndTeams.js",
-    "seed:createTemplates": "node ./scripts/seeds/createTemplates.js",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch",
-    "test:cover": "NODE_ENV=test jest --coverage",
     "build": "pubsweet build",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "create:file-bucket": "docker-compose up createbucket",
+    "cypress": "cypress open",
+    "cz": "git-cz",
+    "postinstall": "node ./server/vivliostyle/install.js",
     "lint": "npm run lint:js && npm run lint:style",
     "lint:js": "eslint '**/*.{js,jsx}'",
     "lint:style": "stylelint '**/*.{js,jsx}'",
+    "migrate": "pubsweet migrate",
     "precommit": "lint-staged",
-    "cz": "git-cz",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "release": "standard-version"
+    "release": "standard-version",
+    "resetdb": "node ./scripts/truncateDB.js && npm run seed",
+    "seed": "node ./scripts/seedsRunner.js",
+    "seed:createBooksWithUsersAndTeams": "node ./scripts/createBooksWithUsersAndTeams.js",
+    "seed:createTemplates": "node ./scripts/seeds/createTemplates.js",
+    "server": "pubsweet start",
+    "setupdb": "pubsweet migrate && npm run seed",
+    "start:db": "docker-compose up db",
+    "start:file-server": "docker-compose up file_hosting",
+    "start:services": "docker-compose up language-tool db-epubchecker db-xsweet db-icml db-pagedjs epubchecker xsweet icml pagedjs",
+    "storybook": "coko-storybook",
+    "test": "NODE_ENV=test jest",
+    "test:cover": "NODE_ENV=test jest --coverage",
+    "test:watch": "NODE_ENV=test jest --watch"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "resolutions": {
+    "styled-components": "^4.1.3"
   },
   "dependencies": {
     "@apollo/react-components": "^3.1.3",
@@ -54,8 +58,8 @@
     "@pubsweet/logger": "^0.2.40",
     "@pubsweet/model-team": "^3.0.3",
     "@pubsweet/model-user": "^5.1.10",
-    "@pubsweet/ui": "^12.3.1",
-    "@pubsweet/ui-toolkit": "^2.2.19",
+    "@pubsweet/ui": "^12.6.3",
+    "@pubsweet/ui-toolkit": "^2.3.5",
     "archiver": "^3.1.1",
     "authsome": "^0.1.0",
     "aws-sdk": "^2.610.0",
@@ -113,13 +117,10 @@
     "uuid": "^3.3.2",
     "waait": "^1.0.2",
     "wax-editor-react": "^0.2.38",
+    "winston-daily-rotate-file": "^3.2.1",
     "xmlbuilder": "^13.0.2",
     "xpub-edit": "^2.5.23",
-    "yup": "^0.28.1",
-    "winston-daily-rotate-file": "^3.2.1"
-  },
-  "resolutions": {
-    "styled-components": "^4.1.3"
+    "yup": "^0.28.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

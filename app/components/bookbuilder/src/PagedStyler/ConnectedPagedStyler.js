@@ -12,6 +12,7 @@ import {
 import withModal from '../../../common/src/withModal'
 import PagedStyler from './PagedStyler'
 import statefull from '../Statefull'
+import Loading from '../../../../ui/Loading'
 import {
   updateTemplateCSSFileMutation,
   getBookQuery,
@@ -140,7 +141,7 @@ const Connected = props => {
         loadingPreviewerLink,
       }) => {
         if (loading || loadingBook || loadingPreviewerLink)
-          return <p>Loading ...</p>
+          return <Loading vertical="center" />
         return (
           <PagedStyler
             bookId={book.id}

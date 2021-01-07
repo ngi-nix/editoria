@@ -13,7 +13,7 @@ import {
   Button,
   Logo,
   Action,
-  AppBar,
+  LogoLink,
 } from './elements'
 
 const editoriaTheme = clone(theme)
@@ -28,7 +28,9 @@ editoriaTheme.cssOverrides = {
     H1: Heading.H1,
     Button,
     Action,
-    AppBar,
+    AppBar: {
+      LogoLink,
+    },
   },
   Login: {
     FormContainer,

@@ -8,7 +8,7 @@ import { Button, H3, H4 } from '@pubsweet/ui'
 import { th } from '@pubsweet/ui-toolkit'
 
 import RibbonFeedback from './RibbonFeedback'
-import Loading from './Loading'
+import { Loading } from '../../../../ui'
 import TextField from './TextField'
 import Form from './Form'
 
@@ -362,7 +362,7 @@ const UserProfile = props => {
     updateUsername,
   } = props
 
-  if (loading) return <Loading />
+  if (loading) return <Loading vertical="center" />
   const { givenName, surname, username } = data
 
   return (

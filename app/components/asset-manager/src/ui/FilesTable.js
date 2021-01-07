@@ -4,7 +4,8 @@ import { th } from '@pubsweet/ui-toolkit'
 import { indexOf } from 'lodash'
 
 import { dateTimeFormatter, fileSizeFormatter } from './helpers'
-import { IconButton, Loader } from '../ui'
+import { IconButton } from '../ui'
+import { Loading } from '../../../../ui'
 
 const TableWrapper = styled.div`
   align-items: center;
@@ -109,7 +110,7 @@ const FilesTable = ({
   checkboxHandler,
 }) => {
   const renderTableBody = () => {
-    if (loading) return <Loader />
+    if (loading) return <Loading vertical="center" />
 
     return files.length > 0 ? (
       <TableBody>

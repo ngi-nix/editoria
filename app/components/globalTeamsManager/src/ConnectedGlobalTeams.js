@@ -3,6 +3,7 @@
 import React from 'react'
 import get from 'lodash/get'
 import { adopt } from 'react-adopt'
+import { Loading } from '../../../ui'
 
 import GlobalTeamsManager from './GlobalTeamsManager'
 import {
@@ -32,7 +33,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = () => (
   <Composed>
     {({ users, teams, updateGlobalTeam, loading }) => {
-      if (loading) return 'Loading...'
+      if (loading) return <Loading vertical="center" />
       return (
         <GlobalTeamsManager
           loading={loading}

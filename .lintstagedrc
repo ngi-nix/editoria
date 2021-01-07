@@ -1,6 +1,6 @@
 {
  "linters": {
-    "*.{js,jsx}": ["prettier --write", "eslint --fix", "stylelint", "git add"]
+    "*.{js,jsx}": ["prettier --write", "eslint --fix", "git add"]
   },
   ignore: ["**/CHANGELOG.md"]
 }

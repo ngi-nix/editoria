@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import CustomModal from '../../../common/src/CustomModal'
 import ModalFooterDialog from '../../../common/src/ModalFooterDialog'
 import TeamManager from './TeamManager'
+import { Loading } from '../../../../ui'
 
 const Footer = (
   <ModalFooterDialog showConfirmButton={false} textCancel="Close" />
@@ -31,7 +32,7 @@ class TeamManagerModal extends React.Component {
 
   render() {
     const { isOpen, hideModal, loading, loadingRules } = this.props
-    if (loading || loadingRules) return null
+    if (loading || loadingRules) return <Loading vertical="center" />
     const body = this.renderBody()
 
     return (
