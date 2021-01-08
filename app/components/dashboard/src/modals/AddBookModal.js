@@ -1,17 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-// import { Button } from '@pubsweet/ui'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th, grid } from '@pubsweet/ui-toolkit'
 import { Formik } from 'formik'
+
+import { Button } from '../../../../ui'
 import FormModal from '../../../common/src/FormModal'
-import ModalBody from '../../../common/src/ModalBody'
-import ModalFooter from '../../../common/src/ModalFooter'
 
 const Input = styled.input`
   width: 100%;
   line-height: ${th('lineHeightBase')};
   font-size: ${th('fontSizeBase')};
+  font-family: ${th('fontInterface')};
+  color: ${th('colorText')};
   border: 0;
   outline: 0;
   text-align: center;
@@ -28,17 +29,19 @@ const Input = styled.input`
     line-height: ${th('lineHeightBase')};
   }
 `
+
 const Text = styled.div`
-  font-family: 'Fira Sans Condensed';
+  font-family: ${th('fontInterface')};
   text-align: center;
-  margin-bottom: calc(3 * ${th('gridUnit')});
+  margin-bottom: ${grid(3)};
   line-height: ${th('lineHeightBase')};
   width: 100%;
   font-size: ${th('fontSizeBase')};
-  color: #404040;
+  color: ${th('colorText')};
 `
+
 const Error = styled.div`
-  font-family: 'Fira Sans Condensed';
+  font-family: ${th('fontInterface')};
   text-align: left;
   height: ${th('lineHeightBase')};
   line-height: ${th('lineHeightBase')};
@@ -47,138 +50,42 @@ const Error = styled.div`
   color: ${th('colorError')};
 `
 
-const ConfirmButton = styled.button`
-  align-items: center;
-  cursor: pointer;
-  background: ${th('colorPrimary')};
-  border: none;
-  color: white;
-  display: flex;
-  margin-bottom:8px;
-  padding: calc(${th('gridUnit')}/2) calc(3 * ${th('gridUnit')});
-  /* border-bottom: 1px solid ${th('colorBackground')}; */
-  &:disabled {
-    background:#ccc;
-    cursor: not-allowed;
-  }
-  &:not(:disabled):hover {
-    background: ${lighten('colorPrimary', 10)};
-  }
-  &:not(:disabled):active {
-    background: ${darken('colorPrimary', 10)};
-    border: none;
-    outline: none;
-  }
-  &:focus {
-    background: ${darken('colorPrimary', 10)};
-    outline: 0;
-  }
+const StyledFormik = styled(Formik)`
+  width: 100%;
+  height: 100%;
 `
-const CancelButton = styled.button`
-  align-items: center;
-  cursor: pointer;
-  background: none;
-  border: none;
-  color: #828282;
-  display: flex;
-  padding: 0;
-  border-bottom: 1px solid ${th('colorBackground')};
 
-  &:not(:disabled):hover {
-    color: ${th('colorPrimary')};
-  }
-  &:not(:disabled):active {
-    border: none;
-    color: ${th('colorPrimary')};
-    outline: none;
-    border-bottom: 1px solid ${th('colorPrimary')};
-  }
-  &:focus {
-    outline: 0;
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+`
+
+const Body = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  width: 100%;
+`
+
+const Footer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+
+  > button {
+    margin-right: ${grid(1)};
   }
 `
-const Label = styled.span`
-  font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeBase')};
-  line-height: ${th('lineHeightBase')};
-  font-weight: normal;
-`
+
 class AddBookModal extends React.Component {
   constructor(props) {
     super(props)
-
-    this.handleKeyOnInput = this.handleKeyOnInput.bind(this)
-    this.onInputChange = this.onInputChange.bind(this)
-    this.onCreate = this.onCreate.bind(this)
-
     this.state = { error: false, title: '' }
-  }
-
-  // focusTextInput() {
-  //   if (this.textInput) this.textInput.focus()
-  // }
-
-  // componentDidMount() {
-  //   const { show } = this.props
-  //   console.log('did update', this.textInput)
-  //   if (show) this.focusTextInput()
-  // }
-
-  // TODO -- figure out how to make input ref auto focus work when we move away from bootstrap modals
-
-  handleKeyOnInput(event) {
-    // console.log('1')
-    // const { data } = this.props
-    // const { onConfirm } = data
-    // const title = event.target.value.trim()
-    // console.log('hello', title)
-    // if (title.length === 0) {
-    //   return this.setState({
-    //     error: true,
-    //   })
-    // } else {
-    //   this.setState({
-    //     error: false,
-    //   })
-    // }
-    // this.setState({ title })
-    // if (event.charCode !== 13) return
-    // onConfirm(title)
-  }
-
-  /* eslint-disable */
-  onCreate() {
-    // const { data, hideModal } = this.props
-    // console.log('asdasdfdsa', this.props)
-    // const { collectionId, createBook } = data
-    // const input = this.textInput
-    // const newTitle = input.value.trim()
-    // if (newTitle.length === 0) {
-    //   return this.setState({
-    //     error: true,
-    //   })
-    // }
-    // createBook({
-    //   variables: {
-    //     input: {
-    //       collectionId,
-    //       title: newTitle,
-    //     },
-    //   },
-    // })
-    // hideModal()
-  }
-  /* eslint-enable */
-
-  onInputChange(event) {
-    // const { error } = this.state
-    // const title = event.target.value.trim()
-    // console.log('t', title)
-    // if (title.length === 0) {
-    //   this.setState({ error: true })
-    // }
-    // if (!error) return
-    // this.setState({ error: false })
   }
 
   renderBody() {
@@ -189,65 +96,64 @@ class AddBookModal extends React.Component {
     const cancelLabel = 'Cancel'
 
     return (
-      <div>
-        <Formik
-          initialValues={{ title: '' }}
-          validate={values => {
-            let errors = {}
-            if (!values.title) {
-              errors.title = '* The title of the book should not be empty'
-            }
-            return errors
-          }}
-          onSubmit={(values, { setSubmitting }) => {
-            // setTimeout(() => {
-            //   alert(JSON.stringify(values, null, 2))
-            //   setSubmitting(false)
-            // }, 400)
-            const title = values.title
-            onConfirm(title.trim())
-            setSubmitting(false)
-          }}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            /* and other goodies */
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <ModalBody>
-                <Text>Enter the title of the new book</Text>
-                <Input
-                  type="text"
-                  errors={errors}
-                  name="title"
-                  placeholder="eg. My new title"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.title}
-                />
-                <Error>{errors.title && touched.title && errors.title}</Error>
-              </ModalBody>
-              <ModalFooter>
-                <ConfirmButton
-                  type="submit"
-                  disabled={isSubmitting || errors.title}
-                >
-                  <Label>{confirmLabel.toUpperCase()}</Label>
-                </ConfirmButton>
-                <CancelButton type="submit" onClick={hideModal}>
-                  <Label>{cancelLabel}</Label>
-                </CancelButton>
-              </ModalFooter>
-            </form>
-          )}
-        </Formik>
-      </div>
+      <StyledFormik
+        initialValues={{ title: '' }}
+        onSubmit={(values, { setSubmitting }) => {
+          const { title } = values
+
+          onConfirm(title.trim())
+          setSubmitting(false)
+        }}
+        validate={values => {
+          const errors = {}
+
+          if (!values.title) {
+            errors.title = '* The title of the book should not be empty'
+          }
+          return errors
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          /* and other goodies */
+        }) => (
+          <StyledForm onSubmit={handleSubmit}>
+            <Body>
+              <Text>Enter the title of the new book</Text>
+              <Input
+                errors={errors}
+                name="title"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                placeholder="eg. My new title"
+                type="text"
+                value={values.title}
+              />
+              <Error>{errors.title && touched.title && errors.title}</Error>
+            </Body>
+            <Footer>
+              <Button
+                disabled={isSubmitting || errors.title}
+                label={confirmLabel}
+                title={confirmLabel}
+                type="submit"
+              />
+              <Button
+                danger
+                label={cancelLabel}
+                onClick={hideModal}
+                title={cancelLabel}
+              />
+            </Footer>
+          </StyledForm>
+        )}
+      </StyledFormik>
     )
   }
 
@@ -258,10 +164,10 @@ class AddBookModal extends React.Component {
 
     return (
       <FormModal
-        isOpen={isOpen}
         headerText="Create a new Book"
-        size="small"
+        isOpen={isOpen}
         onRequestClose={hideModal}
+        size="small"
       >
         {body}
       </FormModal>

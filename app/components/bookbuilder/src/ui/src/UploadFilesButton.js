@@ -62,12 +62,12 @@ class UploadFilesButton extends React.Component {
   render() {
     const { uploading, counter } = this.state
 
-    let labelText = 'upload word files'
+    let labelText = 'Upload word files'
 
     if (counter > 1) {
-      labelText = `converting ${counter} files`
+      labelText = `Converting ${counter} files`
     } else if (counter === 1) {
-      labelText = `converting ${counter} file`
+      labelText = `Converting ${counter} file`
     }
 
     return (

@@ -70,7 +70,7 @@ const Menu = styled(UIMenu)`
       padding: 4px 4px 4px 12px;
       font-size: ${th('fontSizeBase')};
       line-height: ${th('lineHeightBase')};
-      color: #828282;
+      color: ${th('colorText')};
       position: relative;
 
       &::selection {
@@ -83,7 +83,7 @@ const Menu = styled(UIMenu)`
       }
 
       &[aria-selected='true'] {
-        color: #0d78f2;
+        color: ${th('colorPrimary')};
         font-weight: normal;
 
         &::before {
@@ -115,11 +115,11 @@ const OpenerWrapper = styled.div`
   > span {
     font-family: 'Fira Sans Condensed';
     text-transform: uppercase;
-    color: #828282;
+    color: ${th('colorText')};
 
     span {
       cursor: pointer;
-      color: #3f3f3f;
+      color: ${th('colorText')};
       font-weight: bold;
     }
   }

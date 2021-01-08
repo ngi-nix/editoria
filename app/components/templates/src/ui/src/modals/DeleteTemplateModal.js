@@ -1,21 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
+import { th, grid } from '@pubsweet/ui-toolkit'
 import DialogModal from '../../../../../common/src/DialogModal'
 
 const Text = styled.div`
-  color: #404040;
-  font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeBase')};
-  line-height: ${th('lineHeightBase')};
+  font-family: ${th('fontInterface')};
   text-align: center;
+  margin-bottom: ${grid(3)};
+  line-height: ${th('lineHeightBase')};
   width: 100%;
+  font-size: ${th('fontSizeBase')};
+  color: ${th('colorText')};
 `
+
 const DeleteBookModal = props => {
   const { isOpen, hideModal, data } = props
   const { templateName, onConfirm } = data
   return (
     <DialogModal
+      buttonLabel="Yes"
       headerText="Delete Template"
       isOpen={isOpen}
       onConfirm={onConfirm}

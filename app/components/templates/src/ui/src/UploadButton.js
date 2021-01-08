@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ButtonWithIcon, ButtonWithoutLabel, DefaultButton } from './Button'
+import { Button } from '../../../../../ui'
 
 const Input = styled.input`
   display: none !important;
@@ -12,6 +12,7 @@ const UploadButton = ({
   accept,
   label,
   disabled,
+  title,
   icon,
   id,
   className,
@@ -23,31 +24,14 @@ const UploadButton = ({
 
   return (
     <React.Fragment>
-      {label && icon && (
-        <ButtonWithIcon
-          className={className}
-          disabled={disabled}
-          icon={icon}
-          label={label}
-          onClick={onClick}
-        />
-      )}
-      {label && !icon && (
-        <DefaultButton
-          className={className}
-          disabled={disabled}
-          label={label}
-          onClick={onClick}
-        />
-      )}
-      {!label && (
-        <ButtonWithoutLabel
-          className={className}
-          disabled={disabled}
-          icon={icon}
-          onClick={onClick}
-        />
-      )}
+      <Button
+        className={className}
+        disabled={disabled}
+        icon={icon}
+        label={label}
+        onClick={onClick}
+        title={title}
+      />
       <Input
         accept={accept}
         id={`${id}-upload-btn`}

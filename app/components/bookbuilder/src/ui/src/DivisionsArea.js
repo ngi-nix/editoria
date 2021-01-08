@@ -2,69 +2,12 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { map, clone, find, findIndex } from 'lodash'
 import { DragDropContext } from 'react-beautiful-dnd'
-
 import Division from './Division'
 
 const DivisionsContainer = styled.div`
   display: flex;
   flex-direction: column;
 `
-
-// const DivisionsArea = ({
-//   bookId,
-//   divisions,
-//   history,
-//   addBookComponent,
-//   deleteBookComponent,
-//   updateBookComponentPagination,
-//   updateBookComponentOrder,
-//   updateBookComponentWorkflowState,
-//   updateBookComponentUploading,
-//   outerContainer,
-//   showModal,
-//   showModalToggle,
-//   uploading,
-// }) => {
-//   const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
-//     return (
-//       <Division
-//         add={addBookComponent}
-//         bookComponents={bookComponents}
-//         bookId={bookId}
-//         deleteBookComponent={deleteBookComponent}
-//         divisionId={id}
-//         key={id}
-//         label={label}
-//         history={history}
-//         outerContainer={outerContainer}
-//         showModal={showModal}
-//         showModalToggle={showModalToggle}
-//         reorderingAllowed={reorderingAllowed}
-//         updateBookComponentOrder={updateBookComponentOrder}
-//         updateBookComponentPagination={updateBookComponentPagination}
-//         updateBookComponentUploading={updateBookComponentUploading}
-//         updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-//         uploadStatus={uploading}
-//       />
-//     )
-//   }
-//   return (
-//     <DivisionsContainer>
-//       {map(divisions, division => {
-//         const { bookComponents, label, id } = division
-//         return (
-//           // <Authorize
-//           //   object={bookId}
-//           //   operation="can reorder bookComponents"
-//           //   unauthorized={this.renderDivision(false, bookComponents, label, id)}
-//           // >
-//           renderDivision(true, bookComponents, label, id)
-//           // </Authorize>
-//         )
-//       })}
-//     </DivisionsContainer>
-//   )
-// }
 
 class DivisionsArea extends Component {
   constructor(props) {
@@ -75,14 +18,9 @@ class DivisionsArea extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    // const diff = difference(this.state.divisions, nextProps.divisions)
-    // if (diff.length > 0) {
-    // console.log('diff', diff)
     this.setState({
       divisions: nextProps.divisions,
     })
-    // }
-    // return false
   }
   reorder = (array, item, to, from = undefined) => {
     const resArray = []
@@ -164,33 +102,6 @@ class DivisionsArea extends Component {
         index: destination.index,
       },
     })
-    // if (source.droppableId === destination.droppableId) {
-    //     const items = reorder(
-    //         this.getList(source.droppableId),
-    //         source.index,
-    //         destination.index
-    //     );
-
-    //     let state = { items };
-
-    //     if (source.droppableId === 'droppable2') {
-    //         state = { selected: items };
-    //     }
-
-    //     this.setState(state);
-    // } else {
-    //     const result = move(
-    //         this.getList(source.droppableId),
-    //         this.getList(destination.droppableId),
-    //         source,
-    //         destination
-    //     );
-
-    //     this.setState({
-    //         items: result.droppable,
-    //         selected: result.droppable2
-    //     });
-    // }
   }
 
   render() {
@@ -210,8 +121,6 @@ class DivisionsArea extends Component {
       updateBookComponentWorkflowState,
       onAdminUnlock,
       updateBookComponentUploading,
-      refetching,
-      refetchingBookBuilderRules,
       toggleIncludeInTOC,
       outerContainer,
       showModal,
@@ -225,42 +134,40 @@ class DivisionsArea extends Component {
 
     const { divisions } = this.state
     const { canReorderBookComponent } = rules
-    const renderDivision = (reorderingAllowed, bookComponents, label, id) => {
-      return (
-        <Division
-          add={addBookComponent}
-          applicationParameter={applicationParameter}
-          bookComponents={bookComponents}
-          bookId={bookId}
-          currentUser={currentUser}
-          deleteBookComponent={deleteBookComponent}
-          toggleIncludeInTOC={toggleIncludeInTOC}
-          showModalToggle={showModalToggle}
-          divisionId={id}
-          history={history}
-          key={id}
-          label={label}
-          onAdminUnlock={onAdminUnlock}
-          onDeleteBookComponent={onDeleteBookComponent}
-          onEndNoteModal={onEndNoteModal}
-          onWarning={onWarning}
-          onWorkflowUpdate={onWorkflowUpdate}
-          outerContainer={outerContainer}
-          reorderingAllowed={reorderingAllowed}
-          rules={rules}
-          showModal={showModal}
-          updateApplicationParameters={updateApplicationParameters}
-          updateBookComponentOrder={updateBookComponentOrder}
-          updateBookComponentPagination={updateBookComponentPagination}
-          updateBookComponentUploading={updateBookComponentUploading}
-          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-          updateComponentType={updateComponentType}
-          uploadBookComponent={uploadBookComponent}
-          uploadStatus={uploading}
-        />
-      )
-    }
-    // if (refetchingBookBuilderRules || refetching) return 'Refetching...'
+    const renderDivision = (reorderingAllowed, bookComponents, label, id) => (
+      <Division
+        add={addBookComponent}
+        applicationParameter={applicationParameter}
+        bookComponents={bookComponents}
+        bookId={bookId}
+        currentUser={currentUser}
+        deleteBookComponent={deleteBookComponent}
+        divisionId={id}
+        history={history}
+        key={id}
+        label={label}
+        onAdminUnlock={onAdminUnlock}
+        onDeleteBookComponent={onDeleteBookComponent}
+        onEndNoteModal={onEndNoteModal}
+        onWarning={onWarning}
+        onWorkflowUpdate={onWorkflowUpdate}
+        outerContainer={outerContainer}
+        reorderingAllowed={reorderingAllowed}
+        rules={rules}
+        showModal={showModal}
+        showModalToggle={showModalToggle}
+        toggleIncludeInTOC={toggleIncludeInTOC}
+        updateApplicationParameters={updateApplicationParameters}
+        updateBookComponentOrder={updateBookComponentOrder}
+        updateBookComponentPagination={updateBookComponentPagination}
+        updateBookComponentUploading={updateBookComponentUploading}
+        updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+        updateComponentType={updateComponentType}
+        uploadBookComponent={uploadBookComponent}
+        uploadStatus={uploading}
+      />
+    )
+
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}

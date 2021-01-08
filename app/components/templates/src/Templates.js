@@ -19,7 +19,7 @@ const InnerWrapper = styled.div`
   float: none;
   margin: 0 auto;
   max-width: 76%;
-  height: calc(100% - 72px);
+  height: calc(100% - 80px);
 `
 const Template = ({
   templates,
@@ -29,7 +29,7 @@ const Template = ({
   onChangeSort,
   loading,
 }) => {
-  if (loading) return <Loading vertical="center" />
+  if (loading) return <Loading />
 
   return (
     <Container>

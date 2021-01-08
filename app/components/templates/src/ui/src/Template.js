@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
+import { th, grid } from '@pubsweet/ui-toolkit'
+
+import { Button } from '../../../../../ui'
 
 const ButtonsContainer = styled.div`
   display: flex;
@@ -9,108 +11,25 @@ const ButtonsContainer = styled.div`
   width: 100%;
   height: 100%;
   padding-top: calc(2 * ${th('gridUnit')});
-  /* align-items: flex-start;
-  justify-content: flex-start;
-  margin-top: 20px; */
+  > button {
+    margin-bottom: ${grid(2)};
+  }
 `
 
-const randomColor = () => {
-  const value = ((Math.random() * 0xffffff) << 0).toString(16)
-  return `#${value}`
-}
-const StyledButton = styled.button`
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+const StyledButton = styled(Button)`
   background: white;
-  border: none;
-  font-size: 18px;
-  color: #828282;
-  width: 110px;
-  height: 40px;
-  display: flex;
-  margin-bottom: 10px;
-  padding: 0;
-  border-bottom: 1px solid ${th('colorBackground')};
-
-  &:not(:disabled):hover {
-    color: ${th('colorPrimary')};
-  }
-  &:not(:disabled):active {
-    border: none;
-    color: ${th('colorPrimary')};
-    outline: none;
-    border-bottom: 1px solid ${th('colorPrimary')};
-  }
-  &:focus {
-    outline: 0;
-  }
 `
-// const PlaceholderContainer = styled.div`
-//   height: 100%;
-//   width: 188px;
-//   svg {
-//     #color {
-//       fill: ${({ color }) => color};
-//     }
-//   }
-// `
-
-// const thumbnailPlaceholder = (
-//   <svg
-//     width="188"
-//     height="282 "
-//     viewBox="0 0 188 282"
-//     fill="none"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <rect id="back" width="188" height="266" fill="url(#pattern0)" />
-//     <rect id="color" width="188" height="282" fill="black" fillOpacity="0.3" />
-//     <defs>
-//       <pattern
-//         id="pattern0"
-//         patternContentUnits="objectBoundingBox"
-//         width="1"
-//         height="1"
-//       >
-//         <use transform="translate(-0.635627 -0.594882) scale(0.00182688 0.00129118)" />
-//       </pattern>
-//       <image id="image0" width="3902" height="2195" />
-//     </defs>
-//   </svg>
-// )
-
-// const Overlay = styled.div`
-//   background: transparent;
-//   z-index: 2;
-
-//   /* transition: 0.5s ease; */
-//   opacity: 0;
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   height: 100%;
-//   width: 100%;
-// `
-
-// const Image = styled.img`
-//   height: 100%;
-//   width: 188px;
-// `
 
 const ImageContainer = styled.div`
   height: 100%;
   width: 188px;
   background-size: contain;
   margin-right: calc(3 * ${th('gridUnit')});
-  background-repeat:no-repeat;
+  background-repeat: no-repeat;
   ${({ thumbnail, color }) =>
     thumbnail
       ? `background-image: url(${thumbnail.source})`
       : `background: ${color}`}
-      /* background-blend-mode: multiply; */
-  /* background: ${({ thumbnail, color }) =>
-    thumbnail ? `url(${thumbnail.source})` : color}; */
 `
 
 const Container = styled.div`
@@ -121,23 +40,18 @@ const Container = styled.div`
   display: flex;
   flex-basis: 32.3%;
   height: 282px;
-  /* min-width:390px; */
   margin-bottom: calc(3 * ${th('gridUnit')});
   &:hover {
     ${ButtonsContainer} {
       visibility: visible;
-      /* background: #0964cc; */
     }
     ${ImageContainer} {
-      box-shadow: inset 0 0 0 1000px rgba(9,    100,    204, 0.7);
-      /* filter: grayscale(); */
-      /* opacity: 0.5; */
+      box-shadow: inset 0 0 0 1000px rgba(9, 100, 204, 0.7);
     }
     background: #0964cc;
     color: white;
   }
 `
-
 
 const InfoContainer = styled.div`
   display: flex;
@@ -176,30 +90,24 @@ const Template = props => {
   } = props
   return (
     <Container>
-      <ImageContainer thumbnail={thumbnail} color={randomColor()}>
+      <ImageContainer color="#F1F1F1" thumbnail={thumbnail}>
         <ButtonsContainer>
           <StyledButton
+            label="Update"
             onClick={() => {
               onUpdateTemplate(id)
             }}
-          >
-            Update
-          </StyledButton>
+            title="Update"
+          />
           <StyledButton
+            danger
+            label="Delete"
             onClick={() => {
               onDeleteTemplate(id, name)
             }}
-          >
-            Delete
-          </StyledButton>
+            title="Delete"
+          />
         </ButtonsContainer>
-        {/* {thumbnail ? (
-          <Image src={thumbnail.source} />
-        ) : (
-          <PlaceholderContainer key={id} color={randomColor()}>
-            {thumbnailPlaceholder}
-          </PlaceholderContainer>
-        )} */}
       </ImageContainer>
       <InfoContainer>
         <Row>
@@ -223,24 +131,6 @@ const Template = props => {
           <Text>{notes || '-'}</Text>
         </Row>
       </InfoContainer>
-      {/* <Overlay>
-        <ButtonsContainer>
-          <StyledButton
-            onClick={() => {
-              onUpdateTemplate(id)
-            }}
-          >
-            Update
-          </StyledButton>
-          <StyledButton
-            onClick={() => {
-              onDeleteTemplate(id, name)
-            }}
-          >
-            Delete
-          </StyledButton>
-        </ButtonsContainer>
-      </Overlay> */}
     </Container>
   )
 }

@@ -6,7 +6,6 @@ export default css`
   margin-top: 20px;
   width: 100px;
   img {
-    filter: grayscale(100%);
     max-width: 100%;
   }
 `

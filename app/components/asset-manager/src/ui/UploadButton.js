@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { ActionButton } from '../ui'
+// import { ActionButton } from '../ui'
+import { Button } from '../../../../ui'
 
 const Input = styled.input`
   display: none !important;
@@ -28,12 +29,11 @@ const UploadButton = ({
 
   return (
     <Wrapper>
-      <ActionButton
-        className={className}
+      <Button
         disabled={disabled}
         label={label}
         onClick={onClick}
-        type="primary"
+        title={label}
       />
       <Input
         accept={accept}

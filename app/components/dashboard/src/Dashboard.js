@@ -18,7 +18,7 @@ const InnerWrapper = styled.div`
   float: none;
   margin: 0 auto;
   max-width: 76%;
-  height: calc(100% - 72px);
+  height: calc(100% - 80px);
 `
 const Dashboard = ({
   collections,
@@ -35,7 +35,7 @@ const Dashboard = ({
   onDeleteBook,
   onArchiveBook,
 }) => {
-  if (loading || loadingRules) return <Loading vertical="center" />
+  if (loading || loadingRules) return <Loading />
 
   return (
     <Container>

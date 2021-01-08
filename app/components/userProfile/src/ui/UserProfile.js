@@ -4,61 +4,62 @@ import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import * as yup from 'yup'
 
-import { Button, H3, H4 } from '@pubsweet/ui'
+import { H3, H4 } from '@pubsweet/ui'
 import { th } from '@pubsweet/ui-toolkit'
 
 import RibbonFeedback from './RibbonFeedback'
-import { Loading } from '../../../../ui'
+import { Loading, Button } from '../../../../ui'
 import TextField from './TextField'
 import Form from './Form'
 
-const Wrapper = styled.div`
-  clear: both;
+const Container = styled.div`
   display: block;
+  clear: both;
   float: none;
   margin: 0 auto;
-  max-width: 76%;
+  max-width: 100%;
+  height: 100%;
 `
-
-const InnerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-right: calc(3 * ${th('gridUnit')});
-`
-
-const Header = styled(H3)`
-  align-items: flex-start;
-  background-color: white;
-  border-bottom: solid 1px black;
+const Title = styled(H3)`
   color: #3f3f3f;
-  display: flex;
   font-family: ${th('fontReading')};
   font-weight: normal;
-  height: 48px;
-  margin-bottom: calc(3 * ${th('gridUnit')});
+  margin: 0;
   margin-right: calc(3 * ${th('gridUnit')});
   padding-bottom: 0;
   padding-top: 3px;
-  position: sticky;
   text-transform: uppercase;
-  top: 0;
-  z-index: 1;
+`
+const InnerWrapper = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
+  max-width: 76%;
+  height: calc(100% - 80px);
 `
 
-const Separator = styled.div`
-  border-bottom: 1px solid ${th('colorFurniture')};
-  height: ${th('gridUnit')};
-  width: 100%;
+const HeaderWrapper = styled.div`
+  align-items: center;
+  justify-content: flex-start;
+  display: flex;
+  position: sticky;
+  background-color: white;
+  height: calc(9 * ${th('gridUnit')});
+  z-index: 1;
+  top: 0;
+  margin-bottom: calc(1 * ${th('gridUnit')});
 `
 
 const SectionWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-bottom: calc(${th('gridUnit')} * 2);
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
 `
 
-const PasswordWrapper = styled.div`
+const InnerSectionWrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -66,15 +67,10 @@ const PasswordWrapper = styled.div`
 `
 
 const SectionHeader = styled(H4)`
-  color: #3f3f3f;
-  font-family: ${th('fontReading')};
+  color: ${th('colorText')};
+  font-family: ${th('fontInterface')};
   font-weight: normal;
   margin: calc(${th('gridUnit')} * 2) 0;
-`
-
-const UpdateButton = styled(Button)`
-  background: #404040;
-  width: 50%;
 `
 
 const PersonalInformation = props => {
@@ -91,7 +87,7 @@ const PersonalInformation = props => {
   })
 
   return (
-    <InnerWrapper>
+    <InnerSectionWrapper>
       <SectionHeader>Personal Information</SectionHeader>
       <RibbonFeedback
         keepSpaceOccupied={false}
@@ -145,9 +141,12 @@ const PersonalInformation = props => {
                       value={values.surname}
                     />
 
-                    <UpdateButton disabled={disabled} primary type="submit">
-                      Update
-                    </UpdateButton>
+                    <Button
+                      disabled={disabled}
+                      label="Update"
+                      title="Update"
+                      type="submit"
+                    />
                   </Fragment>
                 )
               }}
@@ -155,7 +154,7 @@ const PersonalInformation = props => {
           )
         }}
       </RibbonFeedback>
-    </InnerWrapper>
+    </InnerSectionWrapper>
   )
 }
 
@@ -171,7 +170,7 @@ const Username = props => {
   })
 
   return (
-    <InnerWrapper>
+    <InnerSectionWrapper>
       <SectionHeader>Username</SectionHeader>
       <RibbonFeedback
         keepSpaceOccupied={false}
@@ -213,9 +212,12 @@ const Username = props => {
                       value={values.username}
                     />
 
-                    <UpdateButton disabled={disabled} primary type="submit">
-                      Change username
-                    </UpdateButton>
+                    <Button
+                      disabled={disabled}
+                      label="Change username"
+                      title="Change username"
+                      type="submit"
+                    />
                   </Fragment>
                 )
               }}
@@ -223,7 +225,7 @@ const Username = props => {
           )
         }}
       </RibbonFeedback>
-    </InnerWrapper>
+    </InnerSectionWrapper>
   )
 }
 
@@ -253,7 +255,7 @@ const Password = props => {
   })
 
   return (
-    <PasswordWrapper>
+    <InnerSectionWrapper>
       <SectionHeader>Change password</SectionHeader>
       <RibbonFeedback
         errorMessage="Current password is incorrect"
@@ -339,9 +341,12 @@ const Password = props => {
                       value={values.newPassword2}
                     />
 
-                    <Button disabled={!isValid} primary type="submit">
-                      Change password
-                    </Button>
+                    <Button
+                      disabled={!isValid}
+                      label="Change password"
+                      title="Change password"
+                      type="submit"
+                    />
                   </Fragment>
                 )
               }}
@@ -349,7 +354,7 @@ const Password = props => {
           )
         }}
       </RibbonFeedback>
-    </PasswordWrapper>
+    </InnerSectionWrapper>
   )
 }
 
@@ -362,26 +367,26 @@ const UserProfile = props => {
     updateUsername,
   } = props
 
-  if (loading) return <Loading vertical="center" />
+  if (loading) return <Loading />
   const { givenName, surname, username } = data
 
   return (
-    <Wrapper>
-      <Header>User Profile</Header>
-
-      <SectionWrapper>
-        <PersonalInformation
-          givenName={givenName}
-          surname={surname}
-          update={updatePersonalInformation}
-        />
-
-        <Username update={updateUsername} username={username} />
-      </SectionWrapper>
-      <Separator />
-
-      <Password update={updatePassword} />
-    </Wrapper>
+    <Container>
+      <InnerWrapper>
+        <HeaderWrapper>
+          <Title>User Profile</Title>
+        </HeaderWrapper>
+        <SectionWrapper>
+          <PersonalInformation
+            givenName={givenName}
+            surname={surname}
+            update={updatePersonalInformation}
+          />
+          <Username update={updateUsername} username={username} />
+          <Password update={updatePassword} />
+        </SectionWrapper>
+      </InnerWrapper>
+    </Container>
   )
 }
 

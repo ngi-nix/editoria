@@ -140,8 +140,7 @@ const Connected = props => {
         previewerLink,
         loadingPreviewerLink,
       }) => {
-        if (loading || loadingBook || loadingPreviewerLink)
-          return <Loading vertical="center" />
+        if (loading || loadingBook || loadingPreviewerLink) return <Loading />
         return (
           <PagedStyler
             bookId={book.id}

@@ -5,10 +5,11 @@ import styled from 'styled-components'
 import { H3 } from '@pubsweet/ui'
 import { th } from '@pubsweet/ui-toolkit'
 
-import AddBookButton from './AddBookButton'
+import { Button, Icons } from '../../../ui'
 import ToggleArchivedButton from './ToggleArchivedButton'
 import SortMenu from './SortMenu'
 
+const { addIcon } = Icons
 const HeaderWrapper = styled.div`
   align-items: center;
   justify-content: center;
@@ -16,11 +17,10 @@ const HeaderWrapper = styled.div`
   position: sticky;
   justify-content: center;
   background-color: white;
-  height: 48px;
+  height: calc(9 * ${th('gridUnit')});
   z-index: 1;
-  /* border-bottom: solid 1px black; */
   top: 0;
-  margin-bottom: calc(3 * ${th('gridUnit')});
+  margin-bottom: calc(1 * ${th('gridUnit')});
 `
 
 const Side1 = styled.div`
@@ -48,7 +48,6 @@ const Title = styled(H3)`
 const InnerWrapper = styled.div`
   flex-basis: 76%;
   display: flex;
-  /* border-bottom: solid 1px black; */
 `
 
 const DashboardHeader = props => {
@@ -62,7 +61,14 @@ const DashboardHeader = props => {
       <InnerWrapper>
         <Side1>
           <Title>{title}</Title>
-          {canAddBooks && <AddBookButton onClick={handleClick} />}
+          {canAddBooks && (
+            <Button
+              icon={addIcon}
+              label="ADD BOOK"
+              onClick={handleClick}
+              title="Add Book"
+            />
+          )}
         </Side1>
 
         <Side2>

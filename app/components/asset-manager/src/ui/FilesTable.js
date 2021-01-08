@@ -110,7 +110,7 @@ const FilesTable = ({
   checkboxHandler,
 }) => {
   const renderTableBody = () => {
-    if (loading) return <Loading vertical="center" />
+    if (loading) return <Loading />
 
     return files.length > 0 ? (
       <TableBody>

@@ -70,9 +70,9 @@ const UploadFileButton = ({
     return true
   }
 
-  let text = 'upload word'
+  let text = 'Upload word'
   if (uploading) {
-    text = 'uploading'
+    text = 'Uploading'
   }
 
   return (

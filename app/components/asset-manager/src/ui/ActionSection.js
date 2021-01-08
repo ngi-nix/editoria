@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import styled from 'styled-components'
-import { th, darken } from '@pubsweet/ui-toolkit'
+import { th, darken, grid } from '@pubsweet/ui-toolkit'
 
-import { ActionButton, UploadFilesButton } from '../ui'
+import { UploadFilesButton } from '../ui'
+import { Button } from '../../../../ui'
 
 const Wrapper = styled.div`
   align-items: center;
@@ -10,6 +11,9 @@ const Wrapper = styled.div`
   height: 10%;
   justify-content: flex-start;
   width: 100%;
+  button:not(:last-child) {
+    margin-right: ${grid(1)};
+  }
 `
 
 const WarningAlert = styled.div`
@@ -73,17 +77,18 @@ class ActionSection extends Component {
           <Fragment>
             <UploadFilesButton handler={uploadHandler} />
             {shouldShowDelete && (
-              <ActionButton
+              <Button
+                danger
                 label="Delete Selected"
                 onClick={this.handleShouldWarn}
-                type="delete"
+                title="Delete Selected"
               />
             )}
             {shouldShowImport && (
-              <ActionButton
+              <Button
                 label="Import File/s"
                 onClick={importHandler}
-                type="primary"
+                title="Import File/s"
               />
             )}
           </Fragment>

@@ -7,17 +7,61 @@ import sortBy from 'lodash/sortBy'
 import keys from 'lodash/keys'
 import omit from 'lodash/omit'
 import { th } from '@pubsweet/ui-toolkit'
-import { Loading } from '../../../ui'
+import { H3 } from '@pubsweet/ui'
+import { Loading, Button } from '../../../ui'
 
+const Container = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
+  max-width: 100%;
+  height: 100%;
+`
+const StyledForm = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  flex-grow:1
+  justify-content: center;
+`
+const Title = styled(H3)`
+  color: #3f3f3f;
+  font-family: ${th('fontReading')};
+  font-weight: normal;
+  margin: 0;
+  margin-right: calc(3 * ${th('gridUnit')});
+  padding-bottom: 0;
+  padding-top: 3px;
+  text-transform: uppercase;
+`
+const InnerWrapper = styled.div`
+  display: block;
+  clear: both;
+  float: none;
+  margin: 0 auto;
+  max-width: 76%;
+  height: calc(100% - 80px);
+`
+
+const HeaderWrapper = styled.div`
+  align-items: center;
+  justify-content: flex-start;
+  display: flex;
+  position: sticky;
+  background-color: white;
+  height: calc(9 * ${th('gridUnit')});
+  z-index: 1;
+  top: 0;
+  margin-bottom: calc(1 * ${th('gridUnit')});
+`
 const TeamHeadingWrapper = styled.h4`
-  border-bottom: 1px solid black;
   font-size: 24px;
   line-height: 28px;
   margin: 0;
 `
 
 const TeamSectionWrapper = styled.div`
-  padding: calc(8px * 2) 0;
+  padding: 0;
 `
 
 const Ribbon = styled.div`
@@ -35,6 +79,7 @@ const Ribbon = styled.div`
 
 const ButtonWrapper = styled.div`
   padding: calc(8px * 2) 0;
+  align-self: flex-end;
 `
 
 const StyledSelect = styled(Select)`
@@ -56,23 +101,6 @@ const StyledSelect = styled(Select)`
         color: #ff2d1a;
       }
     }
-  }
-`
-
-const PageHeading = styled.h2`
-  font-size: ${th('fontSizeHeading2')};
-  line-height: ${th('lineHeightHeading2')};
-  margin: 0;
-  padding: 0 calc(8px * 2);
-`
-
-const PageWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-
-  form {
-    width: 60%;
   }
 `
 
@@ -126,7 +154,7 @@ const TeamManagerForm = props => {
   const { setFieldValue, teams, users, values } = props
 
   return (
-    <Form>
+    <StyledForm>
       {teams.map(team => (
         <TeamSection
           key={team.id}
@@ -139,11 +167,14 @@ const TeamManagerForm = props => {
       ))}
 
       <ButtonWrapper>
-        <button disabled={!props.dirty} primary type="submit">
-          Save
-        </button>
+        <Button
+          disabled={!props.dirty}
+          label="Save"
+          title="Save"
+          type="submit"
+        />
       </ButtonWrapper>
-    </Form>
+    </StyledForm>
   )
 }
 
@@ -200,7 +231,7 @@ class GlobalTeamsManager extends Component {
     const { users, teams, loading } = this.props
     const { hideRibbon } = this.state
 
-    if (loading) return <Loading vertical="center" />
+    if (loading) return <Loading />
 
     let globalTeams = (teams || []).filter(team => team.global)
     const infoMessage = 'Your teams have been successfully updated'
@@ -213,22 +244,26 @@ class GlobalTeamsManager extends Component {
     globalTeams = sortBy(globalTeams, 'name')
 
     return (
-      <PageWrapper>
-        <PageHeading>Team Manager</PageHeading>
-        <Ribbon hide={hideRibbon}>{infoMessage}</Ribbon>
+      <Container>
+        <InnerWrapper>
+          <HeaderWrapper>
+            <Title>Team Manager</Title>
+          </HeaderWrapper>
+          <Ribbon hide={hideRibbon}>{infoMessage}</Ribbon>
 
-        <Formik
-          initialValues={initialValues}
-          onSubmit={this.handleSubmit}
-          render={formikProps => (
-            <TeamManagerForm
-              teams={globalTeams}
-              users={users}
-              {...formikProps}
-            />
-          )}
-        />
-      </PageWrapper>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={this.handleSubmit}
+            render={formikProps => (
+              <TeamManagerForm
+                teams={globalTeams}
+                users={users}
+                {...formikProps}
+              />
+            )}
+          />
+        </InnerWrapper>
+      </Container>
     )
   }
 }
