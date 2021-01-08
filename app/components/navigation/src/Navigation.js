@@ -15,9 +15,7 @@ const navLinksBuilder = location => {
     location.pathname.match(/books/g) &&
     !location.pathname.match(/bookComponents/g) &&
     !location.pathname.match(/book-builder/g)
-  const inEditor = location.pathname.match(/bookComponents/g)
   const inTemplates = location.pathname.match(/templates/g)
-  const inPaged = location.pathname.match(/pagedPreviewer\/paged/g)
 
   const navLinksLeft = [
     <NavBarLink active={inDashboard} to="/books">
@@ -27,15 +25,7 @@ const navLinksBuilder = location => {
       Templates
     </NavBarLink>,
   ]
-  if (inEditor || inPaged) {
-    const pathnameSplitted = location.pathname.split('/')
-    const bookId = pathnameSplitted[2]
-    navLinksLeft.push(
-      <NavBarLink to={`/books/${bookId}/book-builder`}>
-        Back to book
-      </NavBarLink>,
-    )
-  }
+
   return navLinksLeft
 }
 const Navigation = props => {

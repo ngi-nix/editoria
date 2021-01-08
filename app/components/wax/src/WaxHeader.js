@@ -1,37 +1,60 @@
-import React from 'react'
-import { get } from 'lodash'
-import { th } from '@pubsweet/ui-toolkit'
-import styled from 'styled-components'
-import withLink from '../../common/src/withLink'
+import React, { Fragment } from 'react'
+import { th, grid } from '@pubsweet/ui-toolkit'
+import styled, { css } from 'styled-components'
+import { NavBarLink, Icons } from '../../../ui'
 
-const BookTitle = styled.div`
-  padding-left: calc(3.5 * ${th('gridUnit')});
-  color: ${th('colorText')};
-  /* text-align:center;  */
+const StyledNavLinks = styled(NavBarLink)`
+  width: 100%;
+  display: flex;
   align-items: center;
-  margin-bottom: calc(2 * ${th('gridUnit')});
-  font-size: ${th('fontSizeHeading5')};
-  line-height: ${th('lineHeightHeading5')};
-  font-family: 'Vollkorn';
-`
-
-const WithLinkDecoration = styled.div`
-  a {
-    text-decoration: none;
-    color: black;
-    :hover {
-      border-bottom: 1px solid black;
+  ${props => props.position === 'center' && center};
+  ${props => props.position === 'left' && left};
+  ${props => props.position === 'right' && right};
+  &:hover {
+    svg {
+      fill: ${th('colorPrimary')};
+      transition: all 0.1s ease-in;
     }
   }
 `
+const Text = styled.div`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  width: 100%;
+`
+const center = css`
+  justify-content: center;
+`
+const left = css`
+  justify-content: flex-start;
+`
+const right = css`
+  justify-content: flex-end;
+`
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  width: 32%;
+`
+const Icon = styled.span`
+  margin: 0 4px;
+  > svg {
+    display: block;
+  }
+`
+const { previousIcon, nextIcon } = Icons
 
 const Header = styled.div`
   display: flex;
+  padding: ${grid(1)};
+  height: ${grid(9)};
   align-items: center;
-  justify-content: space-around;
-  > div {
-    text-align: center;
-    width: 30%;
+  flex-grow: 1;
+  justify-content: center;
+  > div:not(:last-child) {
+    margin-right: ${grid(1)};
   }
 `
 
@@ -39,49 +62,39 @@ const createUrl = bookComponent =>
   `/books/${bookComponent.bookId}/bookComponents/${bookComponent.id}`
 
 const WaxHeader = ({ bookComponent }) => {
-  let chapterNumber
-  if (get(bookComponent, 'componentType') === 'chapter') {
-    chapterNumber = get(bookComponent, 'componentTypeOrder')
-  }
-  let header
-  if (chapterNumber) {
-    header = (
-      <BookTitle data-testid="current-component">{`${
-        bookComponent.bookTitle
-      } - Chapter ${chapterNumber}. ${bookComponent.title ||
-        'Untitled'}`}</BookTitle>
-    )
-  } else {
-    header = (
-      <BookTitle data-testid="current-component">{`${
-        bookComponent.bookTitle
-      } - ${bookComponent.title || 'Untitled'}`}</BookTitle>
-    )
-  }
   const { nextBookComponent, prevBookComponent } = bookComponent
   return (
     <Header>
-      <div>
+      <Container>
         {prevBookComponent && (
-          <WithLinkDecoration data-testid="previous-component">
-            {withLink(
-              `${prevBookComponent.title || 'Untitled'}`,
-              createUrl(prevBookComponent),
-            )}
-          </WithLinkDecoration>
+          <Fragment>
+            <StyledNavLinks position="left" to={createUrl(prevBookComponent)}>
+              <Icon>{previousIcon}</Icon>
+              <Text>{`${prevBookComponent.title || 'Untitled'}`}</Text>
+            </StyledNavLinks>
+          </Fragment>
         )}
-      </div>
-      {header}
-      <div>
+      </Container>
+      <Container>
+        <StyledNavLinks
+          position="center"
+          to={`/books/${bookComponent.bookId}/book-builder`}
+        >
+          <Text>{`${bookComponent.bookTitle} - ${bookComponent.title ||
+            'Untitled'}`}</Text>
+        </StyledNavLinks>
+      </Container>
+
+      <Container>
         {nextBookComponent && (
-          <WithLinkDecoration data-testid="next-component">
-            {withLink(
-              `${nextBookComponent.title || 'Untitled'}`,
-              createUrl(nextBookComponent),
-            )}
-          </WithLinkDecoration>
+          <Fragment>
+            <StyledNavLinks position="right" to={createUrl(nextBookComponent)}>
+              <Text>{`${nextBookComponent.title || 'Untitled'}`}</Text>
+              <Icon>{nextIcon}</Icon>
+            </StyledNavLinks>
+          </Fragment>
         )}
-      </div>
+      </Container>
     </Header>
   )
 }
