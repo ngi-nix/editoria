@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import { grid } from '@pubsweet/ui-toolkit'
 import 'codemirror/mode/css/css'
 import 'codemirror/lib/codemirror.css'
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import { Button, NavBarLink } from '../../../../ui'
 
 const Wrapper = styled.div`
   align-items: flex-start;
@@ -22,18 +24,10 @@ const CodeEditorWrapper = styled.div`
 `
 const EditorToolbar = styled.div`
   display: flex;
-  height: 5%;
   justify-content: flex-end;
-`
-const Actions = styled.button`
-  background: none;
-  border: none;
-  color: #0d78f2;
-  cursor: pointer;
-  font: inherit;
-  margin-right: 20px;
-  outline: inherit;
-  padding: 0;
+  > button:not(:last-child) {
+    margin-right: ${grid(1)};
+  }
 `
 const EditorArea = styled.div`
   flex-grow: 1;
@@ -100,7 +94,8 @@ const PagedStyler = ({
     <Wrapper>
       <CodeEditorWrapper>
         <EditorToolbar>
-          <Actions
+          <Button
+            label="Save"
             onClick={() =>
               onWarningModal(
                 bookId,
@@ -118,11 +113,17 @@ const PagedStyler = ({
                 ),
               )
             }
-          >
-            Save
-          </Actions>
-          <Actions onClick={handlePrint}>Print</Actions>
-          <Actions onClick={handleDownload(hashed)}>Download HTML</Actions>
+            title="Save"
+          />
+          <Button label="Print" onClick={handlePrint} title="Print" />
+          <Button
+            label="Download HTML"
+            onClick={handleDownload(hashed)}
+            title="Download HTML"
+          />
+          <NavBarLink to={`/books/${bookId}/book-builder`}>
+            Back to book
+          </NavBarLink>
         </EditorToolbar>
         <EditorArea>
           <CodeMirror
