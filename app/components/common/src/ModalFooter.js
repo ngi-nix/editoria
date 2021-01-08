@@ -3,14 +3,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { th } from '@pubsweet/ui-toolkit'
+import { grid } from '@pubsweet/ui-toolkit'
 
 const Wrapper = styled.div`
   align-items: center;
   display: flex;
-  flex-direction: column;
-  padding: 0 calc(${th('gridUnit')} * 2) calc(${th('gridUnit')} * 2)
-    calc(${th('gridUnit')} * 2);
+  justify-content: flex-end;
+  > button {
+    margin-right: ${grid(1)};
+  }
 `
 
 const Footer = props => {

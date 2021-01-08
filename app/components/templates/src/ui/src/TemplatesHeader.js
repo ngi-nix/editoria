@@ -5,8 +5,10 @@ import styled from 'styled-components'
 import { H3 } from '@pubsweet/ui'
 import { th } from '@pubsweet/ui-toolkit'
 
-import AddTemplateButton from './AddTemplateButton'
+import { Button, Icons } from '../../../../../ui'
 import SortMenu from './SortMenu'
+
+const { addIcon } = Icons
 
 const HeaderWrapper = styled.div`
   align-items: center;
@@ -15,13 +17,11 @@ const HeaderWrapper = styled.div`
   position: sticky;
   justify-content: center;
   background-color: white;
-  height: 48px;
+  height: calc(9 * ${th('gridUnit')});
   z-index: 1;
-  /* border-bottom: solid 1px black; */
   top: 0;
-  margin-bottom: calc(3 * ${th('gridUnit')});
+  margin-bottom: calc(1 * ${th('gridUnit')});
 `
-
 const Side1 = styled.div`
   align-items: center;
   justify-content: flex-start;
@@ -60,7 +60,14 @@ const TemplatesHeader = props => {
       <InnerWrapper>
         <Side1>
           <Title>{title}</Title>
-          {canAddTemplates && <AddTemplateButton onClick={handleClick} />}
+          {canAddTemplates && (
+            <Button
+              icon={addIcon}
+              label="ADD TEMPLATE"
+              onClick={handleClick}
+              title="Add TEMPLATE"
+            />
+          )}
         </Side1>
 
         <Side2>

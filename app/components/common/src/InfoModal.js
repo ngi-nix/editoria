@@ -7,13 +7,13 @@ import ModalFooterInfo from './ModalFooterInfo'
 
 // Centers info message horizontally and vertically.
 const Centered = styled.div`
-  align-items: center;
+  align-items: ${({ notCentered }) => (notCentered ? 'flex-start' : 'center')};
   display: flex;
   height: 100%;
-  justify-content: center;
+  justify-content: ${({ notCentered }) =>
+    notCentered ? 'flex-start' : 'center'};
   text-align: center;
 `
-
 const InfoModal = props => {
   const { children, headerText, ...rest } = props
 
@@ -23,8 +23,8 @@ const InfoModal = props => {
   return (
     <ModalRoot
       footerComponent={Footer}
-      shouldCloseOnOverlayClick={false}
       headerComponent={Header}
+      shouldCloseOnOverlayClick={false}
       size="small"
       {...rest}
     >

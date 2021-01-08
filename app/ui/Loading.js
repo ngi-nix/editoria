@@ -6,8 +6,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  justify-content: ${({ vertical }) =>
-    vertical === 'up' ? 'flex-start' : 'center'};
+  justify-content: center;
   align-items: center;
 `
 const Spinner = styled.div`
@@ -16,8 +15,8 @@ const Spinner = styled.div`
   background: url('/assets/loader.gif');
 `
 
-const Loading = ({ vertical }) => (
-  <Wrapper vertical={vertical}>
+const Loading = () => (
+  <Wrapper>
     <Spinner />
   </Wrapper>
 )

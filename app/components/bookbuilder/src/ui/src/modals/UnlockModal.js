@@ -18,10 +18,11 @@ const UnlockModal = props => {
 
   return (
     <DialogModal
-      isOpen={isOpen}
+      buttonLabel="Yes"
       headerText={`Unlock ${componentType}`}
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>
         {`Are you sure you want to unlock this ${componentType} with title ${title ||

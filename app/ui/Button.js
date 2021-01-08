@@ -13,16 +13,28 @@ const Label = styled.span`
 `
 
 const Button = props => {
-  const { active, className, disabled, title, label, icon, onClick } = props
+  const {
+    active,
+    className,
+    danger,
+    disabled,
+    title,
+    label,
+    icon,
+    onClick,
+    type,
+  } = props
 
   return (
     <RootButton
       active={active}
       className={className}
+      danger={danger}
       disabled={disabled}
       label={label}
       onClick={onClick}
       title={title}
+      type={type}
     >
       {icon && (
         <StyledIcon active={active} disabled={disabled}>

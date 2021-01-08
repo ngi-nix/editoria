@@ -3,7 +3,10 @@ import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
 import { dateTimeFormatter, fileSizeFormatter } from './helpers'
-import { IconButton, InfoItem } from '../ui'
+import { InfoItem } from '../ui'
+import { Button, Icons } from '../../../../ui'
+
+const { exitIcon } = Icons
 
 const PreviewWrapper = styled.div`
   align-items: center;
@@ -21,13 +24,6 @@ const ClosePreview = styled.div`
   justify-content: flex-end;
   width: 100%;
 `
-
-const icon = (
-  <svg fill="#111" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-    <path d="M0 0h24v24H0z" fill="none" />
-  </svg>
-)
 
 const ImagePreviewer = styled.div`
   align-items: center;
@@ -82,11 +78,13 @@ const FileDetails = ({ file, updateFile, closeHandler }) => {
   return (
     <PreviewWrapper>
       <ClosePreview>
-        <IconButton
-          icon={icon}
+        <Button
+          danger
+          icon={exitIcon}
           onClick={e => {
             closeHandler(undefined)
           }}
+          title="Close"
         />
       </ClosePreview>
       <ImagePreviewer>

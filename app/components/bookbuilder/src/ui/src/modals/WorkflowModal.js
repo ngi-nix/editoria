@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
 import DialogModal from '../../../../../common/src/DialogModal'
 
 const Text = styled.div`
@@ -34,10 +34,11 @@ const WorkflowModal = props => {
 
   return (
     <DialogModal
-      isOpen={isOpen}
+      buttonLabel="Yes"
       headerText="Change of workflow status"
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>
         {bodyMsg[textKey]}

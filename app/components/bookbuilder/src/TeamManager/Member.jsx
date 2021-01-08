@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 
-import { DefaultButton } from '../ui'
+import { Button } from '../../../../ui'
 
 const ListItem = styled.li`
   align-items: flex-start;
@@ -82,7 +82,12 @@ export class Member extends React.Component {
 
         {canRemoveTeamMember && (
           <ActionsContainer>
-            <DefaultButton label="Remove" onClick={this._remove} />
+            <Button
+              danger
+              label="Remove"
+              onClick={this._remove}
+              title="Remove"
+            />
           </ActionsContainer>
         )}
       </ListItem>

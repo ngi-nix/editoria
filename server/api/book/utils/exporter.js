@@ -128,7 +128,13 @@ const EpubBackend = async (
       const { outcome, messages } = await useCaseEPUBChecker(epubFilePath)
 
       if (outcome === 'not valid') {
-        throw new Error(messages)
+        let errors = ''
+        for (let i = 0; i < messages.length; i += 1) {
+          const { message } = messages[i]
+          errors += `${message} - `
+        }
+
+        throw new Error(errors)
       }
 
       resultPath = epubFilePath.replace(`${process.cwd()}`, '')

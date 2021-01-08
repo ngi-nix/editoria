@@ -1,18 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
-import { filter, findIndex, find, cloneDeep } from 'lodash'
+import { th, grid } from '@pubsweet/ui-toolkit'
+import { filter, findIndex, find, cloneDeep, uniqueId } from 'lodash'
 import { Formik } from 'formik'
 import Select from 'react-select'
 import FormModal from '../../../../../common/src/FormModal'
-import ModalBody from '../../../../../common/src/ModalBody'
-import ModalFooter from '../../../../../common/src/ModalFooter'
-import {
-  UploadFilesButton,
-  ButtonWithoutLabel,
-  DefaultButton,
-  UploadThumbnail,
-} from '../..'
+import { UploadFilesButton, UploadThumbnail } from '../..'
+
+import { Button, Icons } from '../../../../../../ui'
+
+const { deleteIcon } = Icons
 
 const selectOptions = [
   { label: 'EPUB', value: 'epub' },
@@ -26,21 +23,33 @@ const noteSelectOptions = [
   { label: 'Chapter end notes', value: 'chapterEnd' },
 ]
 
-const StyledModal = styled(ModalBody)`
-  align-items: flex-start;
+const StyledFormik = styled(Formik)`
+  width: 100%;
+`
+const Body = styled.div`
+  align-items: center;
   display: flex;
-  height: 82%;
+  height: calc(100% - 26px);
   justify-content: center;
+  width: 100%;
+`
+
+const Footer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+
+  > button {
+    margin-right: ${grid(1)};
+  }
 `
 const Input = styled.input`
   border: 0;
   border-bottom: 1px dashed
-    ${({ errors, errorId, touched }) => {
-      return errors[errorId] && touched[errorId]
-        ? th('colorError')
-        : th('colorText')
-    }};
-  font-family: 'Fira Sans Condensed';
+    ${({ errors, errorId, touched }) =>
+      errors[errorId] && touched[errorId] ? th('colorError') : th('colorText')};
+  font-family: ${th('fontInterface')};
   font-size: ${th('fontSizeBase')};
   line-height: ${th('lineHeightBase')};
   outline: 0;
@@ -58,7 +67,7 @@ const Input = styled.input`
 `
 const Text = styled.div`
   color: #404040;
-  font-family: 'Fira Sans Condensed';
+  font-family: ${th('fontInterface')};
   font-size: ${th('fontSizeBase')};
   line-height: ${th('lineHeightBase')};
   margin-right: calc(3 * ${th('gridUnit')});
@@ -66,7 +75,7 @@ const Text = styled.div`
 `
 const Error = styled.div`
   color: ${th('colorError')};
-  font-family: 'Fira Sans Condensed';
+  font-family: ${th('fontInterface')};
   font-size: ${th('fontSizeBase')};
   height: ${th('lineHeightBase')};
   line-height: ${th('lineHeightBase')};
@@ -74,68 +83,11 @@ const Error = styled.div`
   width: 100%;
 `
 
-const ConfirmButton = styled.button`
-  align-items: center;
-  background: ${th('colorPrimary')};
-  border: none;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  margin-bottom: 8px;
-  padding: calc(${th('gridUnit')} / 2) calc(3 * ${th('gridUnit')});
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  &:focus {
-    background: ${darken('colorPrimary', 10)};
-    outline: 0;
-  }
-  &:not(:disabled):hover {
-    background: ${lighten('colorPrimary', 10)};
-  }
-  &:not(:disabled):active {
-    background: ${darken('colorPrimary', 10)};
-    border: none;
-    outline: none;
-  }
-`
-const CancelButton = styled.button`
-  align-items: center;
-  background: none;
-  border: none;
-  border-bottom: 1px solid ${th('colorBackground')};
-  color: #828282;
-  cursor: pointer;
-  display: flex;
-  padding: 0;
-
-  &:focus {
-    outline: 0;
-  }
-  &:not(:disabled):hover {
-    color: ${th('colorPrimary')};
-  }
-  &:not(:disabled):active {
-    border: none;
-    border-bottom: 1px solid ${th('colorPrimary')};
-    color: ${th('colorPrimary')};
-    outline: none;
-  }
-`
-const Label = styled.span`
-  font-family: 'Fira Sans Condensed';
-  font-size: ${th('fontSizeBase')};
-  font-weight: normal;
-  line-height: ${th('lineHeightBase')};
-`
-
 const Container = styled.div`
   align-items: flex-start;
   display: flex;
-  flex-basis: 80%;
-  height: 97%;
+  height: 90%;
+  width: 90%;
   justify-content: space-between;
 `
 const Side1 = styled.div`
@@ -155,53 +107,38 @@ const FormFieldContainer = styled.div`
   flex-grow: 1;
 `
 const FormField = styled.div`
+  align-items: flex-start;
   display: flex;
+  width: ${({ notFull }) => (notFull ? '98%' : '100%')};
   margin-bottom: calc(1 * ${th('gridUnit')});
 `
 
 const StyledForm = styled.form`
-  height: 94%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 24px);
+  width: 100%;
 `
-
 const ThumbnailContainer = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-const deleteIcon = (
-  <svg
-    fill="none"
-    height="16"
-    viewBox="0 0 16 16"
-    width="16"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g id="delete">
-      <path
-        d="M5.60005 12C6.04005 12 6.40005 11.64 6.40005 11.2V8C6.40005 7.56 6.04005 7.2 5.60005 7.2C5.16005 7.2 4.80005 7.56 4.80005 8V11.2C4.80005 11.64 5.16005 12 5.60005 12Z"
-        fill="#828282"
-      />
-      <path
-        d="M10.4 12C10.84 12 11.2 11.64 11.2 11.2V8C11.2 7.56 10.84 7.2 10.4 7.2C9.96 7.2 9.6 7.56 9.6 8V11.2C9.6 11.64 9.96 12 10.4 12Z"
-        fill="#828282"
-      />
-      <path
-        clipRule="evenodd"
-        d="M15.2 3.2C15.64 3.2 16 3.56 16 4C16 4.44 15.64 4.8 15.2 4.8H14.4V13.6C14.4 14.9232 13.3232 16 12 16H4C2.6768 16 1.6 14.9232 1.6 13.6V4.8H0.8C0.36 4.8 0 4.44 0 4C0 3.56 0.36 3.2 0.8 3.2H4.8V1.8624C4.8 0.8352 5.6968 0 6.8 0H9.2C10.3032 0 11.2 0.8352 11.2 1.8624V3.2H15.2ZM12 14.4C12.4416 14.4 12.8 14.0408 12.8 13.6V4.8H3.19995V13.6C3.19995 14.0408 3.55835 14.4 3.99995 14.4H12ZM6.3999 1.86241C6.3999 1.73841 6.5711 1.60001 6.7999 1.60001H9.1999C9.4287 1.60001 9.5999 1.73841 9.5999 1.86241V3.20001H6.3999V1.86241Z"
-        fill="#828282"
-        fillRule="evenodd"
-      />
-    </g>
-  </svg>
-)
-
 const Filename = styled(Text)`
+  flex-grow: 1;
+`
+const FileList = styled.div`
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   flex-grow: 1;
 `
 
 const Image = styled.img`
   height: 266px;
   width: 188px;
+  margin-bottom: ${grid(1)};
 `
 class TemplateModal extends React.Component {
   constructor(props) {
@@ -351,20 +288,29 @@ class TemplateModal extends React.Component {
         </FormField>
       )
     }
-    return files.map((file, index) => (
-      <FormField key={`${file.name}-${index}`}>
-        <Filename>
-          {file.extension ? `${file.name}.${file.extension}` : `${file.name}`}
-        </Filename>
-        <ButtonWithoutLabel
-          icon={deleteIcon}
-          onClick={e => {
-            e.preventDefault()
-            this.removeFile(file.name, setFieldValue, setFieldTouched)
-          }}
-        />
-      </FormField>
-    ))
+
+    return (
+      <FileList>
+        {files.map(file => (
+          <FormField key={`${file.name}-${uniqueId()}`} notFull>
+            <Filename>
+              {file.extension
+                ? `${file.name}.${file.extension}`
+                : `${file.name}`}
+            </Filename>
+            <Button
+              danger
+              icon={deleteIcon}
+              onClick={e => {
+                e.preventDefault()
+                this.removeFile(file.name, setFieldValue, setFieldTouched)
+              }}
+              title="Delete file"
+            />
+          </FormField>
+        ))}
+      </FileList>
+    )
   }
 
   renderBody() {
@@ -380,7 +326,7 @@ class TemplateModal extends React.Component {
       target,
     } = this.state
 
-    const confirmLabel = mode === 'create' ? 'Add' : 'Update'
+    const confirmLabel = mode === 'create' ? 'Save' : 'Update'
     const cancelLabel = 'Cancel'
 
     let initialValues
@@ -405,7 +351,7 @@ class TemplateModal extends React.Component {
     }
 
     return (
-      <Formik
+      <StyledFormik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           const {
@@ -485,7 +431,7 @@ class TemplateModal extends React.Component {
           isValid,
         }) => (
           <StyledForm onSubmit={handleSubmit}>
-            <StyledModal>
+            <Body>
               <Container>
                 <Side1>
                   {!thumbnailPreview && (
@@ -508,12 +454,14 @@ class TemplateModal extends React.Component {
                         setFieldValue={setFieldValue}
                         updateThumbnail={this.updateThumbnail}
                       />
-                      <DefaultButton
+                      <Button
+                        danger
                         label="Delete Thumbnail"
                         onClick={e => {
                           e.preventDefault()
                           this.removeThumbnail(setFieldValue, setFieldTouched)
                         }}
+                        title="Delete Thumbnail"
                       />
                     </ThumbnailContainer>
                   )}
@@ -621,18 +569,24 @@ class TemplateModal extends React.Component {
                   {this.renderFiles(setFieldValue, setFieldTouched)}
                 </Side2>
               </Container>
-            </StyledModal>
-            <ModalFooter>
-              <ConfirmButton disabled={isSubmitting || !isValid} type="submit">
-                <Label>{confirmLabel.toUpperCase()}</Label>
-              </ConfirmButton>
-              <CancelButton onClick={hideModal} type="submit">
-                <Label>{cancelLabel}</Label>
-              </CancelButton>
-            </ModalFooter>
+            </Body>
+            <Footer>
+              <Button
+                disabled={isSubmitting || !isValid}
+                label={confirmLabel}
+                title={confirmLabel}
+                type="submit"
+              />
+              <Button
+                danger
+                label={cancelLabel}
+                onClick={hideModal}
+                title={cancelLabel}
+              />
+            </Footer>
           </StyledForm>
         )}
-      </Formik>
+      </StyledFormik>
     )
   }
 

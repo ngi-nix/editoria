@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
 import InfoModal from '../../../../../common/src/InfoModal'
 
 const Text = styled.div`
@@ -17,10 +17,10 @@ const WarningModal = props => {
 
   return (
     <InfoModal
-      isOpen={isOpen}
       headerText="Warning"
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>{`${warning}`}</Text>
     </InfoModal>

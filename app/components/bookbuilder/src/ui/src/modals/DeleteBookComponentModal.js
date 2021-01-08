@@ -17,6 +17,7 @@ const DeleteBookComponentModal = props => {
 
   return (
     <DialogModal
+      buttonLabel="Yes"
       headerText={`Delete ${componentType}`}
       isOpen={isOpen}
       onConfirm={onConfirm}

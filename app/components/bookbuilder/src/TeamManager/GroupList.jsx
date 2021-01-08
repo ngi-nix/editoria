@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import Group from './Group'
 
 const ListWrapper = styled.div`
-  border-bottom: 1px solid #000;
   flex: 1;
 `
 

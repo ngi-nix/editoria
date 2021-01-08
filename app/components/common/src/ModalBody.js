@@ -6,7 +6,6 @@ const Body = styled.div`
   flex-grow: 1;
   font-family: ${th('fontInterface')};
   overflow: auto;
-  padding: 16px;
 `
 
 export default Body

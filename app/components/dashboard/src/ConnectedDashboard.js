@@ -33,83 +33,81 @@ const mapper = {
   deleteBookMutation,
 }
 
-const mapProps = args => {
-  return {
-    collections: get(args.getBookCollectionsQuery, 'data.getBookCollections'),
-    createBook: args.createBookMutation.createBook,
-    archiveBook: args.archiveBookMutation.archiveBook,
-    showModal: args.withModal.showModal,
-    hideModal: args.withModal.hideModal,
-    deleteBook: args.deleteBookMutation.deleteBook,
-    loading: args.getBookCollectionsQuery.networkStatus === 1,
-    onChangeSort: args.getBookCollectionsQuery.refetch,
-    refetching:
-      args.getBookCollectionsQuery.networkStatus === 4 ||
-      args.getBookCollectionsQuery.networkStatus === 2, // possible apollo bug
-    renameBook: args.renameBookMutation.renameBook,
-    onAddBook: collectionId => {
-      const { createBookMutation, withModal } = args
-      const { createBook } = createBookMutation
-      const { showModal, hideModal } = withModal
-      const onConfirm = title => {
-        createBook({
-          variables: {
-            input: {
-              collectionId,
-              title,
-            },
+const mapProps = args => ({
+  collections: get(args.getBookCollectionsQuery, 'data.getBookCollections'),
+  createBook: args.createBookMutation.createBook,
+  archiveBook: args.archiveBookMutation.archiveBook,
+  showModal: args.withModal.showModal,
+  hideModal: args.withModal.hideModal,
+  deleteBook: args.deleteBookMutation.deleteBook,
+  loading: args.getBookCollectionsQuery.networkStatus === 1,
+  onChangeSort: args.getBookCollectionsQuery.refetch,
+  refetching:
+    args.getBookCollectionsQuery.networkStatus === 4 ||
+    args.getBookCollectionsQuery.networkStatus === 2, // possible apollo bug
+  renameBook: args.renameBookMutation.renameBook,
+  onAddBook: collectionId => {
+    const { createBookMutation, withModal } = args
+    const { createBook } = createBookMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = title => {
+      createBook({
+        variables: {
+          input: {
+            collectionId,
+            title,
           },
-        })
-        hideModal()
-      }
-      showModal('addBook', {
-        onConfirm,
-        hideModal,
+        },
       })
-    },
-    onDeleteBook: (bookId, bookTitle) => {
-      const { deleteBookMutation, withModal } = args
-      const { deleteBook } = deleteBookMutation
-      const { showModal, hideModal } = withModal
-      const onConfirm = () => {
-        deleteBook({
-          variables: {
-            id: bookId,
-          },
-        })
-        hideModal()
-      }
-      showModal('deleteBook', {
-        onConfirm,
-        bookTitle,
+      hideModal()
+    }
+    showModal('addBook', {
+      onConfirm,
+      hideModal,
+    })
+  },
+  onDeleteBook: (bookId, bookTitle) => {
+    const { deleteBookMutation, withModal } = args
+    const { deleteBook } = deleteBookMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = () => {
+      deleteBook({
+        variables: {
+          id: bookId,
+        },
       })
-    },
-    onArchiveBook: (bookId, bookTitle, archived) => {
-      const { archiveBookMutation, withModal } = args
-      const { archiveBook } = archiveBookMutation
-      const { showModal, hideModal } = withModal
-      const onConfirm = () => {
-        archiveBook({
-          variables: {
-            id: bookId,
-            archive: !archived,
-          },
-        })
-        hideModal()
-      }
-      showModal('archiveBook', {
-        onConfirm,
-        bookTitle,
-        archived,
+      hideModal()
+    }
+    showModal('deleteBook', {
+      onConfirm,
+      bookTitle,
+    })
+  },
+  onArchiveBook: (bookId, bookTitle, archived) => {
+    const { archiveBookMutation, withModal } = args
+    const { archiveBook } = archiveBookMutation
+    const { showModal, hideModal } = withModal
+    const onConfirm = () => {
+      archiveBook({
+        variables: {
+          id: bookId,
+          archive: !archived,
+        },
       })
-    },
-    loadingRules: args.getDashboardRulesQuery.networkStatus === 1,
-    refetchingRules:
-      args.getDashboardRulesQuery.networkStatus === 4 ||
-      args.getDashboardRulesQuery.networkStatus === 2, // possible apollo bug
-    rules: get(args.getDashboardRulesQuery, 'data.getDashBoardRules'),
-  }
-}
+      hideModal()
+    }
+    showModal('archiveBook', {
+      onConfirm,
+      bookTitle,
+      archived,
+    })
+  },
+  loadingRules: args.getDashboardRulesQuery.networkStatus === 1,
+  refetchingRules:
+    args.getDashboardRulesQuery.networkStatus === 4 ||
+    args.getDashboardRulesQuery.networkStatus === 2, // possible apollo bug
+  rules: get(args.getDashboardRulesQuery, 'data.getDashBoardRules'),
+})
 
 const Composed = adopt(mapper, mapProps)
 
@@ -129,25 +127,23 @@ const Connected = () => (
       onDeleteBook,
       onArchiveBook,
       rules,
-    }) => {
-      return (
-        <Dashboard
-          archiveBook={archiveBook}
-          refetchingRules={refetchingRules}
-          loadingRules={loadingRules}
-          collections={collections}
-          onAddBook={onAddBook}
-          onDeleteBook={onDeleteBook}
-          onArchiveBook={onArchiveBook}
-          deleteBook={deleteBook}
-          loading={loading}
-          onChangeSort={onChangeSort}
-          refetching={refetching}
-          renameBook={renameBook}
-          rules={rules}
-        />
-      )
-    }}
+    }) => (
+      <Dashboard
+        archiveBook={archiveBook}
+        collections={collections}
+        deleteBook={deleteBook}
+        loading={loading}
+        loadingRules={loadingRules}
+        onAddBook={onAddBook}
+        onArchiveBook={onArchiveBook}
+        onChangeSort={onChangeSort}
+        onDeleteBook={onDeleteBook}
+        refetching={refetching}
+        refetchingRules={refetchingRules}
+        renameBook={renameBook}
+        rules={rules}
+      />
+    )}
   </Composed>
 )
 

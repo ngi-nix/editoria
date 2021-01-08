@@ -1,11 +1,8 @@
 import { find, map } from 'lodash'
 import React from 'react'
-// import { DragDropContext } from 'react-dnd'
-// import HTML5Backend from 'react-dnd-html5-backend'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
-
+import { th, grid } from '@pubsweet/ui-toolkit'
 import AddComponentButton from './AddComponentButton'
 import BookComponent from './BookComponent'
 
@@ -34,6 +31,9 @@ const HeaderContainer = styled.div`
 `
 const DivisionActions = styled.div`
   display: flex;
+  > button:not(:last-child) {
+    margin-right: ${grid(1)};
+  }
 `
 
 const EmptyList = styled.div`
@@ -56,26 +56,9 @@ class Division extends React.Component {
     super(props)
 
     this.onAddClick = this.onAddClick.bind(this)
-    // this.onEndDrag = this.onEndDrag.bind(this)
-    // this.onMove = this.onMove.bind(this)
     this.onRemove = this.onRemove.bind(this)
     this.onUpdatePagination = this.onUpdatePagination.bind(this)
     this.onUpdateWorkflowState = this.onUpdateWorkflowState.bind(this)
-
-    // this.state = {
-    //   bookComponents: props.bookComponents,
-    // }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // const diff = difference(this.state.bookComponents, nextProps.bookComponents)
-    // if (diff.length > 0) {
-    //   console.log('diff', diff)
-    // this.setState({
-    //   bookComponents: nextProps.bookComponents,
-    // })
-    // }
-    // return false
   }
 
   onAddEndNoteClick = async componentType => {
@@ -115,29 +98,6 @@ class Division extends React.Component {
     })
   }
 
-  // When drag is released, send all updates necessary
-  // onEndDrag(params) {
-  //   // console.log('comp', params)
-  //   const { updateBookComponentOrder } = this.props
-  //   updateBookComponentOrder({
-  //     variables: {
-  //       targetDivisionId: params.divisionId,
-  //       bookComponentId: params.id,
-  //       index: params.no,
-  //     },
-  //   })
-  // }
-
-  // // When moving chapters, keep their order in the state
-  // onMove(dragIndex, hoverIndex, dragDivision, hoverDivision) {
-  //   const { bookComponents } = this.state
-  //   const chs = clone(bookComponents)
-  //   // Change dragged fragment position in the array
-  //   const dragged = chs.splice(dragIndex, 1)[0] // remove
-  //   chs.splice(hoverIndex, 0, dragged) // reinsert at new position
-  //   this.setState({ bookComponents: chs })
-  // }
-
   onRemove(bookComponentId) {
     const { deleteBookComponent } = this.props
     deleteBookComponent({
@@ -161,6 +121,7 @@ class Division extends React.Component {
       },
     })
   }
+
   onUpdateWorkflowState(bookComponentId, workflowStates) {
     const { updateBookComponentWorkflowState } = this.props
     const workflowStages = map(workflowStates, item => ({
@@ -181,7 +142,6 @@ class Division extends React.Component {
 
   render() {
     const {
-      bookId,
       applicationParameter,
       currentUser,
       updateBookComponentUploading,
@@ -223,53 +183,51 @@ class Division extends React.Component {
         trackChangesEnabled,
       } = bookComponent
       return (
-        <Draggable key={id} draggableId={id} index={i}>
-          {(provided, snapshot) => {
-            return (
-              <div ref={provided.innerRef} {...provided.draggableProps}>
-                <BookComponent
-                  applicationParameter={applicationParameter}
-                  bookId={bookId}
-                  onAdminUnlock={onAdminUnlock}
-                  onWorkflowUpdate={onWorkflowUpdate}
-                  toggleIncludeInTOC={toggleIncludeInTOC}
-                  currentUser={currentUser}
-                  canDrag={reorderingAllowed}
-                  componentType={componentType}
-                  componentTypeOrder={componentTypeOrder}
-                  onDeleteBookComponent={onDeleteBookComponent}
-                  divisionId={divisionId}
-                  divisionType={label}
-                  hasContent={hasContent}
-                  history={history}
-                  id={id}
-                  updateBookComponentUploading={updateBookComponentUploading}
-                  key={id}
-                  lock={lock}
-                  no={i}
-                  outerContainer={outerContainer}
-                  pagination={pagination}
-                  provided={provided}
-                  remove={this.onRemove}
-                  rules={rules}
-                  showModal={showModal}
-                  includeInToc={includeInToc}
-                  showModalToggle={showModalToggle}
-                  title={title}
-                  trackChangesEnabled={trackChangesEnabled}
-                  updateComponentType={updateComponentType}
-                  updateApplicationParameters={updateApplicationParameters}
-                  onWarning={onWarning}
-                  update={update}
-                  updatePagination={this.onUpdatePagination}
-                  updateWorkflowState={this.onUpdateWorkflowState}
-                  uploadBookComponent={uploadBookComponent}
-                  uploading={uploading}
-                  workflowStages={workflowStages}
-                />
-              </div>
-            )
-          }}
+        <Draggable draggableId={id} index={i} key={id}>
+          {provided => (
+            <div ref={provided.innerRef} {...provided.draggableProps}>
+              <BookComponent
+                applicationParameter={applicationParameter}
+                bookId={bookId}
+                canDrag={reorderingAllowed}
+                componentType={componentType}
+                componentTypeOrder={componentTypeOrder}
+                currentUser={currentUser}
+                divisionId={divisionId}
+                divisionType={label}
+                hasContent={hasContent}
+                history={history}
+                id={id}
+                includeInToc={includeInToc}
+                key={id}
+                lock={lock}
+                no={i}
+                onAdminUnlock={onAdminUnlock}
+                onDeleteBookComponent={onDeleteBookComponent}
+                onWarning={onWarning}
+                onWorkflowUpdate={onWorkflowUpdate}
+                outerContainer={outerContainer}
+                pagination={pagination}
+                provided={provided}
+                remove={this.onRemove}
+                rules={rules}
+                showModal={showModal}
+                showModalToggle={showModalToggle}
+                title={title}
+                toggleIncludeInTOC={toggleIncludeInTOC}
+                trackChangesEnabled={trackChangesEnabled}
+                update={update}
+                updateApplicationParameters={updateApplicationParameters}
+                updateBookComponentUploading={updateBookComponentUploading}
+                updateComponentType={updateComponentType}
+                updatePagination={this.onUpdatePagination}
+                updateWorkflowState={this.onUpdateWorkflowState}
+                uploadBookComponent={uploadBookComponent}
+                uploading={uploading}
+                workflowStages={workflowStages}
+              />
+            </div>
+          )}
         </Draggable>
       )
     })
@@ -298,7 +256,7 @@ class Division extends React.Component {
               ) && componentType.value === 'endnotes'
             }
             divisionName={componentConfig.name}
-            label={`add ${componentType.title}`}
+            label={`Add ${componentType.title}`}
             type={componentType.value}
           />
         ) : null,
@@ -334,6 +292,4 @@ class Division extends React.Component {
   }
 }
 
-// export { Division as UnWrappedDivision }
 export default Division
-// export default DragDropContext(HTML5Backend)(Division)

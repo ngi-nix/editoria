@@ -24,7 +24,7 @@ const BookList = props => {
     bookRules,
   } = props
 
-  if (loading) return <Loading vertical="center" />
+  if (loading) return <Loading />
 
   if (isEmpty(books)) {
     return <div>There are no books to display.</div>

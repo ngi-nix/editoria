@@ -32,7 +32,7 @@ class TeamManagerModal extends React.Component {
 
   render() {
     const { isOpen, hideModal, loading, loadingRules } = this.props
-    if (loading || loadingRules) return <Loading vertical="center" />
+    if (loading || loadingRules) return <Loading />
     const body = this.renderBody()
 
     return (

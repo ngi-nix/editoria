@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th, darken, lighten } from '@pubsweet/ui-toolkit'
+import { th } from '@pubsweet/ui-toolkit'
 
 import InfoModal from '../../../../../common/src/InfoModal'
 
@@ -18,10 +18,10 @@ const ErrorModal = props => {
 
   return (
     <InfoModal
-      isOpen={isOpen}
       headerText="An error occurred!"
-      onRequestClose={hideModal}
+      isOpen={isOpen}
       onConfirm={onConfirm}
+      onRequestClose={hideModal}
     >
       <Text>{`${error}`}</Text>
     </InfoModal>

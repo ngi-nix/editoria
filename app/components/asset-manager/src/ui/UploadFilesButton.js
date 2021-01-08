@@ -30,7 +30,7 @@ class UploadFilesButton extends React.Component {
   render() {
     const { uploading } = this.state
 
-    const labelText = uploading ? 'uploading ...' : 'upload files'
+    const labelText = uploading ? 'Uploading ...' : 'Upload Files'
 
     return (
       <UploadButton

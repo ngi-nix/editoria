@@ -4,7 +4,7 @@ import React from 'react'
 import ReactModal from 'react-modal'
 import styled, { css } from 'styled-components'
 
-import { th } from '@pubsweet/ui-toolkit'
+import { th, grid } from '@pubsweet/ui-toolkit'
 
 import Body from './ModalBody'
 
@@ -26,41 +26,32 @@ function ReactModalAdapter({ className, modalClassName, ...props }) {
 }
 
 const large = css`
-  bottom: 40px;
-  left: 40px;
-  right: 40px;
-  top: 40px;
+  width: calc(1144px - 16px);
+  height: calc(640px - 16px);
+  margin: ${grid(5)} auto;
 `
 
 const largeNarrow = css`
-  bottom: 40px;
-  width: 940px;
-  left: 25%;
-  top: 40px;
+  width: calc(1000px - 16px);
+  height: calc(640px - 16px);
+  margin: ${grid(5)} auto;
 `
+
 const medium = css`
-  height: 650px;
-  top: 50%;
-  left: 50%;
-  margin-left: -470px;
-  margin-top: -370px;
-  width: 940px;
+  height: calc(536px - 16px);
+  width: calc(936px - 16px);
+  margin: ${grid(7)} auto;
 `
 const mediumNarrow = css`
-  height: 528px;
-  top: 50%;
-  left: 50%;
-  margin-left: -376.5px;
-  margin-top: -264px;
-  width: 753px;
+  height: calc(536px - 16px);
+  width: calc(752px - 16px);
+  margin: ${grid(7)} auto;
 `
+
 const small = css`
-  height: 250px;
-  left: 50%;
-  margin-left: -250px;
-  margin-top: -250px;
-  top: 50%;
-  width: 500px;
+  height: calc(248px - 16px);
+  width: calc(496px - 16px);
+  margin: ${grid(8)} auto;
 `
 
 const StyledModal = styled(ReactModalAdapter).attrs({
@@ -79,13 +70,13 @@ const StyledModal = styled(ReactModalAdapter).attrs({
   .Modal {
     background: ${th('colorBackground')};
     border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
+    padding: ${grid(1)};
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     outline: none;
     overflow: hidden;
-    padding: 0;
-    position: absolute;
+    padding: ${grid(1)};
 
     /* stylelint-disable order/properties-alphabetical-order */
     ${props => props.size === 'large' && large};

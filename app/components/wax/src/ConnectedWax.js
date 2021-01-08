@@ -172,7 +172,7 @@ const Connected = props => {
           color: getUserWithColor(teams),
         })
         if (loading || waxLoading || teamsLoading || tagsLoading)
-          return <Loading vertical="center" />
+          return <Loading />
 
         let editing
         const lock = get(bookComponent, 'lock')

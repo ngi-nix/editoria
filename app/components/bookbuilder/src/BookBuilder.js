@@ -1,44 +1,38 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Loading } from '../../../ui'
-
+import { Loading, Button, Icons } from '../../../ui'
 import {
   ProductionEditorsArea,
-  TeamManagerButton,
   Header,
   UploadFilesButton,
-  MetadataButton,
-  AssetManagerButton,
-  BookExporterButton,
   DivisionsArea,
-  BookSettingsButton,
 } from './ui'
 
-// import ConnectedTeamManager from './TeamManager/ConnectedTeamManager'
-
-// import styles from './styles/bookBuilder.local.scss'
-
-// TODO -- this doesn't work if imported in the css files. why?
-// import './styles/fontAwesome.scss'
-
+const {
+  metadataIcon,
+  assetManagerIcon,
+  bookExportIcon,
+  bookSettingIcon,
+  teamManagerIcon,
+} = Icons
 const Container = styled.div`
   clear: both;
   display: block;
   float: none;
   margin: 0 auto;
+  height: calc(100% - 80px);
   width: 76%;
 `
+
 export class BookBuilder extends React.Component {
   constructor(props) {
     super(props)
 
-    // this.toggleTeamManager = this.toggleTeamManager.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
 
     this.state = {
       outerContainer: this,
       showModal: false,
-      // showTeamManager: false,
       uploading: {},
     }
   }
@@ -48,27 +42,6 @@ export class BookBuilder extends React.Component {
       showModal: !this.state.showModal,
     })
   }
-
-  // toggleTeamManager() {
-  //   this.setState({ showTeamManager: !this.state.showTeamManager })
-  // }
-
-  // renderTeamManagerModal() {
-  //   const { outerContainer, showTeamManager } = this.state
-
-  //   if (!showTeamManager) return null
-
-  //   const { book } = this.props
-
-  //   return (
-  //     <ConnectedTeamManager
-  //       book={book}
-  //       container={outerContainer}
-  //       show={showTeamManager}
-  //       toggle={this.toggleTeamManager}
-  //     />
-  //   )
-  // }
 
   render() {
     const {
@@ -94,7 +67,6 @@ export class BookBuilder extends React.Component {
       refetchingBookBuilderRules,
       onTeamManager,
       onExportBook,
-      onError,
       onWarning,
       rules,
       loading,
@@ -105,45 +77,50 @@ export class BookBuilder extends React.Component {
       onBookSettings,
     } = this.props
 
-    if (loading || loadingRules) return <Loading vertical="center" />
+    if (loading || loadingRules) return <Loading />
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 
     const productionEditorActions = []
 
     const headerActions = [
-      <MetadataButton
-        book={book}
+      <Button
+        icon={metadataIcon}
         key={0}
-        onMetadataAdd={() => onMetadataAdd(book)}
+        label="Metadata"
+        onClick={() => onMetadataAdd(book)}
+        title="Metadata"
       />,
-      <AssetManagerButton
+      <Button
+        icon={assetManagerIcon}
         key={1}
-        onAssetManager={() => onAssetManager(book.id)}
+        label="Asset Manager"
+        onClick={() => onAssetManager(book.id)}
+        title="Asset Manager"
       />,
-      // <BookExporter
-      //   book={book}
-      //   history={history}
-      //   htmlToEpub={exportBook}
-      //   onError={onError}
-      // />,
-      <BookExporterButton
+      <Button
+        icon={bookExportIcon}
         key={2}
+        label="Export Book"
         onClick={() => onExportBook(book, book.title, history)}
-        onError={onError}
+        title="Export Book"
       />,
-      <BookSettingsButton
+      <Button
+        icon={bookSettingIcon}
         key={3}
         label="Book Settings"
         onClick={() => onBookSettings(book)}
+        title="Book Settings"
       />,
     ]
     if (canViewTeamManager) {
       headerActions.unshift(
-        <TeamManagerButton
+        <Button
+          icon={teamManagerIcon}
           key={4}
           label="Team Manager"
           onClick={() => onTeamManager(book.id)}
+          title="Team Manager"
         />,
       )
     }

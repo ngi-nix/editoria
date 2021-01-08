@@ -58,7 +58,6 @@ const modals = {
   exportBookModal: ExportBookModal,
 }
 const rootEl = document.getElementById('root')
-
 ReactDOM.render(
   <ModalProvider modals={modals}>
     <Root history={history} routes={routes} theme={theme} />

@@ -33,7 +33,7 @@ const Composed = adopt(mapper, mapProps)
 const Connected = () => (
   <Composed>
     {({ users, teams, updateGlobalTeam, loading }) => {
-      if (loading) return <Loading vertical="center" />
+      if (loading) return <Loading />
       return (
         <GlobalTeamsManager
           loading={loading}
