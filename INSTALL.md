@@ -8,60 +8,10 @@ eg. `editoria/config/development.env`
 Within your environment files, export the variables you want:
 
 ```sh
-export EDITORIA_FLAVOUR=VANILLA
-export PUBSWEET_SECRET=dev_secret
-export POSTGRES_USER=editoria_user
-export SERVES_CLIENT=false
-export POSTGRES_PASSWORD=secretpassword
-export POSTGRES_HOST=db
-export POSTGRES_DB=editoria_dev
-export POSTGRES_PORT=5432
-export LANGUAGE_PROTOCOL=http
-export LANGUAGE_HOST=language-tool
-export LANGUAGE_PORT=8010
 export MAILER_USER=<mailer user>
 export MAILER_PASSWORD=<mailer password>
 export MAILER_SENDER=<your preferred email account>
 export MAILER_HOSTNAME=<mailer smtp server url>
-export PASSWORD_RESET_PATH=password-reset
-export NODE_ENV=development
-export ADMIN_USERNAME=admin
-export ADMIN_EMAIL=admin@example.com
-export ADMIN_PASSWORD=adminadmin
-export CLIENT_PROTOCOL=http
-export CLIENT_HOST=0.0.0.0
-export CLIENT_PORT=4000
-export SERVER_PROTOCOL=http
-export SERVER_HOST=server
-export SERVER_PORT=3000
-export S3_PROTOCOL=http
-export S3_HOST=file_hosting
-export S3_PORT=9000
-export S3_ACCESS_KEY_ID_ADMIN=admin
-export S3_SECRET_ACCESS_KEY_ADMIN=superSecretAdminPassword
-export S3_ACCESS_KEY_ID_USER=editoria
-export S3_SECRET_ACCESS_KEY_USER=superSecretUserPassword
-export S3_BUCKET=uploads
-export SERVICE_EPUB_CHECKER_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
-export SERVICE_EPUB_CHECKER_SECRET=asldkjLKJLaslkdf897kjhKUJH
-export SERVICE_EPUB_CHECKER_PROTOCOL=http
-export SERVICE_EPUB_CHECKER_HOST=epubchecker
-export SERVICE_EPUB_CHECKER_PORT=3001
-export SERVICE_ICML_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
-export SERVICE_ICML_SECRET=asldkjLKJLaslkdf897kjhKUJH
-export SERVICE_ICML_PROTOCOL=http
-export SERVICE_ICML_HOST=icml
-export SERVICE_ICML_PORT=3002
-export SERVICE_PAGEDJS_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
-export SERVICE_PAGEDJS_SECRET=asldkjLKJLaslkdf897kjhKUJH
-export SERVICE_PAGEDJS_PROTOCOL=http
-export SERVICE_PAGEDJS_HOST=pagedjs
-export SERVICE_PAGEDJS_PORT=3003
-export SERVICE_XSWEET_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
-export SERVICE_XSWEET_SECRET=asldkjLKJLaslkdf897kjhKUJH
-export SERVICE_XSWEET_PROTOCOL=http
-export SERVICE_XSWEET_HOST=xsweet
-export SERVICE_XSWEET_PORT=3004
 ```
 
 Import the environment variables into the current shell session:
