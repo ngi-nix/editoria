@@ -1,4 +1,5 @@
 const logger = require('@pubsweet/logger')
+const config = require('config')
 const {
   createAdminUser,
   createApplicationParams,
@@ -6,14 +7,12 @@ const {
   createGlobalTeams,
 } = require('./seeds')
 
+const adminUser = config.get('pubsweet-server.admin')
+
 const runner = async () => {
   try {
     await createAdminUser({
-      username: 'admin',
-      password: 'password',
-      givenName: 'Admin',
-      surname: 'Adminius',
-      email: 'admin@example.com',
+      ...adminUser,
       admin: true,
     })
     await createApplicationParams()
