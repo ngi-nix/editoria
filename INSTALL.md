@@ -1,4 +1,9 @@
 ## Get up and running with Docker
+### Docker
+* The platform requires `docker` version from `19.03.13` up to `20.10.3` and `docker-compose` `1.27.4` (`1.28.x` should be avoided due to this issue https://github.com/docker/compose/issues/8046)  
+* Installing docker https://docs.docker.com/engine/install  
+* Docker without sudo https://docs.docker.com/engine/install/linux-postinstall/  
+* Installing docker-compose https://docs.docker.com/compose/install/  
 
 ### For development
 
