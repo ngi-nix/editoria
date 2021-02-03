@@ -136,6 +136,7 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-es2015": "7.0.0-beta.53",
     "@babel/preset-react": "^7.10.4",
+    "@coko/storybook": "^1.2.2",
     "@commitlint/cli": "^6.0.5",
     "@commitlint/config-conventional": "^6.0.4",
     "app-module-path": "^2.2.0",
