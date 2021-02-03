@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { th, grid } from '@pubsweet/ui-toolkit'
-import { filter, findIndex, find, cloneDeep, uniqueId } from 'lodash'
+import { filter, findIndex, find, cloneDeep, uniqueId, isEmpty } from 'lodash'
 import { Formik } from 'formik'
 import Select from 'react-select'
 import FormModal from '../../../../../common/src/FormModal'
@@ -428,6 +428,7 @@ class TemplateModal extends React.Component {
           isSubmitting,
           setFieldValue,
           setFieldTouched,
+          validateForm,
           isValid,
         }) => (
           <StyledForm onSubmit={handleSubmit}>
@@ -572,7 +573,7 @@ class TemplateModal extends React.Component {
             </Body>
             <Footer>
               <Button
-                disabled={isSubmitting || !isValid}
+                disabled={isSubmitting || !isEmpty(errors) || isEmpty(touched)}
                 label={confirmLabel}
                 title={confirmLabel}
                 type="submit"

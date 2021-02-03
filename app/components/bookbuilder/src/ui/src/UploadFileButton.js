@@ -47,14 +47,14 @@ const UploadFileButton = ({
       )
     }
 
-    updateBookComponentUploading({
-      variables: {
-        input: {
-          id: bookComponentId,
-          uploading: true,
-        },
-      },
-    })
+    // updateBookComponentUploading({
+    //   variables: {
+    //     input: {
+    //       id: bookComponentId,
+    //       uploading: true,
+    //     },
+    //   },
+    // })
 
     uploadBookComponent({
       variables: {
@@ -65,7 +65,9 @@ const UploadFileButton = ({
           },
         ],
       },
-    })
+    }).catch(() =>
+      onWarning('One or more of the selected files faced issues in conversion'),
+    )
 
     return true
   }

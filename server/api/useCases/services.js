@@ -183,45 +183,58 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
 }
 
 const xsweetHandler = async filePath => {
-  if (!get(accessTokens, `${XSWEET}`)) {
-    await serviceHandshake(XSWEET)
-  }
-  const service = get(services, XSWEET)
-  const { port, protocol, host } = service
-  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
+  try {
+    if (!get(accessTokens, `${XSWEET}`)) {
+      // console.log('get the jwt', accessTokens[XSWEET])
+      await serviceHandshake(XSWEET)
+    }
+    const service = get(services, XSWEET)
+    const { port, protocol, host } = service
+    const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
 
-  const form = new FormData()
-  form.append('docx', fs.createReadStream(filePath))
+    const form = new FormData()
+    form.append('docx', fs.createReadStream(filePath))
 
-  return new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url: `${serverUrl}/api/docxToHTML`,
-      headers: {
-        authorization: `Bearer ${get(accessTokens, `${XSWEET}`)}`,
-        ...form.getHeaders(),
-      },
-      data: form,
-    })
-      .then(async ({ data }) => {
-        const { html } = data
-        await fs.remove(filePath)
-        resolve(html)
+    return new Promise((resolve, reject) => {
+      axios({
+        method: 'post',
+        url: `${serverUrl}/api/docxToHTML`,
+        headers: {
+          authorization: `Bearer ${get(accessTokens, `${XSWEET}`)}`,
+          ...form.getHeaders(),
+        },
+        data: form,
       })
-      .catch(async ({ response }) => {
-        const { status, data } = response
-        const { msg } = data
-        if (status === 401 && msg === 'expired token') {
-          // retry if expiration happened in the meantime
-          accessTokens[XSWEET] = undefined
+        .then(async ({ data }) => {
+          const { html } = data
           await fs.remove(filePath)
-          return xsweetHandler(filePath)
-        }
-        return reject(
-          new Error(`Request failed with status ${status} and message: ${msg}`),
-        )
-      })
-  })
+          resolve(html)
+        })
+        .catch(async res => {
+          // console.log('res', res)
+          const { response } = res
+          if (!response) {
+            return reject(new Error(`Request failed with message: ${res.code}`))
+          }
+          const { status, data } = response
+          const { msg } = data
+          if (status === 401 && msg === 'expired token') {
+            // retry if expiration happened in the meantime
+            accessTokens[XSWEET] = undefined
+            await fs.remove(filePath)
+            return xsweetHandler(filePath)
+          }
+
+          return reject(
+            new Error(
+              `Request failed with status ${status} and message: ${msg}`,
+            ),
+          )
+        })
+    })
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 
 const pagedPreviewerLinkHandler = async dirPath => {

@@ -58,45 +58,50 @@ const Header = styled.div`
   }
 `
 
-const createUrl = bookComponent =>
-  `/books/${bookComponent.bookId}/bookComponents/${bookComponent.id}`
+const createUrl = (bookId, bookComponentId) =>
+  `/books/${bookId}/bookComponents/${bookComponentId}`
 
-const WaxHeader = ({ bookComponent }) => {
-  const { nextBookComponent, prevBookComponent } = bookComponent
-  return (
-    <Header>
-      <Container>
-        {prevBookComponent && (
-          <Fragment>
-            <StyledNavLinks position="left" to={createUrl(prevBookComponent)}>
-              <Icon>{previousIcon}</Icon>
-              <Text>{`${prevBookComponent.title || 'Untitled'}`}</Text>
-            </StyledNavLinks>
-          </Fragment>
-        )}
-      </Container>
-      <Container>
-        <StyledNavLinks
-          position="center"
-          to={`/books/${bookComponent.bookId}/book-builder`}
-        >
-          <Text>{`${bookComponent.bookTitle} - ${bookComponent.title ||
-            'Untitled'}`}</Text>
-        </StyledNavLinks>
-      </Container>
+const WaxHeader = ({
+  nextBookComponent,
+  prevBookComponent,
+  bookId,
+  bookTitle,
+  title,
+}) => (
+  <Header>
+    <Container>
+      {prevBookComponent && (
+        <Fragment>
+          <StyledNavLinks
+            position="left"
+            to={createUrl(bookId, prevBookComponent.id)}
+          >
+            <Icon>{previousIcon}</Icon>
+            <Text>{`${prevBookComponent.title || 'Untitled'}`}</Text>
+          </StyledNavLinks>
+        </Fragment>
+      )}
+    </Container>
+    <Container>
+      <StyledNavLinks position="center" to={`/books/${bookId}/book-builder`}>
+        <Text>{`${bookTitle} - ${title || 'Untitled'}`}</Text>
+      </StyledNavLinks>
+    </Container>
 
-      <Container>
-        {nextBookComponent && (
-          <Fragment>
-            <StyledNavLinks position="right" to={createUrl(nextBookComponent)}>
-              <Text>{`${nextBookComponent.title || 'Untitled'}`}</Text>
-              <Icon>{nextIcon}</Icon>
-            </StyledNavLinks>
-          </Fragment>
-        )}
-      </Container>
-    </Header>
-  )
-}
+    <Container>
+      {nextBookComponent && (
+        <Fragment>
+          <StyledNavLinks
+            position="right"
+            to={createUrl(bookId, nextBookComponent.id)}
+          >
+            <Text>{`${nextBookComponent.title || 'Untitled'}`}</Text>
+            <Icon>{nextIcon}</Icon>
+          </StyledNavLinks>
+        </Fragment>
+      )}
+    </Container>
+  </Header>
+)
 
 export default WaxHeader

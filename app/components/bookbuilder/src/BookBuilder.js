@@ -77,7 +77,7 @@ export class BookBuilder extends React.Component {
       onBookSettings,
     } = this.props
 
-    if (loading || loadingRules) return <Loading />
+    if (loading || loadingRules || !book) return <Loading />
     const { canViewTeamManager, canViewMultipleFilesUpload } = rules
     const { divisions, productionEditors } = book
 

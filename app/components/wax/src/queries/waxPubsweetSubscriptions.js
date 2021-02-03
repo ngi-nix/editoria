@@ -20,8 +20,8 @@ const CUSTOM_TAG_SUBSCRIPTION = gql`
 `
 
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
-  subscription BookComponentLockUpdated($bookComponentIds: [ID]!) {
-    bookComponentLockUpdated(bookComponentIds: $bookComponentIds) {
+  subscription BookComponentLockUpdated {
+    bookComponentLockUpdated {
       id
     }
   }
@@ -47,11 +47,11 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
 `
 
 const trackChangeSubscription = props => {
-  const { render, getBookComponentQuery, statefull } = props
-  const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery } = props
+  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    if (pauseUpdates) return
+    // if (pauseUpdates) return
     refetch()
   }
 
@@ -66,11 +66,11 @@ const trackChangeSubscription = props => {
 }
 
 const orderChangeSubscription = props => {
-  const { render, getBookComponentQuery, statefull } = props
-  const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery } = props
+  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    if (pauseUpdates) return
+    // if (pauseUpdates) return
     refetch()
   }
 
@@ -85,11 +85,11 @@ const orderChangeSubscription = props => {
 }
 
 const titleChangeSubscription = props => {
-  const { render, getBookComponentQuery, statefull } = props
-  const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery } = props
+  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    if (pauseUpdates) return
+    // if (pauseUpdates) return
     refetch()
   }
 
@@ -104,23 +104,18 @@ const titleChangeSubscription = props => {
 }
 
 const lockChangeSubscription = props => {
-  const { render, getBookComponentQuery, statefull } = props
-  const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery } = props
+  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    if (pauseUpdates) return
+    // if (pauseUpdates) return
     refetch()
   }
-  if (!getBookComponentQuery.data) {
-    return null
-  }
-  const { id } = getBookComponentQuery.data.getBookComponent
 
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
-      variables={{ bookComponentIds: [id] }}
     >
       {render}
     </Subscription>
@@ -128,11 +123,11 @@ const lockChangeSubscription = props => {
 }
 
 const customTagsSubscription = props => {
-  const { render, getCustomTagsQuery, statefull } = props
-  const { pauseUpdates } = statefull
+  const { render, getCustomTagsQuery } = props
+  // const { pauseUpdates } = statefull
   const { refetch } = getCustomTagsQuery
   const triggerRefetch = () => {
-    if (pauseUpdates) return
+    // if (pauseUpdates) return
     refetch()
   }
 

@@ -49,11 +49,14 @@ class UploadFilesButton extends React.Component {
           uploading: false,
         })
       })
-      .catch(() => {
+      .catch(res => {
         this.setState({
           counter: 0,
           uploading: false,
         })
+        return onWarning(
+          'One or more of the selected files faced issues in conversion',
+        )
       })
 
     return true

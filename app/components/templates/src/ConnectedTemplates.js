@@ -59,9 +59,8 @@ const mapProps = args => ({
             thumbnail,
           },
         },
-      }).then(() => {
-        hideModal()
       })
+      hideModal()
     }
 
     showModal('createTemplateModal', {
