@@ -40,6 +40,14 @@ docker-compose up
 
 After some time Editoria's client app will be available on `localhost:4000`
 
+If you haven’t set any username/password in your environment file, a default user with administration rights will be created.
+
+You’ll be able to log into Editoria using those credentials:
+
+login: `admin`
+password: `password`
+
+
 ### For production
 
 Create the production environment file under `editoria/config`.  
