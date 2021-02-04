@@ -30,26 +30,31 @@ export class WaxPubsweet extends React.Component {
     this.handleAssetManager = this.handleAssetManager.bind(this)
   }
 
-  componentDidMount() {
+  /* eslint-disable camelcase */
+  UNSAFE_componentWillMount() {
     const { editing, bookComponentId } = this.props
     if (editing === 'preview' || editing === 'selection') return
     window.addEventListener('beforeunload', this.onUnload)
-    // this.setState({ hasLock: true })
     this.lock(bookComponentId)
   }
-
-  componentWillReceiveProps(nextProps) {
+  // componentDidMount() {
+  //   const { editing, bookComponentId } = this.props
+  //   if (editing === 'preview' || editing === 'selection') return
+  //   window.addEventListener('beforeunload', this.onUnload)
+  //   this.lock(bookComponentId)
+  // }
+  componentDidUpdate(prevProps) {
     const {
       history,
       onUnlocked,
       lock: lockBefore,
       bookComponentId: bookComponentIdBefore,
-    } = this.props
+    } = prevProps
     const {
       lock: lockAfter,
       bookId,
       bookComponentId: bookComponentIdAfter,
-    } = nextProps
+    } = this.props
 
     const onConfirm = () => {
       history.push(`/books/${bookId}/book-builder`)
@@ -65,13 +70,36 @@ export class WaxPubsweet extends React.Component {
         onConfirm,
       )
     }
-    // if (lock !== null && lockAfter === null) {
-    //   onUnlocked(
-    //     'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
-    //     onConfirm,
-    //   )
-    // }
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   const {
+  //     history,
+  //     onUnlocked,
+  //     lock: lockBefore,
+  //     bookComponentId: bookComponentIdBefore,
+  //   } = this.props
+  //   const {
+  //     lock: lockAfter,
+  //     bookId,
+  //     bookComponentId: bookComponentIdAfter,
+  //   } = nextProps
+
+  //   const onConfirm = () => {
+  //     history.push(`/books/${bookId}/book-builder`)
+  //   }
+
+  //   if (
+  //     lockBefore !== null &&
+  //     lockAfter === null &&
+  //     bookComponentIdAfter === bookComponentIdBefore
+  //   ) {
+  //     onUnlocked(
+  //       'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+  //       onConfirm,
+  //     )
+  //   }
+  // }
 
   componentWillUnmount() {
     const { bookComponentId, editing } = this.props
@@ -123,19 +151,6 @@ export class WaxPubsweet extends React.Component {
     const { bookId, onAssetManager } = this.props
     return onAssetManager(bookId)
   }
-
-  // fileUpload(file) {
-  //   const { uploadFile } = this.props
-  //   return new Promise((resolve, reject) => {
-  //     uploadFile({
-  //       variables: {
-  //         file,
-  //       },
-  //     }).then(res => {
-  //       resolve({ file: `/uploads${res.data.upload.url}` })
-  //     })
-  //   })
-  // }
 
   update(patch) {
     const {

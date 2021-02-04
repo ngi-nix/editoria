@@ -31,6 +31,7 @@ class AssetManager extends Component {
       nameASC: true,
       updatedASC: true,
       checkboxSelected: [],
+      shouldLoader: false,
     }
 
     this.selectItem = this.selectItem.bind(this)
@@ -104,7 +105,10 @@ class AssetManager extends Component {
 
   uploadHandler(files) {
     const { uploadFiles, bookId } = this.props
-    return uploadFiles(bookId, files)
+    this.setState({ shouldLoader: true })
+    return uploadFiles(bookId, files).then(() => {
+      this.setState({ shouldLoader: false })
+    })
   }
 
   deleteHandler() {
@@ -137,7 +141,13 @@ class AssetManager extends Component {
 
   renderBody() {
     const { files, withImport, loading, refetching } = this.props
-    const { selectedItem, name, updated, checkboxSelected } = this.state
+    const {
+      selectedItem,
+      name,
+      updated,
+      checkboxSelected,
+      shouldLoader,
+    } = this.state
 
     const sortingState = {
       name,
@@ -161,7 +171,7 @@ class AssetManager extends Component {
             checkboxSelected={checkboxSelected}
             columns={columns}
             files={files}
-            loading={loading || refetching}
+            loading={loading || refetching || shouldLoader}
             selected={selectedItem}
             selectHandler={this.selectItem}
             sortingHandler={this.toggleOrder}

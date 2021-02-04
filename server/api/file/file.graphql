@@ -74,7 +74,7 @@ extend type Mutation {
   deleteFiles(ids: [ID!]!, remoteToo: Boolean): [ID]!
 }
 extend type Subscription {
-  filesUploaded: [File]!
+  filesUploaded: Boolean
   fileUpdated: File!
-  filesDeleted: [ID]!
+  filesDeleted: Boolean
 }

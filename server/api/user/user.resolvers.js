@@ -151,13 +151,20 @@ const updateUsername = async (_, { input }, ctx) => {
   return updateUser
 }
 const sendPasswordResetEmail = async (_, { username }, ctx) => {
-  // // fail early if these configs are missing
   const servesClient = config.get('pubsweet-server.servesClient')
+  const externalServerURL = config.get('pubsweet-server.externalServerURL')
+
   let url = config.get('pubsweet-server.baseUrl')
+
   if (servesClient !== 'true') {
-    const { protocol, host, port } = config.get('pubsweet-client')
-    url = `${protocol}://${host}${port ? `:${port}` : ''}`
+    if (externalServerURL && externalServerURL !== '0') {
+      url = externalServerURL
+    } else {
+      const { protocol, host, port } = config.get('pubsweet-client')
+      url = `${protocol}://${host}${port ? `:${port}` : ''}`
+    }
   }
+
   const configSender = config.get('mailer.from')
 
   const pathToPage = config.has('password-reset.path')

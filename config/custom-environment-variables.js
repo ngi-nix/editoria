@@ -18,6 +18,7 @@ module.exports = {
     protocol: 'SERVER_PROTOCOL',
     secret: 'PUBSWEET_SECRET',
     servesClient: 'SERVES_CLIENT',
+    externalServerURL: 'EXTERNAL_SERVER_URL',
     db: {
       user: 'POSTGRES_USER',
       password: 'POSTGRES_PASSWORD',
