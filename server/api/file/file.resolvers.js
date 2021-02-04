@@ -117,10 +117,11 @@ const uploadFiles = async (_, { files, entityType, entityId }, ctx) => {
         )
       }),
     )
+    // console.log('up files', uploadFiles)
     pubsub.publish(FILES_UPLOADED, {
-      filesUploaded: uploadedFiles,
+      filesUploaded: true,
     })
-    return uploadFiles
+    return uploadedFiles
   } catch (e) {
     logger.error(e)
     throw new Error(e)
@@ -152,7 +153,7 @@ const deleteFiles = async (_, { ids, remoteToo }, ctx) => {
       deletedFiles = await useCaseDeleteDBFiles(ids)
     }
     pubsub.publish(FILES_DELETED, {
-      filesDeleted: deletedFiles,
+      filesDeleted: true,
     })
     return deletedFiles
   } catch (e) {

@@ -7,6 +7,7 @@ const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
 const path = require('path')
+const BPromise = require('bluebird')
 const { extractFragmentProperties, replaceImageSrc } = require('./util')
 
 const { writeLocallyFromReadStream } = require('../helpers/utils')
@@ -14,7 +15,6 @@ const fs = require('fs-extra')
 
 const logger = require('@pubsweet/logger')
 const pubsweetServer = require('pubsweet-server')
-const { withFilter } = require('graphql-subscriptions')
 const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
 const crypto = require('crypto')
 
@@ -86,100 +86,123 @@ const getBookComponent = async (_, { id }, ctx) => {
 
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   // const jobQueue = await connectToJobQueue()
-  const pubsub = await getPubsub()
+  try {
+    const pubsub = await getPubsub()
+    const itemsToProcess = []
 
-  const bookComponents = await Promise.all(
-    bookComponentFiles.map(async bookComponentFile => {
-      const { file, bookComponentId, bookId } = await bookComponentFile
-      const { createReadStream, filename } = await file
-      const title = filename.split('.')[0]
-      const readerStream = createReadStream()
+    const bookComponents = await Promise.all(
+      bookComponentFiles.map(async bookComponentFile => {
+        const { file, bookComponentId, bookId } = await bookComponentFile
+        const { createReadStream, filename } = await file
+        const title = filename.split('.')[0]
+        const readerStream = createReadStream()
 
-      const tempFilePath = path.join(`${process.cwd()}`, 'uploads', 'tmp')
-      const randomFilename = `${crypto.randomBytes(32).toString('hex')}.docx`
-      fs.ensureDir(tempFilePath)
-      await writeLocallyFromReadStream(
-        tempFilePath,
-        randomFilename,
-        readerStream,
-        'utf-8',
-      )
-      let componentId = bookComponentId
+        const tempFilePath = path.join(`${process.cwd()}`, 'uploads', 'tmp')
+        const randomFilename = `${crypto.randomBytes(32).toString('hex')}.docx`
+        fs.ensureDir(tempFilePath)
+        await writeLocallyFromReadStream(
+          tempFilePath,
+          randomFilename,
+          readerStream,
+          'utf-8',
+        )
+        let componentId = bookComponentId
 
-      if (!bookComponentId) {
-        const name = filename.replace(/\.[^/.]+$/, '')
-        const { componentType, label } = extractFragmentProperties(name)
+        if (!bookComponentId) {
+          const name = filename.replace(/\.[^/.]+$/, '')
+          const { componentType, label } = extractFragmentProperties(name)
 
-        const division = await Division.query().findOne({
-          bookId,
-          label,
+          const division = await Division.query().findOne({
+            bookId,
+            label,
+          })
+
+          if (!division) {
+            throw new Error(
+              `division with label ${label} does not exist for the book with id ${bookId}`,
+            )
+          }
+
+          const newBookComponent = await useCaseAddBookComponent(
+            division.id,
+            bookId,
+            componentType,
+          )
+
+          pubsub.publish(BOOK_COMPONENT_ADDED, {
+            bookComponentAdded: newBookComponent,
+          })
+
+          componentId = newBookComponent.id
+        }
+
+        const uploading = true
+
+        const currentComponentState = await BookComponentState.query().findOne({
+          bookComponentId: componentId,
         })
 
-        if (!division) {
+        if (!currentComponentState) {
           throw new Error(
-            `division with label ${label} does not exist for the book with id ${bookId}`,
+            `component state for the book component with id ${componentId} does not exist`,
           )
         }
 
-        const newBookComponent = await useCaseAddBookComponent(
-          division.id,
-          bookId,
-          componentType,
-        )
+        const currentAndUpdate = {
+          current: currentComponentState,
+          update: { uploading },
+        }
 
-        pubsub.publish(BOOK_COMPONENT_ADDED, {
-          bookComponentAdded: newBookComponent,
-        })
-
-        componentId = newBookComponent.id
-      }
-
-      let uploading = true
-
-      const currentComponentState = await BookComponentState.query().findOne({
-        bookComponentId: componentId,
-      })
-
-      if (!currentComponentState) {
-        throw new Error(
-          `component state for the book component with id ${componentId} does not exist`,
-        )
-      }
-
-      const currentAndUpdate = {
-        current: currentComponentState,
-        update: { uploading },
-      }
-
-      await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-      await useCaseUpdateUploading(componentId, uploading)
-
-      await useCaseRenameBookComponent(componentId, title, 'en')
-
-      const updatedBookComponent = await BookComponent.findById(componentId)
-
-      pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-        bookComponentUploadingUpdated: updatedBookComponent,
-      })
-
-      useCaseXSweet(`${tempFilePath}/${randomFilename}`).then(async content => {
-        await useCaseUpdateBookComponentContent(componentId, content, 'en')
-
-        uploading = false
+        await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
 
         await useCaseUpdateUploading(componentId, uploading)
+
+        await useCaseRenameBookComponent(componentId, title, 'en')
+
+        const updatedBookComponent = await BookComponent.findById(componentId)
 
         pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
           bookComponentUploadingUpdated: updatedBookComponent,
         })
-      })
+        itemsToProcess.push({
+          filepath: `${tempFilePath}/${randomFilename}`,
+          componentId,
+          updatedBookComponent,
+        })
 
-      return updatedBookComponent
-    }),
-  )
+        return updatedBookComponent
+      }),
+    )
+    BPromise.mapSeries(itemsToProcess, item => {
+      const { filepath, componentId, updatedBookComponent } = item
+      const uploading = false
+      return useCaseXSweet(filepath)
+        .then(async content => {
+          await useCaseUpdateBookComponentContent(componentId, content, 'en')
 
-  return bookComponents
+          await useCaseUpdateUploading(componentId, uploading)
+
+          pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+            bookComponentUploadingUpdated: updatedBookComponent,
+          })
+          return true
+        })
+        .catch(async err => {
+          const deletedBookComponent = await useCaseDeleteBookComponent(
+            updatedBookComponent,
+          )
+
+          pubsub.publish(BOOK_COMPONENT_DELETED, {
+            bookComponentDeleted: deletedBookComponent,
+          })
+          throw new Error(err)
+        })
+    })
+    return bookComponents
+  } catch (e) {
+    logger.error(e.message)
+    throw new Error(e)
+  }
 }
 
 const addBookComponent = async (_, { input }, ctx, info) => {
@@ -774,16 +797,20 @@ module.exports = {
       },
     },
     bookComponentLockUpdated: {
-      async subscribe(rootValue, args, context) {
+      subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
-        return withFilter(
-          () => pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED),
-          (payload, variables) =>
-            variables.bookComponentIds.includes(
-              payload.bookComponentLockUpdated.id,
-            ),
-        )(rootValue, args, context)
+        return pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED)
       },
+      // async subscribe(rootValue, args, context) {
+      //   const pubsub = await pubsubManager.getPubsub()
+      //   return withFilter(
+      //     () => pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED),
+      //     (payload, variables) =>
+      //       variables.bookComponentIds.includes(
+      //         payload.bookComponentLockUpdated.id,
+      //       ),
+      //   )(rootValue, args, context)
+      // },
     },
     bookComponentTypeUpdated: {
       subscribe: async () => {

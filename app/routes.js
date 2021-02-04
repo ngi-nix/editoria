@@ -13,7 +13,7 @@ import UserProfile from './components/userProfile/src/ConnectedUserProfile'
 
 // Editor
 import Wax from './components/wax/src/ConnectedWax'
-import WithConfig from './components/wax/src/WithConfig'
+// import WithConfig from './components/wax/src/WithConfig'
 
 // Editoria
 import BookBuilder from './components/bookbuilder/src/ConnectedBookBuilder'
@@ -30,17 +30,16 @@ import PageLayout from './elements/PageLayout'
 import Page from './elements/Page'
 
 // Pass configuration to editor
-const Editor = WithConfig(Wax, {
-  layout: 'editoria',
-  lockWhenEditing: true,
-  pollingTimer: 1500,
-  autoSave: true,
-  menus: {
-    topToolBar: 'topDefault',
-    sideToolBar: 'sideDefault',
-    overlay: 'defaultOverlay',
-  },
-})
+// const Editor = WithConfig(Wax, {
+//   layout: 'editoria',
+//   lockWhenEditing: true,
+//   autoSave: true,
+//   menus: {
+//     topToolBar: 'topDefault',
+//     sideToolBar: 'sideDefault',
+//     overlay: 'defaultOverlay',
+//   },
+// })
 //
 // debugger;
 // console.log('temp', Templates)
@@ -96,11 +95,11 @@ export default (
             />
 
             <PrivateRoute
-              component={Editor}
+              component={Wax}
               path="/books/:bookId/bookComponents/:bookComponentId"
             />
             <PrivateRoute
-              component={Editor}
+              component={Wax}
               exact
               path="/books/:bookId/bookComponents/:bookComponentId/preview"
             />

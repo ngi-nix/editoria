@@ -64,7 +64,7 @@
     "authsome": "^0.1.0",
     "aws-sdk": "^2.610.0",
     "axios": "^0.17.1",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.7.2",
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.5",
     "codemirror": "^5.54.0",

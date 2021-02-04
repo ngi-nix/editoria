@@ -552,6 +552,17 @@ const deleteBookComponent = async bookComponent => {
       },
     )
 
+    await BookComponentState.query()
+      .patch({
+        deleted: true,
+      })
+      .where('bookComponentId', id)
+    await BookComponentTranslation.query()
+      .patch({
+        deleted: true,
+      })
+      .where('bookComponentId', id)
+
     logger.info(`book component with id ${deletedBookComponent.id} deleted`)
 
     const componentDivision = await Division.findById(divisionId)

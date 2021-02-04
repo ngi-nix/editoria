@@ -4,7 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { hot } from 'react-hot-loader'
 
-import createHistory from 'history/createBrowserHistory'
+// import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 
 import { Root } from 'pubsweet-client'
 
@@ -34,7 +35,7 @@ import theme from './theme'
 
 import routes from './routes'
 
-const history = createHistory()
+const history = createBrowserHistory()
 const modals = {
   addBook: AddBookModal,
   assetManagerModal: AssetManager,

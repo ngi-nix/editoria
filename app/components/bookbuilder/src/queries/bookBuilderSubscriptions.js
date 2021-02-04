@@ -57,8 +57,8 @@ const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
 `
 
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
-  subscription BookComponentLockUpdated($bookComponentIds: [ID]!) {
-    bookComponentLockUpdated(bookComponentIds: $bookComponentIds) {
+  subscription BookComponentLockUpdated {
+    bookComponentLockUpdated {
       id
     }
   }
@@ -280,22 +280,22 @@ const lockChangeSubscription = props => {
     refetch()
   }
 
-  if (!getBookQuery.data) {
-    return null
-  }
-  const { divisions } = getBookQuery.data.getBook
-  const subscribeToBookComponents = []
-  divisions.forEach(division => {
-    division.bookComponents.forEach(item => {
-      subscribeToBookComponents.push(item.id)
-    })
-  })
+  // if (!getBookQuery.data) {
+  //   return null
+  // }
+  // const { divisions } = getBookQuery.data.getBook
+  // const subscribeToBookComponents = []
+  // divisions.forEach(division => {
+  //   division.bookComponents.forEach(item => {
+  //     subscribeToBookComponents.push(item.id)
+  //   })
+  // })
 
   return (
     <Subscription
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
-      variables={{ bookComponentIds: subscribeToBookComponents }}
+      // variables={{ bookComponentIds: subscribeToBookComponents }}
     >
       {render}
     </Subscription>
@@ -427,11 +427,13 @@ const runningHeadersUpdatedSubscription = props => {
 }
 
 const uploadingUpdatedSubscription = props => {
-  const { render, getBookQuery, statefull } = props
+  // const { render, getBookQuery, statefull } = props
+  const { render, getBookQuery, getBookBuilderRulesQuery, statefull } = props
   const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
   const triggerRefetch = () => {
     if (pauseUpdates) return
+    getBookBuilderRulesQuery.refetch()
     refetch()
   }
 

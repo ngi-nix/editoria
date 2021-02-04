@@ -121,7 +121,7 @@ extend type Subscription {
   bookComponentWorkflowUpdated: BookComponent!
   bookComponentPaginationUpdated: BookComponent!
   bookComponentTrackChangesUpdated: BookComponent!
-  bookComponentLockUpdated(bookComponentIds: [ID]): BookComponent!
+  bookComponentLockUpdated: BookComponent!
   bookComponentTitleUpdated: BookComponent!
   bookComponentContentUpdated: BookComponent!
   bookComponentTypeUpdated: BookComponent!

@@ -4,9 +4,7 @@ import gql from 'graphql-tag'
 
 const FILES_UPLOADED_SUBSCRIPTION = gql`
   subscription FilesUploaded {
-    filesUploaded {
-      id
-    }
+    filesUploaded
   }
 `
 

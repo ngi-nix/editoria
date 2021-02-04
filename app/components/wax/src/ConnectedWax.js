@@ -9,7 +9,7 @@ import withModal from '../../common/src/withModal'
 import { Loading } from '../../../ui'
 
 import WaxPubsweet from './WaxPubsweet'
-import statefull from './Statefull'
+// import statefull from './Statefull'
 import {
   getBookComponentQuery,
   getCustomTagsQuery,
@@ -32,7 +32,7 @@ import {
 } from './queries'
 
 const mapper = {
-  statefull,
+  // statefull,
   withModal,
   getBookComponentQuery,
   getCustomTagsQuery,
@@ -63,8 +63,8 @@ const getUserWithColor = (teams = []) => {
 }
 
 const mapProps = args => ({
-  state: args.statefull.state,
-  setState: args.statefull.setState,
+  // state: args.statefull.state,
+  // setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   tags: get(args.getCustomTagsQuery, 'data.getCustomTags'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
@@ -136,7 +136,7 @@ const mapProps = args => ({
 const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
-  const { match, history, config, currentUser } = props
+  const { match, history, currentUser } = props
   const { bookId, bookComponentId } = match.params
 
   return (
@@ -144,13 +144,11 @@ const Connected = props => {
       bookComponentId={bookComponentId}
       bookId={bookId}
       currentUser={currentUser}
-      key={bookComponentId}
     >
       {({
         bookComponent,
         checkSpell,
         tags,
-        setState,
         onAssetManager,
         onUnlocked,
         rules,
@@ -167,15 +165,34 @@ const Connected = props => {
         waxLoading,
         teamsLoading,
         tagsLoading,
+        refetching,
       }) => {
         const user = Object.assign({}, currentUser, {
           color: getUserWithColor(teams),
         })
-        if (loading || waxLoading || teamsLoading || tagsLoading)
+        if (
+          loading ||
+          waxLoading ||
+          teamsLoading ||
+          tagsLoading ||
+          !bookComponent
+        )
           return <Loading />
 
         let editing
-        const lock = get(bookComponent, 'lock')
+        const {
+          lock,
+          componentType,
+          divisionType,
+          id,
+          content,
+          trackChangesEnabled,
+          componentTypeOrder,
+          nextBookComponent,
+          prevBookComponent,
+          bookTitle,
+          title,
+        } = bookComponent
         if (lock && lock.userId !== currentUser.id) {
           editing = 'preview'
         } else if (rules.canEditPreview) {
@@ -187,27 +204,33 @@ const Connected = props => {
         } else if (rules.canEditReview) {
           editing = 'review'
         }
-
         return (
           <WaxPubsweet
             addCustomTags={addCustomTags}
-            bookComponent={bookComponent}
-            bookComponentId={bookComponentId}
+            bookComponentId={id}
             bookId={bookId}
+            bookTitle={bookTitle}
             checkSpell={checkSpell}
-            config={config}
+            componentType={componentType}
+            componentTypeOrder={componentTypeOrder}
+            content={content}
+            divisionType={divisionType}
             editing={editing}
             history={history}
-            key={bookComponent.id}
+            key={id}
             loading={loading}
+            lock={lock}
             lockBookComponent={lockBookComponent}
+            nextBookComponent={nextBookComponent}
             onAssetManager={onAssetManager}
             onUnlocked={onUnlocked}
+            prevBookComponent={prevBookComponent}
             renameBookComponent={renameBookComponent}
             rules={rules}
-            setState={setState}
             tags={tags}
             teamsLoading={teamsLoading}
+            title={title}
+            trackChangesEnabled={trackChangesEnabled}
             unlockBookComponent={unlockBookComponent}
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}

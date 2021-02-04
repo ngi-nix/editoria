@@ -48,7 +48,7 @@ const getBookComponentQuery = props => {
 
   return (
     <Query
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       query={GET_BOOK_COMPONENT}
       variables={{ id }}
     >
