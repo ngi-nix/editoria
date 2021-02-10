@@ -108,6 +108,7 @@ const FormFieldContainer = styled.div`
 `
 const FormField = styled.div`
   align-items: flex-start;
+  font-family: ${th('fontInterface')};
   display: flex;
   width: ${({ notFull }) => (notFull ? '98%' : '100%')};
   margin-bottom: calc(1 * ${th('gridUnit')});
@@ -160,7 +161,7 @@ class TemplateModal extends React.Component {
         files: [],
         mode,
         target: undefined,
-        notes: find(noteSelectOptions, { value: 'footnotes' }),
+        notes: undefined,
       }
     } else {
       const {
@@ -208,7 +209,7 @@ class TemplateModal extends React.Component {
   handleSelectNotes(selected) {
     this.setState({ notes: selected })
   }
-
+  /* eslint-disable */
   updateThumbnail(file, setFieldValue, setFieldTouched) {
     const { thumbnail, mode } = this.state
     const reader = new FileReader()
@@ -229,7 +230,7 @@ class TemplateModal extends React.Component {
       setFieldTouched('thumbnail', true)
     }.bind(this)
   }
-
+  /* eslint-enable */
   removeFile(filename, setFieldValue, setFieldTouched) {
     const { files, mode, deleteFiles } = this.state
     let newState
@@ -324,6 +325,7 @@ class TemplateModal extends React.Component {
       name,
       files,
       target,
+      notes,
     } = this.state
 
     const confirmLabel = mode === 'create' ? 'Save' : 'Update'
@@ -336,6 +338,7 @@ class TemplateModal extends React.Component {
         files: [],
         thumbnail: undefined,
         target: undefined,
+        notes: undefined,
         author: undefined,
         trimSize: undefined,
       }
@@ -345,6 +348,7 @@ class TemplateModal extends React.Component {
         files,
         thumbnail,
         target,
+        notes,
         author,
         trimSize,
       }
@@ -364,7 +368,6 @@ class TemplateModal extends React.Component {
             notes,
           } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
-
           let data
           if (mode === 'create') {
             data = {
@@ -374,7 +377,7 @@ class TemplateModal extends React.Component {
               files,
               thumbnail,
               target: target ? target.value : undefined,
-              notes: notes ? notes.value : 'footnotes',
+              notes: notes ? notes.value : undefined,
             }
           } else {
             data = {
@@ -386,7 +389,7 @@ class TemplateModal extends React.Component {
               files: filter(files, file => !file.id),
               thumbnail: thumbnail && thumbnail.id ? null : thumbnail,
               target: target ? target.value : undefined,
-              notes: notes ? notes.value : 'footnotes',
+              notes: notes ? notes.value : undefined,
             }
           }
 
@@ -414,6 +417,13 @@ class TemplateModal extends React.Component {
               errors.files =
                 '* Only one stylesheet can be uploaded per Template'
             }
+          }
+          if (!values.target) {
+            errors.target = '* The target of the template should not be empty'
+          }
+          if (!values.notes) {
+            errors.notes =
+              '* The notes type of the template should not be empty'
           }
           return errors
         }}
@@ -535,6 +545,7 @@ class TemplateModal extends React.Component {
                         onChange={selected => {
                           this.handleSelect(selected)
                           setFieldValue('target', selected)
+                          setFieldTouched('target', true)
                         }}
                         options={selectOptions}
                         value={this.state.target}
@@ -550,6 +561,7 @@ class TemplateModal extends React.Component {
                         onChange={selected => {
                           this.handleSelectNotes(selected)
                           setFieldValue('notes', selected)
+                          setFieldTouched('notes', true)
                         }}
                         options={noteSelectOptions}
                         value={this.state.notes}

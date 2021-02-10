@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, sortBy } from 'lodash'
+import { get, sortBy, isEmpty } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
@@ -9,7 +9,6 @@ import withModal from '../../common/src/withModal'
 import { Loading } from '../../../ui'
 
 import WaxPubsweet from './WaxPubsweet'
-// import statefull from './Statefull'
 import {
   getBookComponentQuery,
   getCustomTagsQuery,
@@ -32,7 +31,6 @@ import {
 } from './queries'
 
 const mapper = {
-  // statefull,
   withModal,
   getBookComponentQuery,
   getCustomTagsQuery,
@@ -59,12 +57,20 @@ const getUserWithColor = (teams = []) => {
     sortBy(config.authsome.teams, ['weight']).find(teamConfig =>
       teams.some(team => team.role === teamConfig.role),
     ) || {}
-  return team.color
+  if (!isEmpty(team)) {
+    return {
+      addition: team.color,
+      deletion: team.color,
+    }
+  }
+
+  return {
+    addition: 'royalblue',
+    deletion: 'indianred',
+  }
 }
 
 const mapProps = args => ({
-  // state: args.statefull.state,
-  // setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   tags: get(args.getCustomTagsQuery, 'data.getCustomTags'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
@@ -168,7 +174,7 @@ const Connected = props => {
         refetching,
       }) => {
         const user = Object.assign({}, currentUser, {
-          color: getUserWithColor(teams),
+          userColor: getUserWithColor(teams),
         })
         if (
           loading ||
@@ -193,7 +199,7 @@ const Connected = props => {
           bookTitle,
           title,
         } = bookComponent
-        if (lock && lock.userId !== currentUser.id) {
+        if (lock) {
           editing = 'preview'
         } else if (rules.canEditPreview) {
           editing = 'preview'
@@ -235,7 +241,6 @@ const Connected = props => {
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             updateCustomTags={updateTags}
-            uploadFile={uploadFile}
             user={user}
             waxLoading={waxLoading}
           />

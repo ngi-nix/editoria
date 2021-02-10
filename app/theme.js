@@ -3,6 +3,8 @@ import { clone } from 'lodash'
 import 'fontsource-fira-sans'
 import 'fontsource-fira-sans-condensed'
 import 'fontsource-vollkorn'
+import 'fontsource-merriweather'
+import 'typeface-inter'
 
 import { theme } from '@coko/client'
 
@@ -21,6 +23,12 @@ const editoriaTheme = clone(theme)
 editoriaTheme.fontInterface = 'Fira Sans'
 editoriaTheme.fontHeading = 'Fira Sans Condensed'
 editoriaTheme.fontReading = 'Vollkorn'
+editoriaTheme.colorBackgroundTabs = '#e1ebff'
+editoriaTheme.colorBackgroundToolBar = '#fff'
+editoriaTheme.fontWriting = 'Merriweather'
+editoriaTheme.fontTools = 'Inter'
+editoriaTheme.colorSelection = '#C5D7FE'
+editoriaTheme.colorBackgroundButton = '#0042C7'
 
 editoriaTheme.cssOverrides = {
   ui: {

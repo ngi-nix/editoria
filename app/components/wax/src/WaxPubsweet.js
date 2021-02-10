@@ -1,391 +1,222 @@
-import { isEmpty } from 'lodash'
-import React from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import config from 'config'
-import Wax from 'wax-editor-react'
+import { Wax } from 'wax-prosemirror-core'
+import { EditoriaLayout } from '../layout'
+import { configWax } from '../config'
 import WaxHeader from './WaxHeader'
 
-import { Loading } from '../../../ui'
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow-y: hidden;
+const WaxContainer = styled.div`
+  height: calc(100% - 72px);
   width: 100%;
-  .editor-wrapper {
-    height: 88vh;
-  }
 `
-export class WaxPubsweet extends React.Component {
-  constructor(props) {
-    super(props)
+const handleUnlock = (id, unlockBookComponent) => {
+  unlockBookComponent({
+    variables: {
+      input: {
+        id,
+      },
+    },
+  })
+}
 
-    this.save = this.save.bind(this)
-    this.update = this.update.bind(this)
-    this.renderWax = this.renderWax.bind(this)
-    this.onUnload = this.onUnload.bind(this)
-    this.unlock = this.unlock.bind(this)
-    this.lock = this.lock.bind(this)
-    this.handleAssetManager = this.handleAssetManager.bind(this)
+const handleLock = (id, lockBookComponent) =>
+  lockBookComponent({
+    variables: {
+      input: {
+        id,
+      },
+    },
+  })
+
+const handleSave = (content, id, updateBookComponentContent) =>
+  updateBookComponentContent({
+    variables: {
+      input: {
+        id,
+        content,
+      },
+    },
+  })
+
+const handleTitleUpdate = (title, id, renameBookComponent) => {
+  renameBookComponent({
+    variables: {
+      input: {
+        id,
+        title,
+      },
+    },
+  })
+}
+const Editoria = ({
+  divisionType,
+  componentType,
+  nextBookComponent,
+  title,
+  bookTitle,
+  bookId,
+  prevBookComponent,
+  bookComponentId,
+  content,
+  lock: bookComponentLock,
+  componentTypeOrder,
+  trackChangesEnabled,
+  unlockBookComponent,
+  renameBookComponent,
+  lockBookComponent,
+  editing,
+  checkSpell,
+  history,
+  onUnlocked,
+  onAssetManager,
+  updateBookComponentContent,
+  user,
+  tags,
+}) => {
+  const [hasLock, setHasLock] = useState(null)
+
+  const onUnload = () => {
+    handleUnlock(bookComponentId, unlockBookComponent)
+    window.removeEventListener('beforeunload', onUnload)
   }
 
-  /* eslint-disable camelcase */
-  UNSAFE_componentWillMount() {
-    const { editing, bookComponentId } = this.props
-    if (editing === 'preview' || editing === 'selection') return
-    window.addEventListener('beforeunload', this.onUnload)
-    this.lock(bookComponentId)
+  const updateTitle = title => {
+    handleTitleUpdate(title, bookComponentId, renameBookComponent)
   }
-  // componentDidMount() {
-  //   const { editing, bookComponentId } = this.props
-  //   if (editing === 'preview' || editing === 'selection') return
-  //   window.addEventListener('beforeunload', this.onUnload)
-  //   this.lock(bookComponentId)
-  // }
-  componentDidUpdate(prevProps) {
-    const {
-      history,
-      onUnlocked,
-      lock: lockBefore,
-      bookComponentId: bookComponentIdBefore,
-    } = prevProps
-    const {
-      lock: lockAfter,
-      bookId,
-      bookComponentId: bookComponentIdAfter,
-    } = this.props
 
-    const onConfirm = () => {
-      history.push(`/books/${bookId}/book-builder`)
+  const handleAssetManager = () => onAssetManager(bookId)
+
+  let translatedEditing
+  switch (editing) {
+    case 'selection':
+      configWax.EnableTrackChangeService.toggle = false
+      configWax.EnableTrackChangeService.enable = false
+      configWax.AcceptTrackChangeService.own.accept = false
+      configWax.AcceptTrackChangeService.others.accept = false
+      configWax.RejectTrackChangeService.own.reject = false
+      configWax.RejectTrackChangeService.others.reject = false
+      translatedEditing = 'selection'
+      break
+    case 'preview':
+      configWax.EnableTrackChangeService.toggle = false
+      configWax.EnableTrackChangeService.enable = false
+      configWax.AcceptTrackChangeService.own.accept = false
+      configWax.AcceptTrackChangeService.others.accept = false
+      configWax.RejectTrackChangeService.own.reject = false
+      configWax.RejectTrackChangeService.others.reject = false
+      translatedEditing = 'disabled'
+      break
+    case 'selection_without_tc':
+      configWax.EnableTrackChangeService.toggle = false
+      configWax.EnableTrackChangeService.enable = false
+      configWax.AcceptTrackChangeService.own.accept = false
+      configWax.AcceptTrackChangeService.others.accept = false
+      configWax.RejectTrackChangeService.own.reject = false
+      configWax.RejectTrackChangeService.others.reject = false
+      translatedEditing = 'selection'
+      break
+    case 'review':
+      configWax.EnableTrackChangeService.toggle = false
+      configWax.EnableTrackChangeService.enable = trackChangesEnabled
+      configWax.AcceptTrackChangeService.own.accept = false
+      configWax.AcceptTrackChangeService.others.accept = true
+      configWax.RejectTrackChangeService.own.reject = false
+      configWax.RejectTrackChangeService.others.reject = false
+      translatedEditing = 'full'
+      break
+    case 'full_without_tc':
+      configWax.EnableTrackChangeService.toggle = false
+      configWax.EnableTrackChangeService.enable = false
+      configWax.AcceptTrackChangeService.own.accept = false
+      configWax.AcceptTrackChangeService.others.accept = true
+      configWax.RejectTrackChangeService.own.reject = false
+      configWax.RejectTrackChangeService.others.reject = false
+      translatedEditing = 'full'
+      break
+    default:
+      configWax.EnableTrackChangeService.toggle = true
+      configWax.EnableTrackChangeService.enable = trackChangesEnabled
+      configWax.AcceptTrackChangeService.own.accept = true
+      configWax.AcceptTrackChangeService.others.accept = true
+      configWax.RejectTrackChangeService.own.reject = true
+      configWax.RejectTrackChangeService.others.reject = true
+      translatedEditing = 'full'
+      break
+  }
+
+  configWax.TitleService = { updateTitle }
+  configWax.ImageService = { handleAssetManager }
+
+  const isReadOnly =
+    bookComponentLock ||
+    translatedEditing === 'selection' ||
+    translatedEditing === 'disabled'
+
+  useEffect(() => {
+    if (!isReadOnly) {
+      window.addEventListener('beforeunload', onUnload)
+      handleLock(bookComponentId, lockBookComponent).then(({ data }) => {
+        const { lockBookComponent } = data
+        const { id } = lockBookComponent
+        if (id) {
+          setHasLock(true)
+        }
+      })
     }
 
-    if (
-      lockBefore !== null &&
-      lockAfter === null &&
-      bookComponentIdAfter === bookComponentIdBefore
-    ) {
+    return () => {
+      if (!isReadOnly) {
+        onUnload()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!bookComponentLock && hasLock) {
+      const onConfirm = () => {
+        history.push(`/books/${bookId}/book-builder`)
+      }
       onUnlocked(
         'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
         onConfirm,
       )
     }
-  }
+  }, [bookComponentLock])
 
-  // componentWillReceiveProps(nextProps) {
-  //   const {
-  //     history,
-  //     onUnlocked,
-  //     lock: lockBefore,
-  //     bookComponentId: bookComponentIdBefore,
-  //   } = this.props
-  //   const {
-  //     lock: lockAfter,
-  //     bookId,
-  //     bookComponentId: bookComponentIdAfter,
-  //   } = nextProps
-
-  //   const onConfirm = () => {
-  //     history.push(`/books/${bookId}/book-builder`)
-  //   }
-
-  //   if (
-  //     lockBefore !== null &&
-  //     lockAfter === null &&
-  //     bookComponentIdAfter === bookComponentIdBefore
-  //   ) {
-  //     onUnlocked(
-  //       'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
-  //       onConfirm,
-  //     )
-  //   }
-  // }
-
-  componentWillUnmount() {
-    const { bookComponentId, editing } = this.props
-
-    if (editing === 'preview' || editing === 'selection') return
-    this.unlock(bookComponentId)
-  }
-
-  unlock(id) {
-    const { unlockBookComponent, lock } = this.props
-    if (lock) {
-      // for the case where the admin unlocks the component
-      unlockBookComponent({
-        variables: {
-          input: {
-            id,
-          },
-        },
-      })
-    }
-    window.removeEventListener('beforeunload', this.onUnload)
-  }
-
-  lock(id) {
-    const { lockBookComponent } = this.props
-    lockBookComponent({
-      variables: {
-        input: {
-          id,
-        },
-      },
-    })
-  }
-
-  save(content) {
-    const { bookComponentId, updateBookComponentContent } = this.props
-
-    return updateBookComponentContent({
-      variables: {
-        input: {
-          id: bookComponentId,
-          content,
-        },
-      },
-    })
-  }
-
-  handleAssetManager() {
-    const { bookId, onAssetManager } = this.props
-    return onAssetManager(bookId)
-  }
-
-  update(patch) {
-    const {
-      bookComponentId,
-      updateBookComponentTrackChanges,
-      renameBookComponent,
-      updateCustomTags,
-      addCustomTags,
-    } = this.props
-    const { trackChanges, title, tags } = patch
-
-    if (tags) {
-      const addTags = tags.filter(tag => !tag.id)
-      const updateTags = tags.filter(tag => tag.id)
-      if (addTags.length > 0) {
-        addCustomTags({
-          variables: {
-            input: addTags,
-          },
-        })
-      }
-      if (updateTags.length > 0) {
-        updateCustomTags({
-          variables: {
-            input: updateTags,
-          },
-        })
-      }
-    }
-
-    if (trackChanges !== undefined) {
-      return updateBookComponentTrackChanges({
-        variables: {
-          input: {
-            id: bookComponentId,
-            trackChangesEnabled: trackChanges,
-          },
-        },
-      })
-    }
-
-    if (title) {
-      return renameBookComponent({
-        variables: {
-          input: {
-            id: bookComponentId,
-            title,
-          },
-        },
-      })
-    }
-
-    return Promise.resolve()
-  }
-
-  onUnload(e) {
-    e.preventDefault()
-    delete e.returnValue
-    const { bookComponentId } = this.props
-    this.unlock(bookComponentId)
-  }
-
-  renderWax(editing) {
-    const {
-      divisionType,
-      componentType,
-      nextBookComponent,
-      title,
-      bookTitle,
-      bookId,
-      prevBookComponent,
-      bookComponentId,
-      content: storedContent,
-      componentTypeOrder,
-      trackChangesEnabled,
-      checkSpell,
-      history,
-      user,
-      tags,
-    } = this.props
-    const waxConfig = {
-      layout: config.wax.layout,
-      lockWhenEditing: config.wax.lockWhenEditing,
-      theme: config.wax.theme,
-      autoSave: config.wax.autoSave,
-      menus: (
-        config.wax[divisionType.toLowerCase()][componentType] ||
-        config.wax[divisionType.toLowerCase()].default
-      ).menus,
-    }
-
-    const { layout, autoSave, menus } = waxConfig
-
-    let translatedEditing
-    const mode = {
-      trackChanges: {
-        toggle: true,
-        view: true,
-        color: '#fff',
-        own: {
-          accept: true,
-          reject: true,
-        },
-        others: {
-          accept: true,
-          reject: true,
-        },
-      },
-      styling: true, // isAuthor
-    }
-
-    switch (editing) {
-      case 'selection':
-        mode.trackChanges.toggle = false
-        mode.trackChanges.view = true
-        mode.trackChanges.own.accept = false
-        mode.trackChanges.own.reject = false
-        mode.trackChanges.others.accept = false
-        mode.trackChanges.others.reject = false
-        mode.styling = false
-        translatedEditing = 'selection'
-        break
-      case 'preview':
-        mode.trackChanges.toggle = false
-        mode.trackChanges.view = false
-        mode.trackChanges.own.accept = false
-        mode.trackChanges.own.reject = false
-        mode.trackChanges.others.accept = false
-        mode.trackChanges.others.reject = false
-        mode.styling = false
-        translatedEditing = 'disabled'
-        break
-      case 'selection_without_tc':
-        mode.trackChanges.toggle = false
-        mode.trackChanges.view = false
-        mode.trackChanges.own.accept = false
-        mode.trackChanges.own.reject = false
-        mode.trackChanges.others.accept = false
-        mode.trackChanges.others.reject = false
-        mode.styling = false
-        translatedEditing = 'selection'
-        break
-      case 'review':
-        mode.trackChanges.toggle = false
-        mode.trackChanges.view = true
-        mode.trackChanges.own.accept = false
-        mode.trackChanges.own.reject = false
-        mode.trackChanges.others.accept = true
-        mode.trackChanges.others.reject = false
-        mode.styling = false
-        translatedEditing = 'full'
-        break
-      case 'full_without_tc':
-        mode.trackChanges.toggle = false
-        mode.trackChanges.view = false
-        mode.trackChanges.own.accept = false
-        mode.trackChanges.own.reject = false
-        mode.trackChanges.others.accept = true
-        mode.trackChanges.others.reject = false
-        mode.styling = true
-        translatedEditing = 'full'
-        break
-      default:
-        mode.trackChanges.toggle = true
-        mode.trackChanges.view = true
-        mode.trackChanges.own.accept = true
-        mode.trackChanges.own.reject = true
-        mode.trackChanges.others.accept = true
-        mode.trackChanges.others.reject = true
-        mode.styling = true
-        translatedEditing = 'full'
-        break
-    }
-
-    let content
-    if (storedContent === null) {
-      content = ''
-    } else {
-      content = storedContent
-    }
-
-    let chapterNumber
-    if (componentType === 'chapter') {
-      chapterNumber = componentTypeOrder
-    }
-
-    return (
-      <Container>
-        <WaxHeader
-          bookId={bookId}
-          bookTitle={bookTitle}
-          id={bookComponentId}
-          nextBookComponent={nextBookComponent}
-          prevBookComponent={prevBookComponent}
-          title={title}
-        />
+  const EditoriaComponent = useMemo(
+    () => (
+      <WaxContainer>
         <Wax
-          assetManager={this.handleAssetManager}
-          autoSave={autoSave === undefined ? false : autoSave}
-          chapterNumber={chapterNumber}
-          checkSpell={checkSpell}
-          className="editor-wrapper"
-          content={content}
-          customTags={tags}
-          editing={translatedEditing}
-          history={history}
-          layout={layout}
-          menus={menus}
-          mode={mode}
-          onSave={this.save}
-          trackChanges={trackChangesEnabled}
-          update={this.update}
+          autoFocus
+          config={configWax}
+          fileUpload={() => true}
+          key={bookComponentId}
+          layout={EditoriaLayout}
+          onChange={source =>
+            handleSave(source, bookComponentId, updateBookComponentContent)
+          }
+          placeholder="Type Something..."
+          readonly={isReadOnly}
           user={user}
+          value={content || ''}
         />
-      </Container>
-    )
-  }
-
-  render() {
-    const { loading, waxLoading, teamsLoading, editing } = this.props
-
-    if (loading || waxLoading || teamsLoading || isEmpty(config))
-      return <Loading />
-
-    return this.renderWax(editing)
-  }
+      </WaxContainer>
+    ),
+    [],
+  )
+  return (
+    <>
+      <WaxHeader
+        bookId={bookId}
+        bookTitle={bookTitle}
+        id={bookComponentId}
+        nextBookComponent={nextBookComponent}
+        prevBookComponent={prevBookComponent}
+        title={title}
+      />
+      {EditoriaComponent}
+    </>
+  )
 }
 
-WaxPubsweet.defaultProps = {
-  config: {
-    layout: 'default',
-    lockWhenEditing: false,
-  },
-  editing: 'full',
-  history: null,
-}
-
-export default WaxPubsweet
+export default Editoria

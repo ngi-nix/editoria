@@ -28,8 +28,9 @@ const Template = ({
   onDeleteTemplate,
   onChangeSort,
   loading,
+  refetching,
 }) => {
-  if (loading) return <Loading />
+  if (loading || refetching) return <Loading />
 
   return (
     <Container>

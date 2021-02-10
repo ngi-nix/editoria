@@ -5,6 +5,7 @@ const {
   createApplicationParams,
   createBookCollection,
   createGlobalTeams,
+  createTemplates,
 } = require('./seeds')
 
 const adminUser = config.get('pubsweet-server.admin')
@@ -18,6 +19,7 @@ const runner = async () => {
     await createApplicationParams()
     await createBookCollection()
     await createGlobalTeams()
+    await createTemplates()
   } catch (e) {
     logger.error(e.message)
   }
