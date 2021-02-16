@@ -22649,10 +22649,10 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.0"
 
-wax-prosemirror-components@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-components/-/wax-prosemirror-components-0.0.29.tgz#feaa43eec0670fab42e8fd287a370ef5dfbca62e"
-  integrity sha512-Lptm4bFArZT8jm9DnhXdmLw5GgqaSJzSgYINktdRXm/tr7+Aj+8V9Au1bjwMLXKkL4jBltD2K1S+p58sGI4Qmw==
+wax-prosemirror-components@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-components/-/wax-prosemirror-components-0.0.30.tgz#06daba9c0900c5b96abd1a9d7019253750802dbd"
+  integrity sha512-DI0fd29VuOdlR16F78thupHejkcXfC0fCdJ8EXxAYExL+JZMNMiREDMGo4EVaVeFa9kXKWyQtDBKCM5dpEgMIQ==
   dependencies:
     "@fortawesome/fontawesome" "^1.1.2"
     "@fortawesome/free-solid-svg-icons" "^5.12.0"
@@ -22668,13 +22668,13 @@ wax-prosemirror-components@^0.0.29:
     styled-components "^4.2.0"
     use-deep-compare-effect "^1.3.1"
     uuid "^7.0.3"
-    wax-prosemirror-core "^0.0.29"
-    wax-prosemirror-utilities "^0.0.29"
+    wax-prosemirror-core "^0.0.30"
+    wax-prosemirror-utilities "^0.0.30"
 
-wax-prosemirror-core@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-core/-/wax-prosemirror-core-0.0.29.tgz#7616aeb48810e322ebbae5b85f08dfe35df3634f"
-  integrity sha512-7Jk49DJeyTvMkpjlhDBdxcjAva0Bh3jpLPsPgw6JPR7YJsfBjxMWJpho+a503+16bzmy0QwognCvwHk4vIkh2g==
+wax-prosemirror-core@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-core/-/wax-prosemirror-core-0.0.30.tgz#8e318f814298d1fa4246983b3a5e7cfa97187ce2"
+  integrity sha512-VSmiEvjRMqlBDDPHPicxGlR1D5sPbAybSAuOOdUrv7FoRRXVtwBhGXbZ3Ngf91gUknL68zpGsP5KdIh9z4mBdg==
   dependencies:
     deepmerge "^4.2.2"
     inversify "^5.0.1"
@@ -22694,13 +22694,13 @@ wax-prosemirror-core@^0.0.29:
     reflect-metadata "^0.1.13"
     styled-components "^4.2.0"
     uuid "^7.0.3"
-    wax-prosemirror-services "^0.0.29"
-    wax-prosemirror-utilities "^0.0.29"
+    wax-prosemirror-services "^0.0.30"
+    wax-prosemirror-utilities "^0.0.30"
 
-wax-prosemirror-plugins@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-plugins/-/wax-prosemirror-plugins-0.0.29.tgz#61963574e9f7ead82b124a2a6561ee5ff8d54f37"
-  integrity sha512-acVUknrcjSTCu2oXVqmETrIy3OVocE/PbJcxOClEgyVecMNbgcfNuGmnmb814QHPeYAwKNDaHi3sqAY6t8A2kA==
+wax-prosemirror-plugins@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-plugins/-/wax-prosemirror-plugins-0.0.30.tgz#7b71f2c28152ef67285d506fa9018916fa1f33a8"
+  integrity sha512-dW4VoIcMrCsB7/ME+TUWnzq4OPjE9u6hC9KtTClHM0XIs578ZQe7kg0+c36RNFA8TECpnYWrR5l2U/eRxyMnkQ==
   dependencies:
     highlight.js "^10.1.1"
     katex "^0.12.0"
@@ -22711,23 +22711,23 @@ wax-prosemirror-plugins@^0.0.29:
     prosemirror-state "1.3.3"
     prosemirror-transform "1.2.6"
     prosemirror-view "1.15.2"
-    wax-prosemirror-components "^0.0.29"
-    wax-prosemirror-core "^0.0.29"
-    wax-prosemirror-utilities "^0.0.29"
+    wax-prosemirror-components "^0.0.30"
+    wax-prosemirror-core "^0.0.30"
+    wax-prosemirror-utilities "^0.0.30"
 
-wax-prosemirror-schema@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-schema/-/wax-prosemirror-schema-0.0.29.tgz#8cdf61fc253a7db63d5b48e292f6e3ecb1057b52"
-  integrity sha512-7IxUjfr3e6GhX/5dXmVoRFUpbzDkmT3sVfEA7Q4ay3DiC58zK5TMiutYxiiRf8X7/a6an8jBkkPLYva3qTkn5Q==
+wax-prosemirror-schema@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-schema/-/wax-prosemirror-schema-0.0.30.tgz#3d531953a512b35fc5cdab6a174cee3fe61b388b"
+  integrity sha512-W56wEoDcCWdQOQFfnm7rf8M5v0xLMm84GPQD0jmWXVHzpmmJ0ydcaf1n2LYdlM0vtu2mTSBoZsYfSfFfaTrp8Q==
   dependencies:
     prosemirror-schema-list "^1.1.4"
     prosemirror-tables "^1.1.1"
-    wax-prosemirror-utilities "^0.0.29"
+    wax-prosemirror-utilities "^0.0.30"
 
-wax-prosemirror-services@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-services/-/wax-prosemirror-services-0.0.29.tgz#e00ffd3194065f4e2b8a6947e35630a7bcc92d48"
-  integrity sha512-9E0IZ9M85V1YoYWRxxNmK1pESNl1K+eQwFIdxylYzFecw8BuWXrw+qIDWvmpUkzpF78GiRawjv3pOQa1VMrMcg==
+wax-prosemirror-services@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-services/-/wax-prosemirror-services-0.0.30.tgz#86e7539351a27521c08a56461dd19b08248e3452"
+  integrity sha512-68RETp3SJpHdu9fZRVvR/tWUmYLaCpjOFYDeTQX7fHt9+tb8iq0mgR6z+c3nneHjVsJhSuOCK+UKq9aL1FVtjA==
   dependencies:
     inversify "^5.0.1"
     inversify-inject-decorators "^3.1.0"
@@ -22744,16 +22744,16 @@ wax-prosemirror-services@^0.0.29:
     styled-components "^4.2.0"
     use-deep-compare-effect "^1.3.1"
     uuid "^7.0.3"
-    wax-prosemirror-components "^0.0.29"
-    wax-prosemirror-core "^0.0.29"
-    wax-prosemirror-plugins "^0.0.29"
-    wax-prosemirror-schema "^0.0.29"
-    wax-prosemirror-utilities "^0.0.29"
+    wax-prosemirror-components "^0.0.30"
+    wax-prosemirror-core "^0.0.30"
+    wax-prosemirror-plugins "^0.0.30"
+    wax-prosemirror-schema "^0.0.30"
+    wax-prosemirror-utilities "^0.0.30"
 
-wax-prosemirror-utilities@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/wax-prosemirror-utilities/-/wax-prosemirror-utilities-0.0.29.tgz#eeaa8991a0c995dc0e69690e8259790cb4b3b96a"
-  integrity sha512-F8nH0LnrBOt23HZXTN5XFOtaQNP3sM9ICvK19zlhRou3rrpth7zk26YuEnbeOBkiRCER/LICWp99xYxzTi9FNA==
+wax-prosemirror-utilities@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/wax-prosemirror-utilities/-/wax-prosemirror-utilities-0.0.30.tgz#613b57883145ed83845d0d73848bfa05f002add3"
+  integrity sha512-0S050zoGxNqjMNcGLoKB0YypaFMQK3OTcuKdUNmZaFoy82nVcu2fg7LmENAUbbupHEeAA1AZ7kfhn0MeW6p0rw==
   dependencies:
     prosemirror-commands "1.1.4"
     prosemirror-utils "^0.9.6"

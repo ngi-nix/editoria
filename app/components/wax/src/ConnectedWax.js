@@ -175,6 +175,7 @@ const Connected = props => {
       }) => {
         const user = Object.assign({}, currentUser, {
           userColor: getUserWithColor(teams),
+          userId: currentUser.id,
         })
         if (
           loading ||

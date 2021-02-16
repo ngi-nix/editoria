@@ -1,13 +1,14 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, ThemeProvider } from 'styled-components'
 import PanelGroup from 'react-panelgroup'
 import { DocumentHelpers } from 'wax-prosemirror-utilities'
 import { WaxContext, ComponentPlugin } from 'wax-prosemirror-core'
 import { grid, th } from '@pubsweet/ui-toolkit'
+import '~../../katex/dist/katex.min.css'
+import cokoTheme from './theme'
 import EditorElements from './EditorElements'
 
 /* Katex css */
-// import '~../../katex/dist/katex.min.css'
 
 const divider = css`
   .panelGroup {
@@ -75,10 +76,10 @@ const TopMenu = styled.div`
 `
 
 const SideMenu = styled.div`
-  background: ${th('colorBackgroundToolBar')};
+  background: ${th('colorBackgroundToolBar')}
   border-right: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   min-width: 250px;
-  height: 100%;
+  height: 81%;
 `
 
 const EditorArea = styled.div`
@@ -128,7 +129,7 @@ const CommentTrackToolsContainer = styled.div`
   right: 30px;
   z-index: 1;
   background: white;
-  padding-left: 5%;
+  width: 25%;
 `
 
 const CommentTrackTools = styled.div`
@@ -195,40 +196,6 @@ const getNotes = main => {
   return notes
 }
 
-const getCommentsTracks = main => {
-  const marks = DocumentHelpers.findInlineNodes(main.state.doc)
-  const commentsTracks = []
-  marks.forEach(node => {
-    if (node.node.marks.length > 0) {
-      node.node.marks.filter(mark => {
-        if (
-          mark.type.name === 'comment' ||
-          mark.type.name === 'insertion' ||
-          mark.type.name === 'deletion' ||
-          mark.type.name === 'format_change'
-        ) {
-          mark.pos = node.pos
-          commentsTracks.push(mark)
-          return true
-        }
-        return false
-      })
-    }
-  })
-  return commentsTracks
-}
-
-const getTrackBlockNodes = main => {
-  const allBlockNodes = DocumentHelpers.findBlockNodes(main.state.doc)
-  const trackBlockNodes = []
-  allBlockNodes.forEach(node => {
-    if (node.node.attrs.track && node.node.attrs.track.length > 0) {
-      trackBlockNodes.push(node)
-    }
-  })
-  return trackBlockNodes
-}
-
 const LeftSideBar = ComponentPlugin('leftSideBar')
 const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
 const NotesArea = ComponentPlugin('notesArea')
@@ -259,8 +226,10 @@ const EditoriaLayout = ({ editor }) => {
     }
   }
   const notes = main && getNotes(main)
-  const commentsTracks = main && getCommentsTracks(main).length
-  const trackBlockNodes = main && getTrackBlockNodes(main).length
+  const commentsTracksCount =
+    main && DocumentHelpers.getCommentsTracksCount(main)
+  const trackBlockNodesCount =
+    main && DocumentHelpers.getTrackBlockNodesCount(main)
 
   const areNotes = notes && !!notes.length && notes.length > 0
 
@@ -278,60 +247,63 @@ const EditoriaLayout = ({ editor }) => {
   useEffect(() => {}, [delayedShowedNotes])
 
   return (
-    <Wrapper style={fullScreenStyles}>
-      <TopMenu>
-        <MainMenuToolBar />
-      </TopMenu>
+    <ThemeProvider theme={cokoTheme}>
+      <Wrapper style={fullScreenStyles}>
+        <TopMenu>
+          <MainMenuToolBar />
+        </TopMenu>
 
-      <Main>
-        <SideMenu>
-          <LeftSideBar />
-        </SideMenu>
+        <Main>
+          <SideMenu>
+            <LeftSideBar />
+          </SideMenu>
 
-        <EditorArea>
-          <PanelGroup
-            direction="column"
-            onResizeEnd={onResizeEnd}
-            panelWidths={[
-              { size: surfaceHeight, resize: 'stretch' },
-              { size: notesHeight, resize: 'resize' },
-            ]}
-          >
-            <WaxSurfaceScroll>
-              <EditorContainer>{editor}</EditorContainer>
-              <CommentsContainer>
-                <CommentTrackToolsContainer>
-                  <CommentTrackTools>
-                    {commentsTracks + trackBlockNodes} COMMENTS AND SUGGESTIONS
-                    <CommentTrackOptions>
-                      <CommentTrackToolBar />
-                    </CommentTrackOptions>
-                  </CommentTrackTools>
-                </CommentTrackToolsContainer>
-                <RightArea area="main" />
-              </CommentsContainer>
-            </WaxSurfaceScroll>
+          <EditorArea>
+            <PanelGroup
+              direction="column"
+              onResizeEnd={onResizeEnd}
+              panelWidths={[
+                { size: surfaceHeight, resize: 'stretch' },
+                { size: notesHeight, resize: 'resize' },
+              ]}
+            >
+              <WaxSurfaceScroll>
+                <EditorContainer>{editor}</EditorContainer>
+                <CommentsContainer>
+                  <CommentTrackToolsContainer>
+                    <CommentTrackTools>
+                      {commentsTracksCount + trackBlockNodesCount} COMMENTS AND
+                      SUGGESTIONS
+                      <CommentTrackOptions>
+                        <CommentTrackToolBar />
+                      </CommentTrackOptions>
+                    </CommentTrackTools>
+                  </CommentTrackToolsContainer>
+                  <RightArea area="main" />
+                </CommentsContainer>
+              </WaxSurfaceScroll>
 
-            {hasNotes && (
-              <NotesAreaContainer>
-                <NotesContainer id="notes-container">
-                  <NotesArea view={main} />
-                </NotesContainer>
-                <CommentsContainerNotes>
-                  <RightArea area="notes" />
-                </CommentsContainerNotes>
-              </NotesAreaContainer>
-            )}
-          </PanelGroup>
-        </EditorArea>
-      </Main>
-      <WaxOverlays />
-      <WaxBottomRightInfo>
-        <InfoContainer id="info-container">
-          <BottomRightInfo />
-        </InfoContainer>
-      </WaxBottomRightInfo>
-    </Wrapper>
+              {hasNotes && (
+                <NotesAreaContainer>
+                  <NotesContainer id="notes-container">
+                    <NotesArea view={main} />
+                  </NotesContainer>
+                  <CommentsContainerNotes>
+                    <RightArea area="notes" />
+                  </CommentsContainerNotes>
+                </NotesAreaContainer>
+              )}
+            </PanelGroup>
+          </EditorArea>
+        </Main>
+        <WaxOverlays />
+        <WaxBottomRightInfo>
+          <InfoContainer id="info-container">
+            <BottomRightInfo />
+          </InfoContainer>
+        </WaxBottomRightInfo>
+      </Wrapper>
+    </ThemeProvider>
   )
 }
 

@@ -49,6 +49,7 @@ const handleTitleUpdate = (title, id, renameBookComponent) => {
   })
 }
 const Editoria = ({
+  addCustomTags,
   divisionType,
   componentType,
   nextBookComponent,
@@ -85,12 +86,12 @@ const Editoria = ({
   }
 
   const handleAssetManager = () => onAssetManager(bookId)
-
+  // console.log('user', user)
   let translatedEditing
   switch (editing) {
     case 'selection':
       configWax.EnableTrackChangeService.toggle = false
-      configWax.EnableTrackChangeService.enable = false
+      configWax.EnableTrackChangeService.enabled = false
       configWax.AcceptTrackChangeService.own.accept = false
       configWax.AcceptTrackChangeService.others.accept = false
       configWax.RejectTrackChangeService.own.reject = false
@@ -99,7 +100,7 @@ const Editoria = ({
       break
     case 'preview':
       configWax.EnableTrackChangeService.toggle = false
-      configWax.EnableTrackChangeService.enable = false
+      configWax.EnableTrackChangeService.enabled = false
       configWax.AcceptTrackChangeService.own.accept = false
       configWax.AcceptTrackChangeService.others.accept = false
       configWax.RejectTrackChangeService.own.reject = false
@@ -108,7 +109,7 @@ const Editoria = ({
       break
     case 'selection_without_tc':
       configWax.EnableTrackChangeService.toggle = false
-      configWax.EnableTrackChangeService.enable = false
+      configWax.EnableTrackChangeService.enabled = false
       configWax.AcceptTrackChangeService.own.accept = false
       configWax.AcceptTrackChangeService.others.accept = false
       configWax.RejectTrackChangeService.own.reject = false
@@ -117,7 +118,7 @@ const Editoria = ({
       break
     case 'review':
       configWax.EnableTrackChangeService.toggle = false
-      configWax.EnableTrackChangeService.enable = trackChangesEnabled
+      configWax.EnableTrackChangeService.enabled = trackChangesEnabled
       configWax.AcceptTrackChangeService.own.accept = false
       configWax.AcceptTrackChangeService.others.accept = true
       configWax.RejectTrackChangeService.own.reject = false
@@ -126,7 +127,7 @@ const Editoria = ({
       break
     case 'full_without_tc':
       configWax.EnableTrackChangeService.toggle = false
-      configWax.EnableTrackChangeService.enable = false
+      configWax.EnableTrackChangeService.enabled = false
       configWax.AcceptTrackChangeService.own.accept = false
       configWax.AcceptTrackChangeService.others.accept = true
       configWax.RejectTrackChangeService.own.reject = false
@@ -135,7 +136,7 @@ const Editoria = ({
       break
     default:
       configWax.EnableTrackChangeService.toggle = true
-      configWax.EnableTrackChangeService.enable = trackChangesEnabled
+      configWax.EnableTrackChangeService.enabled = trackChangesEnabled
       configWax.AcceptTrackChangeService.own.accept = true
       configWax.AcceptTrackChangeService.others.accept = true
       configWax.RejectTrackChangeService.own.reject = true
@@ -144,8 +145,21 @@ const Editoria = ({
       break
   }
 
+  const handleCustomTags = customTags => {
+    const addTags = customTags.filter(tag => !tag.id)
+    if (addTags.length > 0) {
+      addCustomTags({
+        variables: {
+          input: addTags,
+        },
+      })
+    }
+  }
+  // console.log('tags', tags)
   configWax.TitleService = { updateTitle }
   configWax.ImageService = { handleAssetManager }
+  configWax.CustomTagService.tags = tags
+  configWax.CustomTagService.updateTags = handleCustomTags
 
   const isReadOnly =
     bookComponentLock ||

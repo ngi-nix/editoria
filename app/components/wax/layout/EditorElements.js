@@ -27,7 +27,10 @@ export default css`
     h1 span::selection,
     h2 span::selection,
     h3 span::selection,
-    code span::selection {
+    h4 span::selection,
+    code span::selection,
+    custom-tag-block::selection,
+    custom-tag-inline::selection {
       background-color: transparent;
     }
 
@@ -42,8 +45,8 @@ export default css`
   }
 
   div[contenteditable='false'] {
-    user-select: none;
     pointer-events: none;
+    user-select: none;
   }
 
   /* .ProseMirror title {
@@ -248,17 +251,17 @@ export default css`
     height: 100%;
   }
 
-  li[data-track]::before,
-  li [data-track]::before {
-    left: -5px;
-  }
-
   .insertion .show-insertion {
     color: black;
   }
 
   .deletion .hide-deletion {
     display: none;
+  }
+
+  li[data-track]::before,
+  li [data-track]::before {
+    left: -5px;
   }
 
   span.comment {
@@ -390,9 +393,45 @@ export default css`
     padding-top: 2px;
   }
 
-  /* -- Block level  ---------------------------------- */
-  p.title {
-    font-weight: bold;
-    font-size: 50px;
+  .custom-tag-inline {
+    display: inline;
+    font-weight: 500;
+  }
+
+  custom-tag-inline:before {
+    color: #006f19;
+    content: ' | ';
+    font-weight: 600;
+    margin-left: 0;
+  }
+
+  custom-tag-inline:after {
+    color: #006f19;
+    content: ' | ';
+    display: inline;
+    font-weight: 600;
+  }
+
+  custom-tag-block {
+    display: block;
+    margin-top: 1em;
+  }
+
+  custom-tag-block:before {
+    color: #006f19;
+    content: '|';
+    display: inline;
+    font-weight: 600;
+  }
+
+  custom-tag-block:after {
+    color: #006f19;
+    content: '|';
+    display: inline;
+    font-weight: 600;
+  }
+
+  .transform-icon {
+    transform: rotate(40deg);
   }
 `
