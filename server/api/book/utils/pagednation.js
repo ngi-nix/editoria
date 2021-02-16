@@ -4,7 +4,7 @@ const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
-const mime = require('mime-types')
+// const mime = require('mime-types')
 const {
   useCaseFetchRemoteFileLocally,
   useCaseSignURL,
@@ -27,7 +27,7 @@ const pagednation = async (book, template, pdf = false) => {
     const templateFiles = await template.getFiles()
     const fonts = []
     const stylesheets = []
-    const images = []
+    // const images = []
     const hash = crypto.randomBytes(32).toString('hex')
     const pagedDir = `${process.cwd()}/${uploadsDir}/paged`
     const pagedDestination = path.join(pagedDir, `${hash}`)
@@ -83,31 +83,31 @@ const pagednation = async (book, template, pdf = false) => {
     )
     book.divisions.forEach((division, divisionId) => {
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
-        const { content, id } = bookComponent
+        const { content } = bookComponent
         const $ = cheerio.load(content)
 
         $('img[src]').each((index, node) => {
           const $node = $(node)
-          const constructedId = `image-${id}-${index}`
+          // const constructedId = `image-${id}-${index}`
           const url = $node.attr('src')
           const objectKey = objectKeyExtractor(url)
-          const extension = path.extname(objectKey)
-          const mimetype = mime.lookup(objectKey)
-          const target = `${pagedDestination}/${objectKey}`
+          // const extension = path.extname(objectKey)
+          // const mimetype = mime.lookup(objectKey)
+          // const target = `${pagedDestination}/${objectKey}`
 
-          images.push({
-            id: constructedId,
-            objectKey,
-            target,
-            mimetype,
-            extension,
-          })
+          // images.push({
+          //   id: constructedId,
+          //   objectKey,
+          //   target,
+          //   mimetype,
+          //   extension,
+          // })
 
-          if (pdf) {
-            $node.attr('src', `./${objectKey}`)
-          } else {
-            $node.attr('src', freshImageLinkMapper[objectKey])
-          }
+          // if (pdf) {
+          //   $node.attr('src', `./${objectKey}`)
+          // } else {
+          $node.attr('src', freshImageLinkMapper[objectKey])
+          // }
         })
         $('figure').each((index, node) => {
           const $node = $(node)
@@ -119,24 +119,24 @@ const pagednation = async (book, template, pdf = false) => {
         bookComponent.content = $.html('body')
       })
     })
-    await Promise.all(
-      map(images, async image => {
-        const { objectKey, target } = image
-        return useCaseFetchRemoteFileLocally(objectKey, target)
-      }),
-    )
+    // await Promise.all(
+    //   map(images, async image => {
+    //     const { objectKey, target } = image
+    //     return useCaseFetchRemoteFileLocally(objectKey, target)
+    //   }),
+    // )
     await Promise.all(
       map(stylesheets, async stylesheet => {
         const { objectKey, target } = stylesheet
         return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
-    await Promise.all(
-      map(fonts, async font => {
-        const { objectKey, target } = font
-        return useCaseFetchRemoteFileLocally(objectKey, target)
-      }),
-    )
+    // await Promise.all(
+    //   map(fonts, async font => {
+    //     const { objectKey, target } = font
+    //     return useCaseFetchRemoteFileLocally(objectKey, target)
+    //   }),
+    // )
 
     const stylesheetContent = await readFile(stylesheets[0].target)
     const fixedCSS = fixFontFaceUrls(stylesheetContent, fonts, '.')
