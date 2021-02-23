@@ -12,7 +12,11 @@ const {
   writeLocallyFromReadStream,
   zipper,
 } = require('../helpers/utils')
-
+const {
+  uploadFile,
+  signURL,
+  deleteFiles,
+} = require('../useCases/objectStorage')
 // CONSTS
 const EPUBCHECKER = 'epub-checker'
 const ICML = 'icml'
@@ -54,10 +58,14 @@ const serviceHandshake = async which => {
         accessTokens[which] = accessToken
         resolve(`${which} service handshake done`)
       })
-      .catch(({ response }) => {
+      .catch(err => {
+        const { response } = err
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
+        }
         const { status, data } = response
         const { msg } = data
-        reject(
+        return reject(
           new Error(`Request failed with status ${status} and message: ${msg}`),
         )
       })
@@ -71,34 +79,73 @@ const epubcheckerHandler = async epubPath => {
   const service = get(services, EPUBCHECKER)
   const { port, protocol, host } = service
   const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
-  const form = new FormData()
-
-  form.append('epub', fs.createReadStream(epubPath))
-
+  // const form = new FormData()
+  const deconstruct = epubPath.split('/')
+  const epubName = deconstruct[deconstruct.length - 1]
+  const { original } = await uploadFile(
+    fs.createReadStream(epubPath),
+    epubName,
+    'application/epub+zip',
+  )
+  const EPUBPath = await signURL('getObject', original.key)
+  // form.append('epub', fs.createReadStream(epubPath))
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
-      url: `${serverUrl}/api/epubchecker`,
+      url: `${serverUrl}/api/epubchecker/link`,
       headers: {
         authorization: `Bearer ${get(accessTokens, `${EPUBCHECKER}`)}`,
-        ...form.getHeaders(),
       },
-      data: form,
+      data: { EPUBPath },
     })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
+        await deleteFiles([original.key])
         resolve(data)
       })
-      .catch(({ response }) => {
+      .catch(async err => {
+        await deleteFiles([original.key])
+        const { response } = err
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
+        }
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
           accessTokens[EPUBCHECKER] = undefined
         }
-        reject(
+        return reject(
           new Error(`Request failed with status ${status} and message: ${msg}`),
         )
       })
   })
+  // return new Promise((resolve, reject) => {
+  //   axios({
+  //     method: 'post',
+  //     url: `${serverUrl}/api/epubchecker`,
+  //     headers: {
+  //       authorization: `Bearer ${get(accessTokens, `${EPUBCHECKER}`)}`,
+  //       ...form.getHeaders(),
+  //     },
+  //     data: form,
+  //   })
+  //     .then(({ data }) => {
+  //       resolve(data)
+  //     })
+  //     .catch(err => {
+  //       const { response } = err
+  //       if (!response) {
+  //         return reject(new Error(`Request failed with message: ${err.code}`))
+  //       }
+  //       const { status, data } = response
+  //       const { msg } = data
+  //       if (status === 401 && msg === 'expired token') {
+  //         accessTokens[EPUBCHECKER] = undefined
+  //       }
+  //       return reject(
+  //         new Error(`Request failed with status ${status} and message: ${msg}`),
+  //       )
+  //     })
+  // })
 }
 const icmlHandler = async icmlTempPath => {
   if (!get(accessTokens, `${ICML}`)) {
@@ -126,14 +173,20 @@ const icmlHandler = async icmlTempPath => {
         resolve()
       })
       .catch(err => {
-        if (err.response) {
-          const { status, data } = err.response
-          const { msg } = data
-          if (status === 401 && msg === 'expired token') {
-            accessTokens[ICML] = undefined
-          }
+        const { response } = err
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
         }
-        reject(err)
+
+        const { status, data } = response
+        const { msg } = data
+        if (status === 401 && msg === 'expired token') {
+          accessTokens[ICML] = undefined
+        }
+
+        return reject(
+          new Error(`Request failed with status ${status} and message: ${msg}`),
+        )
       })
   })
 }
@@ -170,14 +223,20 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
         resolve()
       })
       .catch(err => {
-        if (err.response) {
-          const { status, data } = err.response
-          const { msg } = data
-          if (status === 401 && msg === 'expired token') {
-            accessTokens[PAGEDJS] = undefined
-          }
+        const { response } = err
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
         }
-        reject(err)
+
+        const { status, data } = response
+        const { msg } = data
+        if (status === 401 && msg === 'expired token') {
+          accessTokens[PAGEDJS] = undefined
+        }
+
+        return reject(
+          new Error(`Request failed with status ${status} and message: ${msg}`),
+        )
       })
   })
 }
@@ -210,11 +269,11 @@ const xsweetHandler = async filePath => {
           await fs.remove(filePath)
           resolve(html)
         })
-        .catch(async res => {
+        .catch(async err => {
           // console.log('res', res)
-          const { response } = res
+          const { response } = err
           if (!response) {
-            return reject(new Error(`Request failed with message: ${res.code}`))
+            return reject(new Error(`Request failed with message: ${err.code}`))
           }
           const { status, data } = response
           const { msg } = data
@@ -264,13 +323,18 @@ const pagedPreviewerLinkHandler = async dirPath => {
         await fs.remove(zipPath)
         resolve(data)
       })
-      .catch(({ response }) => {
+      .catch(err => {
+        const { response } = err
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
+        }
+
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
           accessTokens[PAGEDJS] = undefined
         }
-        reject(
+        return reject(
           new Error(`Request failed with status ${status} and message: ${msg}`),
         )
       })

@@ -131,12 +131,12 @@ const pagednation = async (book, template, pdf = false) => {
         return useCaseFetchRemoteFileLocally(objectKey, target)
       }),
     )
-    // await Promise.all(
-    //   map(fonts, async font => {
-    //     const { objectKey, target } = font
-    //     return useCaseFetchRemoteFileLocally(objectKey, target)
-    //   }),
-    // )
+    await Promise.all(
+      map(fonts, async font => {
+        const { objectKey, target } = font
+        return useCaseFetchRemoteFileLocally(objectKey, target)
+      }),
+    )
 
     const stylesheetContent = await readFile(stylesheets[0].target)
     const fixedCSS = fixFontFaceUrls(stylesheetContent, fonts, '.')
