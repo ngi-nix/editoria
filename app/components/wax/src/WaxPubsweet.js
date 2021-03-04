@@ -1,14 +1,17 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { isEqual } from 'lodash'
 import styled from 'styled-components'
 import { Wax } from 'wax-prosemirror-core'
 import { EditoriaLayout } from '../layout'
 import { configWax } from '../config'
 import WaxHeader from './WaxHeader'
+import usePrevious from './helpers'
 
 const WaxContainer = styled.div`
   height: calc(100% - 72px);
   width: 100%;
 `
+
 const handleUnlock = (id, unlockBookComponent) => {
   unlockBookComponent({
     variables: {
@@ -19,7 +22,7 @@ const handleUnlock = (id, unlockBookComponent) => {
   })
 }
 
-const handleLock = (id, lockBookComponent) =>
+const handleLock = (id, lockBookComponent, setShouldUnlock) =>
   lockBookComponent({
     variables: {
       input: {
@@ -50,8 +53,6 @@ const handleTitleUpdate = (title, id, renameBookComponent) => {
 }
 const Editoria = ({
   addCustomTags,
-  divisionType,
-  componentType,
   nextBookComponent,
   title,
   bookTitle,
@@ -59,26 +60,26 @@ const Editoria = ({
   prevBookComponent,
   bookComponentId,
   content,
-  lock: bookComponentLock,
-  componentTypeOrder,
   trackChangesEnabled,
   unlockBookComponent,
   renameBookComponent,
+  lock: bookComponentLock,
   lockBookComponent,
+  lockTrigger,
+  workflowTrigger,
   editing,
-  checkSpell,
+  workflowStages,
   history,
   onUnlocked,
+  onWarning,
   onAssetManager,
   updateBookComponentContent,
+  updateBookComponentTrackChanges,
   user,
   tags,
 }) => {
-  const [hasLock, setHasLock] = useState(null)
-
   const onUnload = () => {
     handleUnlock(bookComponentId, unlockBookComponent)
-    window.removeEventListener('beforeunload', onUnload)
   }
 
   const updateTitle = title => {
@@ -86,7 +87,7 @@ const Editoria = ({
   }
 
   const handleAssetManager = () => onAssetManager(bookId)
-  // console.log('user', user)
+
   let translatedEditing
   switch (editing) {
     case 'selection':
@@ -144,7 +145,6 @@ const Editoria = ({
       translatedEditing = 'full'
       break
   }
-
   const handleCustomTags = customTags => {
     const addTags = customTags.filter(tag => !tag.id)
     if (addTags.length > 0) {
@@ -155,69 +155,98 @@ const Editoria = ({
       })
     }
   }
-  // console.log('tags', tags)
+
+  configWax.EnableTrackChangeService.updateTrackStatus = status => {
+    updateBookComponentTrackChanges({
+      variables: {
+        input: {
+          id: bookComponentId,
+          trackChangesEnabled: status,
+        },
+      },
+    })
+  }
   configWax.TitleService = { updateTitle }
   configWax.ImageService = { handleAssetManager }
   configWax.CustomTagService.tags = tags
   configWax.CustomTagService.updateTags = handleCustomTags
 
   const isReadOnly =
-    bookComponentLock ||
-    translatedEditing === 'selection' ||
-    translatedEditing === 'disabled'
+    translatedEditing === 'selection' || translatedEditing === 'disabled'
+  const [workChanged, setWorkChanged] = useState(false)
+
+  const previousWorkflow = usePrevious(workflowStages) // reference for checking if the workflowStages actually change
 
   useEffect(() => {
+    window.addEventListener('beforeunload', onUnload)
     if (!isReadOnly) {
-      window.addEventListener('beforeunload', onUnload)
-      handleLock(bookComponentId, lockBookComponent).then(({ data }) => {
-        const { lockBookComponent } = data
-        const { id } = lockBookComponent
-        if (id) {
-          setHasLock(true)
-        }
-      })
+      handleLock(bookComponentId, lockBookComponent)
     }
 
     return () => {
-      if (!isReadOnly) {
-        onUnload()
-      }
+      window.removeEventListener('beforeunload', onUnload)
+      onUnload()
     }
   }, [])
 
+  // SECTION FOR UNLOCKED BY ADMIN
+  const lockChangeTrigger =
+    lockTrigger &&
+    lockTrigger.id === bookComponentId &&
+    lockTrigger.lock &&
+    lockTrigger.lock.id
+
   useEffect(() => {
-    if (!bookComponentLock && hasLock) {
-      const onConfirm = () => {
-        history.push(`/books/${bookId}/book-builder`)
+    if (lockTrigger) {
+      if (!lockTrigger.lock && bookComponentLock && !isReadOnly) {
+        // Had the lock and lost it. The isReadOnly is used for the case of navigating between chapters with different permissions
+        const onConfirm = () => {
+          history.push(`/books/${bookId}/book-builder`)
+        }
+        onUnlocked(
+          'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+          onConfirm,
+        )
       }
-      onUnlocked(
-        'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+    }
+  }, [lockChangeTrigger])
+  // END OF SECTION
+
+  // SECTION FOR CHANGES IN THE WORKFLOW
+  useEffect(() => {
+    // this effect sets precedent which is used when the isReadOnly is calculated
+    if (workflowTrigger && workflowTrigger.id === bookComponentId) {
+      const { workflowStages: workflowNow } = workflowTrigger
+      if (!isEqual(previousWorkflow, workflowNow)) {
+        setWorkChanged(true)
+      }
+    }
+  }, [workflowStages])
+
+  useEffect(() => {
+    if (workChanged && !isReadOnly) {
+      const onConfirm = () => {
+        handleLock(bookComponentId, lockBookComponent)
+      }
+      onWarning(
+        'You have been granted edit access to this book component',
         onConfirm,
       )
+      setWorkChanged(false)
     }
-  }, [bookComponentLock])
+    if (workChanged && isReadOnly) {
+      const onConfirm = () => {
+        handleUnlock(bookComponentId, unlockBookComponent)
+      }
+      onWarning(
+        'You no longer have edit access for this book component',
+        onConfirm,
+      )
+      setWorkChanged(false)
+    }
+  }, [isReadOnly])
+  // END OF SECTION
 
-  const EditoriaComponent = useMemo(
-    () => (
-      <WaxContainer>
-        <Wax
-          autoFocus
-          config={configWax}
-          fileUpload={() => true}
-          key={bookComponentId}
-          layout={EditoriaLayout}
-          onChange={source =>
-            handleSave(source, bookComponentId, updateBookComponentContent)
-          }
-          placeholder="Type Something..."
-          readonly={isReadOnly}
-          user={user}
-          value={content || ''}
-        />
-      </WaxContainer>
-    ),
-    [],
-  )
   return (
     <>
       <WaxHeader
@@ -228,7 +257,22 @@ const Editoria = ({
         prevBookComponent={prevBookComponent}
         title={title}
       />
-      {EditoriaComponent}
+      <WaxContainer>
+        <Wax
+          autoFocus
+          config={configWax}
+          fileUpload={() => true}
+          key={bookComponentId}
+          layout={EditoriaLayout}
+          onChange={source => {
+            handleSave(source, bookComponentId, updateBookComponentContent)
+          }}
+          placeholder="Type Something..."
+          readonly={isReadOnly}
+          user={user}
+          value={content}
+        />
+      </WaxContainer>
     </>
   )
 }

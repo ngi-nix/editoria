@@ -17,6 +17,7 @@ type Lock {
   givenName: String
   surname: String
   userId: ID
+  id: ID
 }
 
 input LockInput {

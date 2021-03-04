@@ -19,4 +19,5 @@ export {
   lockChangeSubscription,
   orderChangeSubscription,
   customTagsSubscription,
+  workflowChangeSubscription,
 } from './waxPubsweetSubscriptions'

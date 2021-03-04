@@ -272,7 +272,7 @@ const EditoriaLayout = ({ editor }) => {
                 <CommentsContainer>
                   <CommentTrackToolsContainer>
                     <CommentTrackTools>
-                      {commentsTracksCount + trackBlockNodesCount} COMMENTS AND
+                      {commentsTracksCount + trackBlockNodesCount} COMMENTS OR
                       SUGGESTIONS
                       <CommentTrackOptions>
                         <CommentTrackToolBar />

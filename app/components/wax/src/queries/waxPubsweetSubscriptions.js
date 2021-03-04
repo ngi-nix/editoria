@@ -10,7 +10,18 @@ const BOOK_COMPONENT_TRACK_CHANGES_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
-
+const BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION = gql`
+  subscription BookComponentWorkflowUpdated {
+    bookComponentWorkflowUpdated {
+      id
+      workflowStages {
+        label
+        type
+        value
+      }
+    }
+  }
+`
 const CUSTOM_TAG_SUBSCRIPTION = gql`
   subscription CustomTagUpdated {
     customTagUpdated {
@@ -23,6 +34,15 @@ const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
       id
+      lock {
+        id
+        userId
+        username
+        created
+        givenName
+        isAdmin
+        surname
+      }
     }
   }
 `
@@ -47,12 +67,18 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
 `
 
 const trackChangeSubscription = props => {
-  const { render, getBookComponentQuery } = props
-  // const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery, bookComponentId } = props
   const { refetch } = getBookComponentQuery
-  const triggerRefetch = () => {
-    // if (pauseUpdates) return
-    refetch()
+
+  const triggerRefetch = res => {
+    const { subscriptionData } = res
+    const { data } = subscriptionData
+    const { bookComponentTrackChangesUpdated } = data
+    const { id } = bookComponentTrackChangesUpdated
+
+    if (id === bookComponentId) {
+      refetch()
+    }
   }
 
   return (
@@ -67,10 +93,8 @@ const trackChangeSubscription = props => {
 
 const orderChangeSubscription = props => {
   const { render, getBookComponentQuery } = props
-  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    // if (pauseUpdates) return
     refetch()
   }
 
@@ -86,10 +110,8 @@ const orderChangeSubscription = props => {
 
 const titleChangeSubscription = props => {
   const { render, getBookComponentQuery } = props
-  // const { pauseUpdates } = statefull
   const { refetch } = getBookComponentQuery
   const triggerRefetch = () => {
-    // if (pauseUpdates) return
     refetch()
   }
 
@@ -104,12 +126,18 @@ const titleChangeSubscription = props => {
 }
 
 const lockChangeSubscription = props => {
-  const { render, getBookComponentQuery } = props
-  // const { pauseUpdates } = statefull
+  const { render, getBookComponentQuery, bookComponentId } = props
   const { refetch } = getBookComponentQuery
-  const triggerRefetch = () => {
-    // if (pauseUpdates) return
-    refetch()
+
+  const triggerRefetch = res => {
+    const { subscriptionData } = res
+    const { data } = subscriptionData
+    const { bookComponentLockUpdated } = data
+    const { id } = bookComponentLockUpdated
+
+    if (id === bookComponentId) {
+      refetch()
+    }
   }
 
   return (
@@ -117,17 +145,15 @@ const lockChangeSubscription = props => {
       onSubscriptionData={triggerRefetch}
       subscription={BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION}
     >
-      {render}
+      {lockUpdated => render({ lockUpdated })}
     </Subscription>
   )
 }
 
 const customTagsSubscription = props => {
   const { render, getCustomTagsQuery } = props
-  // const { pauseUpdates } = statefull
   const { refetch } = getCustomTagsQuery
   const triggerRefetch = () => {
-    // if (pauseUpdates) return
     refetch()
   }
 
@@ -141,10 +167,42 @@ const customTagsSubscription = props => {
   )
 }
 
+const workflowChangeSubscription = props => {
+  const {
+    render,
+    getBookComponentQuery,
+    getWaxRulesQuery,
+    bookComponentId,
+  } = props
+  const { refetch: bookComponentRefetch } = getBookComponentQuery
+  const { refetch: waxRulesRefetch } = getWaxRulesQuery
+
+  const triggerRefetch = res => {
+    const { subscriptionData } = res
+    const { data } = subscriptionData
+    const { bookComponentWorkflowUpdated } = data
+    const { id } = bookComponentWorkflowUpdated
+
+    if (id === bookComponentId) {
+      bookComponentRefetch()
+      waxRulesRefetch()
+    }
+  }
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_WORKFLOW_UPDATED_SUBSCRIPTION}
+    >
+      {workflowUpdated => render({ workflowUpdated })}
+    </Subscription>
+  )
+}
+
 export {
   trackChangeSubscription,
   titleChangeSubscription,
   lockChangeSubscription,
   orderChangeSubscription,
   customTagsSubscription,
+  workflowChangeSubscription,
 }

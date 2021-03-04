@@ -55,18 +55,18 @@ module.exports = (
     $elem.replaceWith(pre)
   }
 
-  const replaceWithParagraph = (className = undefined) => (i, elem) => {
-    const $elem = $(elem)
-    const p = $('<p/>')
-    if (className) {
-      p.attr('class', className).html($elem.html())
+  // const replaceWithParagraph = (className = undefined) => (i, elem) => {
+  //   const $elem = $(elem)
+  //   const p = $('<p/>')
+  //   if (className) {
+  //     p.attr('class', className).html($elem.html())
 
-      $elem.replaceWith(p)
-    } else {
-      p.attr('class', elem.attribs.class).html($elem.html())
-      $elem.replaceWith(p)
-    }
-  }
+  //     $elem.replaceWith(p)
+  //   } else {
+  //     p.attr('class', elem.attribs.class).html($elem.html())
+  //     $elem.replaceWith(p)
+  //   }
+  // }
   const replaceWithSpan = (className = undefined) => (i, elem) => {
     const $elem = $(elem)
     const span = $('<span/>')
@@ -79,8 +79,8 @@ module.exports = (
   }
 
   // replace custom HTML elements
-  $('custom-tag-block').each(replaceWithParagraph())
-  $('custom-tag-inline').each(replaceWithSpan())
+  // $('custom-tag-block').each(replaceWithParagraph())
+  // $('custom-tag-inline').each(replaceWithSpan())
   $('highlighter').each(replaceWithSpan('highlighter'))
   $('script').each(replaceWithPre('pre'))
 
