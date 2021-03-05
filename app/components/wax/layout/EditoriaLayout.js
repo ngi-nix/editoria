@@ -53,6 +53,7 @@ const TopMenu = styled.div`
   min-height: 40px;
   user-select: none;
   background: ${th('colorBackgroundToolBar')}
+  border-top: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-bottom: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
 
   > div:not(:last-child) {

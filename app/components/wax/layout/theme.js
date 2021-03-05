@@ -30,7 +30,7 @@ const cokoTheme = {
   fontInterface: 'Fira Sans Condensed',
   fontHeading: 'Fira Sans Condensed',
   fontReading: 'Vollkorn',
-  fontWriting: 'Merriweather',
+  fontWriting: 'Fira Sans Condensed',
   fontTools: 'Inter',
 
   // font sizes

@@ -110,6 +110,10 @@ export default css`
     line-height: 0;
   }
 
+  strong {
+    font-weight: bold;
+  }
+
   /* Tables */
 
   table {
@@ -246,7 +250,7 @@ export default css`
   [data-track]::before {
     content: '';
     position: absolute;
-    border-left: 2px solid blue;
+    border-left: 2px solid royalblue;
     left: -10px;
     height: 100%;
   }
@@ -393,42 +397,50 @@ export default css`
     padding-top: 2px;
   }
 
-  .custom-tag-inline {
+  span[data-type='inline'] {
     display: inline;
     font-weight: 500;
   }
 
-  custom-tag-inline:before {
+  span[data-type='inline']:before {
     color: #006f19;
     content: ' | ';
     font-weight: 600;
     margin-left: 0;
   }
 
-  custom-tag-inline:after {
+  span[data-type='inline']:after {
     color: #006f19;
     content: ' | ';
     display: inline;
     font-weight: 600;
   }
 
-  custom-tag-block {
+  p[data-type='block'] {
     display: block;
     margin-top: 1em;
   }
 
-  custom-tag-block:before {
+  p[data-type='block']:before {
     color: #006f19;
-    content: '|';
+    content: '⌜';
     display: inline;
     font-weight: 600;
+    font-size: 22px;
+    position: relative;
+    top: 2px;
+    left: 6px;
   }
 
-  custom-tag-block:after {
+  p[data-type='block']:after {
     color: #006f19;
-    content: '|';
+    content: '⌟';
     display: inline;
     font-weight: 600;
+    font-size: 22px;
+    position: relative;
+    top: 5px;
+    right: 6px;
   }
 
   .transform-icon {
