@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { isEqual } from 'lodash'
+import { isEqual, debounce } from 'lodash'
 import styled from 'styled-components'
 import { Wax } from 'wax-prosemirror-core'
 import { EditoriaLayout } from '../layout'
@@ -12,7 +12,7 @@ const WaxContainer = styled.div`
   width: 100%;
 `
 
-const handleUnlock = (id, unlockBookComponent) => {
+const handleUnlock = (id, unlockBookComponent, setLocked) => {
   unlockBookComponent({
     variables: {
       input: {
@@ -22,7 +22,7 @@ const handleUnlock = (id, unlockBookComponent) => {
   })
 }
 
-const handleLock = (id, lockBookComponent, setShouldUnlock) =>
+const handleLock = (id, lockBookComponent, setLocked) => {
   lockBookComponent({
     variables: {
       input: {
@@ -30,8 +30,9 @@ const handleLock = (id, lockBookComponent, setShouldUnlock) =>
       },
     },
   })
+}
 
-const handleSave = (content, id, updateBookComponentContent) =>
+const handleSave = (content, id, updateBookComponentContent) => {
   updateBookComponentContent({
     variables: {
       input: {
@@ -40,6 +41,7 @@ const handleSave = (content, id, updateBookComponentContent) =>
       },
     },
   })
+}
 
 const handleTitleUpdate = (title, id, renameBookComponent) => {
   renameBookComponent({
@@ -78,13 +80,9 @@ const Editoria = ({
   user,
   tags,
 }) => {
-  const onUnload = () => {
-    handleUnlock(bookComponentId, unlockBookComponent)
-  }
-
-  const updateTitle = title => {
+  const updateTitle = debounce(title => {
     handleTitleUpdate(title, bookComponentId, renameBookComponent)
-  }
+  }, 1000)
 
   const handleAssetManager = () => onAssetManager(bookId)
 
@@ -170,13 +168,17 @@ const Editoria = ({
   configWax.ImageService = { handleAssetManager }
   configWax.CustomTagService.tags = tags
   configWax.CustomTagService.updateTags = handleCustomTags
-
   const isReadOnly =
     translatedEditing === 'selection' || translatedEditing === 'disabled'
   const [workChanged, setWorkChanged] = useState(false)
 
   const previousWorkflow = usePrevious(workflowStages) // reference for checking if the workflowStages actually change
 
+  const onUnload = () => {
+    if (!isReadOnly) {
+      handleUnlock(bookComponentId, unlockBookComponent)
+    }
+  }
   useEffect(() => {
     window.addEventListener('beforeunload', onUnload)
     if (!isReadOnly) {
@@ -211,7 +213,7 @@ const Editoria = ({
     }
   }, [lockChangeTrigger])
   // END OF SECTION
-
+  // console.log('what', locked)
   // SECTION FOR CHANGES IN THE WORKFLOW
   useEffect(() => {
     // this effect sets precedent which is used when the isReadOnly is calculated

@@ -100,9 +100,17 @@ export default css`
     margin-right: 0;
   }
 
-  img {
-    cursor: default;
-    width: 100%;
+  figure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+    img {
+      cursor: default;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+    }
   }
 
   sup,
