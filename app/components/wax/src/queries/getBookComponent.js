@@ -27,6 +27,7 @@ const GET_BOOK_COMPONENT = gql`
         givenName
         isAdmin
         surname
+        id
       }
       nextBookComponent {
         id

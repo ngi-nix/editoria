@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import { get, sortBy } from 'lodash'
+import { get, sortBy, isEmpty } from 'lodash'
 import { adopt } from 'react-adopt'
 import config from 'config'
 import { withRouter } from 'react-router-dom'
@@ -9,7 +9,6 @@ import withModal from '../../common/src/withModal'
 import { Loading } from '../../../ui'
 
 import WaxPubsweet from './WaxPubsweet'
-// import statefull from './Statefull'
 import {
   getBookComponentQuery,
   getCustomTagsQuery,
@@ -29,11 +28,10 @@ import {
   lockChangeSubscription,
   orderChangeSubscription,
   customTagsSubscription,
+  workflowChangeSubscription,
 } from './queries'
 
 const mapper = {
-  // statefull,
-  withModal,
   getBookComponentQuery,
   getCustomTagsQuery,
   getWaxRulesQuery,
@@ -44,6 +42,7 @@ const mapper = {
   lockChangeSubscription,
   orderChangeSubscription,
   customTagsSubscription,
+  workflowChangeSubscription,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
@@ -52,19 +51,25 @@ const mapper = {
   unlockBookComponentMutation,
   uploadFileMutation,
   renameBookComponentMutation,
+  withModal,
 }
-
+// bug
 const getUserWithColor = (teams = []) => {
   const team =
     sortBy(config.authsome.teams, ['weight']).find(teamConfig =>
       teams.some(team => team.role === teamConfig.role),
     ) || {}
-  return team.color
+  if (!isEmpty(team)) {
+    return team.color
+  }
+
+  return {
+    addition: 'royalblue',
+    deletion: 'indianred',
+  }
 }
 
 const mapProps = args => ({
-  // state: args.statefull.state,
-  // setState: args.statefull.setState,
   rules: get(args.getWaxRulesQuery, 'data.getWaxRules'),
   tags: get(args.getCustomTagsQuery, 'data.getCustomTags'),
   bookComponent: get(args.getBookComponentQuery, 'data.getBookComponent'),
@@ -79,6 +84,14 @@ const mapProps = args => ({
   renameBookComponent: args.renameBookComponentMutation.renameBookComponent,
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
+  lockTrigger: get(
+    args.lockChangeSubscription.lockUpdated,
+    'data.bookComponentLockUpdated',
+  ),
+  workflowTrigger: get(
+    args.workflowChangeSubscription.workflowUpdated,
+    'data.bookComponentWorkflowUpdated',
+  ),
   onAssetManager: bookId =>
     new Promise((resolve, reject) => {
       const { withModal } = args
@@ -124,6 +137,18 @@ const mapProps = args => ({
       warning,
     })
   },
+  onWarning: (warning, handler) => {
+    const { withModal } = args
+    const { showModal, hideModal } = withModal
+    const onClick = () => {
+      handler()
+      hideModal()
+    }
+    showModal('unlockedModal', {
+      onConfirm: onClick,
+      warning,
+    })
+  },
   loading: args.getBookComponentQuery.networkStatus === 1,
   waxLoading: args.getWaxRulesQuery.networkStatus === 1,
   teamsLoading: args.getUserTeamsQuery.networkStatus === 1,
@@ -151,6 +176,7 @@ const Connected = props => {
         tags,
         onAssetManager,
         onUnlocked,
+        onWarning,
         rules,
         teams,
         updateTags,
@@ -158,18 +184,22 @@ const Connected = props => {
         updateBookComponentContent,
         updateBookComponentTrackChanges,
         uploadFile,
-        lockBookComponent,
         unlockBookComponent,
+        lockBookComponent,
         renameBookComponent,
         loading,
         waxLoading,
         teamsLoading,
         tagsLoading,
         refetching,
+        lockTrigger,
+        workflowTrigger,
       }) => {
         const user = Object.assign({}, currentUser, {
-          color: getUserWithColor(teams),
+          userColor: getUserWithColor(teams),
+          userId: currentUser.id,
         })
+
         if (
           loading ||
           waxLoading ||
@@ -181,7 +211,6 @@ const Connected = props => {
 
         let editing
         const {
-          lock,
           componentType,
           divisionType,
           id,
@@ -192,8 +221,10 @@ const Connected = props => {
           prevBookComponent,
           bookTitle,
           title,
+          lock,
+          workflowStages,
         } = bookComponent
-        if (lock && lock.userId !== currentUser.id) {
+        if (lock && lock.userId !== user.id) {
           editing = 'preview'
         } else if (rules.canEditPreview) {
           editing = 'preview'
@@ -204,6 +235,7 @@ const Connected = props => {
         } else if (rules.canEditReview) {
           editing = 'review'
         }
+
         return (
           <WaxPubsweet
             addCustomTags={addCustomTags}
@@ -221,9 +253,11 @@ const Connected = props => {
             loading={loading}
             lock={lock}
             lockBookComponent={lockBookComponent}
+            lockTrigger={lockTrigger}
             nextBookComponent={nextBookComponent}
             onAssetManager={onAssetManager}
             onUnlocked={onUnlocked}
+            onWarning={onWarning}
             prevBookComponent={prevBookComponent}
             renameBookComponent={renameBookComponent}
             rules={rules}
@@ -235,9 +269,10 @@ const Connected = props => {
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             updateCustomTags={updateTags}
-            uploadFile={uploadFile}
             user={user}
             waxLoading={waxLoading}
+            workflowStages={workflowStages}
+            workflowTrigger={workflowTrigger}
           />
         )
       }}

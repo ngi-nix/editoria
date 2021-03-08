@@ -49,13 +49,6 @@ const PreviewArea = styled.div`
   }
 `
 
-const handlePrint = e => {
-  e.preventDefault()
-  const pri = document.getElementById('printBook').contentWindow
-  pri.focus()
-  pri.print()
-}
-
 const handleDownload = hashed => e => {
   e.preventDefault()
   axios.get(`/api/fileserver/paged/${hashed}/index.html`).then(res => {
@@ -115,7 +108,6 @@ const PagedStyler = ({
             }
             title="Save"
           />
-          <Button label="Print" onClick={handlePrint} title="Print" />
           <Button
             label="Download HTML"
             onClick={handleDownload(hashed)}

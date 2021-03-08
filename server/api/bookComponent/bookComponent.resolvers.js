@@ -26,6 +26,7 @@ const {
   Book,
   BookTranslation,
   Lock,
+  User,
 } = require('../../data-model/src').models
 
 const {
@@ -60,8 +61,6 @@ const {
   useCaseXSweet,
 } = require('../useCases')
 
-// const DOCX_TO_HTML = 'DOCX_TO_HTML'
-
 const getOrderedBookComponents = async bookComponent => {
   const divisions = await Division.findByField(
     'bookId',
@@ -85,7 +84,6 @@ const getBookComponent = async (_, { id }, ctx) => {
 }
 
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
-  // const jobQueue = await connectToJobQueue()
   try {
     const pubsub = await getPubsub()
     const itemsToProcess = []
@@ -641,9 +639,7 @@ module.exports = {
       }
     },
     async divisionType(bookComponent, _, ctx) {
-      // console.log('in here')
       const division = await Division.findById(bookComponent.divisionId)
-      // console.log('division', division)
       return division.label
     },
     async divisionId(bookComponent, _, ctx) {
@@ -677,12 +673,11 @@ module.exports = {
     },
     async lock(bookComponent, _, ctx) {
       let locked = null
-
       const lock = await Lock.query()
         .where('foreignId', bookComponent.id)
         .andWhere('deleted', false)
       if (lock.length > 0) {
-        const user = await ctx.connectors.User.fetchOne(lock[0].userId, ctx)
+        const user = await User.findById(lock[0].userId)
         locked = {
           created: lock[0].created,
           username: user.username,
@@ -690,24 +685,16 @@ module.exports = {
           surname: user.surname,
           isAdmin: user.admin,
           userId: lock[0].userId,
+          id: lock[0].id,
         }
       }
       return locked
     },
     async componentTypeOrder(bookComponent, _, ctx) {
-      // return 1
       const { componentType } = bookComponent
-      // const division = await Division.query().where(
-      //   'id',
-      //   bookComponent.divisionId,
-      // )
       const sortedPerDivision = await ctx.connectors.DivisionLoader.model.bookComponents.load(
         bookComponent.divisionId,
       )
-      // console.log('sorted', sortedPerDivision)
-      // const sortedPerDivision = await BookComponent.query()
-      //   .whereIn('id', division[0].bookComponents)
-      //   .andWhere('deleted', false)
       const groupedByType = groupBy(
         pullAll(sortedPerDivision, [undefined]),
         'componentType',
@@ -725,10 +712,6 @@ module.exports = {
       const bookComponentState = await ctx.connectors.BookComponentStateLoader.model.state.load(
         bookComponent.id,
       )
-      // const bookComponentState = await BookComponentState.query().where(
-      //   'bookComponentId',
-      //   bookComponent.id,
-      // )
       return bookComponentState[0].uploading
     },
     async pagination(bookComponent, _, ctx) {
@@ -797,20 +780,10 @@ module.exports = {
       },
     },
     bookComponentLockUpdated: {
-      subscribe: async () => {
+      subscribe: async (payload, variables, context, info) => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED)
       },
-      // async subscribe(rootValue, args, context) {
-      //   const pubsub = await pubsubManager.getPubsub()
-      //   return withFilter(
-      //     () => pubsub.asyncIterator(BOOK_COMPONENT_LOCK_UPDATED),
-      //     (payload, variables) =>
-      //       variables.bookComponentIds.includes(
-      //         payload.bookComponentLockUpdated.id,
-      //       ),
-      //   )(rootValue, args, context)
-      // },
     },
     bookComponentTypeUpdated: {
       subscribe: async () => {

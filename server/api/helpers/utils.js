@@ -136,5 +136,6 @@ utils.imageFinder = imageFinder
 utils.writeLocallyFromReadStream = writeLocallyFromReadStream
 utils.saveDataLocally = saveDataLocally
 utils.zipper = zipper
+utils.dirContents = dirContents
 
 module.exports = utils

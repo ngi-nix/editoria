@@ -1,11 +1,8 @@
 import React from 'react'
 import { Form } from 'formik'
 import { override } from '@pubsweet/ui-toolkit'
-import { ValidatedFieldFormik } from '@pubsweet/ui'
-import styled from 'styled-components'
-import { isEmpty } from 'lodash'
-
 import {
+  ValidatedFieldFormik,
   CenteredColumn,
   Link,
   H1,
@@ -13,6 +10,8 @@ import {
   Button,
   TextField,
 } from '@pubsweet/ui'
+import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 
 const FormContainer = styled.div`
   ${override('Login.FormContainer')};
@@ -28,7 +27,11 @@ const validateEmail = value => {
   let error
   if (!value) {
     error = 'Required'
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+  } else if (
+    !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+      value,
+    ) // https://www.w3resource.com/javascript/form/email-validation.php
+  ) {
     error = 'Invalid email address'
   }
   return error
@@ -116,58 +119,56 @@ const Signup = ({
   status,
   handleSubmit,
   logo = null,
-}) => {
-  return (
-    <CenteredColumn small>
-      {logo && (
-        <Logo>
-          <img alt="pubsweet-logo" src={`${logo}`} />
-        </Logo>
-      )}
-      <FormContainer>
-        <H1>Sign up</H1>
+}) => (
+  <CenteredColumn small>
+    {logo && (
+      <Logo>
+        <img alt="pubsweet-logo" src={`${logo}`} />
+      </Logo>
+    )}
+    <FormContainer>
+      <H1>Sign up</H1>
 
-        {error && <ErrorText>{error}</ErrorText>}
-        {status && <SuccessText>User created</SuccessText>}
+      {error && <ErrorText>{error}</ErrorText>}
+      {status && <SuccessText>User created</SuccessText>}
 
-        <Form onSubmit={handleSubmit}>
-          <ValidatedFieldFormik
-            component={GivenNameInput}
-            name="givenName"
-            validate={validateNames}
-          />
-          <ValidatedFieldFormik
-            component={SurnameInput}
-            name="surname"
-            validate={validateNames}
-          />
-          <ValidatedFieldFormik
-            component={UsernameInput}
-            name="username"
-            validate={validateUsername}
-          />
-          <ValidatedFieldFormik
-            component={EmailInput}
-            name="email"
-            validate={validateEmail}
-          />
-          <ValidatedFieldFormik
-            component={PasswordInput}
-            name="password"
-            validate={validatePassword}
-          />
-          <Button primary type="submit" disabled={error || !isEmpty(errors)}>
-            Sign up
-          </Button>
-        </Form>
+      <Form onSubmit={handleSubmit}>
+        <ValidatedFieldFormik
+          component={GivenNameInput}
+          name="givenName"
+          validate={validateNames}
+        />
+        <ValidatedFieldFormik
+          component={SurnameInput}
+          name="surname"
+          validate={validateNames}
+        />
+        <ValidatedFieldFormik
+          component={UsernameInput}
+          name="username"
+          validate={validateUsername}
+        />
+        <ValidatedFieldFormik
+          component={EmailInput}
+          name="email"
+          validate={validateEmail}
+        />
+        <ValidatedFieldFormik
+          component={PasswordInput}
+          name="password"
+          validate={validatePassword}
+        />
+        <Button disabled={error || !isEmpty(errors)} primary type="submit">
+          Sign up
+        </Button>
+      </Form>
 
-        <div>
-          <span>Already have an account? </span>
-          <Link to="/login">Login</Link>
-        </div>
-      </FormContainer>
-    </CenteredColumn>
-  )
-}
+      <div>
+        <span>Already have an account? </span>
+        <Link to="/login">Login</Link>
+      </div>
+    </FormContainer>
+  </CenteredColumn>
+)
 
 export default Signup

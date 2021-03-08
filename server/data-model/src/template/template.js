@@ -1,7 +1,13 @@
 const { Model } = require('objection')
 const remove = require('lodash/remove')
 const Base = require('../editoriaBase')
-const { id, stringNotEmpty, string, targetType, notesType } = require('../helpers').schema
+const {
+  id,
+  stringNotEmpty,
+  string,
+  targetType,
+  notesType,
+} = require('../helpers').schema
 
 class Template extends Base {
   constructor(properties) {
