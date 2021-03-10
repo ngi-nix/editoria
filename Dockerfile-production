@@ -34,6 +34,8 @@ RUN yarn pubsweet build
 # IMAGE FOR RUNNING
 FROM node:12.20-alpine as server
 
+RUN apk add --no-cache git python make g++
+
 WORKDIR /home/node/editoria
 
 RUN chown -R node:node .
