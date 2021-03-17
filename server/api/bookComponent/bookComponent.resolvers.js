@@ -41,6 +41,7 @@ const {
   BOOK_COMPONENT_LOCK_UPDATED,
   BOOK_COMPONENT_TYPE_UPDATED,
   BOOK_COMPONENT_TOC_UPDATED,
+  BOOK_COMPONENT_UNLOCKED_BY_ADMIN,
 } = require('./consts')
 
 const { pubsubManager } = pubsweetServer
@@ -331,14 +332,33 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
-
+    // console.log('user', ctx.user)
+    const lock = await Lock.query()
+      .where('foreignId', id)
+      .andWhere('deleted', false)
     await useCaseUnlockBookComponent(id)
 
     const updatedBookComponent = await BookComponent.findById(id)
 
-    pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
-      bookComponentLockUpdated: updatedBookComponent,
-    })
+    const user = await User.findById(ctx.user)
+
+    // const lockUser = await User.findById(lock[0].userId)
+
+    if (user.admin && lock[0].userId !== ctx.user) {
+      await pubsub.publish(BOOK_COMPONENT_UNLOCKED_BY_ADMIN, {
+        bookComponentUnlockedByAdmin: {
+          bookComponentId: id,
+          unlocked: true,
+        },
+      })
+      await pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
+        bookComponentLockUpdated: updatedBookComponent,
+      })
+    } else {
+      await pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
+        bookComponentLockUpdated: updatedBookComponent,
+      })
+    }
 
     return updatedBookComponent
   } catch (e) {
@@ -351,7 +371,6 @@ const lockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
-
     await useCaseLockBookComponent(id, ctx.user)
 
     const bookComponent = await BookComponent.findById(id)
@@ -795,6 +814,12 @@ module.exports = {
       subscribe: async () => {
         const pubsub = await pubsubManager.getPubsub()
         return pubsub.asyncIterator(BOOK_COMPONENT_TOC_UPDATED)
+      },
+    },
+    bookComponentUnlockedByAdmin: {
+      subscribe: async () => {
+        const pubsub = await pubsubManager.getPubsub()
+        return pubsub.asyncIterator(BOOK_COMPONENT_UNLOCKED_BY_ADMIN)
       },
     },
   },

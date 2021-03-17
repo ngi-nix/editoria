@@ -1,53 +1,7 @@
 import React from 'react'
 
-import UnlockModal from './UnlockModal'
-import { ButtonWithIcon, DefaultButton } from './Button'
-import { th } from '@pubsweet/ui-toolkit'
-import styled, { css } from 'styled-components'
 import { Action as UIAction, ActionGroup as UIActionGroup } from '@pubsweet/ui'
-
-const StyledButton = styled(ButtonWithIcon)`
-  /* background: #828282; */
-  span {
-    font-size: 16px;
-    line-height: 18px;
-    padding:2px;
-  }
-  color: #828282; 
-  svg {
-    width: 16px;
-    height: 16px;
-    fill: #828282;
-  }
-
-  &:disabled {
-    /* background: #828282; */
-    svg {
-      /* fill: ${th('colorBackground')}; */
-    }
-  }
-
-  &:not(:disabled):hover {
-    /* background-color: black; */
-    cursor: pointer;
-    /* color: ${th('colorBackground')}; */
-    svg {
-      /* fill: ${th('colorBackground')}; */
-    }
-  }
-  &:not(:disabled):active {
-    /* background-color: black; */
-    cursor: pointer;
-    /* color: ${th('colorBackground')}; */
-    outline: none;
-    svg {
-      /* fill: ${th('colorBackground')}; */
-    }
-  }
-  &:focus {
-    outline: 0;
-  }
-`
+import styled, { css } from 'styled-components'
 
 const underlineFade = css`
   &:before {
@@ -148,13 +102,12 @@ const EditingNotification = ({
   goToEditor,
   title,
 }) => {
-  const { givenName, surname, username, created, isAdmin } = lock
-  let message
-  if (isAdmin === null || isAdmin === true) {
-    message = 'locked'
-  } else {
-    message = `locked`
-  }
+  const { username, created } = lock
+  // if (isAdmin === null || isAdmin === true) {
+  //   message = 'locked'
+  // } else {
+  //   message = `locked`
+  // }
 
   let hoverTitle
 
@@ -186,35 +139,17 @@ const EditingNotification = ({
     const date = formatDate(created)
     hoverTitle = `${username} has been editing since ${date}`
   }
-  const icon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-    </svg>
-  )
 
   return (
     <ActionGroup>
-      <Action onClick={goToEditor}>Preview</Action>
+      <Action onClick={() => goToEditor(true)}>Preview</Action>
       <Action
         disabled={!currentUser.admin}
-        title={hoverTitle}
         onClick={() => onAdminUnlock(bookComponentId, componentType, title)}
+        title={hoverTitle}
       >
-        {currentUser.admin ? 'Unlock':'Locked'}
+        {currentUser.admin ? 'Unlock' : 'Locked'}
       </Action>
-      {/* <StyledButton
-        icon={icon}
-        label={message}
-        title={hoverTitle}
-        onClick={() => onAdminUnlock(bookComponentId, componentType, title)}
-        disabled={!currentUser.admin}
-      /> */}
     </ActionGroup>
   )
 }

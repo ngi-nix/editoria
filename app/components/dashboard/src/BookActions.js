@@ -93,9 +93,9 @@ const ActionGroup = styled(UIActionGroup)`
   }
 `
 
-const renderEdit = bookId => {
-  return <Action to={`/books/${bookId}/book-builder`}>Edit</Action>
-}
+const renderEdit = bookId => (
+  <Action to={`/books/${bookId}/book-builder`}>Edit</Action>
+)
 
 const renderRename = (
   isRenaming,
@@ -103,9 +103,12 @@ const renderRename = (
   onClickSave,
   canRenameBooks,
 ) => {
-
   if (isRenaming && canRenameBooks) {
-    return <Action onClick={onClickSave}>Save</Action>
+    return (
+      <Action key="book-rename" onClick={onClickSave}>
+        Save
+      </Action>
+    )
   }
 
   return canRenameBooks && <Action onClick={onClickRename}>Rename</Action>
@@ -116,7 +119,13 @@ const renderRemove = (book, onDeleteBook, canDeleteBooks) => {
     onDeleteBook(book.id, book.title)
   }
 
-  return canDeleteBooks && <Action onClick={handleClick}>Delete</Action>
+  return (
+    canDeleteBooks && (
+      <Action key="book-remove" onClick={handleClick}>
+        Delete
+      </Action>
+    )
+  )
 }
 
 const renderArchive = (book, onArchiveBook, canArchiveBooks) => {
@@ -125,7 +134,13 @@ const renderArchive = (book, onArchiveBook, canArchiveBooks) => {
     onArchiveBook(book.id, book.title, archived)
   }
   const label = archived ? 'Unarchive' : 'Archive'
-  return canArchiveBooks && <Action onClick={handleClick}>{label}</Action>
+  return (
+    canArchiveBooks && (
+      <Action key="book-archive" onClick={handleClick}>
+        {label}
+      </Action>
+    )
+  )
 }
 const Actions = props => {
   const {
@@ -136,7 +151,6 @@ const Actions = props => {
     isRenaming,
     onClickRename,
     onClickSave,
-    archiveBook,
     onDeleteBook,
     onArchiveBook,
   } = props

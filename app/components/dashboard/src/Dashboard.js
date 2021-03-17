@@ -40,7 +40,7 @@ const Dashboard = ({
   return (
     <Container>
       {collections.map(collection => (
-        <Fragment>
+        <Fragment key={collection.id}>
           <DashboardHeader
             canAddBooks={rules.canAddBooks}
             collectionId={collection.id}

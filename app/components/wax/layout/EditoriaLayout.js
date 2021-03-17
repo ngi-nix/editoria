@@ -32,7 +32,7 @@ const Wrapper = styled.div`
   background: ${th('colorBackground')};
   font-family: ${th('fontInterface')};
   font-size: ${th('fontSizeBase')};
-
+  line-height: 16px;
   display: flex;
   flex-direction: column;
 
@@ -52,7 +52,7 @@ const TopMenu = styled.div`
   display: flex;
   min-height: 40px;
   user-select: none;
-  background: ${th('colorBackgroundToolBar')}
+  background: ${th('colorBackgroundToolBar')};
   border-top: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   border-bottom: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
 
@@ -61,8 +61,7 @@ const TopMenu = styled.div`
       ${th('colorFurniture')};
   }
 
-
-  > div:nth-last-of-type(-n+2) {
+  > div:nth-last-of-type(-n + 2) {
     margin-left: auto;
   }
 
@@ -71,7 +70,7 @@ const TopMenu = styled.div`
     margin-right: ${grid(5)};
   }
 
-  > div[data-name="Tables"]{
+  > div[data-name='Tables'] {
     border-right: none;
   }
 `
@@ -180,8 +179,8 @@ const InfoContainer = styled.div`
   z-index: 999;
 `
 
-let surfaceHeight = 600
-let notesHeight = 200
+let surfaceHeight = (window.innerHeight / 5) * 3
+let notesHeight = (window.innerHeight / 5) * 2
 
 const onResizeEnd = arr => {
   surfaceHeight = arr[0].size
@@ -249,7 +248,7 @@ const EditoriaLayout = ({ editor }) => {
 
   return (
     <ThemeProvider theme={cokoTheme}>
-      <Wrapper style={fullScreenStyles}>
+      <Wrapper id="wax-container" style={fullScreenStyles}>
         <TopMenu>
           <MainMenuToolBar />
         </TopMenu>

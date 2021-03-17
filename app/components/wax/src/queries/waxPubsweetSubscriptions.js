@@ -47,6 +47,15 @@ const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   }
 `
 
+const BOOK_COMPONENT_UNLOCKED_BY_ADMIN_SUBSCRIPTION = gql`
+  subscription BookComponentUnLockByAdmin {
+    bookComponentUnlockedByAdmin {
+      bookComponentId
+      unlocked
+    }
+  }
+`
+
 const BOOK_COMPONENT_ORDER_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentOrderUpdated {
     bookComponentOrderUpdated {
@@ -150,6 +159,30 @@ const lockChangeSubscription = props => {
   )
 }
 
+const unlockedByAdminSubscription = props => {
+  const { render, getBookComponentQuery, bookComponentId } = props
+  const { refetch } = getBookComponentQuery
+
+  const triggerRefetch = res => {
+    const { subscriptionData } = res
+    const { data } = subscriptionData
+    const { bookComponentUnlockedByAdmin } = data
+    const { bookComponentId: id } = bookComponentUnlockedByAdmin
+
+    if (id === bookComponentId) {
+      refetch()
+    }
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={BOOK_COMPONENT_UNLOCKED_BY_ADMIN_SUBSCRIPTION}
+    >
+      {unlocked => render({ unlocked })}
+    </Subscription>
+  )
+}
 const customTagsSubscription = props => {
   const { render, getCustomTagsQuery } = props
   const { refetch } = getCustomTagsQuery
@@ -205,4 +238,5 @@ export {
   orderChangeSubscription,
   customTagsSubscription,
   workflowChangeSubscription,
+  unlockedByAdminSubscription,
 }

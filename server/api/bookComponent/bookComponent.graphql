@@ -20,6 +20,11 @@ type Lock {
   id: ID
 }
 
+type UnlockedByAdmin {
+  bookComponentId: ID!
+  unlocked: Boolean!
+}
+
 input LockInput {
   userId: ID!
 }
@@ -128,4 +133,5 @@ extend type Subscription {
   bookComponentTypeUpdated: BookComponent!
   bookComponentUploadingUpdated: BookComponent!
   bookComponentTOCToggled: BookComponent!
+  bookComponentUnlockedByAdmin: UnlockedByAdmin!
 }

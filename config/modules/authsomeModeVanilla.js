@@ -265,10 +265,11 @@ class EditoriaMode {
   async canInteractWithBookComponents() {
     await this.getUser()
     const collection = this.object
-    const permissions = await this.checkTeamMembers(
-      ['isAssignedProductionEditor', 'isAssignedCopyEditor'],
-      collection,
-    )
+    const permissions =
+      (await this.checkTeamMembers(
+        ['isAssignedProductionEditor', 'isAssignedCopyEditor'],
+        collection,
+      )) || (await this.isGlobalProductionEditor())
 
     return permissions
   }

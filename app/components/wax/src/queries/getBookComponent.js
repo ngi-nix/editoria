@@ -33,11 +33,17 @@ const GET_BOOK_COMPONENT = gql`
         id
         title
         bookId
+        lock {
+          id
+        }
       }
       prevBookComponent {
         id
         title
         bookId
+        lock {
+          id
+        }
       }
       content
     }

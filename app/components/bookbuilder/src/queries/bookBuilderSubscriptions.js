@@ -60,6 +60,15 @@ const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
       id
+      lock {
+        id
+        userId
+        username
+        created
+        givenName
+        isAdmin
+        surname
+      }
     }
   }
 `

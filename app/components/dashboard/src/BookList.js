@@ -55,7 +55,6 @@ BookList.propTypes = {
       title: PropTypes.string,
     }),
   ).isRequired,
-  container: PropTypes.any.isRequired,
   remove: PropTypes.func.isRequired,
   renameBook: PropTypes.func.isRequired,
 }
