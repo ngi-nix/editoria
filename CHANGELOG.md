@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://gitlab.coko.foundation///compare/v1.4.0...v1.4.1) (2021-03-17)
+
+
+### Bug Fixes
+
+* **app:** locks, editor layout, images, copypaste ([6299a83](https://gitlab.coko.foundation///commit/6299a83f281b4ad531522c65ccd1f89257df2368))
+* **docker:** missing git added ([689bfe0](https://gitlab.coko.foundation///commit/689bfe0140fd2ea09917a823c423f76d3b603ab9))
+
 ## [1.4.0](https://gitlab.coko.foundation///compare/v1.3.3...v1.4.0) (2021-03-08)
 
 
