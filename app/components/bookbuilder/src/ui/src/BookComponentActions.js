@@ -1,12 +1,9 @@
 import { get } from 'lodash'
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
-// import Authorize from 'pubsweet-client/src/helpers/Authorize'
-// import DeleteModal from './DeleteModal'
-import EditingNotification from './EditingNotification'
-import { DefaultButton } from './Button'
 import { Action as UIAction, ActionGroup as UIActionGroup } from '@pubsweet/ui'
+
+import EditingNotification from './EditingNotification'
 
 const underlineFade = css`
   &:before {
@@ -138,16 +135,20 @@ const BookComponentActions = ({
     onDeleteBookComponent(bookComponentId, componentType, title)
   }
 
-  const goToEditor = () => {
+  const goToEditor = (preview = undefined) => {
     if (uploading) return
-    history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
+    if (preview) {
+      history.push(`/books/${bookId}/bookComponents/${bookComponentId}/preview`)
+    } else {
+      history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
+    }
   }
   if (componentType === 'toc') return null
   if (!isLocked) {
     return (
       <ActionGroup componentType={componentType} lock={lock}>
         {componentType !== 'endnotes' && (
-          <Action disabled={uploading} onClick={goToEditor}>
+          <Action disabled={uploading} onClick={() => goToEditor()}>
             {canViewFragmentEdit ? 'Edit' : 'View'}
           </Action>
         )}

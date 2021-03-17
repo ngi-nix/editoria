@@ -40,6 +40,8 @@ const GET_BOOK = gql`
             value
           }
           lock {
+            id
+            userId
             username
             created
             givenName

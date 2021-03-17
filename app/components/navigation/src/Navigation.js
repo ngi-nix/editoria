@@ -12,16 +12,20 @@ const StyledLogo = styled.img`
 `
 const navLinksBuilder = location => {
   const inDashboard =
-    location.pathname.match(/books/g) &&
-    !location.pathname.match(/bookComponents/g) &&
-    !location.pathname.match(/book-builder/g)
-  const inTemplates = location.pathname.match(/templates/g)
-
+    (location.pathname.match(/books/g) &&
+      location.pathname.match(/books/g).length === 1 &&
+      !location.pathname.match(/bookComponents/g) &&
+      !location.pathname.match(/book-builder/g)) ||
+    false
+  const inTemplates =
+    (location.pathname.match(/templates/g) &&
+      location.pathname.match(/templates/g).length === 1) ||
+    false
   const navLinksLeft = [
-    <NavBarLink active={inDashboard} to="/books">
+    <NavBarLink active={inDashboard} key="nav-books" to="/books">
       Books
     </NavBarLink>,
-    <NavBarLink active={inTemplates} to="/templates">
+    <NavBarLink active={inTemplates} key="nav-templates" to="/templates">
       Templates
     </NavBarLink>,
   ]

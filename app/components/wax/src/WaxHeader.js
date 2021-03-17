@@ -58,8 +58,12 @@ const Header = styled.div`
   }
 `
 
-const createUrl = (bookId, bookComponentId) =>
-  `/books/${bookId}/bookComponents/${bookComponentId}`
+const createUrl = (bookId, bookComponentId, hasLock) => {
+  if (hasLock) {
+    return `/books/${bookId}/bookComponents/${bookComponentId}/preview`
+  }
+  return `/books/${bookId}/bookComponents/${bookComponentId}`
+}
 
 const WaxHeader = ({
   nextBookComponent,
@@ -74,7 +78,7 @@ const WaxHeader = ({
         <Fragment>
           <StyledNavLinks
             position="left"
-            to={createUrl(bookId, prevBookComponent.id)}
+            to={createUrl(bookId, prevBookComponent.id, prevBookComponent.lock)}
           >
             <Icon>{previousIcon}</Icon>
             <Text>{`${prevBookComponent.title || 'Untitled'}`}</Text>
@@ -93,7 +97,7 @@ const WaxHeader = ({
         <Fragment>
           <StyledNavLinks
             position="right"
-            to={createUrl(bookId, nextBookComponent.id)}
+            to={createUrl(bookId, nextBookComponent.id, nextBookComponent.lock)}
           >
             <Text>{`${nextBookComponent.title || 'Untitled'}`}</Text>
             <Icon>{nextIcon}</Icon>

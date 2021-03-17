@@ -156,7 +156,7 @@ const sendPasswordResetEmail = async (_, { username }, ctx) => {
 
   let url = config.get('pubsweet-server.baseUrl')
 
-  if (servesClient !== 'true') {
+  if (servesClient === 'true') {
     if (externalServerURL && externalServerURL !== 'null') {
       url = externalServerURL
     } else {

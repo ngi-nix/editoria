@@ -93,15 +93,14 @@ export default (
               component={BookBuilder}
               path="/books/:id/book-builder"
             />
-
             <PrivateRoute
               component={Wax}
+              exact
               path="/books/:bookId/bookComponents/:bookComponentId"
             />
             <PrivateRoute
               component={Wax}
-              exact
-              path="/books/:bookId/bookComponents/:bookComponentId/preview"
+              path="/books/:bookId/bookComponents/:bookComponentId/:mode"
             />
             <PrivateRoute component={GlobalTeamsManager} path="/globalTeams" />
           </Switch>

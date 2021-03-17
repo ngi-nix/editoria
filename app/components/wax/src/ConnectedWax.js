@@ -29,6 +29,7 @@ import {
   orderChangeSubscription,
   customTagsSubscription,
   workflowChangeSubscription,
+  unlockedByAdminSubscription,
 } from './queries'
 
 const mapper = {
@@ -43,6 +44,7 @@ const mapper = {
   orderChangeSubscription,
   customTagsSubscription,
   workflowChangeSubscription,
+  unlockedByAdminSubscription,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
@@ -85,8 +87,8 @@ const mapProps = args => ({
   lockBookComponent: args.lockBookComponentMutation.lockBookComponent,
   unlockBookComponent: args.unlockBookComponentMutation.unlockBookComponent,
   lockTrigger: get(
-    args.lockChangeSubscription.lockUpdated,
-    'data.bookComponentLockUpdated',
+    args.unlockedByAdminSubscription.unlocked,
+    'data.bookComponentUnlockedByAdmin',
   ),
   workflowTrigger: get(
     args.workflowChangeSubscription.workflowUpdated,
@@ -162,7 +164,7 @@ const Composed = adopt(mapper, mapProps)
 
 const Connected = props => {
   const { match, history, currentUser } = props
-  const { bookId, bookComponentId } = match.params
+  const { bookId, bookComponentId, mode } = match.params
 
   return (
     <Composed
@@ -234,6 +236,10 @@ const Connected = props => {
           editing = 'selection'
         } else if (rules.canEditReview) {
           editing = 'review'
+        }
+
+        if (mode && mode === 'preview') {
+          editing = 'preview'
         }
 
         return (

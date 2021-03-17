@@ -192,28 +192,24 @@ const Editoria = ({
   }, [])
 
   // SECTION FOR UNLOCKED BY ADMIN
-  const lockChangeTrigger =
-    lockTrigger &&
-    lockTrigger.id === bookComponentId &&
-    lockTrigger.lock &&
-    lockTrigger.lock.id
-
   useEffect(() => {
-    if (lockTrigger) {
-      if (!lockTrigger.lock && bookComponentLock && !isReadOnly) {
-        // Had the lock and lost it. The isReadOnly is used for the case of navigating between chapters with different permissions
-        const onConfirm = () => {
-          history.push(`/books/${bookId}/book-builder`)
-        }
-        onUnlocked(
-          'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
-          onConfirm,
-        )
+    if (
+      !isReadOnly &&
+      lockTrigger &&
+      lockTrigger.bookComponentId === bookComponentId
+    ) {
+      // Had the lock and lost it. The isReadOnly is used for the case of navigating between chapters with different permissions
+      const onConfirm = () => {
+        history.push(`/books/${bookId}/book-builder`)
       }
+      onUnlocked(
+        'The admin just unlocked this book component!! You will be redirected back to the Book Builder.',
+        onConfirm,
+      )
     }
-  }, [lockChangeTrigger])
+  }, [lockTrigger])
   // END OF SECTION
-  // console.log('what', locked)
+
   // SECTION FOR CHANGES IN THE WORKFLOW
   useEffect(() => {
     // this effect sets precedent which is used when the isReadOnly is calculated
@@ -223,7 +219,7 @@ const Editoria = ({
         setWorkChanged(true)
       }
     }
-  }, [workflowStages])
+  }, [workflowTrigger])
 
   useEffect(() => {
     if (workChanged && !isReadOnly) {

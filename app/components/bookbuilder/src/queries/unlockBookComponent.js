@@ -6,6 +6,15 @@ const UNLOCK_BOOK_COMPONENT = gql`
   mutation UnlockBookComponent($input: UpdateBookComponentInput!) {
     unlockBookComponent(input: $input) {
       id
+      lock {
+        id
+        userId
+        username
+        created
+        givenName
+        isAdmin
+        surname
+      }
     }
   }
 `

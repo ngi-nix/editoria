@@ -82,7 +82,6 @@ const DashboardHeader = props => {
 
 DashboardHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  toggle: PropTypes.func.isRequired,
 }
 
 export default DashboardHeader

@@ -6,7 +6,7 @@ import withLink from '../../../../common/src/withLink'
 
 const Container = styled.div`
   padding: 0;
-  padding-top:3px;
+  padding-top: 3px;
   /* margin-right: ${th('gridUnit')}; */
   flex-basis: ${({ lock, componentType }) =>
     lock && componentType !== 'part' ? '83%' : '88%'};
