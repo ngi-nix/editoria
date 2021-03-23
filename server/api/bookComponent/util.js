@@ -1,6 +1,6 @@
 const waait = require('waait')
 const { db } = require('@pubsweet/db-manager')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 
 const cheerio = require('cheerio')
 const find = require('lodash/find')

@@ -1,5 +1,5 @@
 const { createTemplate, getTemplates } = require('../utils/utils')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const indexOf = require('lodash/indexOf')
 const map = require('lodash/map')
 const isNil = require('lodash/isNil')

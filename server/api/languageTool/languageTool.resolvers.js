@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const config = require('config')
 
 const spellChecker = async (_, { language, text }, ctx) => {

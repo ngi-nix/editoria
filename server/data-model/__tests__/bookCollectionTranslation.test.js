@@ -1,4 +1,4 @@
-const { dbCleaner } = require('pubsweet-server/test')
+const { dbCleaner } = require('./helpers')
 
 const { BookCollection, BookCollectionTranslation } = require('../src').models
 

@@ -1,11 +1,9 @@
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const { ApplicationParameter } = require('../../data-model/src').models
 
-const pubsweetServer = require('pubsweet-server')
+const { pubsubManager } = require('@coko/server')
 
 const { UPDATE_APPLICATION_PARAMETERS } = require('./consts')
-
-const { pubsubManager } = pubsweetServer
 
 const getApplicationParameters = async (_, args, ctx) => {
   const { context, area } = args

@@ -6,7 +6,7 @@ const querystring = require('querystring')
 const config = require('config')
 const crypto = require('crypto')
 const { send: sendMail } = require('@pubsweet/component-send-email')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const { User } = require('@pubsweet/models')
 
 const isValidUser = ({ surname, givenName }) => surname && givenName

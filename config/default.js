@@ -59,7 +59,8 @@ module.exports = {
   },
   'pubsweet-server': {
     db: {},
-    enableExperimentalGraphql: true,
+    useGraphQLServer: true,
+    useJobQueue: false,
     graphiql: true,
     tokenExpiresIn: '360 days',
     servesClient: true,

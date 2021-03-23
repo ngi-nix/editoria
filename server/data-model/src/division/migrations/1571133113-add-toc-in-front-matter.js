@@ -7,7 +7,7 @@ const {
   BookComponentTranslation,
   Division,
 } = require('@pubsweet/models')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const find = require('lodash/find')
 const map = require('lodash/map')
 const assign = require('lodash/assign')

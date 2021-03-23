@@ -5,9 +5,8 @@ const {
   File,
   FileTranslation,
   BookComponent,
-  BookComponentTranslation,
 } = require('../../data-model/src').models
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 
 const { deleteFiles: deleteRemoteFiles, signURL } = require('./objectStorage')
 const { imageFinder } = require('../helpers/utils')

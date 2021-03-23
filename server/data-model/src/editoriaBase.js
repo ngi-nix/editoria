@@ -3,8 +3,8 @@
   All other Editoria models will (and should) extend this class.
 */
 
-const BaseModel = require('@pubsweet/base-model')
-const each = require('lodash/each')
+const { BaseModel } = require('@coko/server')
+// const each = require('lodash/each')
 
 class EditoriaBase extends BaseModel {
   $beforeInsert() {

@@ -1,4 +1,4 @@
-const pubsweetServer = require('pubsweet-server')
+const { pubsubManager } = require('@coko/server')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
 const assign = require('lodash/assign')
@@ -6,10 +6,8 @@ const omitBy = require('lodash/omitBy')
 const isNil = require('lodash/isNil')
 const filter = require('lodash/filter')
 const config = require('config')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const exporter = require('./utils/exporter')
-
-const { pubsubManager } = pubsweetServer
 
 const {
   BOOK_CREATED,

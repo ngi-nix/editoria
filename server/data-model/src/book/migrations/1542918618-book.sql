@@ -1,4 +1,5 @@
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 create table book (
   -- base
   id uuid primary key,

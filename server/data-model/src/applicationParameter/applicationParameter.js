@@ -1,6 +1,6 @@
 // TO DO -- review foreign id and foreign type
 
-const BaseModel = require('@pubsweet/base-model')
+const { BaseModel } = require('@coko/server')
 const { stringNotEmpty } = require('../helpers').schema
 
 class ApplicationParameter extends BaseModel {

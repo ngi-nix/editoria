@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const db = require('@pubsweet/db-manager/src/db')
 
 const {

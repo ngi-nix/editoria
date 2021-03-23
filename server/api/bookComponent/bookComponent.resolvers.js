@@ -13,9 +13,8 @@ const { extractFragmentProperties, replaceImageSrc } = require('./util')
 const { writeLocallyFromReadStream } = require('../helpers/utils')
 const fs = require('fs-extra')
 
-const logger = require('@pubsweet/logger')
-const pubsweetServer = require('pubsweet-server')
-const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
+const { logger } = require('@coko/server')
+const { pubsubManager } = require('@coko/server')
 const crypto = require('crypto')
 
 const {
@@ -43,8 +42,6 @@ const {
   BOOK_COMPONENT_TOC_UPDATED,
   BOOK_COMPONENT_UNLOCKED_BY_ADMIN,
 } = require('./consts')
-
-const { pubsubManager } = pubsweetServer
 
 const {
   useCaseAddBookComponent,
@@ -86,7 +83,7 @@ const getBookComponent = async (_, { id }, ctx) => {
 
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   try {
-    const pubsub = await getPubsub()
+    const pubsub = await pubsubManager.getPubsub()
     const itemsToProcess = []
 
     const bookComponents = await Promise.all(
@@ -608,14 +605,15 @@ module.exports = {
     async nextBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
 
-      const excludeBookComponent = await BookComponent.query()
-        .whereIn('componentType', ['toc', 'endnotes'])
-        .map(bookComponent => bookComponent.id)
-
-      const newOrderedComponent = difference(
-        orderedComponent,
-        excludeBookComponent,
+      const excludeBookComponent = await BookComponent.query().whereIn(
+        'componentType',
+        ['toc', 'endnotes'],
       )
+      const transformed = excludeBookComponent.map(
+        bookComponent => bookComponent.id,
+      )
+
+      const newOrderedComponent = difference(orderedComponent, transformed)
       const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )
@@ -637,14 +635,15 @@ module.exports = {
     },
     async prevBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
-      const excludeBookComponent = await BookComponent.query()
-        .whereIn('componentType', ['toc', 'endnotes'])
-        .map(bookComponent => bookComponent.id)
-
-      const newOrderedComponent = difference(
-        orderedComponent,
-        excludeBookComponent,
+      const excludeBookComponent = await BookComponent.query().whereIn(
+        'componentType',
+        ['toc', 'endnotes'],
       )
+      const transformed = excludeBookComponent.map(
+        bookComponent => bookComponent.id,
+      )
+
+      const newOrderedComponent = difference(orderedComponent, transformed)
       const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )

@@ -1,11 +1,9 @@
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const { CustomTag } = require('../../data-model/src').models
 
 const { CUSTOM_TAG_UPDATED } = require('./consts')
 
-const pubsweetServer = require('pubsweet-server')
-
-const { pubsubManager } = pubsweetServer
+const { pubsubManager } = require('@coko/server')
 
 const getCustomTags = async (_, input, ctx) => {
   const customTags = await CustomTag.query().where({ deleted: false })

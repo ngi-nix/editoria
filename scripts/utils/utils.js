@@ -1,5 +1,5 @@
 const { exec } = require('child_process')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 
 const map = require('lodash/map')
 const path = require('path')

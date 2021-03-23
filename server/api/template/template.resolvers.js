@@ -8,8 +8,9 @@ const crypto = require('crypto')
 const { writeFileSync, createReadStream } = require('fs')
 const fs = require('fs-extra')
 const config = require('config')
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const mime = require('mime-types')
+const { pubsubManager } = require('@coko/server')
 
 const uploadsPath = config.get('pubsweet-server').uploads
 const { Template, File } = require('../../data-model/src').models
@@ -17,10 +18,6 @@ const { Template, File } = require('../../data-model/src').models
 const { mimetypeHelpers } = require('../../common')
 
 const { isSupportedAsset } = mimetypeHelpers
-
-const pubsweetServer = require('pubsweet-server')
-
-const { pubsubManager } = pubsweetServer
 
 const {
   TEMPLATE_CREATED,
