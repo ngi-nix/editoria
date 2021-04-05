@@ -46,6 +46,7 @@ const Wrapper = styled.div`
 const Main = styled.div`
   display: flex;
   flex-grow: 1;
+  height: calc(100% - 40px);
 `
 
 const TopMenu = styled.div`
@@ -79,7 +80,7 @@ const SideMenu = styled.div`
   background: ${th('colorBackgroundToolBar')}
   border-right: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   min-width: 250px;
-  height: 81%;
+  height: calc(100% - 16px);
 `
 
 const EditorArea = styled.div`
@@ -103,7 +104,7 @@ const EditorContainer = styled.div`
 
   .ProseMirror {
     box-shadow: 0 0 8px #ecedf1;
-    min-height: 90%;
+    min-height: 98%;
     padding: ${grid(10)};
   }
 `
@@ -162,7 +163,6 @@ const NotesAreaContainer = styled.div`
 `
 
 const NotesContainer = styled.div`
-  box-shadow: 0 0 8px #ecedf1;
   counter-reset: footnote-view;
   display: flex;
   flex-direction: column;

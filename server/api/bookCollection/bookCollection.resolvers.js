@@ -1,4 +1,4 @@
-const pubsweetServer = require('pubsweet-server')
+const { pubsubManager } = require('@coko/server')
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
@@ -6,8 +6,6 @@ const {
   BookCollectionTranslation,
   BookTranslation,
 } = require('../../data-model/src').models
-
-const { pubsubManager } = pubsweetServer
 
 const { COLLECTION_ADDED } = require('./consts')
 
@@ -110,9 +108,7 @@ module.exports = {
         sorter.push('title')
       }
       const sorted = orderBy(sortable, sorter, [order])
-      const result = map(sorted, item => {
-        return find(books, { id: item.id })
-      })
+      const result = map(sorted, item => find(books, { id: item.id }))
       return result
     },
   },

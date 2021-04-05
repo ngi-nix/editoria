@@ -336,14 +336,18 @@ const generateContentOPF = async (book, epubFolder) => {
 
   book.divisions.forEach((division, divisionId) => {
     division.bookComponents.forEach((bookComponent, bookComponentId) => {
-      const { id, componentType } = bookComponent
+      const { id, componentType, hasMath } = bookComponent
       spineData.push({
         '@idref': `comp-number-${id}`,
       })
+
       const tempManifestItem = {
         '@href': `Text/comp-number-${id}.xhtml`,
         '@id': `comp-number-${id}`,
         '@media-type': 'application/xhtml+xml',
+      }
+      if (hasMath) {
+        tempManifestItem['@properties'] = 'mathml'
       }
       if (componentType === 'toc') {
         tempManifestItem['@properties'] = 'nav'
@@ -372,6 +376,7 @@ const generateContentOPF = async (book, epubFolder) => {
       '@media-type': `${stylesheets[i].mimetype}`,
     })
   }
+
   manifestData.push({
     '@href': `toc.ncx`,
     '@id': 'ncx',
@@ -460,7 +465,7 @@ const convertToXML = async content => {
       } else if (!result.output) {
         reject(new Error('The document failed to parse'))
       } else {
-        console.warn(result.errlog)
+        // console.warn(result.errlog)
         try {
           resolve(result.output.toString())
         } catch (err) {

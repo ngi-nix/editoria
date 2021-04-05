@@ -66,21 +66,13 @@ const BookComponentTitle = ({
   componentType,
   title,
 }) => {
-  // const goToEditor = () => {
-  //   if (lock !== null || lock !== undefined || uploading) return
-
-  //   history.push(`/books/${bookId}/bookComponents/${bookComponentId}`)
-  // }
-
   const { config: divisions } = find(applicationParameter, {
     context: 'bookBuilder',
     area: 'divisions',
   })
 
-  // const { componentType } = bookComponent
   const { showNumberBeforeComponents } = find(divisions, ['name', divisionType])
 
-  // console.log('loock', lock)
   const showNumber =
     indexOf(showNumberBeforeComponents, componentType) > -1 || false
 
@@ -96,7 +88,6 @@ const BookComponentTitle = ({
     componentType !== 'toc' &&
     componentType !== 'endnotes'
   ) {
-    // const children = <Title onDoubleClick={goToEditor}>{title}</Title>
     bookComponentTitle = (
       <Title componentType={componentType} showNumber={showNumber}>
         {withLink(title || 'Untitled', url)}

@@ -9,9 +9,7 @@ const {
   Book,
 } = require('../../data-model/src').models
 
-const pubsweetServer = require('pubsweet-server')
-
-const { pubsubManager } = pubsweetServer
+const { pubsubManager } = require('@coko/server')
 
 const { BOOK_COMPONENT_ORDER_UPDATED } = require('./consts')
 

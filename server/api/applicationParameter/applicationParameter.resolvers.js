@@ -1,28 +1,15 @@
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const { ApplicationParameter } = require('../../data-model/src').models
 
-const pubsweetServer = require('pubsweet-server')
+const { pubsubManager } = require('@coko/server')
 
 const { UPDATE_APPLICATION_PARAMETERS } = require('./consts')
-
-const { pubsubManager } = pubsweetServer
 
 const getApplicationParameters = async (_, args, ctx) => {
   const { context, area } = args
   const parameters = await ApplicationParameter.query()
     .skipUndefined()
     .where({ context, area })
-
-  // console.log(parameters)
-
-  // console.log(
-  //   parameters.map(parameter => {
-  //     console.log(parameter.config,11111)
-  //     parameter.config = JSON.parse(parameter.config)
-  //     console.log(parameter.config, 222)
-  //     return parameter
-  //   }),
-  // )
 
   return parameters
 }

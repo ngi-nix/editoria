@@ -1,10 +1,11 @@
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const map = require('lodash/map')
+const { pubsubManager } = require('@coko/server')
+
 const {
   FileTranslation,
   BookComponent,
 } = require('../../data-model/src').models
-const pubsweetServer = require('pubsweet-server')
 
 const {
   useCaseUploadFile,
@@ -22,8 +23,6 @@ const {
 const { imageFinder } = require('../helpers/utils')
 
 const { FILES_UPLOADED, FILE_UPDATED, FILES_DELETED } = require('./consts')
-
-const { pubsubManager } = pubsweetServer
 
 const getEntityFiles = async (_, { input }, ctx) => {
   try {
@@ -117,7 +116,6 @@ const uploadFiles = async (_, { files, entityType, entityId }, ctx) => {
         )
       }),
     )
-    // console.log('up files', uploadFiles)
     pubsub.publish(FILES_UPLOADED, {
       filesUploaded: true,
     })

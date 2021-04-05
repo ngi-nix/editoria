@@ -7,7 +7,7 @@ const get = require('lodash/get')
 const crypto = require('crypto')
 
 const {
-  substanceToHTML,
+  cleanHTML,
   cleanDataIdAttributes,
   vivliostyleDecorator,
 } = require('./converters')
@@ -31,7 +31,7 @@ const {
   useCasePDF,
 } = require('../../useCases')
 
-const EpubBackend = async (
+const ExporterService = async (
   bookId,
   mode,
   templateId,
@@ -75,6 +75,7 @@ const EpubBackend = async (
       endnotesComponent.content = generateContainer(endnotesComponent)
     }
 
+    const shouldMathML = fileExtension === 'epub'
     book.divisions.forEach((division, divisionId) => {
       let counter = 0
       division.bookComponents.forEach((bookComponent, bookComponentId) => {
@@ -84,15 +85,17 @@ const EpubBackend = async (
         if (componentType === 'toc') return
 
         const container = generateContainer(bookComponent, isTheFirstInBody)
-
-        const convertedContent = substanceToHTML(
+        const cleanedContent = cleanHTML(
           container,
           bookComponent,
           notesType,
           tocComponent,
           endnotesComponent,
+          shouldMathML,
         )
-        bookComponent.content = cleanDataIdAttributes(convertedContent)
+        const { hasMath, content } = cleanedContent
+        bookComponent.hasMath = hasMath
+        bookComponent.content = cleanDataIdAttributes(content)
         counter += 1
       })
     })
@@ -200,4 +203,4 @@ const EpubBackend = async (
   }
 }
 
-module.exports = EpubBackend
+module.exports = ExporterService

@@ -1,8 +1,6 @@
-const pubsweetServer = require('pubsweet-server')
-const logger = require('@pubsweet/logger')
+const { pubsubManager } = require('@coko/server')
+const { logger } = require('@coko/server')
 const filter = require('lodash/filter')
-
-const { pubsubManager } = pubsweetServer
 
 const {
   TEAM_MEMBERS_UPDATED,

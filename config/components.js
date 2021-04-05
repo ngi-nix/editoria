@@ -20,6 +20,9 @@ module.exports = [
   './server/data-model/src/team',
   './server/data-model/src/user',
   './server/data-model/src/dataloader',
+  './server/data-model/src/serviceCredential',
+  './server/data-model/src/serviceCallbackToken',
   './server/api',
+  './server/api/rest',
   './server/file-server',
 ]

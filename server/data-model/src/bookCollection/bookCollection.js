@@ -5,10 +5,6 @@
 const { Model } = require('objection')
 
 const Base = require('../editoriaBase')
-// const m = require('../book')
-
-// console.log(model)
-// console.log(Book)
 
 class BookCollection extends Base {
   constructor(properties) {

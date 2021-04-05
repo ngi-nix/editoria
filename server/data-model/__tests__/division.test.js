@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4')
-const { dbCleaner } = require('pubsweet-server/test')
+const { dbCleaner } = require('./helpers')
 const { Book, BookCollection, Division } = require('../src').models
 
 describe('Division', () => {

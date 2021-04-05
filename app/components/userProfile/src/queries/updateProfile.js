@@ -31,13 +31,13 @@ const UPDATE_PERSONAL_INFORMATION = gql`
   }
 `
 
-const UPDATE_USERNAME = gql`
-  mutation UpdateUsername($input: UpdateUsernameInput!) {
-    updateUsername(input: $input) {
-      id
-    }
-  }
-`
+// const UPDATE_USERNAME = gql`
+//   mutation UpdateUsername($input: UpdateUsernameInput!) {
+//     updateUsername(input: $input) {
+//       id
+//     }
+//   }
+// `
 
 const UPDATE_PASSWORD = gql`
   mutation UpdatePassword($input: UpdatePasswordInput!) {
@@ -65,22 +65,22 @@ const UpdatePersonalInformationMutation = props => {
   )
 }
 
-const UpdateUsernameMutation = props => {
-  const { render } = props
+// const UpdateUsernameMutation = props => {
+//   const { render } = props
 
-  const refetchQueries = [
-    { query: CURRENT_USER },
-    { query: GET_CURRENT_USER_PROFILE },
-  ]
+//   const refetchQueries = [
+//     { query: CURRENT_USER },
+//     { query: GET_CURRENT_USER_PROFILE },
+//   ]
 
-  return (
-    <Mutation mutation={UPDATE_USERNAME} refetchQueries={refetchQueries}>
-      {(updateUsername, updateUsernameResponse) =>
-        render({ updateUsername, updateUsernameResponse })
-      }
-    </Mutation>
-  )
-}
+//   return (
+//     <Mutation mutation={UPDATE_USERNAME} refetchQueries={refetchQueries}>
+//       {(updateUsername, updateUsernameResponse) =>
+//         render({ updateUsername, updateUsernameResponse })
+//       }
+//     </Mutation>
+//   )
+// }
 
 const UpdatePasswordMutation = props => {
   const { render } = props
@@ -96,6 +96,6 @@ const UpdatePasswordMutation = props => {
 
 export {
   UpdatePasswordMutation,
-  UpdateUsernameMutation,
+  // UpdateUsernameMutation,
   UpdatePersonalInformationMutation,
 }

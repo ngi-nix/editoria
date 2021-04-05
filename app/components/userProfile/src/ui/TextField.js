@@ -69,11 +69,8 @@ const Field = ({
   const touchedThis = get(touched, name)
 
   const showError = () => {
-    // console.log(error)
     if (!error) return false
     if (touchedThis) return true
-
-    // if (!touchedThis && value) return true
 
     return false
   }

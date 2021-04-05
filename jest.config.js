@@ -10,7 +10,7 @@ module.exports = {
   ],
   coverageDirectory: '<rootDir>/coverage',
   projects: [
-    '<rootDir>/packages/data-model/jest.config.js',
-    '<rootDir>/packages/api/jest.config.js',
+    '<rootDir>/server/data-model/jest.config.js',
+    // '<rootDir>/packages/api/jest.config.js',
   ],
 }

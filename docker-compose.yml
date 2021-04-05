@@ -57,6 +57,7 @@ services:
       - EDITORIA_FLAVOUR=${EDITORIA_FLAVOUR:-VANILLA}
       - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
       - SERVES_CLIENT=${SERVES_CLIENT:-false}
+      - EXTERNAL_SERVER_URL=${EXTERNAL_SERVER_URL:-null}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
@@ -68,6 +69,7 @@ services:
       - ADMIN_SURNAME=${ADMIN_SURNAME:-Adminius}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
       - SERVER_PORT=${SERVER_PORT:-3000}
+      - SERVER_HOST=${SERVER_HOST:-server}
       - CLIENT_PROTOCOL=${CLIENT_PROTOCOL:-http}
       - CLIENT_HOST=${CLIENT_HOST:-0.0.0.0}
       - CLIENT_PORT=${CLIENT_PORT:-4000}
@@ -110,12 +112,6 @@ services:
     volumes:
       - ./config:/home/node/editoria/config
       - ./server:/home/node/editoria/server
-
-  language-tool:
-    image: silviof/docker-languagetool
-    ports:
-      - ${LANGUAGE_PORT:-8010}:8010
-
   epubchecker:
     depends_on:
       - db-epubchecker
@@ -230,8 +226,6 @@ services:
 
   db:
     image: postgres:12-alpine
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
       - POSTGRES_USER=${POSTGRES_USER:-dev_user}

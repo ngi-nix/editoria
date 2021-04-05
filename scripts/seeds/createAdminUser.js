@@ -1,4 +1,4 @@
-const logger = require('@pubsweet/logger')
+const { logger } = require('@coko/server')
 const { editoriaDataModel } = require('../../server/data-model')
 
 const { models } = editoriaDataModel

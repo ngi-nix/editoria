@@ -7,15 +7,13 @@ const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
 const path = require('path')
-const BPromise = require('bluebird')
 const { extractFragmentProperties, replaceImageSrc } = require('./util')
 
 const { writeLocallyFromReadStream } = require('../helpers/utils')
 const fs = require('fs-extra')
 
-const logger = require('@pubsweet/logger')
-const pubsweetServer = require('pubsweet-server')
-const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
+const { logger } = require('@coko/server')
+const { pubsubManager } = require('@coko/server')
 const crypto = require('crypto')
 
 const {
@@ -43,8 +41,6 @@ const {
   BOOK_COMPONENT_TOC_UPDATED,
   BOOK_COMPONENT_UNLOCKED_BY_ADMIN,
 } = require('./consts')
-
-const { pubsubManager } = pubsweetServer
 
 const {
   useCaseAddBookComponent,
@@ -86,8 +82,7 @@ const getBookComponent = async (_, { id }, ctx) => {
 
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   try {
-    const pubsub = await getPubsub()
-    const itemsToProcess = []
+    const pubsub = await pubsubManager.getPubsub()
 
     const bookComponents = await Promise.all(
       bookComponentFiles.map(async bookComponentFile => {
@@ -163,40 +158,11 @@ const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
         pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
           bookComponentUploadingUpdated: updatedBookComponent,
         })
-        itemsToProcess.push({
-          filepath: `${tempFilePath}/${randomFilename}`,
-          componentId,
-          updatedBookComponent,
-        })
 
+        await useCaseXSweet(componentId, `${tempFilePath}/${randomFilename}`)
         return updatedBookComponent
       }),
     )
-    BPromise.mapSeries(itemsToProcess, item => {
-      const { filepath, componentId, updatedBookComponent } = item
-      const uploading = false
-      return useCaseXSweet(filepath)
-        .then(async content => {
-          await useCaseUpdateBookComponentContent(componentId, content, 'en')
-
-          await useCaseUpdateUploading(componentId, uploading)
-
-          pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-            bookComponentUploadingUpdated: updatedBookComponent,
-          })
-          return true
-        })
-        .catch(async err => {
-          const deletedBookComponent = await useCaseDeleteBookComponent(
-            updatedBookComponent,
-          )
-
-          pubsub.publish(BOOK_COMPONENT_DELETED, {
-            bookComponentDeleted: deletedBookComponent,
-          })
-          throw new Error(err)
-        })
-    })
     return bookComponents
   } catch (e) {
     logger.error(e.message)
@@ -332,7 +298,6 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
-    // console.log('user', ctx.user)
     const lock = await Lock.query()
       .where('foreignId', id)
       .andWhere('deleted', false)
@@ -341,8 +306,6 @@ const unlockBookComponent = async (_, { input }, ctx) => {
     const updatedBookComponent = await BookComponent.findById(id)
 
     const user = await User.findById(ctx.user)
-
-    // const lockUser = await User.findById(lock[0].userId)
 
     if (user.admin && lock[0].userId !== ctx.user) {
       await pubsub.publish(BOOK_COMPONENT_UNLOCKED_BY_ADMIN, {
@@ -608,14 +571,15 @@ module.exports = {
     async nextBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
 
-      const excludeBookComponent = await BookComponent.query()
-        .whereIn('componentType', ['toc', 'endnotes'])
-        .map(bookComponent => bookComponent.id)
-
-      const newOrderedComponent = difference(
-        orderedComponent,
-        excludeBookComponent,
+      const excludeBookComponent = await BookComponent.query().whereIn(
+        'componentType',
+        ['toc', 'endnotes'],
       )
+      const transformed = excludeBookComponent.map(
+        bookComponent => bookComponent.id,
+      )
+
+      const newOrderedComponent = difference(orderedComponent, transformed)
       const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )
@@ -637,14 +601,15 @@ module.exports = {
     },
     async prevBookComponent(bookComponent, _, ctx) {
       const orderedComponent = await getOrderedBookComponents(bookComponent)
-      const excludeBookComponent = await BookComponent.query()
-        .whereIn('componentType', ['toc', 'endnotes'])
-        .map(bookComponent => bookComponent.id)
-
-      const newOrderedComponent = difference(
-        orderedComponent,
-        excludeBookComponent,
+      const excludeBookComponent = await BookComponent.query().whereIn(
+        'componentType',
+        ['toc', 'endnotes'],
       )
+      const transformed = excludeBookComponent.map(
+        bookComponent => bookComponent.id,
+      )
+
+      const newOrderedComponent = difference(orderedComponent, transformed)
       const current = newOrderedComponent.findIndex(
         comp => comp === bookComponent.id,
       )

@@ -1,23 +1,11 @@
 const findIndex = require('lodash/findIndex')
 const find = require('lodash/find')
 const { transaction, raw } = require('objection')
-// const flatten = require('lodash/flatten')
-// const difference = require('lodash/difference')
-// const concat = require('lodash/concat')
-// const flattenDeep = require('lodash/flattenDeep')
-// const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
-// const map = require('lodash/flatMapDepth')
 const map = require('lodash/map')
-// const { convertDocx, extractFragmentProperties } = require('./util')
-
 const clone = require('lodash/clone')
 const assign = require('lodash/assign')
-const logger = require('@pubsweet/logger')
-// const pubsweetServer = require('pubsweet-server')
-// const { withFilter } = require('graphql-subscriptions')
-// const { getPubsub } = require('pubsweet-server/src/graphql/pubsub')
-// const crypto = require('crypto')
+const { logger } = require('@coko/server')
 
 const {
   ApplicationParameter,
@@ -25,8 +13,6 @@ const {
   BookComponent,
   BookComponentTranslation,
   Division,
-  // Book,
-  // BookTranslation,
   Lock,
 } = require('../../data-model/src').models
 

@@ -158,76 +158,76 @@ const PersonalInformation = props => {
   )
 }
 
-const Username = props => {
-  const { update, username } = props
+// const Username = props => {
+//   const { update, username } = props
 
-  const initialValues = {
-    username,
-  }
+//   const initialValues = {
+//     username,
+//   }
 
-  const validations = yup.object().shape({
-    username: yup.string().required('Username is required'),
-  })
+//   const validations = yup.object().shape({
+//     username: yup.string().required('Username is required'),
+//   })
 
-  return (
-    <InnerSectionWrapper>
-      <SectionHeader>Username</SectionHeader>
-      <RibbonFeedback
-        keepSpaceOccupied={false}
-        successMessage="Username successfully updated"
-      >
-        {notifyRibbon => {
-          const handleSubmit = (formValues, formikBag) => {
-            update(formValues).then(() => notifyRibbon(true))
-          }
+//   return (
+//     <InnerSectionWrapper>
+//       <SectionHeader>Username</SectionHeader>
+//       <RibbonFeedback
+//         keepSpaceOccupied={false}
+//         successMessage="Username successfully updated"
+//       >
+//         {notifyRibbon => {
+//           const handleSubmit = (formValues, formikBag) => {
+//             update(formValues).then(() => notifyRibbon(true))
+//           }
 
-          return (
-            <Form
-              initialValues={initialValues}
-              onSubmit={handleSubmit}
-              validationSchema={validations}
-            >
-              {formProps => {
-                const {
-                  errors,
-                  handleBlur,
-                  handleChange,
-                  isValid,
-                  touched,
-                  values,
-                } = formProps
+//           return (
+//             <Form
+//               initialValues={initialValues}
+//               onSubmit={handleSubmit}
+//               validationSchema={validations}
+//             >
+//               {formProps => {
+//                 const {
+//                   errors,
+//                   handleBlur,
+//                   handleChange,
+//                   isValid,
+//                   touched,
+//                   values,
+//                 } = formProps
 
-                const disabled =
-                  values.username === initialValues.username || !isValid
+//                 const disabled =
+//                   values.username === initialValues.username || !isValid
 
-                return (
-                  <Fragment>
-                    <TextField
-                      error={errors.username}
-                      handleBlur={handleBlur}
-                      handleChange={handleChange}
-                      label="Username"
-                      name="username"
-                      touched={touched}
-                      value={values.username}
-                    />
+//                 return (
+//                   <Fragment>
+//                     <TextField
+//                       error={errors.username}
+//                       handleBlur={handleBlur}
+//                       handleChange={handleChange}
+//                       label="Username"
+//                       name="username"
+//                       touched={touched}
+//                       value={values.username}
+//                     />
 
-                    <Button
-                      disabled={disabled}
-                      label="Change username"
-                      title="Change username"
-                      type="submit"
-                    />
-                  </Fragment>
-                )
-              }}
-            </Form>
-          )
-        }}
-      </RibbonFeedback>
-    </InnerSectionWrapper>
-  )
-}
+//                     <Button
+//                       disabled={disabled}
+//                       label="Change username"
+//                       title="Change username"
+//                       type="submit"
+//                     />
+//                   </Fragment>
+//                 )
+//               }}
+//             </Form>
+//           )
+//         }}
+//       </RibbonFeedback>
+//     </InnerSectionWrapper>
+//   )
+// }
 
 const Password = props => {
   const { update } = props
@@ -364,11 +364,11 @@ const UserProfile = props => {
     loading,
     updatePassword,
     updatePersonalInformation,
-    updateUsername,
+    // updateUsername,
   } = props
 
   if (loading) return <Loading />
-  const { givenName, surname, username } = data
+  const { givenName, surname } = data
 
   return (
     <Container>
@@ -382,7 +382,7 @@ const UserProfile = props => {
             surname={surname}
             update={updatePersonalInformation}
           />
-          <Username update={updateUsername} username={username} />
+          {/* <Username update={updateUsername} username={username} /> */}
           <Password update={updatePassword} />
         </SectionWrapper>
       </InnerWrapper>
