@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://gitlab.coko.foundation///compare/v1.4.1...v1.4.2) (2021-04-05)
+
+
+### Bug Fixes
+
+* **app:** ui fixes, queque, new wax ([21c4b4e](https://gitlab.coko.foundation///commit/21c4b4e8c259684bb4acccffef6b947eb44c2e8e))
+* **app:** wax 2 layout fixes ([dee0cb8](https://gitlab.coko.foundation///commit/dee0cb836add66c3eb08742be60d2ddf0e38e3ab))
+
 ### [1.4.1](https://gitlab.coko.foundation///compare/v1.4.0...v1.4.1) (2021-03-17)
 
 
