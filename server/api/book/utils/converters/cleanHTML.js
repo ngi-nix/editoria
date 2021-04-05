@@ -1,5 +1,6 @@
 const hljs = require('highlight.js')
 const cheerio = require('cheerio')
+const katex = require('katex')
 
 module.exports = (
   container,
@@ -7,6 +8,7 @@ module.exports = (
   notesType,
   tocComponent,
   endnotesComponent = undefined,
+  shouldMathML,
 ) => {
   const {
     title,
@@ -17,6 +19,7 @@ module.exports = (
     id,
   } = bookComponent
   const toc = cheerio.load(tocComponent.content)
+  let hasMath = false
 
   if (includeInTOC) {
     const li = `<li class="toc-${division} toc-${componentType}"><a href="#comp-number-${id}"><span class="name">${title ||
@@ -42,47 +45,39 @@ module.exports = (
   const endnotes = endnotesComponent && cheerio.load(endnotesComponent.content)
   const outerContainer = cheerio.load(container)
 
-  const replaceWithPre = className => (i, elem) => {
+  $('pre code').each((i, elem) => {
     const $elem = $(elem)
-    const { source } = $elem[0].attribs
-    let { language } = $elem[0].attribs
-    if (language === 'htmlmixed') {
-      language = 'html'
-    }
-    const highLighter = hljs.highlight(language, source)
-    const pre = $(`<pre class="${language}"/>`).append(highLighter.value)
-
+    const res = hljs.highlightAuto($elem.text())
+    const { language, value } = res
+    const pre = $(`<pre class="${language}"/>`)
+    const code = $('<code/>').append(value)
+    pre.append(code)
     $elem.replaceWith(pre)
-  }
+  })
 
-  // const replaceWithParagraph = (className = undefined) => (i, elem) => {
-  //   const $elem = $(elem)
-  //   const p = $('<p/>')
-  //   if (className) {
-  //     p.attr('class', className).html($elem.html())
-
-  //     $elem.replaceWith(p)
-  //   } else {
-  //     p.attr('class', elem.attribs.class).html($elem.html())
-  //     $elem.replaceWith(p)
-  //   }
-  // }
-  const replaceWithSpan = (className = undefined) => (i, elem) => {
+  $('math-inline').each((i, elem) => {
     const $elem = $(elem)
+    const html = katex.renderToString($elem.text(), {
+      output: shouldMathML ? 'mathml' : 'html',
+    })
     const span = $('<span/>')
-    if (className) {
-      span.attr('class', className).html($elem.html())
-    } else {
-      span.attr('class', elem.attribs.class).html($elem.html())
-    }
+      .attr('class', 'math-node')
+      .html(html)
     $elem.replaceWith(span)
-  }
+    hasMath = true
+  })
 
-  // replace custom HTML elements
-  // $('custom-tag-block').each(replaceWithParagraph())
-  // $('custom-tag-inline').each(replaceWithSpan())
-  $('highlighter').each(replaceWithSpan('highlighter'))
-  $('script').each(replaceWithPre('pre'))
+  $('math-display').each((i, elem) => {
+    const $elem = $(elem)
+    const html = katex.renderToString($elem.text(), {
+      output: shouldMathML ? 'mathml' : 'html',
+    })
+    const div = $('<div/>')
+      .attr('class', 'math-node')
+      .html(html)
+    $elem.replaceWith(div)
+    hasMath = true
+  })
 
   // chapter title
   $('h1').each((i, elem) => {
@@ -331,5 +326,5 @@ module.exports = (
       outerContainer('section').append(chapterEndnotes('body').html())
     }
   }
-  return outerContainer('body').html()
+  return { content: outerContainer('body').html(), hasMath }
 }

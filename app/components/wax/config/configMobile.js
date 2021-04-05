@@ -41,9 +41,7 @@ import invisibles, {
   // paragraph,
 } from '@guardian/prosemirror-invisibles'
 
-const updateTitle = title => {
-  // console.log(title)
-}
+const updateTitle = title => {}
 
 export default {
   MenuService: [

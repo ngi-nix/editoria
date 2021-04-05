@@ -12,19 +12,6 @@ class EditoriaBase extends BaseModel {
     this.deleted = false
   }
 
-  // $parseDatabaseJson(json) {
-  //   json = super.$parseDatabaseJson(json)
-  //   // console.log('constu', this.constructor.jsonSchema)
-  //   each(this.constructor.jsonSchema.properties, (schema, prop) => {
-  //     if (schema.format === 'date') {
-  //       console.log('in if', json[prop])
-  //       json[prop] = json[prop] && new Date(json[prop])
-  //       console.log('in if after', json[prop])
-  //     }
-  //   })
-  //   return json
-  // }
-
   static get schema() {
     return {
       type: 'object',

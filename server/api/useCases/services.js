@@ -4,9 +4,14 @@ const get = require('lodash/get')
 const path = require('path')
 const axios = require('axios')
 const FormData = require('form-data')
+const crypto = require('crypto')
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 
+const {
+  ServiceCredential,
+  ServiceCallbackToken,
+} = require('../../data-model/src').models
 const {
   saveDataLocally,
   writeLocallyFromReadStream,
@@ -17,6 +22,7 @@ const {
   signURL,
   deleteFiles,
 } = require('../useCases/objectStorage')
+
 // CONSTS
 const EPUBCHECKER = 'epub-checker'
 const ICML = 'icml'
@@ -24,12 +30,6 @@ const PAGEDJS = 'pagedjs'
 const XSWEET = 'xsweet'
 
 const services = config.get('services')
-const accessTokens = {
-  'epub-checker': undefined,
-  icml: undefined,
-  pagedjs: undefined,
-  xsweet: undefined,
-}
 
 const serviceHandshake = async which => {
   if (!services) {
@@ -46,17 +46,30 @@ const serviceHandshake = async which => {
   const base64data = buff.toString('base64')
 
   const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
+  const serviceHealthCheck = await axios({
+    method: 'get',
+    url: `${serverUrl}/healthcheck`,
+  })
 
+  const { data: healthCheckData } = serviceHealthCheck
+  const { message } = healthCheckData
+  if (message !== 'Coolio') {
+    throw new Error(`service ${which} is down`)
+  }
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
       url: `${serverUrl}/api/auth`,
       headers: { authorization: `Basic ${base64data}` },
     })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { accessToken } = data
-        accessTokens[which] = accessToken
-        resolve(`${which} service handshake done`)
+        await ServiceCredential.query()
+          .patch({
+            accessToken,
+          })
+          .where({ name: which })
+        resolve()
       })
       .catch(err => {
         const { response } = err
@@ -73,13 +86,19 @@ const serviceHandshake = async which => {
 }
 
 const epubcheckerHandler = async epubPath => {
-  if (!get(accessTokens, `${EPUBCHECKER}`)) {
+  const serviceCredential = await ServiceCredential.query().where({
+    name: EPUBCHECKER,
+  })
+  if (serviceCredential.length === 0) {
+    throw new Error(`no service credentials for service ${EPUBCHECKER}`)
+  }
+  const { accessToken } = serviceCredential[0]
+  if (!accessToken) {
     await serviceHandshake(EPUBCHECKER)
   }
   const service = get(services, EPUBCHECKER)
   const { port, protocol, host } = service
   const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
-  // const form = new FormData()
   const deconstruct = epubPath.split('/')
   const epubName = deconstruct[deconstruct.length - 1]
   const { original } = await uploadFile(
@@ -88,13 +107,13 @@ const epubcheckerHandler = async epubPath => {
     'application/epub+zip',
   )
   const EPUBPath = await signURL('getObject', original.key)
-  // form.append('epub', fs.createReadStream(epubPath))
+
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
       url: `${serverUrl}/api/epubchecker/link`,
       headers: {
-        authorization: `Bearer ${get(accessTokens, `${EPUBCHECKER}`)}`,
+        authorization: `Bearer ${accessToken}`,
       },
       data: { EPUBPath },
     })
@@ -111,44 +130,24 @@ const epubcheckerHandler = async epubPath => {
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
-          accessTokens[EPUBCHECKER] = undefined
+          await serviceHandshake(EPUBCHECKER)
+          return epubcheckerHandler(epubPath)
         }
         return reject(
           new Error(`Request failed with status ${status} and message: ${msg}`),
         )
       })
   })
-  // return new Promise((resolve, reject) => {
-  //   axios({
-  //     method: 'post',
-  //     url: `${serverUrl}/api/epubchecker`,
-  //     headers: {
-  //       authorization: `Bearer ${get(accessTokens, `${EPUBCHECKER}`)}`,
-  //       ...form.getHeaders(),
-  //     },
-  //     data: form,
-  //   })
-  //     .then(({ data }) => {
-  //       resolve(data)
-  //     })
-  //     .catch(err => {
-  //       const { response } = err
-  //       if (!response) {
-  //         return reject(new Error(`Request failed with message: ${err.code}`))
-  //       }
-  //       const { status, data } = response
-  //       const { msg } = data
-  //       if (status === 401 && msg === 'expired token') {
-  //         accessTokens[EPUBCHECKER] = undefined
-  //       }
-  //       return reject(
-  //         new Error(`Request failed with status ${status} and message: ${msg}`),
-  //       )
-  //     })
-  // })
 }
 const icmlHandler = async icmlTempPath => {
-  if (!get(accessTokens, `${ICML}`)) {
+  const serviceCredential = await ServiceCredential.query().where({
+    name: ICML,
+  })
+  if (serviceCredential.length === 0) {
+    throw new Error(`no service credentials for service ${ICML}`)
+  }
+  const { accessToken } = serviceCredential[0]
+  if (!accessToken) {
     await serviceHandshake(ICML)
   }
   const service = get(services, ICML)
@@ -163,7 +162,7 @@ const icmlHandler = async icmlTempPath => {
       method: 'post',
       url: `${serverUrl}/api/htmlToICML`,
       headers: {
-        authorization: `Bearer ${get(accessTokens, `${ICML}`)}`,
+        authorization: `Bearer ${accessToken}`,
         ...form.getHeaders(),
       },
       data: form,
@@ -172,7 +171,7 @@ const icmlHandler = async icmlTempPath => {
         await saveDataLocally(icmlTempPath, 'index.icml', res.data, 'utf-8')
         resolve()
       })
-      .catch(err => {
+      .catch(async err => {
         const { response } = err
         if (!response) {
           return reject(new Error(`Request failed with message: ${err.code}`))
@@ -181,7 +180,8 @@ const icmlHandler = async icmlTempPath => {
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
-          accessTokens[ICML] = undefined
+          await serviceHandshake(ICML)
+          return icmlHandler(icmlTempPath)
         }
 
         return reject(
@@ -192,7 +192,14 @@ const icmlHandler = async icmlTempPath => {
 }
 
 const pdfHandler = async (zipPath, outputPath, filename) => {
-  if (!get(accessTokens, `${PAGEDJS}`)) {
+  const serviceCredential = await ServiceCredential.query().where({
+    name: PAGEDJS,
+  })
+  if (serviceCredential.length === 0) {
+    throw new Error(`no service credentials for service ${PAGEDJS}`)
+  }
+  const { accessToken } = serviceCredential[0]
+  if (!accessToken) {
     await serviceHandshake(PAGEDJS)
   }
   const service = get(services, PAGEDJS)
@@ -207,7 +214,7 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
       method: 'post',
       url: `${serverUrl}/api/htmlToPDF`,
       headers: {
-        authorization: `Bearer ${get(accessTokens, `${PAGEDJS}`)}`,
+        authorization: `Bearer ${accessToken}`,
         ...form.getHeaders(),
       },
       responseType: 'stream',
@@ -222,7 +229,7 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
         )
         resolve()
       })
-      .catch(err => {
+      .catch(async err => {
         const { response } = err
         if (!response) {
           return reject(new Error(`Request failed with message: ${err.code}`))
@@ -231,7 +238,8 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
-          accessTokens[PAGEDJS] = undefined
+          await serviceHandshake(PAGEDJS)
+          return pdfHandler(zipPath, outputPath, filename)
         }
 
         return reject(
@@ -241,10 +249,16 @@ const pdfHandler = async (zipPath, outputPath, filename) => {
   })
 }
 
-const xsweetHandler = async filePath => {
+const xsweetHandler = async (bookComponentId, filePath) => {
   try {
-    if (!get(accessTokens, `${XSWEET}`)) {
-      // console.log('get the jwt', accessTokens[XSWEET])
+    const serviceCredential = await ServiceCredential.query().where({
+      name: XSWEET,
+    })
+    if (serviceCredential.length === 0) {
+      throw new Error(`no service credentials for service ${XSWEET}`)
+    }
+    const { accessToken, id } = serviceCredential[0]
+    if (!accessToken) {
       await serviceHandshake(XSWEET)
     }
     const service = get(services, XSWEET)
@@ -253,24 +267,44 @@ const xsweetHandler = async filePath => {
 
     const form = new FormData()
     form.append('docx', fs.createReadStream(filePath))
+    form.append('serviceCredentialId', id)
+    form.append('bookComponentId', bookComponentId)
+    const serviceCallbackToken = await ServiceCallbackToken.query().insert({
+      bookComponentId,
+      serviceCredentialId: id,
+      responseToken: crypto.randomBytes(32).toString('hex'),
+    })
+    const { responseToken, id: serviceCallbackTokenId } = serviceCallbackToken
+    form.append('responseToken', responseToken)
+    form.append('serviceCallbackTokenId', serviceCallbackTokenId)
+    const servesClient = config.get('pubsweet-server.servesClient')
+    const externalServerURL = config.get('pubsweet-server.externalServerURL')
+
+    let url = config.get('pubsweet-server.baseUrl')
+
+    if (servesClient === 'true') {
+      if (externalServerURL && externalServerURL !== 'null') {
+        url = externalServerURL
+      }
+    }
+    form.append('callbackURL', url)
 
     return new Promise((resolve, reject) => {
       axios({
         method: 'post',
         url: `${serverUrl}/api/docxToHTML`,
         headers: {
-          authorization: `Bearer ${get(accessTokens, `${XSWEET}`)}`,
+          authorization: `Bearer ${accessToken}`,
           ...form.getHeaders(),
         },
         data: form,
       })
         .then(async ({ data }) => {
-          const { html } = data
+          const { msg } = data
           await fs.remove(filePath)
-          resolve(html)
+          resolve(msg)
         })
         .catch(async err => {
-          // console.log('res', res)
           const { response } = err
           if (!response) {
             return reject(new Error(`Request failed with message: ${err.code}`))
@@ -279,7 +313,7 @@ const xsweetHandler = async filePath => {
           const { msg } = data
           if (status === 401 && msg === 'expired token') {
             // retry if expiration happened in the meantime
-            accessTokens[XSWEET] = undefined
+            await serviceHandshake(XSWEET)
             await fs.remove(filePath)
             return xsweetHandler(filePath)
           }
@@ -297,7 +331,14 @@ const xsweetHandler = async filePath => {
 }
 
 const pagedPreviewerLinkHandler = async dirPath => {
-  if (!get(accessTokens, `${PAGEDJS}`)) {
+  const serviceCredential = await ServiceCredential.query().where({
+    name: PAGEDJS,
+  })
+  if (serviceCredential.length === 0) {
+    throw new Error(`no service credentials for service ${PAGEDJS}`)
+  }
+  const { accessToken } = serviceCredential[0]
+  if (!accessToken) {
     await serviceHandshake(PAGEDJS)
   }
   const service = get(services, PAGEDJS)
@@ -314,7 +355,7 @@ const pagedPreviewerLinkHandler = async dirPath => {
       method: 'post',
       url: `${serverUrl}/api/getPreviewerLink`,
       headers: {
-        authorization: `Bearer ${get(accessTokens, `${PAGEDJS}`)}`,
+        authorization: `Bearer ${accessToken}`,
         ...form.getHeaders(),
       },
       data: form,
@@ -323,7 +364,7 @@ const pagedPreviewerLinkHandler = async dirPath => {
         await fs.remove(zipPath)
         resolve(data)
       })
-      .catch(err => {
+      .catch(async err => {
         const { response } = err
         if (!response) {
           return reject(new Error(`Request failed with message: ${err.code}`))
@@ -332,7 +373,8 @@ const pagedPreviewerLinkHandler = async dirPath => {
         const { status, data } = response
         const { msg } = data
         if (status === 401 && msg === 'expired token') {
-          accessTokens[PAGEDJS] = undefined
+          await serviceHandshake(PAGEDJS)
+          return pagedPreviewerLinkHandler(dirPath)
         }
         return reject(
           new Error(`Request failed with status ${status} and message: ${msg}`),

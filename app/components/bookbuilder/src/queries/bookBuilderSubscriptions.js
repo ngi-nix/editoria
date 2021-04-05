@@ -392,30 +392,6 @@ const bookRenamedSubscription = props => {
   )
 }
 
-// const docxToHTMLJobSubscription = props => {
-//   const { render, ingestWordFilesMutation } = props
-
-//   const { id } = (
-//     ((ingestWordFilesMutation || {}).ingestWordFilesResult || {}).data || {}
-//   ).createDocxToHTMLJob || { id: false }
-
-//   if (!id) return render()
-
-//   const triggerRefetch = data => {
-//     console.log(data)
-//   }
-
-//   return (
-//     <Subscription
-//       onSubscriptionData={triggerRefetch}
-//       subscription={DOCX_TO_HTML_JOB}
-//       variables={{ jobId: id }}
-//     >
-//       {render}
-//     </Subscription>
-//   )
-// }
-
 const runningHeadersUpdatedSubscription = props => {
   const { render, getBookQuery, statefull } = props
   const { pauseUpdates } = statefull
@@ -436,7 +412,6 @@ const runningHeadersUpdatedSubscription = props => {
 }
 
 const uploadingUpdatedSubscription = props => {
-  // const { render, getBookQuery, statefull } = props
   const { render, getBookQuery, getBookBuilderRulesQuery, statefull } = props
   const { pauseUpdates } = statefull
   const { refetch } = getBookQuery
@@ -470,7 +445,6 @@ export {
   componentTypeChangeSubscription,
   addTeamMemberSubscription,
   bookMetadataSubscription,
-  // docxToHTMLJobSubscription,
   bookComponentIncludeInTOCSubscription,
   runningHeadersUpdatedSubscription,
   uploadingUpdatedSubscription,

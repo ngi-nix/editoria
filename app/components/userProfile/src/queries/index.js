@@ -1,5 +1,5 @@
 export {
-  UpdateUsernameMutation,
+  // UpdateUsernameMutation,
   UpdatePasswordMutation,
   UpdatePersonalInformationMutation,
 } from './updateProfile'

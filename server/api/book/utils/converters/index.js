@@ -1,5 +1,5 @@
 module.exports = {
-  substanceToHTML: require('./substanceToHTML'),
+  cleanHTML: require('./cleanHTML'),
   cleanDataIdAttributes: require('./cleanDataIdAttributes'),
   vivliostyleDecorator: require('./vivliostyleDecorator'),
   epubDecorator: require('./epubDecorator'),

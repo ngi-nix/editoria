@@ -5,7 +5,7 @@ const startsWith = require('lodash/startsWith')
 const querystring = require('querystring')
 const config = require('config')
 const crypto = require('crypto')
-const { send: sendMail } = require('@pubsweet/component-send-email')
+const { sendEmail } = require('@coko/server')
 const { logger } = require('@coko/server')
 const { User } = require('@pubsweet/models')
 
@@ -189,7 +189,7 @@ const sendPasswordResetEmail = async (_, { username }, ctx) => {
 
   logger.info(`Sending password reset email to ${user.email}`)
 
-  await sendMail({
+  await sendEmail({
     from: configSender,
     to: user.email,
     subject: 'Password reset',

@@ -116,7 +116,6 @@ const uploadFiles = async (_, { files, entityType, entityId }, ctx) => {
         )
       }),
     )
-    // console.log('up files', uploadFiles)
     pubsub.publish(FILES_UPLOADED, {
       filesUploaded: true,
     })

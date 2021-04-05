@@ -11,17 +11,6 @@ const getApplicationParameters = async (_, args, ctx) => {
     .skipUndefined()
     .where({ context, area })
 
-  // console.log(parameters)
-
-  // console.log(
-  //   parameters.map(parameter => {
-  //     console.log(parameter.config,11111)
-  //     parameter.config = JSON.parse(parameter.config)
-  //     console.log(parameter.config, 222)
-  //     return parameter
-  //   }),
-  // )
-
   return parameters
 }
 const updateApplicationParameters = async (_, { input }, ctx) => {

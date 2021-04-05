@@ -7,7 +7,6 @@ const groupBy = require('lodash/groupBy')
 const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
 const path = require('path')
-const BPromise = require('bluebird')
 const { extractFragmentProperties, replaceImageSrc } = require('./util')
 
 const { writeLocallyFromReadStream } = require('../helpers/utils')
@@ -84,7 +83,6 @@ const getBookComponent = async (_, { id }, ctx) => {
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
-    const itemsToProcess = []
 
     const bookComponents = await Promise.all(
       bookComponentFiles.map(async bookComponentFile => {
@@ -160,40 +158,11 @@ const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
         pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
           bookComponentUploadingUpdated: updatedBookComponent,
         })
-        itemsToProcess.push({
-          filepath: `${tempFilePath}/${randomFilename}`,
-          componentId,
-          updatedBookComponent,
-        })
 
+        await useCaseXSweet(componentId, `${tempFilePath}/${randomFilename}`)
         return updatedBookComponent
       }),
     )
-    BPromise.mapSeries(itemsToProcess, item => {
-      const { filepath, componentId, updatedBookComponent } = item
-      const uploading = false
-      return useCaseXSweet(filepath)
-        .then(async content => {
-          await useCaseUpdateBookComponentContent(componentId, content, 'en')
-
-          await useCaseUpdateUploading(componentId, uploading)
-
-          pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-            bookComponentUploadingUpdated: updatedBookComponent,
-          })
-          return true
-        })
-        .catch(async err => {
-          const deletedBookComponent = await useCaseDeleteBookComponent(
-            updatedBookComponent,
-          )
-
-          pubsub.publish(BOOK_COMPONENT_DELETED, {
-            bookComponentDeleted: deletedBookComponent,
-          })
-          throw new Error(err)
-        })
-    })
     return bookComponents
   } catch (e) {
     logger.error(e.message)
@@ -329,7 +298,6 @@ const unlockBookComponent = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
     const { id } = input
-    // console.log('user', ctx.user)
     const lock = await Lock.query()
       .where('foreignId', id)
       .andWhere('deleted', false)
@@ -338,8 +306,6 @@ const unlockBookComponent = async (_, { input }, ctx) => {
     const updatedBookComponent = await BookComponent.findById(id)
 
     const user = await User.findById(ctx.user)
-
-    // const lockUser = await User.findById(lock[0].userId)
 
     if (user.admin && lock[0].userId !== ctx.user) {
       await pubsub.publish(BOOK_COMPONENT_UNLOCKED_BY_ADMIN, {

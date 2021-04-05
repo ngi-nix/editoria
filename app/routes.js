@@ -13,7 +13,6 @@ import UserProfile from './components/userProfile/src/ConnectedUserProfile'
 
 // Editor
 import Wax from './components/wax/src/ConnectedWax'
-// import WithConfig from './components/wax/src/WithConfig'
 
 // Editoria
 import BookBuilder from './components/bookbuilder/src/ConnectedBookBuilder'
@@ -22,27 +21,12 @@ import Templates from './components/templates/src/ConnectedTemplates'
 
 import PagedStyler from './components/bookbuilder/src/PagedStyler/ConnectedPagedStyler'
 import Navigation from './components/navigation/src/Navigation'
-// import { NavBar } from './ui'
 import PrivateRoute from './components/navigation/src/PrivateRoute'
 
 import Connected from './components/navigation/src/ConnectedNavigation'
 import PageLayout from './elements/PageLayout'
 import Page from './elements/Page'
 
-// Pass configuration to editor
-// const Editor = WithConfig(Wax, {
-//   layout: 'editoria',
-//   lockWhenEditing: true,
-//   autoSave: true,
-//   menus: {
-//     topToolBar: 'topDefault',
-//     sideToolBar: 'sideDefault',
-//     overlay: 'defaultOverlay',
-//   },
-// })
-//
-// debugger;
-// console.log('temp', Templates)
 const ConnectedNavigation = Connected(Navigation)
 
 const GlobalStyle = createGlobalStyle`
