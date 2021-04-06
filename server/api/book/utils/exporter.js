@@ -85,6 +85,7 @@ const ExporterService = async (
         if (componentType === 'toc') return
 
         const container = generateContainer(bookComponent, isTheFirstInBody)
+
         const cleanedContent = cleanHTML(
           container,
           bookComponent,
@@ -106,7 +107,9 @@ const ExporterService = async (
       const $toc = cheerio.load(tocComponent.content)
       if ($endnotes('ol').length === 0) {
         backDivision.bookComponents.delete('endnotes')
+
         $toc('.toc-endnotes').remove()
+
         tocComponent.content = $toc('body').html()
       }
     }
@@ -179,6 +182,7 @@ const ExporterService = async (
           validationResult: undefined,
         }
       }
+
       const { clientPath } = await pagednation(book, template)
       return { path: clientPath, validationResult: undefined }
     }
