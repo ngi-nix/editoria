@@ -10,6 +10,7 @@ const { BOOK_COMPONENT_UPLOADING_UPDATED } = require('../bookComponent/consts')
 const {
   useCaseUpdateBookComponentContent,
   useCaseUpdateUploading,
+  useCaseDeleteBookComponent,
 } = require('../useCases')
 
 const XSweetCallback = app => {
@@ -27,7 +28,14 @@ const XSweetCallback = app => {
       } = body
 
       if (!convertedContent && error) {
-        throw new Error(error)
+        const updatedBookComponent = await BookComponent.findById(
+          bookComponentId,
+        )
+        await useCaseDeleteBookComponent(updatedBookComponent)
+        await pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+          bookComponentUploadingUpdated: updatedBookComponent,
+        })
+        throw new Error('error in xsweet conversion')
       }
 
       const serviceCallbackToken = await ServiceCallbackToken.query().where({

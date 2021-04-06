@@ -8,6 +8,7 @@ const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
 const path = require('path')
 const { extractFragmentProperties, replaceImageSrc } = require('./util')
+const BPromise = require('bluebird')
 
 const { writeLocallyFromReadStream } = require('../helpers/utils')
 const fs = require('fs-extra')
@@ -83,86 +84,84 @@ const getBookComponent = async (_, { id }, ctx) => {
 const ingestWordFile = async (_, { bookComponentFiles }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
+    const bookComponents = []
+    await BPromise.mapSeries(bookComponentFiles, async bookComponentFile => {
+      const { file, bookComponentId, bookId } = await bookComponentFile
+      const { createReadStream, filename } = await file
+      const title = filename.split('.')[0]
+      const readerStream = createReadStream()
 
-    const bookComponents = await Promise.all(
-      bookComponentFiles.map(async bookComponentFile => {
-        const { file, bookComponentId, bookId } = await bookComponentFile
-        const { createReadStream, filename } = await file
-        const title = filename.split('.')[0]
-        const readerStream = createReadStream()
+      const tempFilePath = path.join(`${process.cwd()}`, 'uploads', 'tmp')
+      const randomFilename = `${crypto.randomBytes(32).toString('hex')}.docx`
+      fs.ensureDir(tempFilePath)
+      await writeLocallyFromReadStream(
+        tempFilePath,
+        randomFilename,
+        readerStream,
+        'utf-8',
+      )
+      let componentId = bookComponentId
 
-        const tempFilePath = path.join(`${process.cwd()}`, 'uploads', 'tmp')
-        const randomFilename = `${crypto.randomBytes(32).toString('hex')}.docx`
-        fs.ensureDir(tempFilePath)
-        await writeLocallyFromReadStream(
-          tempFilePath,
-          randomFilename,
-          readerStream,
-          'utf-8',
-        )
-        let componentId = bookComponentId
+      if (!bookComponentId) {
+        const name = filename.replace(/\.[^/.]+$/, '')
+        const { componentType, label } = extractFragmentProperties(name)
 
-        if (!bookComponentId) {
-          const name = filename.replace(/\.[^/.]+$/, '')
-          const { componentType, label } = extractFragmentProperties(name)
-
-          const division = await Division.query().findOne({
-            bookId,
-            label,
-          })
-
-          if (!division) {
-            throw new Error(
-              `division with label ${label} does not exist for the book with id ${bookId}`,
-            )
-          }
-
-          const newBookComponent = await useCaseAddBookComponent(
-            division.id,
-            bookId,
-            componentType,
-          )
-
-          pubsub.publish(BOOK_COMPONENT_ADDED, {
-            bookComponentAdded: newBookComponent,
-          })
-
-          componentId = newBookComponent.id
-        }
-
-        const uploading = true
-
-        const currentComponentState = await BookComponentState.query().findOne({
-          bookComponentId: componentId,
+        const division = await Division.query().findOne({
+          bookId,
+          label,
         })
 
-        if (!currentComponentState) {
+        if (!division) {
           throw new Error(
-            `component state for the book component with id ${componentId} does not exist`,
+            `division with label ${label} does not exist for the book with id ${bookId}`,
           )
         }
 
-        const currentAndUpdate = {
-          current: currentComponentState,
-          update: { uploading },
-        }
+        const newBookComponent = await useCaseAddBookComponent(
+          division.id,
+          bookId,
+          componentType,
+        )
 
-        await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
-
-        await useCaseUpdateUploading(componentId, uploading)
-
-        await useCaseRenameBookComponent(componentId, title, 'en')
-
-        const updatedBookComponent = await BookComponent.findById(componentId)
-
-        pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
-          bookComponentUploadingUpdated: updatedBookComponent,
+        pubsub.publish(BOOK_COMPONENT_ADDED, {
+          bookComponentAdded: newBookComponent,
         })
 
-        await useCaseXSweet(componentId, `${tempFilePath}/${randomFilename}`)
-        return updatedBookComponent
-      }),
-    )
+        componentId = newBookComponent.id
+      }
+
+      const uploading = true
+
+      const currentComponentState = await BookComponentState.query().findOne({
+        bookComponentId: componentId,
+      })
+
+      if (!currentComponentState) {
+        throw new Error(
+          `component state for the book component with id ${componentId} does not exist`,
+        )
+      }
+
+      const currentAndUpdate = {
+        current: currentComponentState,
+        update: { uploading },
+      }
+
+      await ctx.helpers.can(ctx.user, 'update', currentAndUpdate)
+
+      await useCaseUpdateUploading(componentId, uploading)
+
+      await useCaseRenameBookComponent(componentId, title, 'en')
+
+      const updatedBookComponent = await BookComponent.findById(componentId)
+      bookComponents.push(updatedBookComponent)
+      pubsub.publish(BOOK_COMPONENT_UPLOADING_UPDATED, {
+        bookComponentUploadingUpdated: updatedBookComponent,
+      })
+
+      // await useCaseXSweet(componentId, `${tempFilePath}/${randomFilename}`)
+      return useCaseXSweet(componentId, `${tempFilePath}/${randomFilename}`)
+    })
     return bookComponents
   } catch (e) {
     logger.error(e.message)

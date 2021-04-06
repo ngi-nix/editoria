@@ -18,9 +18,9 @@ module.exports = (
     division,
     id,
   } = bookComponent
+
   const toc = cheerio.load(tocComponent.content)
   let hasMath = false
-
   if (includeInTOC) {
     const li = `<li class="toc-${division} toc-${componentType}"><a href="#comp-number-${id}"><span class="name">${title ||
       componentType}</span></a></li>`
@@ -28,12 +28,16 @@ module.exports = (
     toc('ol').append(li)
     tocComponent.content = toc('body').html()
   }
+  if (!content) return { content: container, hasMath }
 
-  if (!content) return container
+  let $
+  if (bookComponent && content) {
+    $ = cheerio.load(bookComponent.content)
+  }
 
-  const $ = cheerio.load(bookComponent.content)
   if (componentType === 'endnotes') {
-    return $('body').html()
+    return { content: $('body').html(), hasMath }
+    // return $('body').html()
   }
   let chapterEndnotes
 
@@ -43,6 +47,7 @@ module.exports = (
     )
   }
   const endnotes = endnotesComponent && cheerio.load(endnotesComponent.content)
+
   const outerContainer = cheerio.load(container)
 
   $('pre code').each((i, elem) => {
@@ -120,6 +125,7 @@ module.exports = (
   })
 
   const hasNotesOuter = outerContainer('footnote').length > 0
+
   const hasNotesInner = $('footnote').length > 0
 
   // only notes in header tag
