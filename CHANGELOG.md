@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.4](https://gitlab.coko.foundation///compare/v1.4.3...v1.4.4) (2021-04-06)
+
+
+### Bug Fixes
+
+* **app:** endnotes fixes and xsweet error handling ([a03ec5a](https://gitlab.coko.foundation///commit/a03ec5a9b90a113a58e766313e7b34a879bf43ad))
+
 ### [1.4.3](https://gitlab.coko.foundation///compare/v1.4.2...v1.4.3) (2021-04-06)
 
 ### [1.4.2](https://gitlab.coko.foundation///compare/v1.4.1...v1.4.2) (2021-04-05)
