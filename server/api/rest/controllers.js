@@ -1,19 +1,48 @@
-const { pubsubManager } = require('@coko/server')
-
+const { pubsubManager, logger } = require('@coko/server')
+const express = require('express')
 const {
   BookComponent,
+  Lock,
   ServiceCallbackToken,
 } = require('../../data-model/src').models
 
-const { BOOK_COMPONENT_UPLOADING_UPDATED } = require('../bookComponent/consts')
+const { useCaseUnlockBookComponent } = require('../useCases')
 
+const {
+  BOOK_COMPONENT_UPLOADING_UPDATED,
+  BOOK_COMPONENT_LOCK_UPDATED,
+} = require('../bookComponent/consts')
+
+const unlockHandler = async (userId, bookComponentId) => {
+  const bookComponentLock = await Lock.query().where({
+    foreignId: bookComponentId,
+    deleted: false,
+  })
+
+  if (bookComponentLock.length === 0) {
+    logger.info('nothing to unlock')
+    return false
+  }
+  const { userId: userLock } = bookComponentLock[0]
+  if (userId !== userLock) {
+    logger.info('lock taken by another user')
+  } else {
+    const pubsub = await pubsubManager.getPubsub()
+    await useCaseUnlockBookComponent(bookComponentId)
+    const updatedBookComponent = await BookComponent.findById(bookComponentId)
+    await pubsub.publish(BOOK_COMPONENT_LOCK_UPDATED, {
+      bookComponentLockUpdated: updatedBookComponent,
+    })
+  }
+  return true
+}
 const {
   useCaseUpdateBookComponentContent,
   useCaseUpdateUploading,
   useCaseDeleteBookComponent,
 } = require('../useCases')
 
-const XSweetCallback = app => {
+const Controllers = app => {
   app.use('/api/xsweet', async (req, res, next) => {
     try {
       const pubsub = await pubsubManager.getPubsub()
@@ -75,6 +104,13 @@ const XSweetCallback = app => {
       throw new Error(error)
     }
   })
+  app.use('/api/unlockBeacon', express.text(), async (req, res, next) => {
+    const { body } = req
+    const data = body && JSON.parse(req.body)
+    const { uid: userId, bbid: bookComponentId } = data
+    setTimeout(() => unlockHandler(userId, bookComponentId), 600)
+    return res.status(200).end()
+  })
 }
 
-module.exports = XSweetCallback
+module.exports = Controllers

@@ -148,9 +148,9 @@ const Book = props => {
           setState({ isRenaming: true })
         }
 
-        const onClickSave = () => {
+        const onClickSave = id => {
           // SUPER HACK -- Needs to be redesigned, but it works for now
-          const el = document.getElementById('renameTitle')
+          const el = document.getElementById(`renameTitle-${id}`)
           rename(el.value)
         }
 
@@ -208,7 +208,7 @@ const Book = props => {
                 isRenaming={isRenaming}
                 onArchiveBook={onArchiveBook}
                 onClickRename={onClickRename}
-                onClickSave={onClickSave}
+                onClickSave={() => onClickSave(book.id)}
                 onDeleteBook={onDeleteBook}
               />
             </MainRow>

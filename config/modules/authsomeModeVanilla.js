@@ -1,4 +1,10 @@
-const { transform, isEqual, isObject, differenceWith } = require('lodash')
+const {
+  transform,
+  isEqual,
+  isObject,
+  differenceWith,
+  findIndex,
+} = require('lodash')
 
 class EditoriaMode {
   /**
@@ -765,25 +771,18 @@ class EditoriaMode {
 
 module.exports = {
   before: async (userId, operation, object, context) => {
-    if (!userId) return false
+    let decision = false
+    if (!userId) return decision
     const user = await context.models.UserLoader.userTeams.load(userId)
-    // // if (user.admin) {
-    // //   if (operation && operation === 'PATCH') {
-    // //     if (object.current.type === 'fragment') {
-    // //       const diff = EditoriaMode.difference(object.update, object.current)
-    // //       if (
-    // //         object.current.lock !== null &&
-    // //         diff.lock !== undefined &&
-    // //         diff.lock !== null &&
-    // //         object.current.lock.editor.userId !== user.id
-    // //       ) {
-    // //         return false
-    // //       }
-    // //     }
-    // //   }
-    // // }
-
-    return user && user.admin
+    if (user) {
+      const { teams, admin } = user
+      if (teams.length > 0) {
+        decision = findIndex(teams, { global: true }) !== -1
+      } else {
+        decision = admin || false
+      }
+    }
+    return decision
   },
   create: async (userId, operation, object, context) => {
     const mode = new EditoriaMode(userId, operation, object, context)

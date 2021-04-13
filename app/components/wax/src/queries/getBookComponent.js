@@ -13,6 +13,7 @@ const GET_BOOK_COMPONENT = gql`
       bookId
       hasContent
       componentTypeOrder
+      uploading
       componentType
       trackChangesEnabled
       workflowStages {

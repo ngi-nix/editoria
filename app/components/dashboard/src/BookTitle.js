@@ -1,5 +1,4 @@
 import React from 'react'
-import { find, indexOf } from 'lodash'
 import styled from 'styled-components'
 import { th } from '@pubsweet/ui-toolkit'
 import withLink from '../../common/src/withLink'
@@ -95,7 +94,7 @@ const BookTitle = ({
       <Input
         autoFocus
         defaultValue={title}
-        id="renameTitle"
+        id={`renameTitle-${bookId}`}
         name="renameTitle"
         onKeyPress={handleKey}
         ref={el => (input = el)}

@@ -124,13 +124,14 @@ const CommentsContainerNotes = styled.div`
 `
 
 const CommentTrackToolsContainer = styled.div`
+  background: white;
+  box-shadow: -5px 4px 5px -2px rgba(204, 204, 204, 0.41);
   display: flex;
   position: fixed;
-  padding-top: 5px;
+  padding-top: 8px;
+  padding-left: 8px;
   right: 30px;
   z-index: 1;
-  background: white;
-  width: 25%;
 `
 
 const CommentTrackTools = styled.div`

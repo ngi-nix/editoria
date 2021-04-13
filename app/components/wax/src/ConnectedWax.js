@@ -225,7 +225,9 @@ const Connected = props => {
           title,
           lock,
           workflowStages,
+          uploading,
         } = bookComponent
+
         if (lock && lock.userId !== user.id) {
           editing = 'preview'
         } else if (rules.canEditPreview) {
@@ -275,6 +277,7 @@ const Connected = props => {
             updateBookComponentContent={updateBookComponentContent}
             updateBookComponentTrackChanges={updateBookComponentTrackChanges}
             updateCustomTags={updateTags}
+            uploading={uploading}
             user={user}
             waxLoading={waxLoading}
             workflowStages={workflowStages}
