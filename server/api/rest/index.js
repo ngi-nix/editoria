@@ -1,3 +1,3 @@
 module.exports = {
-  server: () => app => require('./xsweet')(app),
+  server: () => app => require('./controllers')(app),
 }

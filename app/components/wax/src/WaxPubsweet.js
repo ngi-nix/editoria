@@ -77,6 +77,7 @@ const Editoria = ({
   onAssetManager,
   updateBookComponentContent,
   updateBookComponentTrackChanges,
+  uploading,
   user,
   tags,
 }) => {
@@ -176,10 +177,24 @@ const Editoria = ({
 
   const onUnload = () => {
     if (!isReadOnly) {
+      const blob = new Blob(
+        [JSON.stringify({ uid: user.id, bbid: bookComponentId })],
+        { type: 'text/plain; charset=UTF-8' },
+      )
+      navigator.sendBeacon('http://localhost:3000/api/unlockBeacon', blob)
       handleUnlock(bookComponentId, unlockBookComponent)
     }
   }
   useEffect(() => {
+    if (uploading) {
+      const onConfirm = () => {
+        history.push(`/books/${bookId}/book-builder`)
+      }
+      return onWarning(
+        'Uploading in progress, you will be redirected back to Book Builder',
+        onConfirm,
+      )
+    }
     window.addEventListener('beforeunload', onUnload)
     if (!isReadOnly) {
       handleLock(bookComponentId, lockBookComponent)
