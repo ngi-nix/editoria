@@ -6,6 +6,7 @@ const GET_BOOKBUILDER_RULES = gql`
   query GetBookBuilderRules($id: ID!) {
     getBookBuilderRules(id: $id) {
       id
+      canAccessBook
       canViewAddComponent
       canReorderBookComponent
       canViewUploadButton
@@ -40,7 +41,7 @@ const getBookBuilderRulesQuery = props => {
 
   return (
     <Query
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       query={GET_BOOKBUILDER_RULES}
       variables={{ id }}
     >

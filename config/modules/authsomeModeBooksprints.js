@@ -563,6 +563,11 @@ module.exports = {
     const mode = new EditoriaMode(userId, operation, object, context)
     return mode.canInteractWithBooks()
   },
+  'can access book': (userId, operation, object, context) => {
+    // DONE
+    const mode = new EditoriaMode(userId, operation, object, context)
+    return mode.canReadBook()
+  },
   'can delete books': (userId, operation, object, context) => {
     // DONE
     const mode = new EditoriaMode(userId, operation, object, context)

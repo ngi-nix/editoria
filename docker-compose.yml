@@ -112,12 +112,11 @@ services:
     volumes:
       - ./config:/home/node/editoria/config
       - ./server:/home/node/editoria/server
+
   epubchecker:
     depends_on:
       - db-epubchecker
-    build:
-      context: https://gitlab.coko.foundation/cokoapps/epub-checker.git
-      dockerfile: ./Dockerfile-development
+    image: cokoapps/epubchecker:1.1.0
     ports:
       - ${SERVICE_EPUB_CHECKER_PORT:-3001}:${SERVICE_EPUB_CHECKER_PORT:-3001}
     environment:
@@ -128,7 +127,6 @@ services:
       - POSTGRES_DB=epubchecker_dev
       - POSTGRES_PORT=5432
       - SERVER_PORT=${SERVICE_EPUB_CHECKER_PORT:-3001}
-      - NODE_ENV=development
     entrypoint:
       [
         'node_modules/.bin/wait-for-it',
@@ -138,13 +136,10 @@ services:
         'scripts/setupDevServer.sh',
       ]
     command: ['node', './server/startServer.js']
-
   icml:
     depends_on:
       - db-icml
-    build:
-      context: https://gitlab.coko.foundation/cokoapps/icml.git
-      dockerfile: ./Dockerfile-development
+    image: cokoapps/icml:1.1.0
     ports:
       - ${SERVICE_ICML_PORT:-3002}:${SERVICE_ICML_PORT:-3002}
     environment:
@@ -169,9 +164,7 @@ services:
   pagedjs:
     depends_on:
       - db-pagedjs
-    build:
-      context: https://gitlab.coko.foundation/cokoapps/pagedjs.git
-      dockerfile: ./Dockerfile-development
+    image: cokoapps/pagedjs:1.1.0
     ports:
       - ${SERVICE_PAGEDJS_PORT:-3003}:${SERVICE_PAGEDJS_PORT:-3003}
     environment:
@@ -200,9 +193,7 @@ services:
   xsweet:
     depends_on:
       - db-xsweet
-    build:
-      context: https://gitlab.coko.foundation/cokoapps/xsweet.git
-      dockerfile: ./Dockerfile-development
+    image: cokoapps/xsweet:1.1.0
     ports:
       - ${SERVICE_XSWEET_PORT:-3004}:${SERVICE_XSWEET_PORT:-3004}
     environment:
@@ -230,6 +221,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
       - POSTGRES_USER=${POSTGRES_USER:-dev_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dev_user_password}
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
 
   db-epubchecker:
     image: postgres:12-alpine
@@ -237,6 +230,8 @@ services:
       - POSTGRES_USER=epubchecker_user_dev
       - POSTGRES_DB=epubchecker_dev
       - POSTGRES_PASSWORD=epubchecker_user_password
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
 
   db-icml:
     image: postgres:12-alpine
@@ -244,6 +239,8 @@ services:
       - POSTGRES_USER=icml_user_dev
       - POSTGRES_DB=icml_dev
       - POSTGRES_PASSWORD=icml_user_password
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
 
   db-pagedjs:
     image: postgres:12-alpine
@@ -251,6 +248,8 @@ services:
       - POSTGRES_USER=pagedjs_user_dev
       - POSTGRES_DB=pagedjs_dev
       - POSTGRES_PASSWORD=pagedjs_user_password
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
 
   db-xsweet:
     image: postgres:12-alpine
@@ -258,6 +257,8 @@ services:
       - POSTGRES_USER=xsweet_user_dev
       - POSTGRES_DB=xsweet_dev
       - POSTGRES_PASSWORD=xsweet_user_password
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
 
   file_hosting:
     image: minio/minio

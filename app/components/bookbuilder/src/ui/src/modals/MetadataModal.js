@@ -253,6 +253,7 @@ class MetadataModal extends React.Component {
                     name="publicationDate"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    placeholder="dd/mm/yyyy"
                     type="date"
                     value={values.publicationDate}
                   />

@@ -187,10 +187,12 @@ class AssetManager extends Component {
         </InnerWrapper>
 
         <ActionSection
+          deleteDisabled={checkboxSelected.length === 0}
           deleteHandler={this.deleteHandler}
+          importDisabled={checkboxSelected.length === 0}
           importHandler={this.importHandler}
-          shouldShowDelete={checkboxSelected.length > 0}
-          shouldShowImport={checkboxSelected.length > 0 && withImport}
+          shouldShowDelete
+          shouldShowImport={withImport}
           uploadHandler={this.uploadHandler}
         />
       </OuterWrapper>
