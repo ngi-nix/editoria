@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.7](https://gitlab.coko.foundation///compare/v1.4.6...v1.4.7) (2021-04-16)
+
+
+### Bug Fixes
+
+* **app:** redirect when permissions lost on book component level ([8aa3a1a](https://gitlab.coko.foundation///commit/8aa3a1aa423c1d01806d17295405eb896f423cfc))
+
 ### [1.4.6](https://gitlab.coko.foundation///compare/v1.4.5...v1.4.6) (2021-04-16)
 
 
