@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.6](https://gitlab.coko.foundation///compare/v1.4.5...v1.4.6) (2021-04-16)
+
+
+### Bug Fixes
+
+* **app:** assetManager ui fix, permissions for g prod editor ([91f91a3](https://gitlab.coko.foundation///commit/91f91a37c71722a9edd3f25ade88df93f868becc))
+
 ### [1.4.5](https://gitlab.coko.foundation///compare/v1.4.4...v1.4.5) (2021-04-13)
 
 
