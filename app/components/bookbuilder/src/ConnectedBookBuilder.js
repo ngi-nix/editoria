@@ -5,6 +5,7 @@ import { get, findIndex, map, find, pickBy } from 'lodash'
 import { adopt } from 'react-adopt'
 import { withRouter } from 'react-router-dom'
 import withModal from '../../common/src//withModal'
+import { Loading } from '../../../ui'
 import BookBuilder from './BookBuilder'
 import statefull from './Statefull'
 import {
@@ -164,11 +165,19 @@ const mapProps = args => ({
       bookComponents,
     })
   },
-  onWarning: warning => {
+  onWarning: (warning, handler = undefined) => {
     const { withModal } = args
     const { showModal, hideModal } = withModal
-    showModal('warningModal', {
-      onConfirm: hideModal,
+    const onClick = () => {
+      if (!handler) {
+        hideModal()
+      } else {
+        handler()
+        hideModal()
+      }
+    }
+    showModal('unlockedModal', {
+      onConfirm: onClick,
       warning,
     })
   },
@@ -457,44 +466,47 @@ const Connected = props => {
         rules,
         refetchingBookBuilderRules,
         onWorkflowUpdate,
-      }) => (
-        <BookBuilder
-          addBookComponent={addBookComponent}
-          applicationParameter={applicationParameter}
-          book={book}
-          currentUser={currentUser}
-          deleteBookComponent={deleteBookComponent}
-          exportBook={exportBook}
-          history={history}
-          ingestWordFiles={ingestWordFiles}
-          loading={loading}
-          loadingRules={loadingRules}
-          onAdminUnlock={onAdminUnlock}
-          onAssetManager={onAssetManager}
-          onBookSettings={onBookSettings}
-          onDeleteBookComponent={onDeleteBookComponent}
-          onEndNoteModal={onEndNoteModal}
-          onError={onError}
-          onExportBook={onExportBook}
-          onMetadataAdd={onMetadataAdd}
-          onTeamManager={onTeamManager}
-          onWarning={onWarning}
-          onWorkflowUpdate={onWorkflowUpdate}
-          refetching={refetching}
-          refetchingBookBuilderRules={refetchingBookBuilderRules}
-          rules={rules}
-          setState={setState}
-          state={state}
-          toggleIncludeInTOC={toggleIncludeInTOC}
-          updateApplicationParameters={updateApplicationParameters}
-          updateBookComponentOrder={updateBookComponentOrder}
-          updateBookComponentPagination={updateBookComponentPagination}
-          updateBookComponentUploading={updateBookComponentUploading}
-          updateBookComponentWorkflowState={updateBookComponentWorkflowState}
-          updateComponentType={updateComponentType}
-          uploadBookComponent={uploadBookComponent}
-        />
-      )}
+      }) => {
+        if (loading || loadingRules || !book) return <Loading />
+        return (
+          <BookBuilder
+            addBookComponent={addBookComponent}
+            applicationParameter={applicationParameter}
+            book={book}
+            currentUser={currentUser}
+            deleteBookComponent={deleteBookComponent}
+            exportBook={exportBook}
+            history={history}
+            ingestWordFiles={ingestWordFiles}
+            loading={loading}
+            loadingRules={loadingRules}
+            onAdminUnlock={onAdminUnlock}
+            onAssetManager={onAssetManager}
+            onBookSettings={onBookSettings}
+            onDeleteBookComponent={onDeleteBookComponent}
+            onEndNoteModal={onEndNoteModal}
+            onError={onError}
+            onExportBook={onExportBook}
+            onMetadataAdd={onMetadataAdd}
+            onTeamManager={onTeamManager}
+            onWarning={onWarning}
+            onWorkflowUpdate={onWorkflowUpdate}
+            refetching={refetching}
+            refetchingBookBuilderRules={refetchingBookBuilderRules}
+            rules={rules}
+            setState={setState}
+            state={state}
+            toggleIncludeInTOC={toggleIncludeInTOC}
+            updateApplicationParameters={updateApplicationParameters}
+            updateBookComponentOrder={updateBookComponentOrder}
+            updateBookComponentPagination={updateBookComponentPagination}
+            updateBookComponentUploading={updateBookComponentUploading}
+            updateBookComponentWorkflowState={updateBookComponentWorkflowState}
+            updateComponentType={updateComponentType}
+            uploadBookComponent={uploadBookComponent}
+          />
+        )
+      }}
     </Composed>
   )
 }

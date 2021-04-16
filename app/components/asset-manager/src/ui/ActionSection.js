@@ -60,6 +60,8 @@ class ActionSection extends Component {
       shouldShowImport,
       uploadHandler,
       importHandler,
+      deleteDisabled,
+      importDisabled,
     } = this.props
 
     return (
@@ -76,19 +78,21 @@ class ActionSection extends Component {
         ) : (
           <Fragment>
             <UploadFilesButton handler={uploadHandler} />
+            {shouldShowImport && (
+              <Button
+                disabled={importDisabled}
+                label="Insert Image/s"
+                onClick={importHandler}
+                title="Insert Image/s"
+              />
+            )}
             {shouldShowDelete && (
               <Button
                 danger
+                disabled={deleteDisabled}
                 label="Delete Selected"
                 onClick={this.handleShouldWarn}
                 title="Delete Selected"
-              />
-            )}
-            {shouldShowImport && (
-              <Button
-                label="Import File/s"
-                onClick={importHandler}
-                title="Import File/s"
               />
             )}
           </Fragment>

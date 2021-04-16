@@ -1,4 +1,3 @@
-
 type DashboardRules {
   canAddBooks: Boolean
   bookRules: [bookRule!]!
@@ -15,12 +14,13 @@ type BookBuilderRules {
   id: ID!
   canViewAddComponent: Boolean
   canViewUploadButton: Boolean
-  canViewMultipleFilesUpload: Boolean 
+  canViewMultipleFilesUpload: Boolean
   canViewAddTeamMember: Boolean
   canViewTeamManager: Boolean
   canViewStateList: Boolean
   canViewAlignmentTool: Boolean
   exportBook: Boolean
+  canAccessBook: Boolean
   downloadEPUB: Boolean
   bookComponentStateRules: [BookComponentStateRule!]!
   canReorderBookComponent: Boolean
@@ -42,9 +42,8 @@ type BookComponentStateRule {
   id: ID
   bookComponentId: ID
   stage: [Stages]
-  canViewFragmentEdit:Boolean
+  canViewFragmentEdit: Boolean
 }
-
 
 type Stages {
   type: String
