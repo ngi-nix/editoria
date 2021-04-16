@@ -8,6 +8,7 @@ const GET_WAX_RULES = gql`
       canEditFull
       canEditSelection
       canEditReview
+      canAccessBook
     }
   }
 `

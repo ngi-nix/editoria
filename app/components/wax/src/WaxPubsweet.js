@@ -72,6 +72,7 @@ const Editoria = ({
   editing,
   workflowStages,
   history,
+  rules,
   onUnlocked,
   onWarning,
   onAssetManager,
@@ -175,6 +176,8 @@ const Editoria = ({
 
   const previousWorkflow = usePrevious(workflowStages) // reference for checking if the workflowStages actually change
 
+  const { canAccessBook } = rules
+
   const onUnload = () => {
     if (!isReadOnly) {
       const blob = new Blob(
@@ -206,6 +209,20 @@ const Editoria = ({
     }
   }, [])
 
+  // SECTION FOR USER HAS NO PERMISSIONS FOR THIS BOOK
+  useEffect(() => {
+    if (!canAccessBook) {
+      const onConfirm = () => {
+        history.push(`/books`)
+      }
+      onUnlocked(
+        ' You have no permissions to access this book component. You will be redirected back to the dashboard',
+        onConfirm,
+      )
+    }
+  }, [canAccessBook])
+  // END OF SECTION
+
   // SECTION FOR UNLOCKED BY ADMIN
   useEffect(() => {
     if (
@@ -231,7 +248,13 @@ const Editoria = ({
     if (workflowTrigger && workflowTrigger.id === bookComponentId) {
       const { workflowStages: workflowNow } = workflowTrigger
       if (!isEqual(previousWorkflow, workflowNow)) {
-        setWorkChanged(true)
+        const initialChangeFromNoContentToContent =
+          previousWorkflow[0].value === -1 && workflowNow[0].value === 0
+
+        if (!initialChangeFromNoContentToContent) {
+          // this is needed to distinguish this case from the case of removing a team member from a book
+          setWorkChanged(true)
+        }
       }
     }
   }, [workflowTrigger])

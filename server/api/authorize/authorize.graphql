@@ -29,6 +29,7 @@ type BookBuilderRules {
 
 type WaxRules {
   canEditFull: Boolean
+  canAccessBook: Boolean
   canEditSelection: Boolean
   canEditReview: Boolean
 }

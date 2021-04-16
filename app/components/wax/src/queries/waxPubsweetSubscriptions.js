@@ -30,6 +30,14 @@ const CUSTOM_TAG_SUBSCRIPTION = gql`
   }
 `
 
+const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
+  subscription TeamMembersUpdated {
+    teamMembersUpdated {
+      bookId
+    }
+  }
+`
+
 const BOOK_COMPONENT_LOCK_UPDATED_SUBSCRIPTION = gql`
   subscription BookComponentLockUpdated {
     bookComponentLockUpdated {
@@ -74,6 +82,30 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `
+
+const teamMembersChangeSubscription = props => {
+  const { render, getWaxRulesQuery, bookId } = props
+  const { refetch } = getWaxRulesQuery
+
+  const triggerRefetch = res => {
+    const { subscriptionData } = res
+    const { data } = subscriptionData
+    const { teamMembersUpdated } = data
+    const { bookId: bId } = teamMembersUpdated
+    if (bookId === bId || bId === null) {
+      refetch()
+    }
+  }
+
+  return (
+    <Subscription
+      onSubscriptionData={triggerRefetch}
+      subscription={TEAM_MEMBERS_UPDATED_SUBSCRIPTION}
+    >
+      {render}
+    </Subscription>
+  )
+}
 
 const trackChangeSubscription = props => {
   const { render, getBookComponentQuery, bookComponentId } = props
@@ -239,4 +271,5 @@ export {
   customTagsSubscription,
   workflowChangeSubscription,
   unlockedByAdminSubscription,
+  teamMembersChangeSubscription,
 }

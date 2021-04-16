@@ -21,4 +21,5 @@ export {
   customTagsSubscription,
   workflowChangeSubscription,
   unlockedByAdminSubscription,
+  teamMembersChangeSubscription,
 } from './waxPubsweetSubscriptions'

@@ -158,7 +158,14 @@ class EditoriaMode {
 
   async canReadBook() {
     await this.getUser()
-    const Book = await this.context.models.Book.find(this.object.id)
+    // console.log('object', this.object)
+    let bookId
+    if (this.object.type === 'bookComponent') {
+      bookId = this.object.bookId
+    } else {
+      bookId = this.object.id
+    }
+    const Book = await this.context.models.Book.find(bookId)
 
     const permission =
       (await this.isAuthor(Book)) ||

@@ -30,6 +30,7 @@ import {
   customTagsSubscription,
   workflowChangeSubscription,
   unlockedByAdminSubscription,
+  teamMembersChangeSubscription,
 } from './queries'
 
 const mapper = {
@@ -45,6 +46,7 @@ const mapper = {
   customTagsSubscription,
   workflowChangeSubscription,
   unlockedByAdminSubscription,
+  teamMembersChangeSubscription,
   updateCustomTagMutation,
   addCustomTagMutation,
   updateBookComponentContentMutation,
