@@ -16,7 +16,6 @@ const createFile = async (
   { location, key },
   entityType,
   entityId,
-  referenceId,
   options = {},
 ) => {
   try {
@@ -29,12 +28,10 @@ const createFile = async (
       extension,
       tags,
       mimetype,
-      referenceId,
       bookId: entityType === 'book' ? entityId : undefined,
       templateId: entityType === 'template' ? entityId : undefined,
       bookComponentId: entityType === 'bookComponent' ? entityId : undefined,
     }
-
     const cleanedObject = pickBy(tempFile, v => v !== undefined)
     const { trx } = options
     if (!trx) {

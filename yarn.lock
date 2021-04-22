@@ -2348,10 +2348,10 @@
     "@pubsweet/ui-toolkit" "^2.3.2"
     styled-components "^5.2.1"
 
-"@coko/server@^1.12.2":
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/@coko/server/-/server-1.12.2.tgz#22c8d8e1b910d6937bff410ceeb9abc38fed9d9c"
-  integrity sha512-59tBHry7gGMcUvXMPkKJjU03wxZLfC0+dA/xjwV4znt6p5FzWN1Ptd/BtEFPf5lEztyadco67hPU5ZNw+huClQ==
+"@coko/server@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@coko/server/-/server-1.14.0.tgz#55cc5028d2c8c865e980175e0b23282b6cfb550d"
+  integrity sha512-uTUgtYrbJsTo1KB6aUU5TXXDwSQnbvJITUnAfY/Kqe9IFF8YbiafTqfFBfzfoh5ZojE3LZoZ9LqVU60HXVsNdQ==
   dependencies:
     "@pubsweet/base-model" "^4.0.10"
     "@pubsweet/component-send-email" "^0.4.13"
@@ -2375,6 +2375,7 @@
     passport "^0.4.1"
     pubsweet "^5.1.25"
     pubsweet-server "^13.12.5"
+    uuid "^8.3.2"
     waait "^1.0.5"
 
 "@coko/storybook@^1.2.2":

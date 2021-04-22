@@ -1,4 +1,4 @@
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 const { ApplicationParameter } = require('../../data-model/src').models
 
 const { pubsubManager } = require('@coko/server')
@@ -17,19 +17,25 @@ const updateApplicationParameters = async (_, { input }, ctx) => {
   const { context, area, config } = input
   try {
     const pubsub = await pubsubManager.getPubsub()
-    const parameter = await ApplicationParameter.query().findOne({
-      context,
-      area,
+
+    const updatedApplicationParameters = await useTransaction(async trx => {
+      const applicationParameter = await ApplicationParameter.query(trx).where({
+        context,
+        area,
+      })
+      if (applicationParameter.length !== 1) {
+        throw new Error(
+          'multiple records for the same application parameters context and area',
+        )
+      }
+      const { id } = applicationParameter[0]
+      return ApplicationParameter.query(trx).patchAndFetchById(id, { config })
     })
-
-    const updatedParameter = await parameter.$query().updateAndFetch({ config })
-
-    const applicationParameters = await ApplicationParameter.query()
 
     pubsub.publish(UPDATE_APPLICATION_PARAMETERS, {
-      updateApplicationParameters: applicationParameters,
+      updateApplicationParameters: updatedApplicationParameters,
     })
-    return updatedParameter
+    return updatedApplicationParameters
   } catch (e) {
     logger.error(e)
     throw new Error(e)

@@ -5,14 +5,13 @@ const User = user.model
 const { ValidationError } = require('@pubsweet/errors')
 
 class EditoriaUser extends User {
-  $beforeInsert() {
-    super.$beforeInsert()
-  }
-
   static get schema() {
     return {
       type: 'object',
       properties: {
+        password: {
+          type: 'string',
+        },
         givenName: {
           type: 'string',
         },
@@ -26,7 +25,15 @@ class EditoriaUser extends User {
   static async findById(id) {
     return this.find(id)
   }
+  async hashPassword(pwd) {
+    this.passwordHash = await User.hashPassword(pwd)
+    delete this.password
+  }
 
+  async $beforeInsert() {
+    super.$beforeInsert()
+    if (this.password) await this.hashPassword(this.password)
+  }
   static async updatePassword(userId, currentPassword, newPassword) {
     const user = await User.query().findById(userId)
     const isCurrentPasswordValid = await user.validPassword(currentPassword)
