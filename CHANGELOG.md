@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.8](https://gitlab.coko.foundation///compare/v1.4.7...v1.4.8) (2021-04-23)
+
+
+### Bug Fixes
+
+* **app:** fix for custom tags ([c988e44](https://gitlab.coko.foundation///commit/c988e4457be5dbbcc466c1842979fae3dad4e5ab))
+
 ### [1.4.7](https://gitlab.coko.foundation///compare/v1.4.6...v1.4.7) (2021-04-16)
 
 
