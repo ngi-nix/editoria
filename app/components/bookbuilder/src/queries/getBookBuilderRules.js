@@ -12,6 +12,7 @@ const GET_BOOKBUILDER_RULES = gql`
       canViewUploadButton
       canViewMultipleFilesUpload
       canViewTeamManager
+      canViewDeleteAction
       canViewStateList
       canViewAlignmentTool
       exportBook

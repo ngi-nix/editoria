@@ -124,12 +124,13 @@ const BookComponentActions = ({
   onAdminUnlock,
   rules,
 }) => {
-  const { bookComponentStateRules } = rules
+  const { bookComponentStateRules, canViewDeleteAction } = rules
   const { canViewFragmentEdit } =
     bookComponentStateRules.find(
       bookComponentState =>
         bookComponentState.bookComponentId === bookComponentId,
     ) || {}
+
   const isLocked = get(lock, 'username')
   const handleClick = () => {
     onDeleteBookComponent(bookComponentId, componentType, title)
@@ -152,7 +153,10 @@ const BookComponentActions = ({
             {canViewFragmentEdit ? 'Edit' : 'View'}
           </Action>
         )}
-        <Action disabled={uploading} onClick={handleClick}>
+        <Action
+          disabled={uploading || !canViewDeleteAction}
+          onClick={handleClick}
+        >
           Delete
         </Action>
       </ActionGroup>
