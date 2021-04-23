@@ -19,6 +19,7 @@ type BookBuilderRules {
   canViewTeamManager: Boolean
   canViewStateList: Boolean
   canViewAlignmentTool: Boolean
+  canViewDeleteAction: Boolean
   exportBook: Boolean
   canAccessBook: Boolean
   downloadEPUB: Boolean

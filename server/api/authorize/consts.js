@@ -20,6 +20,7 @@ module.exports = {
     canViewAddComponent: 'can view addComponent',
     canViewUploadButton: 'can view uploadButton',
     canViewAlignmentTool: 'can view alignmentTool',
+    canViewDeleteAction: 'can view deleteComponent',
     canViewStateList: 'can view stateList',
     canAccessBook: 'can access book',
     canReorderBookComponent: 'can reorder bookComponents',

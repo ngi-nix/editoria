@@ -145,15 +145,12 @@ const Editoria = ({
       translatedEditing = 'full'
       break
   }
-  const handleCustomTags = customTags => {
-    const addTags = customTags.filter(tag => !tag.id)
-    if (addTags.length > 0) {
-      addCustomTags({
-        variables: {
-          input: addTags,
-        },
-      })
-    }
+  const handleCustomTags = customTag => {
+    addCustomTags({
+      variables: {
+        input: [customTag],
+      },
+    })
   }
 
   configWax.EnableTrackChangeService.updateTrackStatus = status => {

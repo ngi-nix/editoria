@@ -108,7 +108,7 @@ const Controllers = app => {
     const { body } = req
     const data = body && JSON.parse(req.body)
     const { uid: userId, bbid: bookComponentId } = data
-    setTimeout(() => unlockHandler(userId, bookComponentId), 800)
+    setTimeout(() => unlockHandler(userId, bookComponentId), 1000)
     return res.status(200).end()
   })
 }
