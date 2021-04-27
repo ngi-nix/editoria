@@ -21,8 +21,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  addCustomTag(input: [CustomTagAddInput]!): [CustomTag]!
-  updateCustomTag(input: [CustomTagUpdateInput]!): [CustomTag]!
+  addCustomTag(input: CustomTagAddInput!): CustomTag!
+  updateCustomTag(input: CustomTagUpdateInput!): CustomTag!
 }
 
-extend type Subscription { customTagUpdated: [CustomTag]! }
+extend type Subscription { customTagUpdated: CustomTag! }
