@@ -3,7 +3,7 @@ import { Mutation } from '@apollo/react-components'
 import gql from 'graphql-tag'
 
 const ADD_CUSTOM_TAG = gql`
-  mutation AddCustomTag($input: [CustomTagAddInput]!) {
+  mutation AddCustomTag($input: CustomTagAddInput!) {
     addCustomTag(input: $input) {
       id
       label

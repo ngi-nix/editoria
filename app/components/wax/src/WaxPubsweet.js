@@ -148,7 +148,7 @@ const Editoria = ({
   const handleCustomTags = customTag => {
     addCustomTags({
       variables: {
-        input: [customTag],
+        input: customTag,
       },
     })
   }
@@ -181,7 +181,25 @@ const Editoria = ({
         [JSON.stringify({ uid: user.id, bbid: bookComponentId })],
         { type: 'text/plain; charset=UTF-8' },
       )
-      navigator.sendBeacon('http://localhost:3000/api/unlockBeacon', blob)
+      // const serverProtocol = process.env.SERVER_PROTOCOL
+      // const serverHost = process.env.SERVER_HOST
+      // const serverPort = process.env.SERVER_PORT
+      // const serverServeClient = process.env.SERVER_SERVE_CLIENT
+
+      // let serverUrl, serverUrlWithProtocol
+
+      // // can't build a valid url without these two
+      // if (serverProtocol && serverHost) {
+      //   serverUrl = `${serverHost}${serverPort ? `:${serverPort}` : ''}`
+      //   serverUrlWithProtocol = `${serverProtocol}://${serverUrl}`
+      // }
+
+      // if (!serverUrl || serverServeClient) {
+      //   serverUrl = window.location.host
+      //   serverUrlWithProtocol = `${window.location.protocol}//${serverUrl}`
+      // }
+
+      navigator.sendBeacon('/api/unlockBeacon', blob)
       handleUnlock(bookComponentId, unlockBookComponent)
     }
   }

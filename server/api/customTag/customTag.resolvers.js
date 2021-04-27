@@ -17,20 +17,14 @@ const getCustomTags = async (_, input, ctx) => {
 const addCustomTag = async (_, { input }, ctx) => {
   try {
     const pubsub = await pubsubManager.getPubsub()
-    await Promise.all(
-      input.map(async tag => {
-        const { label, tagType } = tag
-        await CustomTag.query().insert({ label, tagType })
-      }),
-    )
-
-    const customTags = await CustomTag.query().where({ deleted: false })
+    const { label, tagType } = input
+    const newCustomTag = await CustomTag.query().insert({ label, tagType })
 
     pubsub.publish(CUSTOM_TAG_UPDATED, {
-      customTagUpdated: customTags,
+      customTagUpdated: newCustomTag,
     })
 
-    return customTags
+    return newCustomTag
   } catch (e) {
     logger.error(e)
     throw new Error(e)
