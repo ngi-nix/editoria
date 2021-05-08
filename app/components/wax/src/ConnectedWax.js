@@ -122,13 +122,6 @@ const mapProps = args => ({
         handleImport,
       })
     }),
-  checkSpell: (language, text) => {
-    const {
-      spellCheckerQuery: { client, query },
-    } = args
-
-    return client.query({ query, variables: { language, text } })
-  },
   onUnlocked: (warning, handler) => {
     const { withModal } = args
     const { showModal, hideModal } = withModal
@@ -176,7 +169,6 @@ const Connected = props => {
     >
       {({
         bookComponent,
-        checkSpell,
         tags,
         onAssetManager,
         onUnlocked,
@@ -252,7 +244,6 @@ const Connected = props => {
             bookComponentId={id}
             bookId={bookId}
             bookTitle={bookTitle}
-            checkSpell={checkSpell}
             componentType={componentType}
             componentTypeOrder={componentTypeOrder}
             content={content}

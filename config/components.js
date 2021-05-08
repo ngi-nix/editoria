@@ -18,6 +18,7 @@ module.exports = [
   './server/data-model/src/file',
   './server/data-model/src/fileTranslation',
   './server/data-model/src/team',
+  './server/data-model/src/teamMember',
   './server/data-model/src/user',
   './server/data-model/src/dataloader',
   './server/data-model/src/serviceCredential',

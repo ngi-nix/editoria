@@ -78,9 +78,4 @@ module.exports = {
       },
     },
   },
-  'language-tools': {
-    protocol: 'LANGUAGE_PROTOCOL',
-    host: 'LANGUAGE_HOST',
-    port: 'LANGUAGE_PORT',
-  },
 }

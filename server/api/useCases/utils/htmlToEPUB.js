@@ -12,10 +12,8 @@ const filter = require('lodash/filter')
 const { writeFile, readFile } = require('./filesystem')
 const beautify = require('js-beautify').html
 const { epubDecorator, fixFontFaceUrls } = require('./converters')
-const {
-  useCaseFetchRemoteFileLocally,
-  useCaseSignURL,
-} = require('../../useCases')
+
+const { locallyDownloadFile, signURL } = require('../objectStorage')
 const { imageGatherer } = require('./gatherImages')
 const { objectKeyExtractor } = require('../../../common')
 
@@ -133,7 +131,7 @@ const gatherAssets = async (book, templateFiles, epubFolder) => {
   await Promise.all(
     map(gatheredImages, async image => {
       const { currentObjectKey } = image
-      freshImageLinkMapper[currentObjectKey] = await useCaseSignURL(
+      freshImageLinkMapper[currentObjectKey] = await signURL(
         'getObject',
         currentObjectKey,
       )
@@ -184,19 +182,19 @@ const transferAssets = async (images, stylesheets, fonts) => {
     await Promise.all(
       map(images, async image => {
         const { objectKey, target } = image
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
     await Promise.all(
       map(stylesheets, async stylesheet => {
         const { objectKey, target } = stylesheet
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
     await Promise.all(
       map(fonts, async font => {
         const { objectKey, target } = font
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
     const stylesheetContent = await readFile(stylesheets[0].target)

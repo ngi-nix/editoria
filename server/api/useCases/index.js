@@ -1,10 +1,20 @@
+const applicationParameters = require('./applicationParameters')
 const bookComponent = require('./bookComponent')
+const book = require('./book')
+const team = require('./team')
+const bookCollection = require('./bookCollection')
 const objectStorage = require('./objectStorage')
 const file = require('./file')
 const services = require('./services')
+const division = require('./division')
 
 module.exports = {
+  useCaseGetApplicationParameters:
+    applicationParameters.getApplicationParameters,
+  useCaseUpdateApplicationParameters:
+    applicationParameters.updateApplicationParameters,
   useCaseAddBookComponent: bookComponent.addBookComponent,
+  useCaseCreateDivision: division.createDivision,
   useCaseUpdateBookComponentContent: bookComponent.updateContent,
   useCaseToggleIncludeInTOC: bookComponent.toggleIncludeInTOC,
   useCaseUpdateComponentType: bookComponent.updateComponentType,
@@ -16,6 +26,9 @@ module.exports = {
   useCaseUpdateWorkflowState: bookComponent.updateWorkflowState,
   useCaseDeleteBookComponent: bookComponent.deleteBookComponent,
   useCaseRenameBookComponent: bookComponent.renameBookComponent,
+  useCaseGetBookCollection: bookCollection.getBookCollection,
+  useCaseGetBookCollections: bookCollection.getBookCollections,
+  useCaseCreateBookCollection: bookCollection.createBookCollection,
   useCaseSignURL: objectStorage.signURL,
   useCaseUploadFile: objectStorage.uploadFile,
   useCaseDeleteRemoteFiles: objectStorage.deleteFiles,
@@ -39,4 +52,17 @@ module.exports = {
   useCaseXSweet: services.xsweetHandler,
   useCasePDF: services.pdfHandler,
   useCaseGetPreviewerLink: services.pagedPreviewerLinkHandler,
+  useCaseGetBook: book.getBook,
+  useCaseGetBooks: book.getBooks,
+  useCaseArchiveBook: book.archiveBook,
+  useCaseCreateBook: book.createBook,
+  useCaseRenameBook: book.renameBook,
+  useCaseDeleteBook: book.deleteBook,
+  useCaseExportBook: book.exportBook,
+  useCaseUpdateMetadata: book.updateMetadata,
+  useCaseUpdateRunningHeader: book.updateRunningHeaders,
+  useCaseCreateTeam: team.createTeam,
+  useCaseGetEntityTeams: team.getEntityTeams,
+  useCaseGetEntityTeam: team.getEntityTeam,
+  useCaseDeleteTeam: team.deleteTeam,
 }

@@ -1,9 +1,11 @@
 ## Get up and running with Docker
+
 ### Docker
-* The platform requires `docker` version from `19.03.13` up to `20.10.3` and `docker-compose` `1.27.4` (`1.28.x` should be avoided due to this issue https://github.com/docker/compose/issues/8046)  
-* Installing docker https://docs.docker.com/engine/install  
-* Docker without sudo https://docs.docker.com/engine/install/linux-postinstall/  
-* Installing docker-compose https://docs.docker.com/compose/install/  
+
+- The platform requires `docker` version from `19.03.13` up to `20.10.3` and `docker-compose` `1.27.4` (`1.28.x` should be avoided due to this issue https://github.com/docker/compose/issues/8046)
+- Installing docker https://docs.docker.com/engine/install
+- Docker without sudo https://docs.docker.com/engine/install/linux-postinstall/
+- Installing docker-compose https://docs.docker.com/compose/install/
 
 ### For development
 
@@ -47,7 +49,6 @@ You’ll be able to log into Editoria using those credentials:
 login: `admin`
 password: `password`
 
-
 ### For production
 
 Create the production environment file under `editoria/config`.  
@@ -69,9 +70,6 @@ export POSTGRES_PASSWORD=
 export POSTGRES_HOST=
 export POSTGRES_DB=
 export POSTGRES_PORT=
-export LANGUAGE_PROTOCOL= (acceptable values are http or https based on the url of the server where language tools is deployed)
-export LANGUAGE_HOST=
-export LANGUAGE_PORT=
 export MAILER_USER=
 export MAILER_PASSWORD=
 export MAILER_SENDER=

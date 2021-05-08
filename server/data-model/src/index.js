@@ -12,6 +12,7 @@ const template = require('./template')
 const customTag = require('./customTag')
 const division = require('./division')
 const team = require('./team')
+const teamMember = require('./teamMember')
 const user = require('./user')
 const lock = require('./lock')
 const serviceCredential = require('./serviceCredential')
@@ -24,6 +25,7 @@ module.exports = {
   book,
   customTag,
   team,
+  teamMember,
   user,
   applicationParameter,
   bookCollection,
@@ -54,6 +56,7 @@ module.exports = {
     File: file.model,
     FileTranslation: fileTranslation.model,
     Team: team.model,
+    TeamMember: teamMember.model,
     Template: template.model,
     User: user.model,
     Lock: lock.model,

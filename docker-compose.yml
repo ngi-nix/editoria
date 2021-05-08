@@ -86,9 +86,6 @@ services:
       - S3_ACCESS_KEY_ID_USER=${S3_ACCESS_KEY_ID_USER:-editoria}
       - S3_SECRET_ACCESS_KEY_USER=${S3_SECRET_ACCESS_KEY_USER:-superSecretUserPassword}
       - S3_BUCKET=${S3_BUCKET:-uploads}
-      - LANGUAGE_PROTOCOL=${LANGUAGE_PROTOCOL:-http}
-      - LANGUAGE_HOST=${LANGUAGE_HOST:-language-tool}
-      - LANGUAGE_PORT=${LANGUAGE_PORT:-8010}
       - SERVICE_EPUB_CHECKER_CLIENT_ID=59a3392b-0c4f-4318-bbe2-f86eff6d3de4
       - SERVICE_EPUB_CHECKER_SECRET=asldkjLKJLaslkdf897kjhKUJH
       - SERVICE_EPUB_CHECKER_PROTOCOL=${SERVICE_EPUB_CHECKER_PROTOCOL:-http}
@@ -217,6 +214,8 @@ services:
 
   db:
     image: postgres:12-alpine
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-editoria_dev}
       - POSTGRES_USER=${POSTGRES_USER:-dev_user}

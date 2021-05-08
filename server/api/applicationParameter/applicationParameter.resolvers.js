@@ -1,43 +1,50 @@
-const { logger, useTransaction } = require('@coko/server')
-const { ApplicationParameter } = require('../../data-model/src').models
-
+const { logger } = require('@coko/server')
 const { pubsubManager } = require('@coko/server')
 
 const { UPDATE_APPLICATION_PARAMETERS } = require('./consts')
+const {
+  useCaseGetApplicationParameters,
+  useCaseUpdateApplicationParameters,
+} = require('../useCases')
 
 const getApplicationParameters = async (_, args, ctx) => {
-  const { context, area } = args
-  const parameters = await ApplicationParameter.query()
-    .skipUndefined()
-    .where({ context, area })
-
-  return parameters
-}
-const updateApplicationParameters = async (_, { input }, ctx) => {
-  const { context, area, config } = input
   try {
+    const { context, area } = args
+    logger.info(
+      'application parameters resolver: executing getApplicationParameters use case',
+    )
+
+    return useCaseGetApplicationParameters(context, area)
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const updateApplicationParameters = async (_, { input }, ctx) => {
+  try {
+    const { context, area, config } = input
     const pubsub = await pubsubManager.getPubsub()
 
-    const updatedApplicationParameters = await useTransaction(async trx => {
-      const applicationParameter = await ApplicationParameter.query(trx).where({
-        context,
-        area,
-      })
-      if (applicationParameter.length !== 1) {
-        throw new Error(
-          'multiple records for the same application parameters context and area',
-        )
-      }
-      const { id } = applicationParameter[0]
-      return ApplicationParameter.query(trx).patchAndFetchById(id, { config })
-    })
+    logger.info(
+      'application parameters resolver: executing updateApplicationParameters use case',
+    )
+
+    const updatedApplicationParameters = await useCaseUpdateApplicationParameters(
+      context,
+      area,
+      config,
+    )
+
+    logger.info(
+      'application parameters resolver: broadcasting updated application parameters to clients',
+    )
 
     pubsub.publish(UPDATE_APPLICATION_PARAMETERS, {
       updateApplicationParameters: updatedApplicationParameters,
     })
+
     return updatedApplicationParameters
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
