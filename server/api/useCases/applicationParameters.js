@@ -3,62 +3,66 @@ const { ApplicationParameter } = require('../../data-model/src').models
 
 const getApplicationParameters = async (context, area, options = {}) => {
   try {
-    logger.info(`>>> fetching application parameters for ${context} - ${area}`)
     const { trx } = options
-    if (!trx) {
-      if (context && area) {
-        const ap = await ApplicationParameter.query()
+    return useTransaction(
+      async tr => {
+        if (context && area) {
+          logger.info(
+            `>>> fetching application parameters for ${context} - ${area}`,
+          )
+          const ap = await ApplicationParameter.query(tr)
+            .skipUndefined()
+            .where({ context, area })
+          return ap[0]
+        }
+        logger.info(`>>> fetching application parameters`)
+        return ApplicationParameter.query(tr)
           .skipUndefined()
           .where({ context, area })
-        return ap[0]
-      }
-
-      return ApplicationParameter.query()
-        .skipUndefined()
-        .where({ context, area })
-    }
-
-    if (context && area) {
-      const ap = await ApplicationParameter.query()
-        .skipUndefined()
-        .where({ context, area })
-      return ap[0]
-    }
-
-    return ApplicationParameter.query(trx)
-      .skipUndefined()
-      .where({ context, area })
+      },
+      { trx, passedTrxOnly: true },
+    )
   } catch (e) {
     throw new Error(e)
   }
 }
 
-const updateApplicationParameters = async (context, area, config) => {
+const updateApplicationParameters = async (
+  context,
+  area,
+  config,
+  options = {},
+) => {
   try {
-    const updatedApplicationParameters = await useTransaction(async trx => {
-      logger.info(
-        `>>> updating application parameters for ${context} - ${area}`,
-      )
-
-      const applicationParameter = await ApplicationParameter.query(trx).where({
-        context,
-        area,
-      })
-
-      if (applicationParameter.length !== 1) {
-        throw new Error(
-          'multiple records for the same application parameters context and area',
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `>>> updating application parameters for ${context} - ${area}`,
         )
-      }
 
-      const { id } = applicationParameter[0]
+        const applicationParameter = await ApplicationParameter.query(tr).where(
+          {
+            context,
+            area,
+          },
+        )
 
-      return ApplicationParameter.query(trx).patchAndFetchById(id, { config })
-    })
+        if (applicationParameter.length !== 1) {
+          throw new Error(
+            'multiple records for the same application parameters context and area',
+          )
+        }
 
-    return updatedApplicationParameters
+        const { id } = applicationParameter[0]
+
+        return ApplicationParameter.query(tr).patchAndFetchById(id, {
+          config,
+        })
+      },
+      { trx },
+    )
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }

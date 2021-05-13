@@ -25,11 +25,7 @@ const { Template } = require('../../../data-model/src').models
 
 const uploadsDir = get(config, ['pubsweet-server', 'uploads'], 'uploads')
 
-const {
-  useCaseEPUBChecker,
-  useCaseICML,
-  useCasePDF,
-} = require('../../useCases')
+const { epubcheckerHandler, icmlHandler, pdfHandler } = require('../services')
 
 const ExporterService = async (
   bookId,
@@ -131,7 +127,7 @@ const ExporterService = async (
         tempFolder,
         `${process.cwd()}/${uploadsDir}/epubs`,
       )
-      const { outcome, messages } = await useCaseEPUBChecker(epubFilePath)
+      const { outcome, messages } = await epubcheckerHandler(epubFilePath)
 
       if (outcome === 'not valid') {
         let errors = ''
@@ -173,7 +169,7 @@ const ExporterService = async (
           `${process.cwd()}/uploads/paged/${hash}/`,
           `${process.cwd()}/uploads/tmp/${hash}/`,
         )
-        await useCasePDF(zipFilePath, pdfPath, `${hash}.pdf`)
+        await pdfHandler(zipFilePath, pdfPath, `${hash}.pdf`)
         await fs.remove(`${process.cwd()}/uploads/tmp/${hash}/`)
         await fs.remove(`${process.cwd()}/uploads/paged/${hash}/`)
         // pagedjs-cli
@@ -189,7 +185,7 @@ const ExporterService = async (
 
     if (fileExtension === 'icml') {
       const { path: icmlTempFolder } = await icmlPreparation(book)
-      await useCaseICML(icmlTempFolder)
+      await icmlHandler(icmlTempFolder)
       await fs.remove(`${icmlTempFolder}/index.html`)
       const icmlFilePath = await icmlArchiver(
         icmlTempFolder,

@@ -65,4 +65,6 @@ module.exports = {
   useCaseGetEntityTeams: team.getEntityTeams,
   useCaseGetEntityTeam: team.getEntityTeam,
   useCaseDeleteTeam: team.deleteTeam,
+  useCaseUpdateTeamMembers: team.updateTeamMembers,
+  useCaseGetGlobalTeams: team.getGlobalTeams,
 }

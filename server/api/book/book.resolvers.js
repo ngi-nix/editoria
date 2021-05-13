@@ -8,7 +8,7 @@ const {
   BOOK_ARCHIVED,
   BOOK_METADATA_UPDATED,
   BOOK_RUNNING_HEADERS_UPDATED,
-} = require('./consts')
+} = require('./constants')
 const { BookTranslation } = require('../../data-model/src').models
 
 const {

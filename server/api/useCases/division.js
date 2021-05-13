@@ -1,16 +1,20 @@
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 
 const { Division } = require('../../data-model/src').models
 
 const createDivision = async (divisionData, options = {}) => {
-  const { trx } = options
-  logger.info(
-    `>>> creating division ${divisionData.label} for the book with id ${divisionData.bookId}`,
-  )
-  if (!trx) {
-    return Division.query().insert(divisionData)
+  try {
+    const { trx } = options
+    logger.info(
+      `>>> creating division ${divisionData.label} for the book with id ${divisionData.bookId}`,
+    )
+
+    return useTransaction(async tr => Division.query(tr).insert(divisionData), {
+      trx,
+    })
+  } catch (e) {
+    throw new Error(e)
   }
-  return Division.query(trx).insert(divisionData)
 }
 
 module.exports = {

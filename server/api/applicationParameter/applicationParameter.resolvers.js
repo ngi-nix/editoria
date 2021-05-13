@@ -1,7 +1,7 @@
 const { logger } = require('@coko/server')
 const { pubsubManager } = require('@coko/server')
 
-const { UPDATE_APPLICATION_PARAMETERS } = require('./consts')
+const { UPDATE_APPLICATION_PARAMETERS } = require('./constants')
 const {
   useCaseGetApplicationParameters,
   useCaseUpdateApplicationParameters,

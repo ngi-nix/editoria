@@ -1,91 +1,78 @@
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 const map = require('lodash/map')
+const forEach = require('lodash/forEach')
+const find = require('lodash/find')
+const indexOf = require('lodash/indexOf')
+const omitBy = require('lodash/omitBy')
+const isUndefined = require('lodash/isUndefined')
 
 const { Team, TeamMember, User } = require('../../data-model/src').models
 
 const getTeamMembers = async (teamId, options = {}) => {
-  const { trx } = options
-  if (!trx) {
-    const teamMembers = await TeamMember.query().where({
-      teamId,
-      deleted: false,
-    })
-
-    if (teamMembers === 0) {
-      return teamMembers
-    }
-
-    const populatedTeamMembers = await Promise.all(
-      map(teamMembers, async teamMember => {
-        const user = await User.query().where({
-          id: teamMember.userId,
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        const teamMembers = await TeamMember.query(tr).where({
+          teamId,
+          deleted: false,
         })
-        const { username, admin, email, givenName, surname } = user[0]
 
-        return { username, admin, email, givenName, surname }
-      }),
+        if (teamMembers === 0) {
+          return teamMembers
+        }
+
+        const populatedTeamMembers = await Promise.all(
+          map(teamMembers, async teamMember => {
+            const user = await User.query(tr).where({
+              id: teamMember.userId,
+            })
+            const { id, username, admin, email, givenName, surname } = user[0]
+
+            return { id, username, admin, email, givenName, surname }
+          }),
+        )
+        return populatedTeamMembers
+      },
+      { trx, passedTrxOnly: true },
     )
-    return populatedTeamMembers
+  } catch (e) {
+    throw new Error(e)
   }
-  const teamMembers = await TeamMember.query(trx).where({
-    teamId,
-    deleted: false,
-  })
-
-  if (teamMembers === 0) {
-    return teamMembers
-  }
-
-  const populatedTeamMembers = await Promise.all(
-    map(teamMembers, async teamMember => {
-      const user = await User.query(trx).where({
-        id: teamMember.userId,
-      })
-      const { username, admin, email, givenName, surname } = user[0]
-
-      return { username, admin, email, givenName, surname }
-    }),
-  )
-  return populatedTeamMembers
 }
 
 const createTeam = async (
   name,
   objectId = undefined,
   objectType = undefined,
-  role,
-  deleted = false,
+  role = undefined,
   global = false,
   options = {},
 ) => {
-  const { trx } = options
+  try {
+    const { trx } = options
 
-  if (!trx) {
-    const newTeam = await Team.query().insert({
-      name,
-      objectId,
-      objectType,
-      role,
-      deleted,
-      global,
-    })
+    return useTransaction(
+      async tr => {
+        const teamData = {
+          name,
+          objectId,
+          objectType,
+          role,
+          global,
+        }
+        const cleanedData = omitBy(teamData, isUndefined)
+        const newTeam = await Team.query(tr).insert(cleanedData)
 
-    logger.info(`>>> team of type ${role} created with id ${newTeam.id}`)
+        logger.info(`>>> team of type ${role} created with id ${newTeam.id}`)
 
-    return newTeam
+        return newTeam
+      },
+      { trx },
+    )
+  } catch (e) {
+    throw new Error(e)
   }
-  const newTeam = await Team.query(trx).insert({
-    name,
-    objectId,
-    objectType,
-    role,
-    deleted,
-    global,
-  })
-
-  logger.info(`>>> team of type ${role} created with id ${newTeam.id}`)
-
-  return newTeam
 }
 
 const getEntityTeam = async (
@@ -95,52 +82,40 @@ const getEntityTeam = async (
   withTeamMembers = false,
   options = {},
 ) => {
-  const { trx } = options
-  logger.info(
-    `>>> fetching team of ${objectType} with id ${objectId} and role ${role}`,
-  )
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `>>> fetching team of ${objectType} with id ${objectId} and role ${role}`,
+        )
 
-  if (!trx) {
-    const team = await Team.query().where({
-      objectId,
-      objectType,
-      role,
-      deleted: false,
-    })
+        const team = await Team.query(tr).where({
+          objectId,
+          objectType,
+          role,
+          deleted: false,
+        })
 
-    if (team.length === 0) {
-      throw new Error(
-        `team of ${objectType} with id ${objectId} does not exist`,
-      )
-    }
+        if (team.length === 0) {
+          throw new Error(
+            `team of ${objectType} with id ${objectId} does not exist`,
+          )
+        }
 
-    if (!withTeamMembers) {
-      return team[0]
-    }
+        if (!withTeamMembers) {
+          return team[0]
+        }
 
-    team[0].members = await getTeamMembers(team[0].id)
+        team[0].members = await getTeamMembers(team[0].id, { trx: tr })
 
-    return team[0]
+        return team[0]
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    throw new Error(e)
   }
-
-  const team = await Team.query(trx).where({
-    objectId,
-    objectType,
-    role,
-    deleted: false,
-  })
-
-  if (team.length === 0) {
-    throw new Error(`team of ${objectType} with id ${objectId} does not exist`)
-  }
-
-  if (!withTeamMembers) {
-    return team[0]
-  }
-
-  team[0].members = await getTeamMembers(team[0].id, { trx })
-
-  return team[0]
 }
 
 const getEntityTeams = async (
@@ -149,97 +124,181 @@ const getEntityTeams = async (
   withTeamMembers = false,
   options = {},
 ) => {
-  const { trx } = options
-  logger.info(`>>> fetching teams of ${objectType} with id ${objectId}`)
-  if (!trx) {
-    const teams = await Team.query().where({
-      objectId,
-      objectType,
-      deleted: false,
-    })
-    if (teams.length === 0) {
-      throw new Error(`teams of ${objectType} with id ${objectId} do not exist`)
-    }
-    if (!withTeamMembers) {
-      return teams
-    }
-    return Promise.all(teams, async team => {
-      team.members = await getTeamMembers(team.id)
-      return team
-    })
+  try {
+    const { trx } = options
+    logger.info(`>>> fetching teams of ${objectType} with id ${objectId}`)
+    return useTransaction(
+      async tr => {
+        const teams = await Team.query(tr).where({
+          objectId,
+          objectType,
+          deleted: false,
+          global: false,
+        })
+        if (teams.length === 0) {
+          throw new Error(
+            `teams of ${objectType} with id ${objectId} do not exist`,
+          )
+        }
+        if (!withTeamMembers) {
+          return teams
+        }
+        return Promise.all(teams, async team => {
+          team.members = await getTeamMembers(team.id, { trx: tr })
+          return team
+        })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    throw new Error(e)
   }
-  const teams = await Team.query(trx).where({
-    objectId,
-    objectType,
-    deleted: false,
-  })
-  if (teams.length === 0) {
-    throw new Error(`teams of ${objectType} with id ${objectId} do not exist`)
-  }
-  if (!withTeamMembers) {
-    return teams
-  }
-  return Promise.all(teams, async team => {
-    team.members = await getTeamMembers(team.id, { trx })
-    return team
-  })
 }
 
 const deleteTeam = async (teamId, options = {}) => {
-  const { trx } = options
-  if (!trx) {
-    const deletedTeam = await Team.query().patchAndFetchById(teamId, {
-      deleted: false,
-      objectId: null,
-      objectType: null,
-    })
-    logger.info(`>>> associated team with id ${teamId} deleted`)
-    logger.info(`>>> corresponding team's object cleaned`)
+  try {
+    const { trx } = options
 
-    const teamMembers = await TeamMember.query().where({
-      teamId,
-      deleted: false,
-    })
+    return useTransaction(
+      async tr => {
+        const deletedTeam = await Team.query(tr).patchAndFetchById(teamId, {
+          deleted: false,
+          objectId: null,
+          objectType: null,
+        })
+        logger.info(`>>> associated team with id ${teamId} deleted`)
+        logger.info(`>>> corresponding team's object cleaned`)
 
-    logger.info(`>>> fetching team members of team with id ${teamId}`)
-    await Promise.all(
-      map(teamMembers, async teamMember => {
-        logger.info(`>>> team member with id ${teamMember.id} deleted`)
-        return TeamMember.query()
-          .patch({ deleted: true })
-          .where({ id: teamMember.id })
-      }),
+        const teamMembers = await TeamMember.query(tr).where({
+          teamId,
+          deleted: false,
+        })
+
+        logger.info(`>>> fetching team members of team with id ${teamId}`)
+        await Promise.all(
+          map(teamMembers, async teamMember => {
+            logger.info(`>>> team member with id ${teamMember.id} deleted`)
+            return TeamMember.query(tr)
+              .patch({ deleted: true })
+              .where({ id: teamMember.id })
+          }),
+        )
+        return deletedTeam
+      },
+      { trx },
     )
-    return deletedTeam
+  } catch (e) {
+    throw new Error(e)
   }
-  const deletedTeam = await Team.query(trx).patchAndFetchById(teamId, {
-    deleted: false,
-    objectId: null,
-    objectType: null,
-  })
-  logger.info(`>>> associated team with id ${teamId} deleted`)
-  logger.info(`>>> corresponding team's object cleaned`)
+}
 
-  const teamMembers = await TeamMember.query(trx).where({
-    teamId,
-    deleted: false,
-  })
+const getGlobalTeams = async (withTeamMembers = false, options = {}) => {
+  try {
+    const { trx } = options
+    logger.info(`>>> fetching global teams`)
+    return useTransaction(
+      async tr => {
+        const teams = await Team.query(tr).where({
+          global: true,
+          deleted: false,
+        })
+        if (teams.length === 0) {
+          throw new Error(`no global teams`)
+        }
+        if (!withTeamMembers) {
+          return teams
+        }
+        return Promise.all(teams, async team => {
+          team.members = await getTeamMembers(team.id, { trx: tr })
+          return team
+        })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 
-  logger.info(`>>> fetching team members of team with id ${teamId}`)
-  await Promise.all(
-    map(teamMembers, async teamMember => {
-      logger.info(`>>> team member with id ${teamMember.id} deleted`)
-      return TeamMember.query(trx)
-        .patch({ deleted: true })
-        .where({ id: teamMember.id })
-    }),
-  )
-  return deletedTeam
+const getTeam = async (teamId, withTeamMembers = false, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        const team = await Team.query(tr).where({ id: teamId, deleted: false })
+        if (team.length === 0) {
+          throw Error(`team with id ${teamId} does not exist`)
+        }
+
+        if (!withTeamMembers) {
+          return team[0]
+        }
+
+        team[0].members = await getTeamMembers(teamId, { trx: tr })
+        return team[0]
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const updateTeamMembers = async (teamId, members, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        const toBeAdded = []
+        const toBeDeleted = []
+        const teamMembers = await getTeamMembers(teamId, { trx: tr })
+
+        forEach(members, userId => {
+          if (!find(teamMembers, { id: userId })) {
+            toBeAdded.push(userId)
+          }
+        })
+
+        forEach(teamMembers, user => {
+          const { id } = user
+          if (indexOf(members, id) === -1) {
+            toBeDeleted.push(id)
+          }
+        })
+
+        await Promise.all(
+          toBeAdded.map(async userId =>
+            TeamMember.query(tr).insert({
+              teamId,
+              userId,
+            }),
+          ),
+        )
+        await Promise.all(
+          toBeDeleted.map(async userId =>
+            TeamMember.query(tr)
+              .patch({ deleted: true })
+              .where({
+                teamId,
+                userId,
+              }),
+          ),
+        )
+        return getTeam(teamId, true, { trx: tr })
+      },
+      { trx },
+    )
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 
 module.exports = {
   createTeam,
   getEntityTeams,
   getEntityTeam,
+  getTeam,
+  getGlobalTeams,
   deleteTeam,
+  updateTeamMembers,
 }
