@@ -13,7 +13,7 @@ class TeamManagerModal extends React.Component {
   renderBody() {
     const {
       teams,
-      findUser,
+      searchForUsers,
       updateTeam,
       rules,
       canViewAddTeamMember,
@@ -22,8 +22,8 @@ class TeamManagerModal extends React.Component {
     return (
       <TeamManager
         canViewAddTeamMember={canViewAddTeamMember}
-        findUser={findUser}
         rules={rules}
+        searchForUsers={searchForUsers}
         teams={teams}
         updateTeam={updateTeam}
       />

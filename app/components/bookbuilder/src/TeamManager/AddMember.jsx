@@ -39,18 +39,18 @@ export class AddMember extends React.Component {
   }
 
   promiseOptions(inputValue, callback) {
-    const { findUser, team } = this.props
+    const { searchForUsers, team } = this.props
     const teamMemberIds = map(team.members, member => member.user.id)
 
-    findUser({
+    searchForUsers({
       variables: {
         search: inputValue,
         exclude: teamMemberIds,
       },
     }).then(res => {
       const { data } = res
-      const { findUser } = data
-      const options = map(findUser, user => ({
+      const { searchForUsers } = data
+      const options = map(searchForUsers, user => ({
         value: user.id,
         label: `${user.givenName} ${user.surname}`,
       }))

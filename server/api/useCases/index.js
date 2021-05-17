@@ -2,11 +2,13 @@ const applicationParameters = require('./applicationParameters')
 const bookComponent = require('./bookComponent')
 const book = require('./book')
 const team = require('./team')
+const user = require('./user')
 const bookCollection = require('./bookCollection')
 const objectStorage = require('./objectStorage')
 const file = require('./file')
 const services = require('./services')
 const division = require('./division')
+const customTags = require('./customTags')
 
 module.exports = {
   useCaseGetApplicationParameters:
@@ -15,6 +17,8 @@ module.exports = {
     applicationParameters.updateApplicationParameters,
   useCaseAddBookComponent: bookComponent.addBookComponent,
   useCaseCreateDivision: division.createDivision,
+  useCaseUpdateDivisionBookComponentOrder: division.updateBookComponentOrder,
+  useCaseGetDivision: division.getDivision,
   useCaseUpdateBookComponentContent: bookComponent.updateContent,
   useCaseToggleIncludeInTOC: bookComponent.toggleIncludeInTOC,
   useCaseUpdateComponentType: bookComponent.updateComponentType,
@@ -26,6 +30,8 @@ module.exports = {
   useCaseUpdateWorkflowState: bookComponent.updateWorkflowState,
   useCaseDeleteBookComponent: bookComponent.deleteBookComponent,
   useCaseRenameBookComponent: bookComponent.renameBookComponent,
+  useCaseGetBookComponent: bookComponent.getBookComponent,
+  useCaseUpdateBookComponent: bookComponent.updateBookComponent,
   useCaseGetBookCollection: bookCollection.getBookCollection,
   useCaseGetBookCollections: bookCollection.getBookCollections,
   useCaseCreateBookCollection: bookCollection.createBookCollection,
@@ -67,4 +73,12 @@ module.exports = {
   useCaseDeleteTeam: team.deleteTeam,
   useCaseUpdateTeamMembers: team.updateTeamMembers,
   useCaseGetGlobalTeams: team.getGlobalTeams,
+  useCaseSearchForUsers: user.searchForUsers,
+  useCaseCreateUser: user.createEditoriaUser,
+  useCaseUpdatePassword: user.updatePassword,
+  useCaseUpdatePersonalInformation: user.updatePersonalInformation,
+  useCaseSendPasswordResetEmail: user.sendPasswordResetEmail,
+  useCaseGetCustomTags: customTags.getCustomTags,
+  useCaseAddCustomTag: customTags.addCustomTag,
+  useCaseUpdateCustomTag: customTags.updateCustomTag,
 }

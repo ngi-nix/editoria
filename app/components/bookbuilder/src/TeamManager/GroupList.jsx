@@ -32,7 +32,13 @@ export class GroupList extends React.Component {
   }
 
   render() {
-    const { teams, findUser, update, rules, canViewAddTeamMember } = this.props
+    const {
+      teams,
+      searchForUsers,
+      update,
+      rules,
+      canViewAddTeamMember,
+    } = this.props
     const { options } = this
 
     const groups = keys(options).map((key, i) => {
@@ -42,10 +48,10 @@ export class GroupList extends React.Component {
       return (
         <Group
           canViewAddTeamMember={canViewAddTeamMember}
-          findUser={findUser}
           key={team.role}
           options={options[team.role]}
           rules={rules}
+          searchForUsers={searchForUsers}
           team={team}
           update={update}
         />

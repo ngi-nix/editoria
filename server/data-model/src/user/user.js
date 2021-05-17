@@ -18,6 +18,10 @@ class EditoriaUser extends User {
         surname: {
           type: 'string',
         },
+        deleted: {
+          type: 'boolean',
+          default: false,
+        },
       },
     }
   }
@@ -34,8 +38,15 @@ class EditoriaUser extends User {
     super.$beforeInsert()
     if (this.password) await this.hashPassword(this.password)
   }
-  static async updatePassword(userId, currentPassword, newPassword) {
-    const user = await User.query().findById(userId)
+
+  static async updatePassword(
+    userId,
+    currentPassword,
+    newPassword,
+    options = {},
+  ) {
+    const { trx } = options
+    const user = await User.query(trx).findById(userId)
     const isCurrentPasswordValid = await user.validPassword(currentPassword)
 
     if (!isCurrentPasswordValid) {
@@ -52,7 +63,7 @@ class EditoriaUser extends User {
 
     const passwordHash = await User.hashPassword(newPassword)
 
-    return user.$query().patchAndFetch({
+    return user.$query(trx).patchAndFetch({
       passwordHash,
     })
   }

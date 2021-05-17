@@ -31,7 +31,7 @@ export {
 
 export { templateUpdatedForPagedStyledSubscription } from './templateUpdatedSubscription'
 
-export { default as findUserMutation } from './findUsers'
+export { default as searchForUsersMutation } from './searchForUsers'
 export { default as updateTeamMutation } from './updateTeam'
 export { default as ingestWordFilesMutation } from './ingestWordFile'
 export { default as updateBookComponentTypeMutation } from './updateComponentType'

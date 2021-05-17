@@ -178,9 +178,9 @@ const deleteTeam = async (teamId, options = {}) => {
         await Promise.all(
           map(teamMembers, async teamMember => {
             logger.info(`>>> team member with id ${teamMember.id} deleted`)
-            return TeamMember.query(tr)
-              .patch({ deleted: true })
-              .where({ id: teamMember.id })
+            return TeamMember.query(tr).deleteById(teamMember.id)
+            // .patch({ deleted: true })
+            // .where({ id: teamMember.id })
           }),
         )
         return deletedTeam
@@ -277,7 +277,8 @@ const updateTeamMembers = async (teamId, members, options = {}) => {
         await Promise.all(
           toBeDeleted.map(async userId =>
             TeamMember.query(tr)
-              .patch({ deleted: true })
+              // .patch({ deleted: true })
+              .delete()
               .where({
                 teamId,
                 userId,
