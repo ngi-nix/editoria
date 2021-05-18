@@ -31,7 +31,7 @@ const {
   useCaseFetchRemoteFileLocally,
 } = require('../useCases')
 
-const exporter = require('../book/utils/exporter')
+const exporter = require('../useCases/utils/exporter')
 
 const getTemplates = async (_, { ascending, sortKey, target, notes }, ctx) => {
   try {

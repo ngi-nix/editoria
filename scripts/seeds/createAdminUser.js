@@ -1,4 +1,4 @@
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 const { editoriaDataModel } = require('../../server/data-model')
 
 const { models } = editoriaDataModel
@@ -20,20 +20,22 @@ const createAdmin = async userData => {
 
     logger.info('creating user')
 
-    const newUser = new User({
-      admin: true,
-      password,
-      givenName,
-      surname,
-      email,
-      username,
+    await useTransaction(async trx => {
+      await User.query(trx).insert({
+        admin: true,
+        password,
+        givenName,
+        surname,
+        email,
+        username,
+      })
+
+      logger.info(
+        `>>> admin user  with username "${username}" successfully created.`,
+      )
+
+      return true
     })
-    await newUser.save()
-
-    logger.info(
-      `>>> admin user  with username "${username}" successfully created.`,
-    )
-
     return true
   } catch (e) {
     logger.error(e.message)

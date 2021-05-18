@@ -1,5 +1,5 @@
 const { exec } = require('child_process')
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 
 const map = require('lodash/map')
 const path = require('path')
@@ -63,9 +63,76 @@ const createTemplate = async (sourceRoot, data, cssFile, notes) => {
   try {
     const assetsRoot = path.join(sourceRoot, 'dist')
     const areAssetsOK = await filesChecker(assetsRoot)
+    const { name, author, target } = data
+
+    const transactionWrapper = async trx => {
+      logger.info('About to create a new template')
+
+      const newTemplate = await Template.query(trx).insert({
+        name: `${name} (${notes})`,
+        author,
+        target,
+        notes,
+      })
+
+      logger.info(`New template created with id ${newTemplate.id}`)
+
+      const fontsPath = path.join(assetsRoot, 'fonts')
+
+      if (fs.existsSync(fontsPath)) {
+        const contents = await dirContents(fontsPath)
+        await Promise.all(
+          contents.map(async font => {
+            const absoluteFontPath = path.join(fontsPath, font)
+            const mimetype = mime.lookup(font)
+            const { original } = await useCaseUploadFile(
+              fs.createReadStream(absoluteFontPath),
+              font,
+              mimetype,
+              undefined,
+              `templates/${newTemplate.id}/${font}`,
+            )
+            const { key, location, metadata, size, extension } = original
+            const options = {}
+            options.trx = trx
+            return useCaseCreateFile(
+              { name: font, size, mimetype, metadata, extension },
+              { location, key },
+              'template',
+              newTemplate.id,
+              options,
+            )
+          }),
+        )
+      }
+
+      const cssPath = path.join(assetsRoot, 'css')
+
+      if (fs.existsSync(path.join(assetsRoot, 'css'))) {
+        const absoluteCSSPath = path.join(cssPath, cssFile)
+        const mimetype = mime.lookup(cssFile)
+        const { original } = await useCaseUploadFile(
+          fs.createReadStream(absoluteCSSPath),
+          cssFile,
+          mimetype,
+          undefined,
+          `templates/${newTemplate.id}/${cssFile}`,
+        )
+        const { key, location, metadata, size, extension } = original
+        const options = {}
+        options.trx = trx
+        return useCaseCreateFile(
+          { name: cssFile, size, mimetype, metadata, extension },
+          { location, key },
+          'template',
+          newTemplate.id,
+          options,
+        )
+      }
+      return true
+    }
 
     if (areAssetsOK) {
-      const { name, author, target } = data
       logger.info('Checking if template with that name already exists')
       const existingTemplate = await Template.query()
         .where({
@@ -75,63 +142,7 @@ const createTemplate = async (sourceRoot, data, cssFile, notes) => {
       if (existingTemplate.length > 0) {
         logger.info(`Template with name ${name} (${notes}) already exists`)
       } else {
-        logger.info('About to create a new template')
-
-        const newTemplate = await Template.query().insert({
-          name: `${name} (${notes})`,
-          author,
-          target,
-          notes,
-        })
-
-        logger.info(`New template created with id ${newTemplate.id}`)
-
-        const fontsPath = path.join(assetsRoot, 'fonts')
-
-        if (fs.existsSync(fontsPath)) {
-          const contents = await dirContents(fontsPath)
-          await Promise.all(
-            contents.map(async font => {
-              const absoluteFontPath = path.join(fontsPath, font)
-              const mimetype = mime.lookup(font)
-              const { original } = await useCaseUploadFile(
-                fs.createReadStream(absoluteFontPath),
-                font,
-                mimetype,
-                undefined,
-                `templates/${newTemplate.id}/${font}`,
-              )
-              const { key, location, metadata, size, extension } = original
-              return useCaseCreateFile(
-                { name: font, size, mimetype, metadata, extension },
-                { location, key },
-                'template',
-                newTemplate.id,
-              )
-            }),
-          )
-        }
-
-        const cssPath = path.join(assetsRoot, 'css')
-
-        if (fs.existsSync(path.join(assetsRoot, 'css'))) {
-          const absoluteCSSPath = path.join(cssPath, cssFile)
-          const mimetype = mime.lookup(cssFile)
-          const { original } = await useCaseUploadFile(
-            fs.createReadStream(absoluteCSSPath),
-            cssFile,
-            mimetype,
-            undefined,
-            `templates/${newTemplate.id}/${cssFile}`,
-          )
-          const { key, location, metadata, size, extension } = original
-          return useCaseCreateFile(
-            { name: cssFile, size, mimetype, metadata, extension },
-            { location, key },
-            'template',
-            newTemplate.id,
-          )
-        }
+        await useTransaction(transactionWrapper)
       }
     } else {
       throw new Error(

@@ -1,4 +1,4 @@
 exports.up = async knex =>
-  knex.schema.table('teams', table => {
+  knex.schema.table('users', table => {
     table.boolean('deleted').defaultTo(false)
   })

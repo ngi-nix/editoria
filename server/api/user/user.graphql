@@ -26,7 +26,7 @@ input UpdatePasswordInput {
 }
 
 extend type Mutation {
-  findUser(search: String!, exclude: [ID]!): [User]!
+  searchForUsers(search: String!, exclude: [ID]!): [User]!
   createEditoriaUser(input: EditoriaUserInput): User!
   updateEditoriaUser(id: ID, input: EditoriaUserInput): User!
   updatePassword(input: UpdatePasswordInput): ID!

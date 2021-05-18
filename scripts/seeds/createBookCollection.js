@@ -1,4 +1,4 @@
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 
 const {
   editoriaDataModel: {
@@ -6,7 +6,25 @@ const {
   },
 } = require('../../server/data-model')
 
-const createBookCollection = async () => {
+const createBookCollection = async trx => {
+  logger.info('>>> creating a new books collection')
+  const createdBookCollection = await BookCollection.query(trx).insert({})
+  logger.info(`books collection created with id: ${createdBookCollection.id}`)
+  logger.info('>>> creating a new books collection translation')
+  const createdBookCollectionTranslation = await BookCollectionTranslation.query(
+    trx,
+  ).insert({
+    collectionId: createdBookCollection.id,
+    languageIso: 'en',
+    title: 'Books',
+  })
+  logger.info(
+    `books collection translation created with id: ${createdBookCollectionTranslation.id}`,
+  )
+  return true
+}
+
+const createBookCollectionHandler = async () => {
   try {
     logger.info('>>> checking if books collection already exists...')
 
@@ -16,26 +34,11 @@ const createBookCollection = async () => {
       logger.warn('>>> collection already exists')
       return false
     }
-
-    logger.info('>>> creating a new books collection')
-    const createdBookCollection = await BookCollection.query().insert({})
-    logger.info(`books collection created with id: ${createdBookCollection.id}`)
-    logger.info('>>> creating a new books collection translation')
-    const createdBookCollectionTranslation = await BookCollectionTranslation.query().insert(
-      {
-        collectionId: createdBookCollection.id,
-        languageIso: 'en',
-        title: 'Books',
-      },
-    )
-    logger.info(
-      `books collection translation created with id: ${createdBookCollectionTranslation.id}`,
-    )
-    return true
+    return useTransaction(createBookCollection)
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)
   }
 }
 
-module.exports = createBookCollection
+module.exports = createBookCollectionHandler

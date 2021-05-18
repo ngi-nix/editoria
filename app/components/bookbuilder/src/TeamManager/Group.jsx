@@ -28,7 +28,7 @@ export class Group extends React.Component {
   render() {
     const {
       team,
-      findUser,
+      searchForUsers,
       options,
       update,
       rules,
@@ -56,8 +56,8 @@ export class Group extends React.Component {
           update={update}
         />
         <AddMember
-          findUser={findUser}
           hideInput={this._closeAddMember}
+          searchForUsers={searchForUsers}
           show={this.state.isAddMemberOpen}
           team={team}
           update={update}

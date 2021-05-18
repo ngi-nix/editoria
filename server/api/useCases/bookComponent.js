@@ -5,7 +5,7 @@ const pullAll = require('lodash/pullAll')
 const map = require('lodash/map')
 const clone = require('lodash/clone')
 const assign = require('lodash/assign')
-const { logger } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 
 const {
   ApplicationParameter,
@@ -18,6 +18,45 @@ const {
 
 const { isEmpty } = require('../helpers/utils')
 
+const getBookComponent = async (bookComponentId, options = {}) => {
+  try {
+    const { trx } = options
+    logger.info(`>>> fetching book component with id ${bookComponentId}`)
+
+    const bookComponent = await useTransaction(
+      async tr =>
+        BookComponent.query(tr).where({ id: bookComponentId, deleted: false }),
+      { trx, passedTrxOnly: true },
+    )
+
+    if (bookComponent.length === 0) {
+      throw new Error(
+        `book component with id: ${bookComponentId} does not exist`,
+      )
+    }
+
+    return bookComponent[0]
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const updateBookComponent = async (bookComponentId, patch, options = {}) => {
+  try {
+    const { trx } = options
+    logger.info(`>>> updating book component with id ${bookComponentId}`)
+
+    return useTransaction(
+      async tr =>
+        BookComponent.query(tr).patchAndFetchById(bookComponentId, patch),
+      {
+        trx,
+      },
+    )
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 const addBookComponent = async (divisionId, bookId, componentType) => {
   try {
     return transaction(
@@ -632,6 +671,8 @@ const renameBookComponent = async (bookComponentId, title, languageIso) => {
 }
 
 module.exports = {
+  getBookComponent,
+  updateBookComponent,
   addBookComponent,
   updateContent,
   toggleIncludeInTOC,

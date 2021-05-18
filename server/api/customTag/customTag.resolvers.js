@@ -1,54 +1,44 @@
-const { logger } = require('@coko/server')
-const { CustomTag } = require('../../data-model/src').models
+const { logger, pubsubManager } = require('@coko/server')
 
-const { CUSTOM_TAG_UPDATED } = require('./consts')
-
-const { pubsubManager } = require('@coko/server')
+const { CUSTOM_TAG_UPDATED } = require('./constants')
+const {
+  useCaseGetCustomTags,
+  useCaseAddCustomTag,
+  useCaseUpdateCustomTag,
+} = require('../useCases')
 
 const getCustomTags = async (_, input, ctx) => {
-  const customTags = await CustomTag.query().where({ deleted: false })
-  if (!customTags) {
-    throw new Error(`CustomTags error: Could not fetch Tags`)
+  try {
+    logger.info('custom tags resolver: executing getCustomTags use case')
+    return useCaseGetCustomTags()
+  } catch (e) {
+    throw new Error(e)
   }
-
-  return customTags
 }
 
 const addCustomTag = async (_, { input }, ctx) => {
   try {
+    logger.info('custom tags resolver: executing addCustomTag use case')
     const pubsub = await pubsubManager.getPubsub()
     const { label, tagType } = input
-    const newCustomTag = await CustomTag.query().insert({ label, tagType })
+
+    const newCustomTag = await useCaseAddCustomTag(label, tagType)
 
     pubsub.publish(CUSTOM_TAG_UPDATED, {
       customTagUpdated: newCustomTag,
     })
-
+    logger.info('custom tags resolver: broadcasting new custom tag to clients')
     return newCustomTag
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const updateCustomTag = async (_, { input }, ctx) => {
   try {
-    await Promise.all(
-      input.map(async tag => {
-        const { id, deleted, tagType, label } = tag
-        await CustomTag.query().patchAndFetchById(id, {
-          label,
-          deleted,
-          tagType,
-        })
-      }),
-    )
-
-    const customTags = await CustomTag.query().where({ deleted: false })
-
-    return customTags
+    logger.info('custom tags resolver: executing updateCustomTag use case')
+    return useCaseUpdateCustomTag(input)
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }

@@ -16,7 +16,7 @@ const createFile = async (
   { location, key },
   entityType,
   entityId,
-  referenceId,
+  options = {},
 ) => {
   try {
     const tempFile = {
@@ -28,15 +28,16 @@ const createFile = async (
       extension,
       tags,
       mimetype,
-      referenceId,
       bookId: entityType === 'book' ? entityId : undefined,
       templateId: entityType === 'template' ? entityId : undefined,
       bookComponentId: entityType === 'bookComponent' ? entityId : undefined,
     }
-
     const cleanedObject = pickBy(tempFile, v => v !== undefined)
-
-    return File.query().insert(cleanedObject)
+    const { trx } = options
+    if (!trx) {
+      return File.query().insert(cleanedObject)
+    }
+    return File.query(trx).insert(cleanedObject)
   } catch (e) {
     logger.error(e.message)
     throw new Error(e)

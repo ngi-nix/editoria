@@ -12,15 +12,15 @@ const {
   BookComponentState,
 } = require('../../../data-model/src').models
 
+const { getEntityTeam } = require('../team')
+
 const divisionTypeMapper = {
   Frontmatter: 'front',
   Body: 'body',
   Backmatter: 'back',
 }
 
-const eager = '[members.[user]]'
-
-module.exports = async (bookId, templateHasEndnotes, ctx) => {
+module.exports = async bookId => {
   const finalBook = {}
   const book = await Book.findById(bookId)
 
@@ -105,17 +105,14 @@ module.exports = async (bookId, templateHasEndnotes, ctx) => {
     },
   )
 
-  const authorTeams = await ctx.connectors.Team.fetchAll(
-    { objectId: bookId, role: 'author' },
-    ctx,
-    { eager },
-  )
+  const authorTeams = await getEntityTeam(bookId, 'book', 'author', true)
 
   let authors = []
+
   if (authorTeams[0] && authorTeams[0].members.length > 0) {
     authors = map(authorTeams[0].members, teamMember => {
-      const { user } = teamMember
-      return `${user.givenName} ${user.surname}`
+      const { givenName, surname } = teamMember
+      return `${givenName} ${surname}`
     })
   }
 

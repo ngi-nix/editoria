@@ -8,7 +8,7 @@ import statefull from '../Statefull'
 import {
   getBookTeamsQuery,
   getBookBuilderRulesQuery,
-  findUserMutation,
+  searchForUsersMutation,
   updateTeamMutation,
   teamMembersChangeSubscription,
   addTeamMemberSubscription,
@@ -18,7 +18,7 @@ const mapper = {
   statefull,
   getBookBuilderRulesQuery,
   getBookTeamsQuery,
-  findUserMutation,
+  searchForUsersMutation,
   updateTeamMutation,
   teamMembersChangeSubscription,
   addTeamMemberSubscription,
@@ -28,7 +28,7 @@ const mapProps = args => ({
   state: args.statefull.state,
   setState: args.statefull.setState,
   teams: get(args.getBookTeamsQuery, 'data.getBookTeams'),
-  findUser: args.findUserMutation.findUser,
+  searchForUsers: args.searchForUsersMutation.searchForUsers,
   updateTeam: args.updateTeamMutation.updateBookTeam,
   refetching:
     args.getBookTeamsQuery.networkStatus === 4 ||
@@ -54,19 +54,19 @@ const Connected = props => {
         loading,
         loadingRules,
         rules,
-        findUser,
+        searchForUsers,
         refetching,
         updateTeam,
       }) => (
         <TeamManagerModal
           canViewAddTeamMember={(rules || {}).canViewAddTeamMember}
-          findUser={findUser}
           hideModal={hideModal}
           isOpen={isOpen}
           loading={loading}
           loadingRules={loadingRules}
           refetching={refetching}
           rules={rules}
+          searchForUsers={searchForUsers}
           teams={teams}
           updateTeam={updateTeam}
         />

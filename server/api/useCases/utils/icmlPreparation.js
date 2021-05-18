@@ -9,10 +9,8 @@ const map = require('lodash/map')
 
 const { writeFile } = require('./filesystem')
 
-const {
-  useCaseFetchRemoteFileLocally,
-  useCaseGetFile,
-} = require('../../useCases')
+const { getFile } = require('../file')
+const { locallyDownloadFile } = require('../objectStorage')
 
 const { generatePagedjsContainer } = require('./htmlGenerators')
 const { objectKeyExtractor } = require('../../../common')
@@ -33,7 +31,7 @@ const icmlPreparation = async book => {
     await Promise.all(
       map(gatheredImages, async image => {
         const { currentObjectKey, fileId } = image
-        const file = await useCaseGetFile(fileId)
+        const file = await getFile(fileId)
         const { objectKey } = file
         originalImageLinkMapper[currentObjectKey] = objectKey
         return true
@@ -78,7 +76,7 @@ const icmlPreparation = async book => {
     await Promise.all(
       map(images, async image => {
         const { objectKey, target } = image
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
     const output = cheerio.load(generatePagedjsContainer(book.title))

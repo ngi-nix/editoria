@@ -1,13 +1,5 @@
-const { pubsubManager } = require('@coko/server')
-const keys = require('lodash/keys')
+const { pubsubManager, logger } = require('@coko/server')
 const map = require('lodash/map')
-const assign = require('lodash/assign')
-const omitBy = require('lodash/omitBy')
-const isNil = require('lodash/isNil')
-const filter = require('lodash/filter')
-const config = require('config')
-const { logger } = require('@coko/server')
-const exporter = require('./utils/exporter')
 
 const {
   BOOK_CREATED,
@@ -16,276 +8,94 @@ const {
   BOOK_ARCHIVED,
   BOOK_METADATA_UPDATED,
   BOOK_RUNNING_HEADERS_UPDATED,
-} = require('./consts')
+} = require('./constants')
+const { BookTranslation } = require('../../data-model/src').models
+
 const {
-  Book,
-  BookTranslation,
-  BookComponentState,
-  BookComponent,
-  Division,
-  ApplicationParameter,
-  BookComponentTranslation,
-} = require('../../data-model/src').models
-
-const { useCaseGetPreviewerLink } = require('../useCases')
-
-const eager = '[members.[user, alias]]'
+  useCaseGetPreviewerLink,
+  useCaseGetBook,
+  useCaseCreateBook,
+  useCaseRenameBook,
+  useCaseDeleteBook,
+  useCaseArchiveBook,
+  useCaseUpdateMetadata,
+  useCaseExportBook,
+  useCaseUpdateRunningHeader,
+  useCaseGetEntityTeam,
+} = require('../useCases')
 
 const getBook = async (_, { id }, ctx, info) => {
-  const book = await Book.findById(id)
-
-  if (!book) {
-    throw new Error(`Book with id: ${id} does not exist`)
+  try {
+    logger.info('book resolver: executing getBook use case')
+    return useCaseGetBook(id)
+  } catch (e) {
+    throw new Error(e)
   }
-
-  return book
 }
 
 const createBook = async (_, { input }, ctx) => {
-  const { collectionId, title } = input
   try {
+    logger.info('book resolver: executing createBook use case')
+
+    const { collectionId, title } = input
+    const pubsub = await pubsubManager.getPubsub()
+
+    logger.info('book resolver: checking permissions for book creation')
     await ctx.helpers.can(ctx.user, 'create', 'Book')
 
-    const pubsub = await pubsubManager.getPubsub()
-    const book = await Book.query().insert({
-      collectionId,
-    })
-    logger.info(`New Book created with id ${book.id}`)
-    await BookTranslation.query().insert({
-      bookId: book.id,
-      title,
-      languageIso: 'en',
-    })
-    logger.info(
-      `New Book Translation (title: ${title})created for the book ${book.id}`,
-    )
+    const newBook = await useCaseCreateBook(collectionId, title)
 
-    const roles = keys(config.authsome.teams)
-    await Promise.all(
-      map(roles, async role => {
-        await ctx.connectors.Team.create(
-          {
-            name: config.authsome.teams[role].name,
-            objectId: book.id,
-            objectType: 'book',
-            role,
-            deleted: false,
-            global: false,
-          },
-          ctx,
-          {
-            relate: true,
-            unrelate: true,
-          },
-        )
-        logger.info(`Team of type ${role} created for the book ${book.id}`)
+    logger.info('book resolver: broadcasting new book to clients')
 
-        // const user = await ctx.connectors.User.fetchOne(ctx.user, ctx)
-        // if (!user.admin && role === 'productionEditor') {
-        //   const userMember = pick(user, [
-        //     'id',
-        //     'email',
-        //     'username',
-        //     'admin',
-        //     'type',
-        //   ])
-        //   const member = { members: [{ user: [userMember] }] }
-        //   await ctx.connectors.Team.update(newTeam.id, member, ctx, {
-        //     unrelate: false,
-        //     eager: 'members.user.teams',
-        //   })
-        // }
-      }),
-    )
-    // CREATE TABLE OF CONTENTS IN THE FRONT MATTER
-    const workflowConfig = await ApplicationParameter.query().where({
-      context: 'bookBuilder',
-      area: 'stages',
-    })
+    pubsub.publish(BOOK_CREATED, { bookCreated: newBook })
 
-    const { config: workflowStages } = workflowConfig[0]
-
-    let bookComponentWorkflowStages
-
-    const division = await Division.query()
-      .where({ bookId: book.id, label: 'Frontmatter' })
-      .andWhere({ deleted: false })
-    logger.info(
-      `Division which will hold the book found with id ${division[0].id}`,
-    )
-    const newBookComponent = {
-      bookId: book.id,
-      componentType: 'toc',
-      divisionId: division[0].id,
-      pagination: {
-        left: false,
-        right: true,
-      },
-      archived: false,
-      deleted: false,
-    }
-    const createdBookComponent = await BookComponent.query().insert(
-      newBookComponent,
-    )
-
-    logger.info(`New book component created with id ${createdBookComponent.id}`)
-    const translation = await BookComponentTranslation.query().insert({
-      bookComponentId: createdBookComponent.id,
-      languageIso: 'en',
-      title: 'Table of Contents',
-    })
-
-    logger.info(
-      `New book component translation created with id ${translation.id}`,
-    )
-    const newBookComponents = division[0].bookComponents
-
-    newBookComponents.push(createdBookComponent.id)
-
-    const updatedDivision = await Division.query().patchAndFetchById(
-      division[0].id,
-      { bookComponents: newBookComponents },
-    )
-
-    logger.info(
-      `Book component pushed to the array of division's book components [${updatedDivision.bookComponents}]`,
-    )
-    if (workflowStages) {
-      bookComponentWorkflowStages = {
-        workflowStages: map(workflowStages, stage => ({
-          type: stage.type,
-          label: stage.title,
-          value: -1,
-        })),
-      }
-    }
-
-    await BookComponentState.query().insert(
-      assign(
-        {},
-        {
-          bookComponentId: createdBookComponent.id,
-          trackChangesEnabled: false,
-          uploading: false,
-          includeInToc: false,
-        },
-        bookComponentWorkflowStages,
-      ),
-    )
-    /// END
-    pubsub.publish(BOOK_CREATED, { bookCreated: book })
-    return book
+    return newBook
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const renameBook = async (_, { id, title }, ctx) => {
   try {
-    await ctx.helpers.can(ctx.user, 'update', await Book.findById(id))
+    logger.info('book resolver: executing renameBook use case')
 
     const pubsub = await pubsubManager.getPubsub()
-    const bookTranslation = await BookTranslation.query()
-      .where('bookId', id)
-      .andWhere('languageIso', 'en')
-    const updatedTranslation = await BookTranslation.query().patchAndFetchById(
-      bookTranslation[0].id,
-      { title },
-    )
-    logger.info(`Book's (${id}) title updated to ${updatedTranslation.title}`)
-    const book = await Book.findById(id)
+    const book = await useCaseGetBook(id)
+
+    logger.info('book resolver: checking permissions for book renaming')
+    await ctx.helpers.can(ctx.user, 'update', book)
+
+    const renamedBook = await useCaseRenameBook(id, title)
+
+    logger.info('book resolver: broadcasting renamed book to clients')
 
     pubsub.publish(BOOK_RENAMED, {
-      bookRenamed: {
-        id: book.id,
-        collectionId: book.collectionId,
-        title,
-      },
+      bookRenamed: renamedBook,
     })
 
-    return book
+    return renamedBook
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const deleteBook = async (_, args, ctx) => {
   try {
+    logger.info('book resolver: executing deleteBook use case')
     const pubsub = await pubsubManager.getPubsub()
-    await ctx.helpers.can(ctx.user, 'update', await Book.findById(args.id))
+    const book = await useCaseGetBook(args.id)
 
-    const deletedBook = await Book.query().patchAndFetchById(args.id, {
-      deleted: true,
-    })
-    logger.info(`Book with id ${deletedBook.id} deleted`)
+    logger.info('book resolver: checking permissions for book deletion')
+    await ctx.helpers.can(ctx.user, 'update', book)
 
-    const associatedBookComponents = await BookComponent.query().where(
-      'bookId',
-      args.id,
-    )
+    const deletedBook = await useCaseDeleteBook(args.id)
 
-    if (associatedBookComponents.length > 0) {
-      await Promise.all(
-        map(associatedBookComponents, async bookComponent => {
-          await BookComponent.query().patchAndFetchById(bookComponent.id, {
-            deleted: true,
-          })
-          logger.info(
-            `Associated book component with id ${bookComponent.id} deleted`,
-          )
-        }),
-      )
-    }
-
-    const associatedDivisions = await Division.query().where(
-      'bookId',
-      deletedBook.id,
-    )
-    await Promise.all(
-      map(associatedDivisions, async division => {
-        const updatedDivision = await Division.query().patchAndFetchById(
-          division.id,
-          {
-            bookComponents: [],
-            deleted: true,
-          },
-        )
-        logger.info(`Associated division with id ${division.id} deleted`)
-        logger.info(
-          `Corresponding division's book components [${updatedDivision.bookComponents}] cleaned`,
-        )
-      }),
-    )
-
-    const allTeams = await ctx.connectors.Team.fetchAll({}, ctx, { eager })
-    const associatedTeams = filter(allTeams, team => {
-      if (team.object) {
-        return team.object.id === args.id
-      }
-      return false
-    })
-
-    if (associatedTeams.length > 0) {
-      await Promise.all(
-        map(associatedTeams, async team => {
-          const updatedTeam = await ctx.connectors.Team.update(
-            team.id,
-            { deleted: true, object: {} },
-            ctx,
-          )
-          logger.info(`Associated team with id ${team.id} deleted`)
-          logger.info(
-            `Corresponding team's object {${updatedTeam.object}} cleaned`,
-          )
-        }),
-      )
-    }
+    logger.info('book resolver: broadcasting deleted book to clients')
 
     pubsub.publish(BOOK_DELETED, {
       bookDeleted: deletedBook,
     })
+
     return deletedBook
   } catch (e) {
     logger.error(e)
@@ -295,57 +105,36 @@ const deleteBook = async (_, args, ctx) => {
 
 const archiveBook = async (_, { id, archive }, ctx) => {
   try {
+    logger.info('book resolver: executing archiveBook use case')
     const pubsub = await pubsubManager.getPubsub()
-    const archivedBook = await Book.query().patchAndFetchById(id, {
-      archived: archive,
-    })
-    logger.info(`Book with id ${archivedBook.id} archived`)
 
-    const associatedBookComponents = await BookComponent.query().where(
-      'bookId',
-      id,
-    )
+    const archivedBook = await useCaseArchiveBook(id, archive)
 
-    if (associatedBookComponents.length > 0) {
-      await Promise.all(
-        map(associatedBookComponents, async bookComponent => {
-          await BookComponent.query().patchAndFetchById(bookComponent.id, {
-            archived: archive,
-          })
-          logger.info(
-            `Associated book component with id ${bookComponent.id} archived`,
-          )
-        }),
-      )
-    }
+    logger.info('book resolver: broadcasting archived book to clients')
 
     pubsub.publish(BOOK_ARCHIVED, {
       bookArchived: archivedBook,
     })
     return archivedBook
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const updateMetadata = async (_, { input }, ctx) => {
-  const clean = omitBy(input, isNil)
-
-  const { id, ...rest } = clean
   try {
+    logger.info('book resolver: executing updateMetadata use case')
     const pubsub = await pubsubManager.getPubsub()
-    const updatedBook = await Book.query().patchAndFetchById(id, {
-      ...rest,
-    })
-    logger.info(`Book with id ${updatedBook.id} has new metadata`)
+
+    const updatedBook = await useCaseUpdateMetadata(input)
+
+    logger.info('book resolver: broadcasting updated book to clients')
 
     pubsub.publish(BOOK_METADATA_UPDATED, {
       bookMetadataUpdated: updatedBook,
     })
     return updatedBook
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
@@ -360,59 +149,43 @@ const exportBook = async (_, { input }, ctx) => {
     icmlNotes,
   } = input
   try {
-    return exporter(
+    logger.info('book resolver: executing exportBook use case')
+    return useCaseExportBook(
       bookId,
       mode,
       templateId,
       previewer,
       fileExtension,
       icmlNotes,
-      ctx,
     )
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const updateRunningHeaders = async (_, { input, bookId }, ctx) => {
   try {
+    logger.info('book resolver: executing updateRunningHeaders use case')
     const pubsub = await pubsubManager.getPubsub()
+    const updatedBook = await useCaseUpdateRunningHeader(input, bookId)
 
-    await Promise.all(
-      map(input, async bookComponent => {
-        const { id } = bookComponent
-        const bookComponentState = await BookComponentState.query().where(
-          'bookComponentId',
-          id,
-        )
+    logger.info('book resolver: broadcasting updated book to clients')
 
-        return BookComponentState.query().patchAndFetchById(
-          bookComponentState[0].id,
-          {
-            runningHeadersRight: bookComponent.runningHeadersRight,
-            runningHeadersLeft: bookComponent.runningHeadersLeft,
-          },
-        )
-      }),
-    )
-    const updatedBook = await Book.findById(bookId)
     pubsub.publish(BOOK_RUNNING_HEADERS_UPDATED, {
       bookRunningHeadersUpdated: updatedBook,
     })
 
     return updatedBook
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
 
 const getPagedPreviewerLink = async (_, { hash }, ctx) => {
   try {
+    logger.info('book resolver: executing getPreviewerLink use case')
     return useCaseGetPreviewerLink(hash)
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }
@@ -446,14 +219,15 @@ module.exports = {
       return book.archived
     },
     async authors(book, args, ctx, info) {
-      const teams = await ctx.connectors.Team.fetchAll(
-        { objectId: book.id, role: 'author' },
-        ctx,
-        { eager },
+      const authorsTeam = await useCaseGetEntityTeam(
+        book.id,
+        'book',
+        'author',
+        true,
       )
       let authors = []
-      if (teams[0] && teams[0].members.length > 0) {
-        authors = map(teams[0].members, teamMember => teamMember.user)
+      if (authorsTeam && authorsTeam.members.length > 0) {
+        authors = authorsTeam.members
       }
       return authors
     },
@@ -473,37 +247,22 @@ module.exports = {
       return isPublished
     },
     async productionEditors(book, _, ctx) {
-      const productionEditorTeams = await ctx.connectors.Team.fetchAll(
-        { objectId: book.id, role: 'productionEditor' },
-        ctx,
-        { eager },
+      const productionEditorsTeam = await useCaseGetEntityTeam(
+        book.id,
+        'book',
+        'productionEditor',
+        true,
       )
-      // const productionEditorTeam = filter(allTeams, team => {
-      //   if (team.objectId) {
-      //     return team.objectId === book.id && team.role === 'productionEditor'
-      //   }
-      //   return false
-      // })
+
       let productionEditors = []
-      if (
-        productionEditorTeams[0] &&
-        productionEditorTeams[0].members.length > 0
-      ) {
-        productionEditors = map(
-          productionEditorTeams[0].members,
-          teamMember => {
-            const { user } = teamMember
-            return `${user.givenName} ${user.surname}`
-          },
-        )
+
+      if (productionEditorsTeam && productionEditorsTeam.members.length > 0) {
+        productionEditors = map(productionEditorsTeam.members, teamMember => {
+          const { givenName, surname } = teamMember
+          return `${givenName} ${surname}`
+        })
       }
-      // return authors
-      // const productionEditors = await Promise.all(
-      //   map(productionEditorTeam[0].members, async member => {
-      //     const user = await ctx.connectors.User.fetchOne(member.user.id, ctx)
-      //     return `${user.givenName} ${user.surname}`
-      //   }),
-      // )
+
       return productionEditors
     },
   },

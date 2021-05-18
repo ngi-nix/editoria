@@ -1,28 +1,70 @@
-const { pubsubManager } = require('@coko/server')
+const { logger, pubsubManager } = require('@coko/server')
 const orderBy = require('lodash/orderBy')
 const map = require('lodash/map')
 const find = require('lodash/find')
+
 const {
   BookCollectionTranslation,
   BookTranslation,
 } = require('../../data-model/src').models
-
+const {
+  useCaseGetBookCollection,
+  useCaseGetBookCollections,
+  useCaseCreateBookCollection,
+  useCaseGetEntityTeam,
+  useCaseGetBooks,
+} = require('../useCases')
 const { COLLECTION_ADDED } = require('./consts')
 
-const eager = '[members.[user, alias]]'
+const getBookCollection = async (_, { input }, ctx) => {
+  try {
+    const { id } = input
 
-const getBookCollection = async (_, args, ctx) =>
-  ctx.connectors.BookCollection.fetchOne(args.input.id, ctx)
+    logger.info(
+      'book collection resolver: executing getBookCollection use case',
+    )
 
-const getBookCollections = async (_, __, ctx) =>
-  ctx.connectors.BookCollection.fetchAll({}, ctx)
+    return useCaseGetBookCollection(id)
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 
-const createBookCollection = async (_, args, ctx) => {
-  const pubsub = await pubsubManager.getPubsub()
-  const bookCollection = await ctx.models.bookCollection
-    .create(args.input)
-    .exec()
-  pubsub.publish(COLLECTION_ADDED, { collectionAdded: bookCollection })
+const getBookCollections = async (_, __, ctx) => {
+  try {
+    logger.info(
+      'book collection resolver: executing getBookCollections use case',
+    )
+
+    return useCaseGetBookCollections()
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const createBookCollection = async (_, { input }, ctx) => {
+  try {
+    const pubsub = await pubsubManager.getPubsub()
+    const { title, languageIso } = input
+
+    logger.info(
+      'book collection resolver: executing createBookCollection use case',
+    )
+
+    const createdBookCollection = await useCaseCreateBookCollection(
+      title,
+      languageIso,
+    )
+    logger.info(
+      'book collection resolver: broadcasting new book collection to clients',
+    )
+
+    pubsub.publish(COLLECTION_ADDED, { collectionAdded: createdBookCollection })
+
+    return createdBookCollection
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 
 module.exports = {
@@ -42,40 +84,23 @@ module.exports = {
       return bookCollectionTranslation[0].title
     },
     async books(bookCollection, { ascending, sortKey, archived }, ctx, info) {
-      let books
-      if (archived) {
-        books = await ctx.connectors.Book.fetchAll(
-          {
-            collectionId: bookCollection.id,
-            deleted: false,
-          },
-          ctx,
-        )
-      } else {
-        books = await ctx.connectors.Book.fetchAll(
-          {
-            collectionId: bookCollection.id,
-            deleted: false,
-            archived: false,
-          },
-          ctx,
-        )
-      }
-
+      const books = await useCaseGetBooks(bookCollection.id, archived)
       const sortable = await Promise.all(
         map(books, async book => {
           const translation = await BookTranslation.query()
             .where('bookId', book.id)
             .andWhere('languageIso', 'en')
           const { title } = translation[0]
-          const teams = await ctx.connectors.Team.fetchAll(
-            { objectId: book.id, role: 'author' },
-            ctx,
-            { eager },
+          const authorsTeam = await useCaseGetEntityTeam(
+            book.id,
+            'book',
+            'author',
+            true,
           )
+
           let auth = 'z'
-          if (teams[0] && teams[0].members.length > 0) {
-            auth = teams[0].members[0].user.surname
+          if (authorsTeam && authorsTeam.members.length > 0) {
+            auth = authorsTeam.members[0].surname
           }
           let status = 0
 

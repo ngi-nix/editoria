@@ -4,11 +4,8 @@ const path = require('path')
 const config = require('config')
 const get = require('lodash/get')
 const crypto = require('crypto')
-// const mime = require('mime-types')
-const {
-  useCaseFetchRemoteFileLocally,
-  useCaseSignURL,
-} = require('../../useCases')
+
+const { locallyDownloadFile, signURL } = require('../objectStorage')
 const { imageGatherer } = require('./gatherImages')
 const map = require('lodash/map')
 
@@ -74,7 +71,7 @@ const pagednation = async (book, template, pdf = false) => {
     await Promise.all(
       map(gatheredImages, async image => {
         const { currentObjectKey } = image
-        freshImageLinkMapper[currentObjectKey] = await useCaseSignURL(
+        freshImageLinkMapper[currentObjectKey] = await signURL(
           'getObject',
           currentObjectKey,
         )
@@ -88,26 +85,9 @@ const pagednation = async (book, template, pdf = false) => {
 
         $('img[src]').each((index, node) => {
           const $node = $(node)
-          // const constructedId = `image-${id}-${index}`
           const url = $node.attr('src')
           const objectKey = objectKeyExtractor(url)
-          // const extension = path.extname(objectKey)
-          // const mimetype = mime.lookup(objectKey)
-          // const target = `${pagedDestination}/${objectKey}`
-
-          // images.push({
-          //   id: constructedId,
-          //   objectKey,
-          //   target,
-          //   mimetype,
-          //   extension,
-          // })
-
-          // if (pdf) {
-          //   $node.attr('src', `./${objectKey}`)
-          // } else {
           $node.attr('src', freshImageLinkMapper[objectKey])
-          // }
         })
         $('figure').each((index, node) => {
           const $node = $(node)
@@ -119,22 +99,17 @@ const pagednation = async (book, template, pdf = false) => {
         bookComponent.content = $.html('body')
       })
     })
-    // await Promise.all(
-    //   map(images, async image => {
-    //     const { objectKey, target } = image
-    //     return useCaseFetchRemoteFileLocally(objectKey, target)
-    //   }),
-    // )
+
     await Promise.all(
       map(stylesheets, async stylesheet => {
         const { objectKey, target } = stylesheet
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
     await Promise.all(
       map(fonts, async font => {
         const { objectKey, target } = font
-        return useCaseFetchRemoteFileLocally(objectKey, target)
+        return locallyDownloadFile(objectKey, target)
       }),
     )
 

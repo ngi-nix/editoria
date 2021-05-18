@@ -74,6 +74,8 @@ const createTemplates = async () => {
             logger.info(
               '******* Create Templates script finished successfully ********',
             )
+            await fs.remove(templatesFolder)
+            logger.info('******* Templates folder removed ********')
           }
         }),
       )

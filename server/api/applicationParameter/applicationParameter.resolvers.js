@@ -1,37 +1,50 @@
 const { logger } = require('@coko/server')
-const { ApplicationParameter } = require('../../data-model/src').models
-
 const { pubsubManager } = require('@coko/server')
 
-const { UPDATE_APPLICATION_PARAMETERS } = require('./consts')
+const { UPDATE_APPLICATION_PARAMETERS } = require('./constants')
+const {
+  useCaseGetApplicationParameters,
+  useCaseUpdateApplicationParameters,
+} = require('../useCases')
 
 const getApplicationParameters = async (_, args, ctx) => {
-  const { context, area } = args
-  const parameters = await ApplicationParameter.query()
-    .skipUndefined()
-    .where({ context, area })
-
-  return parameters
-}
-const updateApplicationParameters = async (_, { input }, ctx) => {
-  const { context, area, config } = input
   try {
+    const { context, area } = args
+    logger.info(
+      'application parameters resolver: executing getApplicationParameters use case',
+    )
+
+    return useCaseGetApplicationParameters(context, area)
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const updateApplicationParameters = async (_, { input }, ctx) => {
+  try {
+    const { context, area, config } = input
     const pubsub = await pubsubManager.getPubsub()
-    const parameter = await ApplicationParameter.query().findOne({
+
+    logger.info(
+      'application parameters resolver: executing updateApplicationParameters use case',
+    )
+
+    const updatedApplicationParameters = await useCaseUpdateApplicationParameters(
       context,
       area,
-    })
+      config,
+    )
 
-    const updatedParameter = await parameter.$query().updateAndFetch({ config })
-
-    const applicationParameters = await ApplicationParameter.query()
+    logger.info(
+      'application parameters resolver: broadcasting updated application parameters to clients',
+    )
 
     pubsub.publish(UPDATE_APPLICATION_PARAMETERS, {
-      updateApplicationParameters: applicationParameters,
+      updateApplicationParameters: updatedApplicationParameters,
     })
-    return updatedParameter
+
+    return updatedApplicationParameters
   } catch (e) {
-    logger.error(e)
     throw new Error(e)
   }
 }

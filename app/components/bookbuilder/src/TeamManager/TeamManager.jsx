@@ -17,7 +17,7 @@ export class TeamManager extends React.Component {
   render() {
     const {
       teams,
-      findUser,
+      searchForUsers,
       updateTeam,
       rules,
       canViewAddTeamMember,
@@ -30,7 +30,7 @@ export class TeamManager extends React.Component {
           rules={rules}
           canViewAddTeamMember={canViewAddTeamMember}
           update={updateTeam}
-          findUser={findUser}
+          searchForUsers={searchForUsers}
         />
       </Wrapper>
     )
