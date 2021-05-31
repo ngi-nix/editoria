@@ -18,7 +18,6 @@ const Composed = adopt(mapper, mapProps)
 const Connected = props => {
   const { data, isOpen, hideModal } = props
   const { templateId } = data
-
   return (
     <Composed templateId={templateId}>
       {({ template, loadingTemplate }) => {

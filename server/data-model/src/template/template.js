@@ -30,6 +30,9 @@ class Template extends Base {
         author: string,
         target: targetType,
         trimSize: string,
+        exportScripts: {
+          type: ['object', 'array'],
+        },
         notes: notesType,
       },
     }

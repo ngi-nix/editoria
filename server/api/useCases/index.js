@@ -1,6 +1,7 @@
 const applicationParameters = require('./applicationParameters')
 const bookComponent = require('./bookComponent')
 const book = require('./book')
+const exportScript = require('./exportScript')
 const team = require('./team')
 const user = require('./user')
 const bookCollection = require('./bookCollection')
@@ -81,4 +82,5 @@ module.exports = {
   useCaseGetCustomTags: customTags.getCustomTags,
   useCaseAddCustomTag: customTags.addCustomTag,
   useCaseUpdateCustomTag: customTags.updateCustomTag,
+  useCaseGetExportScripts: exportScript.getExportScripts,
 }

@@ -61,7 +61,7 @@ const generateContainer = (bookComponent, firstInBody = false) => {
 const generatePagedjsContainer = bookTitle => {
   const output = cheerio.load(
     `<!DOCTYPE html><html><head><title>${bookTitle}</title>
-    <meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.0/katex.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/default.min.css"></head><body class="hyphenate" lang="en-us"></body></html>`,
+    <meta charset="UTF-8"></head><body class="hyphenate" lang="en-us"></body></html>`,
   )
   return output.html()
 }
