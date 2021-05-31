@@ -22,3 +22,5 @@ epubcheck_data/*
 epubcheck_log/*
 epubchecker_data/*
 epubchecker_log/*
+config/exportScripts/*
+!config/exportScripts/.gitkeep

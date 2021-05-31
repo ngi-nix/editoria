@@ -73,6 +73,10 @@ module.exports = {
     pool: { min: 0, max: 10, idleTimeoutMillis: 1000 },
   },
   templates: ['Atla'],
+  export: {
+    rootFolder: 'config/exportScripts',
+    scripts: [],
+  },
   schema: {},
   validations: path.join(__dirname, 'modules', 'validations'),
 }

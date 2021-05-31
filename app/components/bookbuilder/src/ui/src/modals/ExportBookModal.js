@@ -400,6 +400,7 @@ class ExportBookModal extends Component {
           <RadioButton last>
             <input
               checked={viewer === 'vivliostyle'}
+              disabled
               name="vivliostyle"
               onChange={this.changeRadioOption}
               type="radio"
@@ -430,6 +431,7 @@ class ExportBookModal extends Component {
 
     return (
       <DialogModal
+        buttonLabel={confirmLabel}
         disableConfirm={
           (!templateId && format !== 'icml') || generating || validating
         }
@@ -438,7 +440,6 @@ class ExportBookModal extends Component {
         notCentered
         onConfirm={this.handleSubmit}
         onRequestClose={hideModal}
-        buttonLabel={confirmLabel}
         size="medium_narrow"
       >
         <Container>

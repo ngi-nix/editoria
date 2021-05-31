@@ -13,6 +13,7 @@ const template = require('./template')
 // const bookComponentTranslation = require('./bookComponentTranslation')
 // const bookTranslation = require('./bookTranslation')
 const file = require('./file')
+const exportScript = require('./exportScript')
 const merge = require('lodash/merge')
 
 module.exports = {
@@ -24,6 +25,7 @@ module.exports = {
     bookCollection.typeDefs,
     customTag.typeDefs,
     division.typeDefs,
+    exportScript.typeDefs,
     file.typeDefs,
     team.typeDefs,
     user.typeDefs,
@@ -38,6 +40,7 @@ module.exports = {
     bookCollection.resolvers,
     customTag.resolvers,
     division.resolvers,
+    exportScript.resolvers,
     file.resolvers,
     team.resolvers,
     template.resolvers,

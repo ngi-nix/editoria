@@ -69,7 +69,16 @@ const getTemplate = async (_, { id }, ctx) => {
 }
 
 const createTemplate = async (_, { input }, ctx) => {
-  const { name, author, files, target, trimSize, thumbnail, notes } = input
+  const {
+    name,
+    author,
+    files,
+    target,
+    trimSize,
+    thumbnail,
+    notes,
+    exportScripts,
+  } = input
 
   try {
     const pubsub = await pubsubManager.getPubsub()
@@ -80,6 +89,7 @@ const createTemplate = async (_, { input }, ctx) => {
       target,
       notes,
       trimSize,
+      exportScripts,
     })
     logger.info(`New template created with id ${newTemplate.id}`)
     if (files.length > 0) {
@@ -165,6 +175,7 @@ const cloneTemplate = async (_, { input }, ctx) => {
       author: template.author,
       target: template.target,
       trimSize: template.trimSize,
+      exportScripts: template.exportScripts,
       notes: template.notes,
       referenceId: template.id,
     })
@@ -245,6 +256,7 @@ const updateTemplate = async (_, { input }, ctx) => {
     thumbnail,
     deleteFiles,
     deleteThumbnail,
+    exportScripts,
   } = input
 
   try {
@@ -343,6 +355,7 @@ const updateTemplate = async (_, { input }, ctx) => {
       name,
       author,
       trimSize,
+      exportScripts,
       target,
       notes,
     })

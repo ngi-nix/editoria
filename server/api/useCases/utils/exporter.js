@@ -20,6 +20,7 @@ const { pagednation } = require('./pagednation')
 const { icmlArchiver } = require('./icmlArchiver')
 const { icmlPreparation } = require('./icmlPreparation')
 const { pagedArchiver } = require('./pagedArchiver')
+const { scriptsRunner } = require('./scriptsRunner')
 
 const { Template } = require('../../../data-model/src').models
 
@@ -96,6 +97,19 @@ const ExporterService = async (
         counter += 1
       })
     })
+
+    // Gathering and executing scripts defined by user
+    if (template.exportScripts.length > 0 && fileExtension === 'epub') {
+      const bbWithConvertedContent = await scriptsRunner(book, template)
+      book.divisions.forEach(division => {
+        division.bookComponents.forEach(bookComponent => {
+          const { id } = bookComponent
+          if (bbWithConvertedContent[id]) {
+            bookComponent.content = bbWithConvertedContent[id]
+          }
+        })
+      })
+    }
 
     // Check if notes exist, else remove the book component
     if (templateHasEndnotes) {

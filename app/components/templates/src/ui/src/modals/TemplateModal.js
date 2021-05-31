@@ -147,12 +147,14 @@ class TemplateModal extends React.Component {
 
     const { data, template } = props
     const { mode } = data
+
     this.updateFileList = this.updateFileList.bind(this)
     this.updateThumbnail = this.updateThumbnail.bind(this)
     this.removeFile = this.removeFile.bind(this)
     this.removeThumbnail = this.removeThumbnail.bind(this)
     this.handleSelectNotes = this.handleSelectNotes.bind(this)
     this.handleSelect = this.handleSelect.bind(this)
+    this.handleSelectScripts = this.handleSelectScripts.bind(this)
     if (mode === 'create') {
       this.state = {
         error: false,
@@ -162,6 +164,7 @@ class TemplateModal extends React.Component {
         mode,
         target: undefined,
         notes: undefined,
+        exportScripts: [],
       }
     } else {
       const {
@@ -172,7 +175,9 @@ class TemplateModal extends React.Component {
         author,
         trimSize,
         notes,
+        exportScripts,
       } = template
+
       this.state = {
         error: false,
         deleteThumbnail: undefined,
@@ -186,6 +191,7 @@ class TemplateModal extends React.Component {
         mode,
         target: target ? find(selectOptions, { value: target }) : undefined,
         notes: notes ? find(noteSelectOptions, { value: notes }) : undefined,
+        exportScripts,
       }
     }
   }
@@ -202,12 +208,31 @@ class TemplateModal extends React.Component {
     setFieldTouched('files', true)
   }
 
-  handleSelect(selected) {
+  handleSelect(selected, setFieldValue, setFieldTouched) {
     this.setState({ target: selected })
+    setFieldValue('target', selected)
+    setFieldTouched('target', true)
   }
 
-  handleSelectNotes(selected) {
+  handleSelectNotes(selected, setFieldValue, setFieldTouched) {
     this.setState({ notes: selected })
+    setFieldValue('notes', selected)
+    setFieldTouched('notes', true)
+  }
+  handleSelectScripts(selected, setFieldValue, setFieldTouched) {
+    if (!selected) {
+      this.setState({
+        exportScripts: [],
+      })
+      setFieldValue('exportScripts', [])
+      setFieldTouched('exportScripts', true)
+    } else {
+      setFieldValue('exportScripts', selected)
+      setFieldTouched('exportScripts', true)
+      this.setState({
+        exportScripts: selected,
+      })
+    }
   }
   /* eslint-disable */
   updateThumbnail(file, setFieldValue, setFieldTouched) {
@@ -316,7 +341,7 @@ class TemplateModal extends React.Component {
 
   renderBody() {
     const { data } = this.props
-    const { onConfirm, hideModal, mode } = data
+    const { onConfirm, hideModal, mode, scriptOptions } = data
     const {
       thumbnailPreview,
       thumbnail,
@@ -326,10 +351,19 @@ class TemplateModal extends React.Component {
       files,
       target,
       notes,
+      exportScripts,
     } = this.state
 
     const confirmLabel = mode === 'create' ? 'Save' : 'Update'
     const cancelLabel = 'Cancel'
+    let filteredScriptOptions = []
+    if (target) {
+      filteredScriptOptions = scriptOptions.filter(script => {
+        const { value } = script
+        const tokens = value.split('-')
+        return tokens[1].toLowerCase() === target.value.toLowerCase()
+      })
+    }
 
     let initialValues
     if (mode === 'create') {
@@ -341,6 +375,7 @@ class TemplateModal extends React.Component {
         notes: undefined,
         author: undefined,
         trimSize: undefined,
+        exportScripts: [],
       }
     } else {
       initialValues = {
@@ -351,6 +386,7 @@ class TemplateModal extends React.Component {
         notes,
         author,
         trimSize,
+        exportScripts,
       }
     }
 
@@ -366,9 +402,11 @@ class TemplateModal extends React.Component {
             thumbnail,
             target,
             notes,
+            exportScripts,
           } = values
           const { deleteFiles, deleteThumbnail, mode } = this.state
           let data
+
           if (mode === 'create') {
             data = {
               name,
@@ -378,6 +416,7 @@ class TemplateModal extends React.Component {
               thumbnail,
               target: target ? target.value : undefined,
               notes: notes ? notes.value : undefined,
+              exportScripts,
             }
           } else {
             data = {
@@ -390,6 +429,7 @@ class TemplateModal extends React.Component {
               thumbnail: thumbnail && thumbnail.id ? null : thumbnail,
               target: target ? target.value : undefined,
               notes: notes ? notes.value : undefined,
+              exportScripts,
             }
           }
 
@@ -398,10 +438,12 @@ class TemplateModal extends React.Component {
         }}
         validate={values => {
           const errors = {}
+          // console.log('values', values)
           const { files } = this.state
-          if (!values.name) {
+          if (!values.name || values.name === '') {
             errors.name = '* The name of the template should not be empty'
           }
+
           if (values.files.length > 0) {
             let stylesheetCounter = 0
             // const { files } = values
@@ -424,6 +466,20 @@ class TemplateModal extends React.Component {
           if (!values.notes) {
             errors.notes =
               '* The notes type of the template should not be empty'
+          }
+          if (values.exportScripts.length > 0) {
+            if (!values.target.value) {
+              errors.exportScripts = '* You have to select a target first'
+            } else {
+              for (let i = 0; i < values.exportScripts.length; i += 1) {
+                const { value } = values.exportScripts[i]
+                const tokens = value.split('-')
+                if (tokens[1].toLowerCase() !== target.value.toLowerCase()) {
+                  errors.exportScripts =
+                    '* The scope of the scripts should match the selected target'
+                }
+              }
+            }
           }
           return errors
         }}
@@ -493,7 +549,7 @@ class TemplateModal extends React.Component {
                         placeholder="eg. Booksprints"
                         touched={touched}
                         type="text"
-                        value={values.name}
+                        value={values.name || ''}
                       />
                       <Error>{touched.name ? errors.name : ''}</Error>
                     </FormFieldContainer>
@@ -513,12 +569,12 @@ class TemplateModal extends React.Component {
                         placeholder="eg. John Smith"
                         touched={touched}
                         type="text"
-                        value={values.author}
+                        value={values.author || ''}
                       />
-                      <Error>{errors.author}</Error>
+                      <Error>{touched.author ? errors.author : ''}</Error>
                     </FormFieldContainer>
                   </FormField>
-                  <FormField>
+                  {/* <FormField>
                     <Text>Trim Size</Text>
                     <FormFieldContainer>
                       <Input
@@ -537,36 +593,60 @@ class TemplateModal extends React.Component {
                       />
                       <Error>{errors.trimSize}</Error>
                     </FormFieldContainer>
-                  </FormField>
+                  </FormField> */}
                   <FormField>
-                    <Text>Target</Text>
+                    <Text>Target *</Text>
                     <FormFieldContainer>
                       <Select
                         onChange={selected => {
-                          this.handleSelect(selected)
-                          setFieldValue('target', selected)
-                          setFieldTouched('target', true)
+                          this.handleSelect(
+                            selected,
+                            setFieldValue,
+                            setFieldTouched,
+                          )
                         }}
                         options={selectOptions}
-                        value={this.state.target}
+                        value={values.target}
                       />
-                      <Error>{errors.target}</Error>
+                      <Error>{touched.target ? errors.target : ''}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
-                    <Text>Notes</Text>
+                    <Text>Scripts</Text>
                     <FormFieldContainer>
                       <Select
-                        defaultValue={noteSelectOptions[0]}
+                        isDisabled={!values.target}
+                        isMulti
                         onChange={selected => {
-                          this.handleSelectNotes(selected)
-                          setFieldValue('notes', selected)
-                          setFieldTouched('notes', true)
+                          this.handleSelectScripts(
+                            selected,
+                            setFieldValue,
+                            setFieldTouched,
+                          )
+                        }}
+                        options={filteredScriptOptions}
+                        value={values.exportScripts}
+                      />
+                      <Error>
+                        {touched.exportScripts ? errors.exportScripts : ''}
+                      </Error>
+                    </FormFieldContainer>
+                  </FormField>
+                  <FormField>
+                    <Text>Notes *</Text>
+                    <FormFieldContainer>
+                      <Select
+                        onChange={selected => {
+                          this.handleSelectNotes(
+                            selected,
+                            setFieldValue,
+                            setFieldTouched,
+                          )
                         }}
                         options={noteSelectOptions}
-                        value={this.state.notes}
+                        value={values.notes}
                       />
-                      <Error>{errors.target}</Error>
+                      <Error>{touched.notes ? errors.notes : ''}</Error>
                     </FormFieldContainer>
                   </FormField>
                   <FormField>
@@ -578,7 +658,7 @@ class TemplateModal extends React.Component {
                       updateFilesList={this.updateFileList}
                     />
                   </FormField>
-                  <Error>{errors.files}</Error>
+                  <Error>{touched.files ? errors.files : ''}</Error>
                   {this.renderFiles(setFieldValue, setFieldTouched)}
                 </Side2>
               </Container>

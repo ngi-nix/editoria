@@ -25,6 +25,10 @@ const GET_TEMPLATE = gql`
         extension
         objectKey
       }
+      exportScripts {
+        label
+        value
+      }
     }
   }
 `
