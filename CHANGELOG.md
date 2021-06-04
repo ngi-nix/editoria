@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://gitlab.coko.foundation///compare/v1.5.0...v1.5.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* **app:** new wax, icml fix, print in pagedjs ([c35a555](https://gitlab.coko.foundation///commit/c35a555bd778323b6b1ca055001bdbe2adc9f304))
+
 ## [1.5.0](https://gitlab.coko.foundation///compare/v1.4.10...v1.5.0) (2021-05-31)
 
 
