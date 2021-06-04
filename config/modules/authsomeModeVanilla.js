@@ -158,7 +158,6 @@ class EditoriaMode {
 
   async canReadBook() {
     await this.getUser()
-    // console.log('object', this.object)
     let bookId
     if (this.object.type === 'bookComponent') {
       bookId = this.object.bookId

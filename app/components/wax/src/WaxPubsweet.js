@@ -84,7 +84,10 @@ const Editoria = ({
 }) => {
   const updateTitle = debounce(title => {
     handleTitleUpdate(title, bookComponentId, renameBookComponent)
-  }, 1000)
+  }, 2000)
+  const onChangeHandler = debounce(source => {
+    handleSave(source, bookComponentId, updateBookComponentContent)
+  }, 2000)
 
   const handleAssetManager = () => onAssetManager(bookId)
 
@@ -315,9 +318,7 @@ const Editoria = ({
           fileUpload={() => true}
           key={bookComponentId}
           layout={EditoriaLayout}
-          onChange={source => {
-            handleSave(source, bookComponentId, updateBookComponentContent)
-          }}
+          onChange={onChangeHandler}
           placeholder="Type Something..."
           readonly={isReadOnly}
           user={user}

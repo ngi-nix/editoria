@@ -99,16 +99,18 @@ const ExporterService = async (
     })
 
     // Gathering and executing scripts defined by user
-    if (template.exportScripts.length > 0 && fileExtension === 'epub') {
-      const bbWithConvertedContent = await scriptsRunner(book, template)
-      book.divisions.forEach(division => {
-        division.bookComponents.forEach(bookComponent => {
-          const { id } = bookComponent
-          if (bbWithConvertedContent[id]) {
-            bookComponent.content = bbWithConvertedContent[id]
-          }
+    if (fileExtension === 'epub') {
+      if (template.exportScripts.length > 0) {
+        const bbWithConvertedContent = await scriptsRunner(book, template)
+        book.divisions.forEach(division => {
+          division.bookComponents.forEach(bookComponent => {
+            const { id } = bookComponent
+            if (bbWithConvertedContent[id]) {
+              bookComponent.content = bbWithConvertedContent[id]
+            }
+          })
         })
-      })
+      }
     }
 
     // Check if notes exist, else remove the book component

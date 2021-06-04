@@ -5,7 +5,6 @@ const find = require('lodash/find')
 const { Division, Book } = require('../../data-model/src').models
 const utils = require('../helpers/utils')
 
-// console.log(useCaseGetApplicationParameters)
 const { getApplicationParameters } = require('./applicationParameters')
 // const { getBook } = require('./book')
 const { getBookComponent, updateBookComponent } = require('./bookComponent')

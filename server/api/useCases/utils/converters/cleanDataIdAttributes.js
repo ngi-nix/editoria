@@ -10,9 +10,9 @@ module.exports = content => {
     if ($elem.attr('data-params')) {
       $elem.removeAttr('data-params')
     }
-    if ($elem.attr('data-fileid')) {
-      $elem.removeAttr('data-fileid')
-    }
+    // if ($elem.attr('data-fileid')) {
+    //   $elem.removeAttr('data-fileid')
+    // }
     if ($elem.attr('data-track')) {
       $elem.removeAttr('data-track')
     }
