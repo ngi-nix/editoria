@@ -106,7 +106,6 @@ module.exports = async bookId => {
   )
 
   const authorTeams = await getEntityTeam(bookId, 'book', 'author', true)
-
   let authors = []
 
   if (authorTeams[0] && authorTeams[0].members.length > 0) {

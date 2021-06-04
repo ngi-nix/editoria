@@ -438,7 +438,6 @@ class TemplateModal extends React.Component {
         }}
         validate={values => {
           const errors = {}
-          // console.log('values', values)
           const { files } = this.state
           if (!values.name || values.name === '') {
             errors.name = '* The name of the template should not be empty'

@@ -113,6 +113,14 @@ const PagedStyler = ({
             onClick={handleDownload(hashed)}
             title="Download HTML"
           />
+
+          {previewerLink && (
+            <Button
+              label="Print"
+              onClick={() => window.open(previewerLink, '_blank')}
+              title="Print"
+            />
+          )}
           <NavBarLink to={`/books/${bookId}/book-builder`}>
             Back to book
           </NavBarLink>
