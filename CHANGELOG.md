@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.2](https://gitlab.coko.foundation///compare/v1.5.1...v1.5.2) (2021-06-10)
+
+
+### Bug Fixes
+
+* **app:** keep original size of svg assets ([3083890](https://gitlab.coko.foundation///commit/3083890b08bf171f6307af1af8d933b18e8fc310))
+
 ### [1.5.1](https://gitlab.coko.foundation///compare/v1.5.0...v1.5.1) (2021-06-04)
 
 
