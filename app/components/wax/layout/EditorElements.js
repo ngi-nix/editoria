@@ -101,10 +101,10 @@ export default css`
   }
 
   figure {
-    display: table;
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-direction: column;
     word-break: break-word;
+    align-items: center;
 
     img {
       cursor: default;
@@ -117,10 +117,11 @@ export default css`
       background: #e2ebff;
       caption-side: bottom;
       display: table-caption;
+      margin-top: 8px;
       max-width: 100%;
       min-height: 20px;
       padding: 4px;
-      width: auto;
+      width: 100%;
 
       &:focus {
         outline: none;
