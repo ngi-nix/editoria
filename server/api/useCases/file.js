@@ -212,9 +212,13 @@ const getFileURL = async (id, size = undefined) => {
   const { mimetype, objectKey } = file
 
   if (mimetype.match(/^image\//)) {
-    if (size && size !== 'original') {
+    if (size && size !== 'original' && mimetype !== 'image/svg+xml') {
       const deconstructedKey = objectKey.split('.')
       return signURL('getObject', `${deconstructedKey[0]}_${size}.png`)
+    }
+    if (size && size !== 'original' && mimetype === 'image/svg+xml') {
+      const deconstructedKey = objectKey.split('.')
+      return signURL('getObject', `${deconstructedKey[0]}_${size}.svg`)
     }
   }
   return signURL('getObject', objectKey)
@@ -234,12 +238,20 @@ const getContentFiles = async fileIds => {
         file.alt = translation.length === 1 ? translation[0].alt : null
 
         if (mimetype.match(/^image\//)) {
-          file.mimetype = 'image/png'
-          const deconstructedKey = objectKey.split('.')
-          file.source = await signURL(
-            'getObject',
-            `${deconstructedKey[0]}_medium.png`,
-          )
+          if (mimetype !== 'image/svg+xml') {
+            file.mimetype = 'image/png'
+            const deconstructedKey = objectKey.split('.')
+            file.source = await signURL(
+              'getObject',
+              `${deconstructedKey[0]}_medium.png`,
+            )
+          } else {
+            const deconstructedKey = objectKey.split('.')
+            file.source = await signURL(
+              'getObject',
+              `${deconstructedKey[0]}_medium.svg`,
+            )
+          }
           return file
         }
 

@@ -184,11 +184,18 @@ module.exports = {
     },
     async source({ objectKey, mimetype }, { size }, ctx) {
       if (mimetype.match(/^image\//)) {
-        if (size && size !== 'original') {
+        if (size && size !== 'original' && mimetype !== 'image/svg+xml') {
           const deconstructedKey = objectKey.split('.')
           return useCaseSignURL(
             'getObject',
             `${deconstructedKey[0]}_${size}.png`,
+          )
+        }
+        if (size && size !== 'original' && mimetype === 'image/svg+xml') {
+          const deconstructedKey = objectKey.split('.')
+          return useCaseSignURL(
+            'getObject',
+            `${deconstructedKey[0]}_${size}.svg`,
           )
         }
       }
@@ -196,8 +203,11 @@ module.exports = {
     },
     async mimetype({ mimetype }, { target }, ctx) {
       if (mimetype.match(/^image\//)) {
-        if (target && target === 'editor') {
+        if (target && target === 'editor' && mimetype !== 'image/svg+xml') {
           return 'image/png'
+        }
+        if (target && target === 'editor' && mimetype === 'image/svg+xml') {
+          return 'image/svg+xml'
         }
       }
       return mimetype

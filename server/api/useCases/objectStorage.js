@@ -26,7 +26,12 @@ const s3 = new AWS.S3({
   s3ForcePathStyle: true,
   endpoint: serverUrl,
 })
-const createImageVersions = async (buffer, tempRoot, fileNameHashed) => {
+const createImageVersions = async (
+  buffer,
+  tempRoot,
+  fileNameHashed,
+  isSVG = false,
+) => {
   try {
     const originalImage = sharp(buffer)
     const originalFileMeta = await originalImage.metadata()
@@ -34,6 +39,22 @@ const createImageVersions = async (buffer, tempRoot, fileNameHashed) => {
     const smallPath = path.join(tempRoot, `${fileNameHashed}_small.png`)
     const mediumPath = path.join(tempRoot, `${fileNameHashed}_medium.png`)
 
+    // do not create the actual medium and small version of the SVG, just their corresponding filenames for consistency of structure
+    if (isSVG) {
+      const smallPathSVG = path.join(tempRoot, `${fileNameHashed}_small.svg`)
+      const mediumPathSVG = path.join(tempRoot, `${fileNameHashed}_medium.svg`)
+      return {
+        localSmall: smallPathSVG,
+        localMedium: mediumPathSVG,
+        size,
+        metadata: {
+          width,
+          height,
+          space,
+          density,
+        },
+      }
+    }
     await sharp(buffer)
       .resize(180, 240, {
         fit: 'contain',
@@ -141,13 +162,25 @@ const handleImageUpload = async (fileStream, filename, mimeType, encoding) => {
       buffer,
       outPathRoot,
       filename.split('.')[0], // strip the extension of the file
+      mimeType === 'image/svg+xml',
     )
 
     const { localSmall, localMedium, metadata, size } = localImageVersionPaths
 
-    const originalImageStream = fs.createReadStream(out)
-    const mediumImageStream = fs.createReadStream(localMedium)
-    const smallImageStream = fs.createReadStream(localSmall)
+    let originalImageStream
+    let mediumImageStream
+    let smallImageStream
+
+    // in case of SVG just use the original file without actually creating different size versions
+    if (mimeType !== 'image/svg+xml') {
+      originalImageStream = fs.createReadStream(out)
+      mediumImageStream = fs.createReadStream(localMedium)
+      smallImageStream = fs.createReadStream(localSmall)
+    } else {
+      originalImageStream = fs.createReadStream(out)
+      mediumImageStream = fs.createReadStream(out)
+      smallImageStream = fs.createReadStream(out)
+    }
 
     const original = await uploadFileHandler(
       originalImageStream,
@@ -162,13 +195,13 @@ const handleImageUpload = async (fileStream, filename, mimeType, encoding) => {
     const medium = await uploadFileHandler(
       mediumImageStream,
       path.basename(localMedium),
-      'image/png',
+      mimeType === 'image/svg+xml' ? 'image/svg+xml' : 'image/png',
     )
 
     const small = await uploadFileHandler(
       smallImageStream,
       path.basename(localSmall),
-      'image/png',
+      mimeType === 'image/svg+xml' ? 'image/svg+xml' : 'image/png',
     )
 
     await fs.remove(outPathRoot)
