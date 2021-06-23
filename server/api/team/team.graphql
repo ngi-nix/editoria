@@ -1,11 +1,25 @@
+type EditoriaTeamMember {
+  id: ID
+  user: User
+}
+type EditoriaTeam {
+  id: ID!
+  type: String!
+  name: String!
+  role: String!
+  objectId: ID
+  objectType: String
+  members: [EditoriaTeamMember!]
+  global: Boolean
+}
 
 extend type Query {
-  getBookTeams(bookId: ID!): [Team]!
-  getGlobalTeams: [Team]!
+  getBookTeams(bookId: ID!): [EditoriaTeam]!
+  getGlobalTeams: [EditoriaTeam]!
 }
 
 type TeamSub {
-  bookId: ID
+  objectId: ID
   teamId: ID!
   role: String!
   members: [User]!
@@ -13,7 +27,10 @@ type TeamSub {
 }
 
 extend type Mutation {
-  updateTeamMembers(id: String!, input: TeamInput!): Team!
+  updateTeamMembers(id: String!, input: TeamInput!): EditoriaTeam!
 }
 
-extend type Subscription { teamMembersUpdated: TeamSub!, productionEditorsUpdated: TeamSub! }
+extend type Subscription {
+  teamMembersUpdated: TeamSub!
+  productionEditorsUpdated: TeamSub!
+}

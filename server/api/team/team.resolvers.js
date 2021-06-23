@@ -1,6 +1,5 @@
 const { pubsubManager } = require('@coko/server')
 const { logger } = require('@coko/server')
-const filter = require('lodash/filter')
 
 const {
   TEAM_MEMBERS_UPDATED,
@@ -11,13 +10,14 @@ const {
   useCaseGetEntityTeams,
   useCaseGetGlobalTeams,
   useCaseUpdateTeamMembers,
+  useCaseGetTeamMembers,
 } = require('../useCases')
 
 const getBookTeams = async (_, { bookId }, ctx) => {
   try {
     logger.info('team resolver: executing getEntityTeams use case')
-
-    return useCaseGetEntityTeams(bookId, 'book')
+    const test = await useCaseGetEntityTeams(bookId, 'book')
+    return test
   } catch (e) {
     logger.error(e)
     throw new Error(e)
@@ -47,7 +47,6 @@ const updateTeamMembers = async (_, { id, input }, ctx) => {
 
       return updatedTeam
     }
-
     if (updatedTeam.role === 'productionEditor') {
       pubsub.publish(BOOK_PRODUCTION_EDITORS_UPDATED, {
         productionEditorsUpdated: updatedTeam,
@@ -70,6 +69,11 @@ module.exports = {
   },
   Mutation: {
     updateTeamMembers,
+  },
+  EditoriaTeam: {
+    async members(team, _, ctx) {
+      return useCaseGetTeamMembers(team.id, {}, true)
+    },
   },
   Subscription: {
     teamMembersUpdated: {

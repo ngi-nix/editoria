@@ -8,6 +8,7 @@ const bbVanilla = require('./modules/bookBuilderVanilla')
 const bbBooksprints = require('./modules/bookBuilderBooksprints')
 const waxVanilla = require('./modules/waxConfigVanilla')
 const waxBooksprints = require('./modules/waxConfigBooksprints')
+const permissions = require('./permissions')
 
 const logger = new winston.Logger({
   transports: [
@@ -34,6 +35,7 @@ module.exports = {
     from: 'info@editoria.com',
     path: path.join(__dirname, 'mailer'),
   },
+  permissions,
   publicKeys: [
     'authsome',
     'bookBuilder',

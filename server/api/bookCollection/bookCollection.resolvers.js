@@ -84,7 +84,7 @@ module.exports = {
       return bookCollectionTranslation[0].title
     },
     async books(bookCollection, { ascending, sortKey, archived }, ctx, info) {
-      const books = await useCaseGetBooks(bookCollection.id, archived)
+      const books = await useCaseGetBooks(bookCollection.id, archived, ctx.user)
       const sortable = await Promise.all(
         map(books, async book => {
           const translation = await BookTranslation.query()

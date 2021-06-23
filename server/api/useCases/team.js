@@ -8,7 +8,11 @@ const isUndefined = require('lodash/isUndefined')
 
 const { Team, TeamMember, User } = require('../../data-model/src').models
 
-const getTeamMembers = async (teamId, options = {}) => {
+const getTeamMembers = async (
+  teamId,
+  options = {},
+  withTeamMemberId = false,
+) => {
   try {
     const { trx } = options
     return useTransaction(
@@ -27,9 +31,21 @@ const getTeamMembers = async (teamId, options = {}) => {
             const user = await User.query(tr).where({
               id: teamMember.userId,
             })
-            const { id, username, admin, email, givenName, surname } = user[0]
-
-            return { id, username, admin, email, givenName, surname }
+            const {
+              id: userId,
+              username,
+              admin,
+              email,
+              givenName,
+              surname,
+            } = user[0]
+            if (!withTeamMemberId) {
+              return { id: userId, username, admin, email, givenName, surname }
+            }
+            return {
+              id: teamMember.id,
+              user: { id: userId, username, admin, email, givenName, surname },
+            }
           }),
         )
         return populatedTeamMembers
@@ -299,6 +315,7 @@ module.exports = {
   getEntityTeams,
   getEntityTeam,
   getTeam,
+  getTeamMembers,
   getGlobalTeams,
   deleteTeam,
   updateTeamMembers,

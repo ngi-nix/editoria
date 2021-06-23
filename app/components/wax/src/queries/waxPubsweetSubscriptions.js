@@ -33,7 +33,7 @@ const CUSTOM_TAG_SUBSCRIPTION = gql`
 const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
   subscription TeamMembersUpdated {
     teamMembersUpdated {
-      bookId
+      objectId
     }
   }
 `
@@ -91,7 +91,7 @@ const teamMembersChangeSubscription = props => {
     const { subscriptionData } = res
     const { data } = subscriptionData
     const { teamMembersUpdated } = data
-    const { bookId: bId } = teamMembersUpdated
+    const { objectId: bId } = teamMembersUpdated
     if (bookId === bId || bId === null) {
       refetch()
     }

@@ -8,9 +8,11 @@ const GET_BOOK_TEAMS = gql`
       id
       role
       name
-      object {
-        objectId
-      }
+      objectId
+      objectType
+      # object {
+      #   objectId
+      # }
       members {
         id
         user {
