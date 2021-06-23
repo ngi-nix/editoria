@@ -82,13 +82,6 @@ const Editoria = ({
   user,
   tags,
 }) => {
-  const updateTitle = debounce(title => {
-    handleTitleUpdate(title, bookComponentId, renameBookComponent)
-  }, 2000)
-  const onChangeHandler = debounce(source => {
-    handleSave(source, bookComponentId, updateBookComponentContent)
-  }, 2000)
-
   const handleAssetManager = () => onAssetManager(bookId)
 
   let translatedEditing
@@ -155,6 +148,18 @@ const Editoria = ({
       },
     })
   }
+
+  const updateTitle = debounce(title => {
+    if (translatedEditing === 'full') {
+      handleTitleUpdate(title, bookComponentId, renameBookComponent)
+    }
+  }, 2000)
+
+  const onChangeHandler = debounce(source => {
+    if (translatedEditing === 'full') {
+      handleSave(source, bookComponentId, updateBookComponentContent)
+    }
+  }, 2000)
 
   configWax.EnableTrackChangeService.updateTrackStatus = status => {
     updateBookComponentTrackChanges({
@@ -223,6 +228,8 @@ const Editoria = ({
 
     return () => {
       window.removeEventListener('beforeunload', onUnload)
+      updateTitle.cancel()
+      onChangeHandler.cancel()
       onUnload()
     }
   }, [])

@@ -74,6 +74,7 @@ module.exports = {
   useCaseDeleteTeam: team.deleteTeam,
   useCaseUpdateTeamMembers: team.updateTeamMembers,
   useCaseGetGlobalTeams: team.getGlobalTeams,
+  useCaseGetTeamMembers: team.getTeamMembers,
   useCaseSearchForUsers: user.searchForUsers,
   useCaseCreateUser: user.createEditoriaUser,
   useCaseUpdatePassword: user.updatePassword,

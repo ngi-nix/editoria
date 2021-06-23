@@ -14,6 +14,7 @@ const {
   BookComponent,
   Division,
   BookComponentTranslation,
+  User,
 } = require('../../data-model/src').models
 
 const { getApplicationParameters } = require('./applicationParameters')
@@ -40,24 +41,48 @@ const getBook = async (id, options = {}) => {
   }
 }
 
-const getBooks = async (collectionId, archived, options = {}) => {
+const getBooks = async (collectionId, archived, userId, options = {}) => {
   try {
     const { trx } = options
     logger.info(`>>> fetching books for collection with id ${collectionId}`)
     return useTransaction(
       async tr => {
-        if (!archived) {
+        const user = await User.query(tr).findById(userId)
+        const isAdmin = user.admin
+        if (isAdmin) {
           return Book.query(tr).where({
             collectionId,
             deleted: false,
             archived: false,
           })
         }
-
-        return Book.query(tr).where({
-          collectionId,
-          deleted: false,
-        })
+        if (!archived) {
+          return Book.query(tr)
+            .leftJoin('teams', 'book.id', 'teams.object_id')
+            .leftJoin('team_members', 'teams.id', 'team_members.team_id')
+            .leftJoin('users', 'team_members.user_id', 'users.id')
+            .where({
+              'book.collection_id': collectionId,
+              'book.deleted': false,
+              'book.archived': false,
+              'users.id': userId,
+            })
+        }
+        if (isAdmin) {
+          return Book.query(tr).where({
+            collectionId,
+            deleted: false,
+          })
+        }
+        return Book.query(tr)
+          .leftJoin('teams', 'book.id', 'teams.object_id')
+          .leftJoin('team_members', 'teams.id', 'team_members.team_id')
+          .leftJoin('users', 'team_members.user_id', 'users.id')
+          .where({
+            'book.id': collectionId,
+            'book.deleted': false,
+          })
+          .andWhere({ 'users.id': userId })
       },
       { trx, passedTrxOnly: true },
     )

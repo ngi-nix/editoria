@@ -8,9 +8,10 @@ const UPDATE_BOOK_TEAM = gql`
       id
       role
       name
-      object {
-        objectId
-      }
+      objectId
+      objectType
+      # object {
+      # }
       members {
         id
         user {

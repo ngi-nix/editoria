@@ -82,7 +82,7 @@ const BOOK_COMPONENT_TITLE_UPDATED_SUBSCRIPTION = gql`
 const TEAM_MEMBERS_UPDATED_SUBSCRIPTION = gql`
   subscription TeamMembersUpdated {
     teamMembersUpdated {
-      bookId
+      objectId
     }
   }
 `
@@ -133,7 +133,7 @@ const addTeamMemberSubscription = props => {
 const PRODUCTION_EDITORS_UPDATED_SUBSCRIPTION = gql`
   subscription ProductionEditorsUpdated {
     productionEditorsUpdated {
-      bookId
+      objectId
     }
   }
 `
