@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.4](https://gitlab.coko.foundation///compare/v1.5.3...v1.5.4) (2021-06-27)
+
+
+### Bug Fixes
+
+* **app:** fix typo in production ([6188dc1](https://gitlab.coko.foundation///commit/6188dc1b8382e2ff7ab93ec33605eaca92a2d40f))
+
 ### [1.5.3](https://gitlab.coko.foundation///compare/v1.5.2...v1.5.3) (2021-06-23)
 
 
