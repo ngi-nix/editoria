@@ -56,7 +56,6 @@ services:
       - NODE_ENV=development
       - EDITORIA_FLAVOUR=${EDITORIA_FLAVOUR:-VANILLA}
       - PUBSWEET_SECRET=${PUBSWEET_SECRET:-dev_secret}
-      - SERVES_CLIENT=${SERVES_CLIENT:-false}
       - EXTERNAL_SERVER_URL=${EXTERNAL_SERVER_URL:-null}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432

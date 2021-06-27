@@ -66,7 +66,6 @@ module.exports = {
     graphiql: true,
     tokenExpiresIn: '360 days',
     externalServerURL: undefined,
-    servesClient: true,
     logger,
     port: 3000,
     protocol: 'http',

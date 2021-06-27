@@ -277,12 +277,12 @@ const xsweetHandler = async (bookComponentId, filePath) => {
     const { responseToken, id: serviceCallbackTokenId } = serviceCallbackToken
     form.append('responseToken', responseToken)
     form.append('serviceCallbackTokenId', serviceCallbackTokenId)
-    const servesClient = config.get('pubsweet-server.servesClient')
+    const serveClient = config.get('pubsweet-server.serveClient')
     const externalServerURL = config.get('pubsweet-server.externalServerURL')
 
     let url = config.get('pubsweet-server.baseUrl')
 
-    if (servesClient === 'true') {
+    if (serveClient && serveClient === 'true') {
       if (externalServerURL && externalServerURL !== 'null') {
         url = externalServerURL
       }
