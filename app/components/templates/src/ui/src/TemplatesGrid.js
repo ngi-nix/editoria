@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@pubsweet/ui-toolkit'
 
 import { Template } from '../../ui'
+import { Loading } from '../../../../../ui'
 
 const GridContainer = styled.div`
   align-items: center;
@@ -16,7 +16,8 @@ const GridContainer = styled.div`
 `
 
 const TemplatesGrid = props => {
-  const { templates, onDeleteTemplate, onUpdateTemplate } = props
+  const { templates, onDeleteTemplate, onUpdateTemplate, refetching } = props
+  if (refetching) return <Loading />
   return (
     <GridContainer>
       {templates.map(template => {
@@ -31,14 +32,14 @@ const TemplatesGrid = props => {
         } = template
         return (
           <Template
+            author={author}
+            id={id}
+            key={id}
+            name={name}
+            notes={notes}
             onDeleteTemplate={onDeleteTemplate}
             onUpdateTemplate={onUpdateTemplate}
-            key={id}
-            id={id}
-            author={author}
             target={target}
-            notes={notes}
-            name={name}
             thumbnail={thumbnail}
             trimSize={trimSize}
           />
