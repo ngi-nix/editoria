@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.5](https://gitlab.coko.foundation///compare/v1.5.4...v1.5.5) (2021-07-13)
+
+
+### Bug Fixes
+
+* **app:** fixes for templates, filenames and transactions ([58a7443](https://gitlab.coko.foundation///commit/58a74437afa52d567d1db60fb30bd8104e5a7793))
+
 ### [1.5.4](https://gitlab.coko.foundation///compare/v1.5.3...v1.5.4) (2021-06-27)
 
 
