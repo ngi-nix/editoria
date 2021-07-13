@@ -63,6 +63,7 @@ module.exports = {
     db: {},
     useGraphQLServer: true,
     useJobQueue: false,
+    serveClient: false,
     graphiql: true,
     tokenExpiresIn: '360 days',
     externalServerURL: undefined,

@@ -10,6 +10,7 @@ const file = require('./file')
 const services = require('./services')
 const division = require('./division')
 const customTags = require('./customTags')
+const template = require('./template')
 
 module.exports = {
   useCaseGetApplicationParameters:
@@ -84,4 +85,11 @@ module.exports = {
   useCaseAddCustomTag: customTags.addCustomTag,
   useCaseUpdateCustomTag: customTags.updateCustomTag,
   useCaseGetExportScripts: exportScript.getExportScripts,
+  useCaseGetTemplates: template.getTemplates,
+  useCaseGetTemplate: template.getTemplate,
+  useCaseCreateTemplate: template.createTemplate,
+  useCaseCloneTemplate: template.cloneTemplate,
+  useCaseUpdateTemplate: template.updateTemplate,
+  useCaseDeleteTemplate: template.deleteTemplate,
+  useCaseUpdateTemplateCSSFile: template.updateTemplateCSSFile,
 }

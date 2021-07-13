@@ -214,7 +214,7 @@ module.exports = {
     },
     // ## for now in use will be computed in the parent query
     // ## as a workaround of the connection pool timeouts
-    // ## this is not permantent
+    // ## this is not permanent
     // async inUse({ id, mimetype, bookId }, _, ctx) {
     //   let inUse = []
     //   if (mimetype.match(/^image\//)) {

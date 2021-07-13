@@ -30,7 +30,7 @@ const Template = ({
   loading,
   refetching,
 }) => {
-  if (loading || refetching) return <Loading />
+  if (loading) return <Loading />
 
   return (
     <Container>
@@ -45,6 +45,7 @@ const Template = ({
           <TemplatesGrid
             onDeleteTemplate={onDeleteTemplate}
             onUpdateTemplate={onUpdateTemplate}
+            refetching={refetching}
             templates={templates}
           />
         </InnerWrapper>
